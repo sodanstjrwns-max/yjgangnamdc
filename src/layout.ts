@@ -39,6 +39,9 @@ export function layout(content: string, opts: LayoutOptions): string {
   <meta property="og:site_name" content="강남치과의원">
   <meta property="og:locale" content="ko_KR">
 
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
   <!-- Fonts -->
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
