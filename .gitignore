@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Runtime data
+.wrangler/
+pids/
+logs/
+*.log
+*.pid
+
+# Environment
+.env
+.dev.vars
+
+# PM2
+.pm2/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
