@@ -1,16 +1,14 @@
 export function directionsPage(): string {
   return `
-  <!-- Hero -->
-  <section class="relative min-h-[60vh] flex items-end bg-charcoal overflow-hidden noise-overlay">
-    <div class="orb orb-gold w-[500px] h-[500px] -top-48 -right-48 opacity-30"></div>
-    <div class="absolute inset-0 grid-pattern opacity-25"></div>
-    <div class="gold-line-h absolute top-0 left-0 right-0"></div>
+  <!-- Hero (White) -->
+  <section class="relative min-h-[60vh] flex items-end subpage-hero overflow-hidden">
+    <div class="orb orb-gold w-[500px] h-[500px] -top-48 -right-48 opacity-20"></div>
+    <div class="absolute inset-0 grid-pattern opacity-40"></div>
     <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 pb-24 pt-48 w-full">
-      <div class="section-label section-label-white mb-8"><span class="w-1.5 h-1.5 rounded-full bg-gold"></span>DIRECTIONS</div>
-      <h1 class="display-xl text-white mb-6">오시는 <span class="gold-grad-text">길</span></h1>
-      <p class="text-white/35 text-lg">경북 영주시 대학로 217, 2층 · 택지 리첼 사거리</p>
+      <div class="section-label section-label-gold mb-8"><span class="w-1.5 h-1.5 rounded-full bg-gold"></span>DIRECTIONS</div>
+      <h1 class="display-xl text-charcoal mb-6">오시는 <span class="gold-grad-text">길</span></h1>
+      <p class="text-gray-400 text-lg">경북 영주시 대학로 217, 2층 · 택지 리첼 사거리</p>
     </div>
-    <div class="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-white to-transparent"></div>
   </section>
 
   <!-- Map + Info -->
@@ -59,7 +57,7 @@ export function directionsPage(): string {
   </section>
 
   <!-- Transportation -->
-  <section class="py-20 md:py-28 bg-cream relative">
+  <section class="py-20 md:py-28 section-snow relative">
     <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/10 to-transparent"></div>
     <div class="max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
       <div class="text-center mb-14 reveal">

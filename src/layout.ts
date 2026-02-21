@@ -50,8 +50,9 @@ export function layout(content: string, opts: LayoutOptions): string {
         extend: {
           colors: {
             gold: { 50:'#FBF8F0', 100:'#F5EDD8', 200:'#EBDBB1', 300:'#E0C98A', 400:'#D5B563', DEFAULT:'#C9A962', dark:'#A88B3C', 900:'#6B5720' },
-            charcoal: { DEFAULT:'#0a0a0a', light:'#111111', 800:'#1a1a1a', 700:'#222222', 600:'#333333', 500:'#444444' },
-            cream: '#FFFDF7'
+            charcoal: { DEFAULT:'#1a1a1a', light:'#2a2a2a', 800:'#333333', 700:'#444444', 600:'#555555', 500:'#666666' },
+            snow: { DEFAULT:'#FFFFFF', 50:'#FAFBFC', 100:'#F5F6F8', 200:'#EEEEF2', 300:'#E2E3E8' },
+            cream: '#FDFCFA'
           },
           fontFamily: {
             pretendard: ['"Pretendard Variable"', 'Pretendard', '-apple-system', 'system-ui', 'sans-serif']
@@ -79,11 +80,13 @@ export function layout(content: string, opts: LayoutOptions): string {
       --gold: #C9A962;
       --gold-light: #E0CFA0;
       --gold-dark: #A88B3C;
-      --charcoal: #0a0a0a;
+      --charcoal: #1a1a1a;
+      --white: #FFFFFF;
+      --snow: #FAFBFC;
     }
     * { font-family: 'Pretendard Variable', Pretendard, -apple-system, system-ui, sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-    body { color: #111; background: #0a0a0a; overflow-x: hidden; }
+    body { color: #1a1a1a; background: #FFFFFF; overflow-x: hidden; }
 
     /* ===== Premium Typography ===== */
     .display-hero { font-size: clamp(3rem, 8vw, 7rem); line-height: 1.02; letter-spacing: -0.04em; font-weight: 900; }
@@ -92,24 +95,23 @@ export function layout(content: string, opts: LayoutOptions): string {
     .display-md { font-size: clamp(1.5rem, 3vw, 2.25rem); line-height: 1.2; letter-spacing: -0.02em; font-weight: 700; }
 
     /* ===== Gold Gradients ===== */
-    .gold-grad { background: linear-gradient(135deg, #D5B563, #C9A962 40%, #E0CFA0 60%, #C9A962); }
-    .gold-grad-text { background: linear-gradient(135deg, #E0CFA0, #C9A962 30%, #D5B563 60%, #E0CFA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .gold-glow { box-shadow: 0 0 60px rgba(201,169,98,0.25), 0 0 120px rgba(201,169,98,0.08); }
+    .gold-grad { background: linear-gradient(135deg, #D5B563, #C9A962 40%, #A88B3C); }
+    .gold-grad-text { background: linear-gradient(135deg, #A88B3C, #C9A962 30%, #D5B563 60%, #C9A962); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .gold-glow { box-shadow: 0 8px 32px rgba(201,169,98,0.2), 0 2px 8px rgba(201,169,98,0.1); }
     .gold-border { border: 1px solid rgba(201,169,98,0.15); }
-    .gold-border-glow { border: 1px solid rgba(201,169,98,0.25); box-shadow: 0 0 30px rgba(201,169,98,0.06); }
-    .gold-line-h { height: 1px; background: linear-gradient(90deg, transparent, rgba(201,169,98,0.4), transparent); }
-    .gold-line-v { width: 1px; background: linear-gradient(180deg, transparent, rgba(201,169,98,0.4), transparent); }
+    .gold-border-glow { border: 1px solid rgba(201,169,98,0.2); box-shadow: 0 4px 24px rgba(201,169,98,0.08); }
+    .gold-line-h { height: 1px; background: linear-gradient(90deg, transparent, rgba(201,169,98,0.2), transparent); }
 
-    /* ===== Glass Effects ===== */
-    .glass-dark { background: rgba(10,10,10,0.7); backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%); }
-    .glass-light { background: rgba(255,255,255,0.6); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); }
+    /* ===== Glass Effects (White Theme) ===== */
+    .glass-white { background: rgba(255,255,255,0.85); backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%); }
+    .glass-light { background: rgba(255,255,255,0.7); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); }
     .glass-gold { background: rgba(201,169,98,0.04); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(201,169,98,0.12); }
-    .glass-ultra { background: rgba(255,255,255,0.02); backdrop-filter: blur(40px) saturate(200%); -webkit-backdrop-filter: blur(40px) saturate(200%); }
+    .glass-snow { background: rgba(250,251,252,0.95); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px); }
 
-    /* ===== Cards ===== */
+    /* ===== Cards (White Theme) ===== */
     .card-premium {
       background: #fff;
-      border: 1px solid rgba(0,0,0,0.04);
+      border: 1px solid rgba(0,0,0,0.05);
       border-radius: 28px;
       transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
       position: relative;
@@ -125,31 +127,31 @@ export function layout(content: string, opts: LayoutOptions): string {
       transition: opacity 0.6s;
     }
     .card-premium:hover {
-      transform: translateY(-10px) scale(1.01);
-      box-shadow: 0 30px 80px rgba(201,169,98,0.1), 0 8px 30px rgba(0,0,0,0.04);
+      transform: translateY(-8px) scale(1.005);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.06), 0 8px 30px rgba(201,169,98,0.06);
       border-color: rgba(201,169,98,0.15);
     }
     .card-premium:hover::before { opacity: 1; }
 
-    .card-dark {
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.06);
+    .card-white {
+      background: #FFFFFF;
+      border: 1px solid rgba(0,0,0,0.06);
       border-radius: 28px;
       transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
       position: relative;
       overflow: hidden;
     }
-    .card-dark::before {
+    .card-white::before {
       content: '';
       position: absolute; inset: 0;
-      background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(201,169,98,0.06) 0%, transparent 60%);
+      background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(201,169,98,0.04) 0%, transparent 60%);
       opacity: 0; transition: opacity 0.4s;
     }
-    .card-dark:hover::before { opacity: 1; }
-    .card-dark:hover {
+    .card-white:hover::before { opacity: 1; }
+    .card-white:hover {
       border-color: rgba(201,169,98,0.2);
-      transform: translateY(-8px);
-      box-shadow: 0 25px 60px rgba(201,169,98,0.08);
+      transform: translateY(-6px);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.06), 0 4px 16px rgba(201,169,98,0.06);
     }
 
     /* ===== Buttons ===== */
@@ -160,7 +162,7 @@ export function layout(content: string, opts: LayoutOptions): string {
       color: #fff; font-weight: 700; font-size: 15px;
       border-radius: 100px; border: none; cursor: pointer;
       transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 0 6px 30px rgba(201,169,98,0.35), inset 0 1px 0 rgba(255,255,255,0.2);
+      box-shadow: 0 6px 30px rgba(201,169,98,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
       position: relative; overflow: hidden;
       text-decoration: none;
     }
@@ -169,30 +171,30 @@ export function layout(content: string, opts: LayoutOptions): string {
       background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
       transition: left 0.7s;
     }
-    .btn-primary:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 12px 50px rgba(201,169,98,0.5), inset 0 1px 0 rgba(255,255,255,0.2); }
+    .btn-primary:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 12px 50px rgba(201,169,98,0.4), inset 0 1px 0 rgba(255,255,255,0.2); }
     .btn-primary:hover::before { left: 100%; }
 
     .btn-outline {
       display: inline-flex; align-items: center; gap: 10px;
       padding: 18px 40px;
-      border: 2px solid rgba(201,169,98,0.4);
+      border: 2px solid rgba(201,169,98,0.3);
       color: var(--gold); font-weight: 700; font-size: 15px;
       border-radius: 100px; cursor: pointer; background: transparent;
       transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
       text-decoration: none;
     }
-    .btn-outline:hover { background: var(--gold); color: #fff; border-color: var(--gold); box-shadow: 0 8px 40px rgba(201,169,98,0.3); transform: translateY(-2px); }
+    .btn-outline:hover { background: var(--gold); color: #fff; border-color: var(--gold); box-shadow: 0 8px 40px rgba(201,169,98,0.25); transform: translateY(-2px); }
 
-    .btn-white {
+    .btn-subtle {
       display: inline-flex; align-items: center; gap: 10px;
       padding: 18px 40px;
-      border: 2px solid rgba(255,255,255,0.15);
-      color: #fff; font-weight: 700; font-size: 15px;
-      border-radius: 100px; cursor: pointer; background: rgba(255,255,255,0.03);
+      border: 1.5px solid rgba(0,0,0,0.08);
+      color: var(--charcoal); font-weight: 700; font-size: 15px;
+      border-radius: 100px; cursor: pointer; background: rgba(0,0,0,0.02);
       transition: all 0.5s;
       text-decoration: none;
     }
-    .btn-white:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.4); transform: translateY(-2px); }
+    .btn-subtle:hover { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.12); transform: translateY(-2px); }
 
     /* ===== Section helpers ===== */
     .section-label {
@@ -201,7 +203,7 @@ export function layout(content: string, opts: LayoutOptions): string {
       font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
     }
     .section-label-gold { background: rgba(201,169,98,0.06); color: var(--gold); border: 1px solid rgba(201,169,98,0.12); }
-    .section-label-white { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.06); }
+    .section-label-light { background: rgba(0,0,0,0.03); color: rgba(0,0,0,0.4); border: 1px solid rgba(0,0,0,0.05); }
 
     .divider-gold { width: 48px; height: 2px; background: linear-gradient(90deg, var(--gold), var(--gold-light)); border-radius: 2px; }
 
@@ -211,28 +213,21 @@ export function layout(content: string, opts: LayoutOptions): string {
     .reveal-right { opacity: 0; transform: translateX(50px); }
     .reveal-scale { opacity: 0; transform: scale(0.92); }
 
-    /* ===== Patterns ===== */
+    /* ===== Patterns (White Theme) ===== */
     .dot-pattern {
-      background-image: radial-gradient(circle, rgba(201,169,98,0.1) 1px, transparent 1px);
+      background-image: radial-gradient(circle, rgba(201,169,98,0.06) 1px, transparent 1px);
       background-size: 40px 40px;
     }
     .grid-pattern {
       background-image:
-        linear-gradient(rgba(201,169,98,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(201,169,98,0.04) 1px, transparent 1px);
+        linear-gradient(rgba(0,0,0,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,0,0,0.02) 1px, transparent 1px);
       background-size: 80px 80px;
     }
 
-    /* ===== Noise ===== */
-    .noise-overlay::after {
-      content: ''; position: absolute; inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.02'/%3E%3C/svg%3E");
-      pointer-events: none; z-index: 1;
-    }
-
-    /* ===== Scrollbar ===== */
+    /* ===== Scrollbar (White Theme) ===== */
     ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: #0a0a0a; }
+    ::-webkit-scrollbar-track { background: #FAFBFC; }
     ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--gold), var(--gold-dark)); border-radius: 4px; }
 
     /* ===== Mobile CTA ===== */
@@ -240,9 +235,9 @@ export function layout(content: string, opts: LayoutOptions): string {
       position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
       padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
       display: none;
-      background: rgba(10,10,10,0.95);
+      background: rgba(255,255,255,0.95);
       backdrop-filter: blur(24px);
-      border-top: 1px solid rgba(201,169,98,0.15);
+      border-top: 1px solid rgba(0,0,0,0.06);
     }
     @media (max-width: 768px) {
       .floating-cta { display: flex; gap: 10px; }
@@ -253,17 +248,17 @@ export function layout(content: string, opts: LayoutOptions): string {
     @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
     .marquee-track { animation: marquee 40s linear infinite; }
 
-    /* ===== Orbs ===== */
+    /* ===== Orbs (White Theme) ===== */
     .orb { position: absolute; border-radius: 50%; filter: blur(100px); pointer-events: none; }
-    .orb-gold { background: rgba(201,169,98,0.12); }
+    .orb-gold { background: rgba(201,169,98,0.07); }
     .orb-blue { background: rgba(100,149,237,0.04); }
 
     /* ===== Counter ===== */
     .counter { font-variant-numeric: tabular-nums; }
 
-    /* ===== Image placeholder ===== */
+    /* ===== Image placeholder (White Theme) ===== */
     .img-placeholder {
-      background: linear-gradient(135deg, #111 0%, #1a1a1a 30%, #222 50%, #1a1a1a 70%, #111 100%);
+      background: linear-gradient(135deg, #f5f5f5 0%, #eee 30%, #f0f0f0 50%, #eee 70%, #f5f5f5 100%);
       background-size: 300% 300%;
       animation: shimmer 4s ease infinite;
     }
@@ -280,32 +275,39 @@ export function layout(content: string, opts: LayoutOptions): string {
     /* ===== Float animation ===== */
     @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
     @keyframes float-delayed { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
-    @keyframes pulse-gold { 0%,100%{box-shadow:0 0 20px rgba(201,169,98,0.2)} 50%{box-shadow:0 0 40px rgba(201,169,98,0.4)} }
+    @keyframes pulse-gold { 0%,100%{box-shadow:0 0 20px rgba(201,169,98,0.15)} 50%{box-shadow:0 0 40px rgba(201,169,98,0.3)} }
 
     /* ===== Horizontal scroll snap ===== */
     .snap-x { scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
     .snap-x > * { scroll-snap-align: start; }
 
-    /* ===== Cursor glow ===== */
+    /* ===== Cursor glow (white theme) ===== */
     .cursor-glow {
       position: fixed; width: 400px; height: 400px; border-radius: 50%;
-      background: radial-gradient(circle, rgba(201,169,98,0.06) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(201,169,98,0.04) 0%, transparent 70%);
       pointer-events: none; z-index: 9999; transform: translate(-50%, -50%);
       transition: opacity 0.3s;
     }
 
-    /* ===== Text mask ===== */
+    /* ===== Text outline ===== */
     .text-outline {
-      -webkit-text-stroke: 1px rgba(201,169,98,0.3);
+      -webkit-text-stroke: 1px rgba(201,169,98,0.2);
       color: transparent;
     }
 
-    /* ===== Grain texture ===== */
-    .grain::before {
-      content: ''; position: absolute; inset: -50%;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.035'/%3E%3C/svg%3E");
-      pointer-events: none; z-index: 0;
+    /* ===== Hero section BG (White) ===== */
+    .hero-white {
+      background: linear-gradient(180deg, #FFFFFF 0%, #FAFBFC 40%, #F5F6F8 100%);
     }
+
+    /* ===== Sub page hero ===== */
+    .subpage-hero {
+      background: linear-gradient(180deg, #FAFBFC 0%, #F0F1F3 50%, #FFFFFF 100%);
+    }
+
+    /* ===== Snow section ===== */
+    .section-snow { background: linear-gradient(180deg, #FAFBFC, #F5F6F8); }
+    .section-warm { background: #FDFCFA; }
   </style>
 </head>
 <body class="font-pretendard page-transition">
@@ -313,21 +315,21 @@ export function layout(content: string, opts: LayoutOptions): string {
   <!-- Cursor glow (desktop only) -->
   <div class="cursor-glow hidden md:block" id="cursorGlow" style="opacity:0"></div>
 
-  <!-- ===== Top Bar ===== -->
-  <div class="hidden md:block fixed top-0 left-0 right-0 z-[60] bg-charcoal/90 backdrop-blur-xl border-b border-white/[0.04]">
+  <!-- ===== Top Bar (White Theme) ===== -->
+  <div class="hidden md:block fixed top-0 left-0 right-0 z-[60] bg-white/90 backdrop-blur-xl border-b border-black/[0.04]">
     <div class="max-w-[1440px] mx-auto px-8 lg:px-12 h-10 flex items-center justify-between">
-      <div class="flex items-center gap-8 text-[11px] text-white/40 tracking-wide">
-        <span class="flex items-center gap-2"><span class="relative flex h-1.5 w-1.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-400"></span></span><span class="text-emerald-400/70 font-medium">진료중</span> 평일 09:00–17:30</span>
-        <span class="hidden lg:inline">경상북도 영주시 대학로 217, 2층</span>
+      <div class="flex items-center gap-8 text-[11px] text-gray-400 tracking-wide">
+        <span class="flex items-center gap-2"><span class="relative flex h-1.5 w-1.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-400"></span></span><span class="text-emerald-500 font-medium">진료중</span> 평일 09:00–17:30</span>
+        <span class="hidden lg:inline text-gray-400">경상북도 영주시 대학로 217, 2층</span>
       </div>
-      <div class="flex items-center gap-6 text-[11px] text-white/40">
+      <div class="flex items-center gap-6 text-[11px] text-gray-400">
         <a href="tel:054-636-8222" class="hover:text-gold transition-colors flex items-center gap-1.5"><i class="fas fa-phone text-[9px]"></i>054-636-8222</a>
         <a href="https://blog.naver.com/gndentalclinic" target="_blank" class="hover:text-gold transition-colors flex items-center gap-1.5"><i class="fas fa-blog text-[9px]"></i>Blog</a>
       </div>
     </div>
   </div>
 
-  <!-- ===== Navigation ===== -->
+  <!-- ===== Navigation (White Theme) ===== -->
   <header class="fixed top-0 md:top-10 left-0 right-0 z-50 transition-all duration-700" id="navbar">
     <div class="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-12">
       <nav class="h-16 md:h-[68px] flex items-center justify-between md:rounded-2xl md:px-8 transition-all duration-500" id="navInner" style="background:transparent;">
@@ -338,38 +340,38 @@ export function layout(content: string, opts: LayoutOptions): string {
             <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
           </div>
           <div>
-            <div class="text-[17px] font-extrabold text-white tracking-tight leading-none">강남치과</div>
-            <div class="text-[9px] text-white/25 tracking-[0.2em] font-semibold mt-0.5">GANGNAM DENTAL</div>
+            <div class="text-[17px] font-extrabold text-charcoal tracking-tight leading-none">강남치과</div>
+            <div class="text-[9px] text-gray-300 tracking-[0.2em] font-semibold mt-0.5">GANGNAM DENTAL</div>
           </div>
         </a>
 
         <!-- Desktop Menu -->
         <div class="hidden lg:flex items-center gap-0.5">
-          <a href="/doctors" class="px-5 py-2.5 text-[13px] text-white/60 hover:text-white transition-all duration-300 rounded-lg relative group font-medium">
+          <a href="/doctors" class="px-5 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative group font-medium">
             의료진
             <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gold rounded-full group-hover:w-6 transition-all duration-300"></span>
           </a>
-          <a href="/treatments" class="px-5 py-2.5 text-[13px] text-white/60 hover:text-white transition-all duration-300 rounded-lg relative group font-medium">
+          <a href="/treatments" class="px-5 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative group font-medium">
             진료안내
             <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gold rounded-full group-hover:w-6 transition-all duration-300"></span>
           </a>
-          <a href="/treatments/implant" class="px-5 py-2.5 text-[13px] text-white/60 hover:text-white transition-all duration-300 rounded-lg relative group font-medium">
+          <a href="/treatments/implant" class="px-5 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative group font-medium">
             임플란트
             <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gold rounded-full group-hover:w-6 transition-all duration-300"></span>
           </a>
-          <a href="/treatments/invisalign" class="px-5 py-2.5 text-[13px] text-white/60 hover:text-white transition-all duration-300 rounded-lg relative group font-medium">
+          <a href="/treatments/invisalign" class="px-5 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative group font-medium">
             인비절라인
             <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gold rounded-full group-hover:w-6 transition-all duration-300"></span>
           </a>
-          <a href="/pricing" class="px-5 py-2.5 text-[13px] text-white/60 hover:text-white transition-all duration-300 rounded-lg relative group font-medium">
+          <a href="/pricing" class="px-5 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative group font-medium">
             비용
             <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gold rounded-full group-hover:w-6 transition-all duration-300"></span>
           </a>
-          <a href="/directions" class="px-5 py-2.5 text-[13px] text-white/60 hover:text-white transition-all duration-300 rounded-lg relative group font-medium">
+          <a href="/directions" class="px-5 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative group font-medium">
             오시는길
             <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gold rounded-full group-hover:w-6 transition-all duration-300"></span>
           </a>
-          <div class="w-px h-5 bg-white/10 mx-3"></div>
+          <div class="w-px h-5 bg-gray-200 mx-3"></div>
           <a href="/reservation" class="btn-primary !py-2.5 !px-7 !text-[12px] !gap-2 !font-bold">
             <i class="fas fa-calendar-check text-[10px]"></i>상담예약
           </a>
@@ -377,37 +379,37 @@ export function layout(content: string, opts: LayoutOptions): string {
 
         <!-- Mobile -->
         <div class="flex items-center gap-2 lg:hidden">
-          <a href="tel:054-636-8222" class="w-10 h-10 rounded-xl glass-gold flex items-center justify-center text-gold text-sm">
+          <a href="tel:054-636-8222" class="w-10 h-10 rounded-xl bg-gold/5 border border-gold/10 flex items-center justify-center text-gold text-sm">
             <i class="fas fa-phone"></i>
           </a>
-          <button onclick="toggleMenu()" class="w-10 h-10 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center" id="menuBtn">
+          <button onclick="toggleMenu()" class="w-10 h-10 rounded-xl border border-gray-200 bg-white flex items-center justify-center" id="menuBtn">
             <div class="flex flex-col gap-[5px] w-[18px]" id="hamburger">
-              <span class="block h-[1.5px] w-full bg-white/80 rounded transition-all origin-center" id="bar1"></span>
-              <span class="block h-[1.5px] w-full bg-white/80 rounded transition-all" id="bar2"></span>
-              <span class="block h-[1.5px] w-full bg-white/80 rounded transition-all origin-center" id="bar3"></span>
+              <span class="block h-[1.5px] w-full bg-charcoal/70 rounded transition-all origin-center" id="bar1"></span>
+              <span class="block h-[1.5px] w-full bg-charcoal/70 rounded transition-all" id="bar2"></span>
+              <span class="block h-[1.5px] w-full bg-charcoal/70 rounded transition-all origin-center" id="bar3"></span>
             </div>
           </button>
         </div>
       </nav>
     </div>
 
-    <!-- Mobile Menu -->
+    <!-- Mobile Menu (White Theme) -->
     <div class="fixed inset-0 z-40 pointer-events-none opacity-0 transition-all duration-500" id="mobileMenu">
-      <div class="absolute inset-0 bg-charcoal/[0.98] backdrop-blur-2xl pointer-events-auto"></div>
+      <div class="absolute inset-0 bg-white/[0.98] backdrop-blur-2xl pointer-events-auto"></div>
       <div class="relative z-10 h-full flex flex-col pt-24 pb-8 px-8 pointer-events-auto overflow-y-auto">
         <div class="flex-1 flex flex-col justify-center gap-1">
-          <a href="/" class="block py-4 text-2xl font-bold text-white/90 hover:text-gold transition-colors border-b border-white/[0.04]">홈</a>
-          <a href="/doctors" class="block py-4 text-2xl font-bold text-white/90 hover:text-gold transition-colors border-b border-white/[0.04]">의료진 소개</a>
-          <a href="/treatments" class="block py-4 text-2xl font-bold text-white/90 hover:text-gold transition-colors border-b border-white/[0.04]">진료 안내</a>
-          <a href="/treatments/implant" class="block py-4 text-2xl font-bold text-white/90 hover:text-gold transition-colors border-b border-white/[0.04]">임플란트</a>
-          <a href="/treatments/invisalign" class="block py-4 text-2xl font-bold text-white/90 hover:text-gold transition-colors border-b border-white/[0.04]">인비절라인</a>
-          <a href="/pricing" class="block py-4 text-2xl font-bold text-white/90 hover:text-gold transition-colors border-b border-white/[0.04]">비용 안내</a>
-          <a href="/directions" class="block py-4 text-2xl font-bold text-white/90 hover:text-gold transition-colors border-b border-white/[0.04]">오시는 길</a>
+          <a href="/" class="block py-4 text-2xl font-bold text-charcoal hover:text-gold transition-colors border-b border-gray-100">홈</a>
+          <a href="/doctors" class="block py-4 text-2xl font-bold text-charcoal hover:text-gold transition-colors border-b border-gray-100">의료진 소개</a>
+          <a href="/treatments" class="block py-4 text-2xl font-bold text-charcoal hover:text-gold transition-colors border-b border-gray-100">진료 안내</a>
+          <a href="/treatments/implant" class="block py-4 text-2xl font-bold text-charcoal hover:text-gold transition-colors border-b border-gray-100">임플란트</a>
+          <a href="/treatments/invisalign" class="block py-4 text-2xl font-bold text-charcoal hover:text-gold transition-colors border-b border-gray-100">인비절라인</a>
+          <a href="/pricing" class="block py-4 text-2xl font-bold text-charcoal hover:text-gold transition-colors border-b border-gray-100">비용 안내</a>
+          <a href="/directions" class="block py-4 text-2xl font-bold text-charcoal hover:text-gold transition-colors border-b border-gray-100">오시는 길</a>
         </div>
         <a href="/reservation" class="btn-primary justify-center w-full !text-base !py-5 !mt-4">
           <i class="fas fa-calendar-check"></i>상담 예약하기
         </a>
-        <div class="mt-4 flex items-center justify-center gap-6 text-sm text-white/30">
+        <div class="mt-4 flex items-center justify-center gap-6 text-sm text-gray-400">
           <a href="tel:054-636-8222" class="hover:text-gold transition"><i class="fas fa-phone mr-1.5"></i>054-636-8222</a>
           <span>평일 09:00–17:30</span>
         </div>
@@ -420,20 +422,17 @@ export function layout(content: string, opts: LayoutOptions): string {
     ${content}
   </main>
 
-  <!-- ===== Footer ===== -->
-  <footer class="bg-charcoal text-white relative overflow-hidden">
-    <!-- Top accent line -->
-    <div class="gold-line-h"></div>
-
+  <!-- ===== Footer (White Theme) ===== -->
+  <footer class="bg-snow-50 text-charcoal relative overflow-hidden border-t border-gray-100">
     <!-- Marquee -->
-    <div class="border-b border-white/[0.04] py-6 overflow-hidden">
+    <div class="border-b border-gray-100 py-6 overflow-hidden">
       <div class="flex whitespace-nowrap marquee-track">
-        ${Array(10).fill('<span class="mx-16 text-[11px] tracking-[0.3em] text-white/[0.06] font-bold uppercase">GANGNAM DENTAL CLINIC · 강남치과의원</span>').join('')}
+        ${Array(10).fill('<span class="mx-16 text-[11px] tracking-[0.3em] text-gray-200 font-bold uppercase">GANGNAM DENTAL CLINIC · 강남치과의원</span>').join('')}
       </div>
     </div>
 
     <div class="max-w-[1440px] mx-auto px-8 lg:px-12 pt-24 pb-16 relative">
-      <div class="orb orb-gold w-[500px] h-[500px] -top-64 -right-64 opacity-20"></div>
+      <div class="orb orb-gold w-[500px] h-[500px] -top-64 -right-64 opacity-10"></div>
 
       <!-- Main footer grid -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-20">
@@ -444,16 +443,16 @@ export function layout(content: string, opts: LayoutOptions): string {
               <i class="fas fa-tooth text-white text-lg"></i>
             </div>
             <div>
-              <div class="text-xl font-extrabold">강남치과의원</div>
-              <div class="text-[9px] text-white/20 tracking-[0.25em] font-semibold">GANGNAM DENTAL CLINIC</div>
+              <div class="text-xl font-extrabold text-charcoal">강남치과의원</div>
+              <div class="text-[9px] text-gray-300 tracking-[0.25em] font-semibold">GANGNAM DENTAL CLINIC</div>
             </div>
           </div>
-          <p class="text-white/30 text-sm leading-relaxed mb-8 max-w-sm">
+          <p class="text-gray-400 text-sm leading-relaxed mb-8 max-w-sm">
             구강악안면외과 전문의 2인이 직접 진료하는<br>경북 영주시 프리미엄 치과의원.<br>
             빠르게 낫고, 정확하게 오래가는 치과.
           </p>
           <div class="flex items-center gap-3">
-            <a href="https://blog.naver.com/gndentalclinic" target="_blank" class="w-10 h-10 rounded-xl border border-white/8 flex items-center justify-center text-white/40 hover:border-gold hover:text-gold transition-all">
+            <a href="https://blog.naver.com/gndentalclinic" target="_blank" class="w-10 h-10 rounded-xl border border-gray-200 flex items-center justify-center text-gray-400 hover:border-gold hover:text-gold transition-all">
               <i class="fas fa-blog text-sm"></i>
             </a>
           </div>
@@ -462,19 +461,19 @@ export function layout(content: string, opts: LayoutOptions): string {
         <!-- Links -->
         <div class="lg:col-span-2">
           <h4 class="text-gold text-[10px] tracking-[0.2em] font-bold mb-8 uppercase">진료</h4>
-          <ul class="space-y-3.5 text-sm text-white/30">
+          <ul class="space-y-3.5 text-sm text-gray-400">
             <li><a href="/treatments/implant" class="hover:text-gold transition-colors duration-300">임플란트</a></li>
             <li><a href="/treatments/invisalign" class="hover:text-gold transition-colors duration-300">인비절라인</a></li>
             <li><a href="/treatments/cerec" class="hover:text-gold transition-colors duration-300">당일보철 CEREC</a></li>
             <li><a href="/treatments/cosmetic" class="hover:text-gold transition-colors duration-300">심미보철</a></li>
             <li><a href="/treatments/wisdom-tooth" class="hover:text-gold transition-colors duration-300">사랑니발치</a></li>
-            <li><a href="/treatments" class="text-gold/50 hover:text-gold transition-colors duration-300 flex items-center gap-1">전체 보기<i class="fas fa-arrow-right text-[8px]"></i></a></li>
+            <li><a href="/treatments" class="text-gold/60 hover:text-gold transition-colors duration-300 flex items-center gap-1">전체 보기<i class="fas fa-arrow-right text-[8px]"></i></a></li>
           </ul>
         </div>
 
         <div class="lg:col-span-2">
           <h4 class="text-gold text-[10px] tracking-[0.2em] font-bold mb-8 uppercase">안내</h4>
-          <ul class="space-y-3.5 text-sm text-white/30">
+          <ul class="space-y-3.5 text-sm text-gray-400">
             <li><a href="/doctors" class="hover:text-gold transition-colors duration-300">의료진</a></li>
             <li><a href="/pricing" class="hover:text-gold transition-colors duration-300">비용안내</a></li>
             <li><a href="/directions" class="hover:text-gold transition-colors duration-300">오시는길</a></li>
@@ -485,32 +484,32 @@ export function layout(content: string, opts: LayoutOptions): string {
         <!-- Contact -->
         <div class="lg:col-span-3">
           <h4 class="text-gold text-[10px] tracking-[0.2em] font-bold mb-8 uppercase">Contact</h4>
-          <div class="space-y-5 text-sm text-white/30">
+          <div class="space-y-5 text-sm text-gray-400">
             <a href="tel:054-636-8222" class="flex items-center gap-4 group">
-              <div class="w-11 h-11 rounded-xl border border-white/8 flex items-center justify-center group-hover:border-gold group-hover:bg-gold/5 transition-all duration-300">
-                <i class="fas fa-phone text-xs text-white/30 group-hover:text-gold transition-colors"></i>
+              <div class="w-11 h-11 rounded-xl border border-gray-200 flex items-center justify-center group-hover:border-gold group-hover:bg-gold/5 transition-all duration-300">
+                <i class="fas fa-phone text-xs text-gray-400 group-hover:text-gold transition-colors"></i>
               </div>
               <div>
-                <div class="text-white/20 text-[10px] font-semibold tracking-wider uppercase mb-0.5">전화</div>
-                <div class="text-white font-bold group-hover:text-gold transition-colors">054-636-8222</div>
+                <div class="text-gray-300 text-[10px] font-semibold tracking-wider uppercase mb-0.5">전화</div>
+                <div class="text-charcoal font-bold group-hover:text-gold transition-colors">054-636-8222</div>
               </div>
             </a>
             <div class="flex items-start gap-4">
-              <div class="w-11 h-11 rounded-xl border border-white/8 flex items-center justify-center flex-shrink-0">
-                <i class="fas fa-map-marker-alt text-xs text-white/30"></i>
+              <div class="w-11 h-11 rounded-xl border border-gray-200 flex items-center justify-center flex-shrink-0">
+                <i class="fas fa-map-marker-alt text-xs text-gray-400"></i>
               </div>
               <div>
-                <div class="text-white/20 text-[10px] font-semibold tracking-wider uppercase mb-0.5">주소</div>
-                <div class="text-white/50 leading-relaxed">경북 영주시 대학로 217, 2층</div>
+                <div class="text-gray-300 text-[10px] font-semibold tracking-wider uppercase mb-0.5">주소</div>
+                <div class="text-gray-500 leading-relaxed">경북 영주시 대학로 217, 2층</div>
               </div>
             </div>
             <div class="flex items-start gap-4">
-              <div class="w-11 h-11 rounded-xl border border-white/8 flex items-center justify-center flex-shrink-0">
-                <i class="fas fa-clock text-xs text-white/30"></i>
+              <div class="w-11 h-11 rounded-xl border border-gray-200 flex items-center justify-center flex-shrink-0">
+                <i class="fas fa-clock text-xs text-gray-400"></i>
               </div>
               <div>
-                <div class="text-white/20 text-[10px] font-semibold tracking-wider uppercase mb-0.5">진료시간</div>
-                <div class="text-white/50 leading-relaxed">평일 09:00–17:30<br><span class="text-white/25">점심 13:00–14:00 · 주말·공휴일 휴무</span></div>
+                <div class="text-gray-300 text-[10px] font-semibold tracking-wider uppercase mb-0.5">진료시간</div>
+                <div class="text-gray-500 leading-relaxed">평일 09:00–17:30<br><span class="text-gray-300">점심 13:00–14:00 · 주말·공휴일 휴무</span></div>
               </div>
             </div>
           </div>
@@ -518,16 +517,16 @@ export function layout(content: string, opts: LayoutOptions): string {
       </div>
 
       <!-- Bottom bar -->
-      <div class="border-t border-white/[0.04] mt-20 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-[11px] text-white/15">
+      <div class="border-t border-gray-100 mt-20 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-[11px] text-gray-300">
         <p>&copy; 2017–${new Date().getFullYear()} 강남치과의원. All rights reserved.</p>
         <p>대표: 이태형 · 사업자등록번호: 문의</p>
       </div>
     </div>
   </footer>
 
-  <!-- ===== Mobile Floating CTA ===== -->
+  <!-- ===== Mobile Floating CTA (White Theme) ===== -->
   <div class="floating-cta">
-    <a href="tel:054-636-8222" class="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl bg-white/8 text-white text-sm font-bold border border-white/8">
+    <a href="tel:054-636-8222" class="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl bg-gray-100 text-charcoal text-sm font-bold border border-gray-200">
       <i class="fas fa-phone text-xs"></i>전화상담
     </a>
     <a href="/reservation" class="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl gold-grad text-white text-sm font-bold shadow-lg shadow-gold/20">
@@ -551,7 +550,7 @@ export function layout(content: string, opts: LayoutOptions): string {
     }
 
     // ===== Card mouse tracking =====
-    document.querySelectorAll('.card-dark').forEach(card => {
+    document.querySelectorAll('.card-white').forEach(card => {
       card.addEventListener('mousemove', e => {
         const rect = card.getBoundingClientRect();
         card.style.setProperty('--mx', ((e.clientX - rect.left) / rect.width * 100) + '%');
@@ -608,7 +607,7 @@ export function layout(content: string, opts: LayoutOptions): string {
       });
     }
 
-    // ===== Nav scroll =====
+    // ===== Nav scroll (White Theme) =====
     const navbar = document.getElementById('navbar');
     const navInner = document.getElementById('navInner');
     window.addEventListener('scroll', () => {
@@ -617,11 +616,11 @@ export function layout(content: string, opts: LayoutOptions): string {
         navbar.classList.add('md:top-3');
         navbar.classList.remove('md:top-10');
         if(navInner) {
-          navInner.style.background = 'rgba(10,10,10,0.8)';
+          navInner.style.background = 'rgba(255,255,255,0.85)';
           navInner.style.backdropFilter = 'blur(24px) saturate(180%)';
           navInner.style.webkitBackdropFilter = 'blur(24px) saturate(180%)';
-          navInner.style.borderColor = 'rgba(201,169,98,0.1)';
-          navInner.style.border = '1px solid rgba(201,169,98,0.1)';
+          navInner.style.border = '1px solid rgba(0,0,0,0.06)';
+          navInner.style.boxShadow = '0 8px 32px rgba(0,0,0,0.04)';
         }
       } else {
         navbar.classList.remove('md:top-3');
@@ -631,6 +630,7 @@ export function layout(content: string, opts: LayoutOptions): string {
           navInner.style.backdropFilter = 'none';
           navInner.style.webkitBackdropFilter = 'none';
           navInner.style.border = 'none';
+          navInner.style.boxShadow = 'none';
         }
       }
     });

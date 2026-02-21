@@ -20,17 +20,15 @@ export function areaPage(region:string): { html:string; title:string; descriptio
   return {
     title, description,
     html: `
-    <!-- Hero -->
-    <section class="relative min-h-[60vh] flex items-end bg-charcoal overflow-hidden noise-overlay">
-      <div class="orb orb-gold w-[500px] h-[500px] -top-48 -right-48 opacity-30"></div>
-      <div class="absolute inset-0 grid-pattern opacity-25"></div>
-      <div class="gold-line-h absolute top-0 left-0 right-0"></div>
+    <!-- Hero (White) -->
+    <section class="relative min-h-[60vh] flex items-end subpage-hero overflow-hidden">
+      <div class="orb orb-gold w-[500px] h-[500px] -top-48 -right-48 opacity-20"></div>
+      <div class="absolute inset-0 grid-pattern opacity-40"></div>
       <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 pb-24 pt-44 w-full">
-        <a href="/directions" class="inline-flex items-center gap-2 text-white/25 hover:text-gold transition-colors text-sm mb-8 font-medium"><i class="fas fa-arrow-left text-xs"></i>오시는 길</a>
-        <h1 class="display-lg text-white mb-6">${title}</h1>
-        <p class="text-white/35 text-lg">${area.description}</p>
+        <a href="/directions" class="inline-flex items-center gap-2 text-gray-400 hover:text-gold transition-colors text-sm mb-8 font-medium"><i class="fas fa-arrow-left text-xs"></i>오시는 길</a>
+        <h1 class="display-lg text-charcoal mb-6">${title}</h1>
+        <p class="text-gray-400 text-lg">${area.description}</p>
       </div>
-      <div class="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-white to-transparent"></div>
     </section>
 
     <!-- Stats -->
@@ -94,21 +92,21 @@ export function areaPage(region:string): { html:string; title:string; descriptio
       </div>
     </section>
 
-    <!-- CTA -->
-    <section class="py-28 bg-charcoal text-white relative overflow-hidden noise-overlay">
-      <div class="orb orb-gold w-[500px] h-[500px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-20"></div>
-      <div class="absolute inset-0 grid-pattern opacity-15"></div>
+    <!-- CTA (White) -->
+    <section class="py-28 section-snow relative overflow-hidden">
+      <div class="orb orb-gold w-[500px] h-[500px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-15"></div>
+      <div class="absolute inset-0 grid-pattern opacity-20"></div>
       <div class="gold-line-h absolute top-0 left-0 right-0"></div>
 
       <div class="relative z-10 max-w-3xl mx-auto px-6 text-center reveal">
         <div class="w-20 h-20 mx-auto rounded-2xl gold-grad flex items-center justify-center mb-8 gold-glow">
           <i class="fas fa-calendar-check text-white text-3xl"></i>
         </div>
-        <h2 class="display-lg text-white mb-6">지금 바로<br><span class="gold-grad-text">상담 예약하세요</span></h2>
-        <p class="text-white/30 text-lg mb-10">${area.name}에서 ${area.driveTime}이면 도착합니다.</p>
+        <h2 class="display-lg text-charcoal mb-6">지금 바로<br><span class="gold-grad-text">상담 예약하세요</span></h2>
+        <p class="text-gray-400 text-lg mb-10">${area.name}에서 ${area.driveTime}이면 도착합니다.</p>
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
           <a href="/reservation" class="w-full sm:w-auto btn-primary !py-5 !px-12 !font-extrabold"><i class="fas fa-calendar-check"></i>상담 예약하기</a>
-          <a href="tel:054-636-8222" class="w-full sm:w-auto btn-white justify-center"><i class="fas fa-phone text-sm text-gold"></i>054-636-8222</a>
+          <a href="tel:054-636-8222" class="w-full sm:w-auto btn-subtle justify-center"><i class="fas fa-phone text-sm text-gold"></i>054-636-8222</a>
         </div>
       </div>
     </section>

@@ -1,21 +1,17 @@
 export function mainPage(): string {
   return `
 
-  <!-- ========== HERO — CINEMATIC FULL-SCREEN ========== -->
-  <section class="relative min-h-screen flex items-center overflow-hidden" id="hero">
-    <!-- 3D Particle Canvas -->
+  <!-- ========== HERO — WHITE INNOVATIVE ========== -->
+  <section class="relative min-h-screen flex items-center overflow-hidden hero-white" id="hero">
+    <!-- 3D Particle Canvas (light particles) -->
     <canvas id="heroCanvas" class="absolute inset-0 w-full h-full" style="z-index:1;"></canvas>
 
-    <!-- Gradient overlays -->
-    <div class="absolute inset-0 bg-gradient-to-b from-charcoal/40 via-transparent to-charcoal" style="z-index:2;"></div>
-    <div class="absolute inset-0 bg-gradient-to-r from-charcoal/60 via-transparent to-transparent" style="z-index:2;"></div>
-
-    <!-- Grid pattern -->
-    <div class="absolute inset-0 grid-pattern opacity-40" style="z-index:2;"></div>
-
-    <!-- Animated golden lines -->
-    <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent" style="z-index:3;"></div>
-    <div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent" style="z-index:3;"></div>
+    <!-- Subtle patterns -->
+    <div class="absolute inset-0 grid-pattern opacity-60" style="z-index:2;"></div>
+    
+    <!-- Decorative orbs -->
+    <div class="absolute -top-32 -right-32 w-[600px] h-[600px] bg-gold/[0.04] rounded-full blur-[150px]" style="z-index:2;"></div>
+    <div class="absolute -bottom-32 -left-32 w-[500px] h-[500px] bg-blue-200/[0.06] rounded-full blur-[150px]" style="z-index:2;"></div>
 
     <!-- Content -->
     <div class="relative max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 w-full py-36 md:py-0" style="z-index:10;">
@@ -24,16 +20,16 @@ export function mainPage(): string {
         <!-- Left: Copy (7 cols) -->
         <div class="lg:col-span-7 pt-20 md:pt-0">
           <!-- Animated tag -->
-          <div class="inline-flex items-center gap-3 px-5 py-2.5 rounded-full border border-white/[0.08] bg-white/[0.02] backdrop-blur-xl mb-10" id="heroTag">
+          <div class="inline-flex items-center gap-3 px-5 py-2.5 rounded-full border border-gray-200 bg-white/80 backdrop-blur-xl mb-10 shadow-sm" id="heroTag">
             <span class="relative flex h-2 w-2">
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
             </span>
-            <span class="text-white/50 text-[13px] font-medium">구강악안면외과 전문의 2인 직접 진료</span>
+            <span class="text-gray-500 text-[13px] font-medium">구강악안면외과 전문의 2인 직접 진료</span>
           </div>
 
-          <!-- Main headline with typewriter -->
-          <h1 class="display-hero text-white mb-8" id="heroTitle">
+          <!-- Main headline -->
+          <h1 class="display-hero text-charcoal mb-8" id="heroTitle">
             <span class="block overflow-hidden">
               <span class="block" id="heroLine1">빠르게 낫고,</span>
             </span>
@@ -45,8 +41,8 @@ export function mainPage(): string {
             </span>
           </h1>
 
-          <!-- Sub copy with typing effect -->
-          <div class="text-lg md:text-xl text-white/40 leading-relaxed mb-12 max-w-xl" id="heroSub">
+          <!-- Sub copy -->
+          <div class="text-lg md:text-xl text-gray-400 leading-relaxed mb-12 max-w-xl" id="heroSub">
             <p>영주 유일, 구강외과 전문의 2인 상주.</p>
             <p>CEREC 당일 보철 · 디지털 임플란트 · 최신 기술 빠른 도입.</p>
           </div>
@@ -58,38 +54,38 @@ export function mainPage(): string {
               상담 예약하기
               <i class="fas fa-arrow-right text-xs opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"></i>
             </a>
-            <a href="/pricing" class="btn-white !py-5 !px-10">
+            <a href="/pricing" class="btn-subtle !py-5 !px-10">
               <i class="fas fa-won-sign text-sm text-gold"></i>비용 안내
             </a>
           </div>
 
           <!-- Stat pills (horizontal) -->
           <div class="flex flex-wrap gap-3" id="heroStats">
-            <div class="flex items-center gap-3 px-5 py-3 rounded-2xl border border-white/[0.06] bg-white/[0.02]">
+            <div class="flex items-center gap-3 px-5 py-3 rounded-2xl border border-gray-200 bg-white/80 shadow-sm">
               <div class="w-10 h-10 rounded-xl gold-grad flex items-center justify-center" style="animation: pulse-gold 3s ease infinite;">
                 <i class="fas fa-user-doctor text-white text-sm"></i>
               </div>
               <div>
-                <div class="text-white font-extrabold text-base leading-none">전문의 <span class="counter gold-grad-text text-lg" data-target="2">0</span>인</div>
-                <div class="text-white/25 text-[10px] mt-0.5 tracking-wide">구강악안면외과</div>
+                <div class="text-charcoal font-extrabold text-base leading-none">전문의 <span class="counter gold-grad-text text-lg" data-target="2">0</span>인</div>
+                <div class="text-gray-400 text-[10px] mt-0.5 tracking-wide">구강악안면외과</div>
               </div>
             </div>
-            <div class="flex items-center gap-3 px-5 py-3 rounded-2xl border border-white/[0.06] bg-white/[0.02]">
+            <div class="flex items-center gap-3 px-5 py-3 rounded-2xl border border-gray-200 bg-white/80 shadow-sm">
               <div class="w-10 h-10 rounded-xl gold-grad flex items-center justify-center" style="animation: pulse-gold 3s ease infinite; animation-delay: 1s;">
                 <i class="fas fa-bolt text-white text-sm"></i>
               </div>
               <div>
-                <div class="text-white font-extrabold text-base leading-none">당일 완성</div>
-                <div class="text-white/25 text-[10px] mt-0.5 tracking-wide">CEREC SYSTEM</div>
+                <div class="text-charcoal font-extrabold text-base leading-none">당일 완성</div>
+                <div class="text-gray-400 text-[10px] mt-0.5 tracking-wide">CEREC SYSTEM</div>
               </div>
             </div>
-            <div class="hidden md:flex items-center gap-3 px-5 py-3 rounded-2xl border border-white/[0.06] bg-white/[0.02]">
+            <div class="hidden md:flex items-center gap-3 px-5 py-3 rounded-2xl border border-gray-200 bg-white/80 shadow-sm">
               <div class="w-10 h-10 rounded-xl gold-grad flex items-center justify-center" style="animation: pulse-gold 3s ease infinite; animation-delay: 2s;">
                 <i class="fas fa-microchip text-white text-sm"></i>
               </div>
               <div>
-                <div class="text-white font-extrabold text-base leading-none">디지털 <span class="counter gold-grad-text text-lg" data-target="5" data-suffix="+">0</span></div>
-                <div class="text-white/25 text-[10px] mt-0.5 tracking-wide">최첨단 장비</div>
+                <div class="text-charcoal font-extrabold text-base leading-none">디지털 <span class="counter gold-grad-text text-lg" data-target="5" data-suffix="+">0</span></div>
+                <div class="text-gray-400 text-[10px] mt-0.5 tracking-wide">최첨단 장비</div>
               </div>
             </div>
           </div>
@@ -99,56 +95,53 @@ export function mainPage(): string {
         <div class="lg:col-span-5 hidden lg:block" id="heroVisual">
           <div class="relative">
             <!-- Main hero visual -->
-            <div class="relative w-full aspect-[3/4] rounded-[32px] overflow-hidden border border-white/[0.06]">
-              <!-- Animated gradient background -->
-              <div class="absolute inset-0" style="background: conic-gradient(from 0deg at 50% 50%, rgba(201,169,98,0.15), rgba(10,10,10,1) 25%, rgba(201,169,98,0.1) 50%, rgba(10,10,10,1) 75%, rgba(201,169,98,0.15)); animation: spin 20s linear infinite;"></div>
-              <div class="absolute inset-[1px] rounded-[31px] bg-charcoal overflow-hidden">
-                <div class="absolute inset-0 img-placeholder"></div>
-                <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-10">
-                  <div class="w-28 h-28 rounded-3xl gold-grad flex items-center justify-center mb-8 gold-glow relative">
-                    <i class="fas fa-tooth text-white text-4xl"></i>
-                    <div class="absolute -inset-4 rounded-3xl border border-gold/10 animate-pulse"></div>
-                  </div>
-                  <p class="text-white/70 text-xl font-bold mb-2">강남치과의원</p>
-                  <p class="text-white/25 text-sm">촬영 사진 업데이트 예정</p>
-                  <div class="mt-6 flex items-center gap-2 text-gold/50 text-xs">
-                    <span class="w-8 h-px bg-gold/20"></span>SINCE 2017<span class="w-8 h-px bg-gold/20"></span>
-                  </div>
+            <div class="relative w-full aspect-[3/4] rounded-[32px] overflow-hidden border border-gray-200 shadow-2xl shadow-black/[0.04]">
+              <!-- Soft gradient background -->
+              <div class="absolute inset-0 bg-gradient-to-br from-snow-100 via-white to-gold/[0.03]"></div>
+              <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-10">
+                <div class="w-28 h-28 rounded-3xl gold-grad flex items-center justify-center mb-8 gold-glow relative">
+                  <i class="fas fa-tooth text-white text-4xl"></i>
+                  <div class="absolute -inset-4 rounded-3xl border border-gold/10 animate-pulse"></div>
+                </div>
+                <p class="text-charcoal text-xl font-bold mb-2">강남치과의원</p>
+                <p class="text-gray-400 text-sm">촬영 사진 업데이트 예정</p>
+                <div class="mt-6 flex items-center gap-2 text-gold/50 text-xs">
+                  <span class="w-8 h-px bg-gold/20"></span>SINCE 2017<span class="w-8 h-px bg-gold/20"></span>
                 </div>
               </div>
             </div>
 
             <!-- Floating card: Equipment -->
-            <div class="absolute -left-12 top-16 p-4 rounded-2xl glass-dark gold-border shadow-2xl shadow-black/40" style="animation: float 5s ease-in-out infinite;">
+            <div class="absolute -left-12 top-16 p-4 rounded-2xl bg-white border border-gray-200 shadow-xl shadow-black/[0.04]" style="animation: float 5s ease-in-out infinite;">
               <div class="flex items-center gap-3">
                 <div class="w-11 h-11 rounded-xl gold-grad flex items-center justify-center gold-glow">
                   <i class="fas fa-microchip text-white text-sm"></i>
                 </div>
                 <div>
-                  <div class="text-white text-[13px] font-bold">디지털 장비 완비</div>
-                  <div class="text-white/30 text-[11px]">CT · CEREC · iTero · PrimeScan</div>
+                  <div class="text-charcoal text-[13px] font-bold">디지털 장비 완비</div>
+                  <div class="text-gray-400 text-[11px]">CT · CEREC · iTero · PrimeScan</div>
                 </div>
               </div>
             </div>
 
             <!-- Floating card: Rating -->
-            <div class="absolute -right-8 top-1/3 p-4 rounded-2xl glass-dark gold-border shadow-2xl shadow-black/40" style="animation: float 5s ease-in-out infinite; animation-delay: -2.5s;">
+            <div class="absolute -right-8 top-1/3 p-4 rounded-2xl bg-white border border-gray-200 shadow-xl shadow-black/[0.04]" style="animation: float 5s ease-in-out infinite; animation-delay: -2.5s;">
               <div class="flex items-center gap-2 mb-2">
                 ${Array(5).fill('<i class="fas fa-star text-gold text-xs"></i>').join('')}
               </div>
-              <div class="text-white text-[13px] font-bold">전문의 직접 진료</div>
-              <div class="text-white/30 text-[11px]">구강악안면외과 수련</div>
+              <div class="text-charcoal text-[13px] font-bold">전문의 직접 진료</div>
+              <div class="text-gray-400 text-[11px]">구강악안면외과 수련</div>
             </div>
 
             <!-- Floating card: 1 Day -->
-            <div class="absolute -left-6 bottom-24 p-4 rounded-2xl glass-dark gold-border shadow-2xl shadow-black/40" style="animation: float 5s ease-in-out infinite; animation-delay: -1.5s;">
+            <div class="absolute -left-6 bottom-24 p-4 rounded-2xl bg-white border border-gray-200 shadow-xl shadow-black/[0.04]" style="animation: float 5s ease-in-out infinite; animation-delay: -1.5s;">
               <div class="flex items-center gap-3">
-                <div class="w-11 h-11 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center">
-                  <i class="fas fa-check text-emerald-400 text-sm"></i>
+                <div class="w-11 h-11 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center">
+                  <i class="fas fa-check text-emerald-500 text-sm"></i>
                 </div>
                 <div>
-                  <div class="text-white text-[13px] font-bold">1 DAY 보철</div>
-                  <div class="text-emerald-400/60 text-[11px]">당일 치료 완성</div>
+                  <div class="text-charcoal text-[13px] font-bold">1 DAY 보철</div>
+                  <div class="text-emerald-500 text-[11px]">당일 치료 완성</div>
                 </div>
               </div>
             </div>
@@ -159,15 +152,15 @@ export function mainPage(): string {
 
     <!-- Scroll indicator -->
     <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3" style="z-index:10;">
-      <span class="text-[9px] tracking-[0.3em] text-white/15 uppercase font-semibold">Scroll Down</span>
-      <div class="w-[22px] h-[36px] rounded-full border border-white/10 flex items-start justify-center p-1.5">
+      <span class="text-[9px] tracking-[0.3em] text-gray-300 uppercase font-semibold">Scroll Down</span>
+      <div class="w-[22px] h-[36px] rounded-full border border-gray-300 flex items-start justify-center p-1.5">
         <div class="w-[3px] h-[8px] rounded-full bg-gold animate-bounce"></div>
       </div>
     </div>
 
     <!-- Hero GSAP -->
     <script>
-      // 3D Particle Background
+      // 3D Particle Background (light theme)
       (function() {
         const canvas = document.getElementById('heroCanvas');
         if (!canvas || !window.THREE) return;
@@ -177,8 +170,8 @@ export function mainPage(): string {
         renderer.setSize(canvas.clientWidth, canvas.clientHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-        // Particles
-        const count = 600;
+        // Particles — lighter, more subtle
+        const count = 400;
         const geo = new THREE.BufferGeometry();
         const pos = new Float32Array(count * 3);
         const colors = new Float32Array(count * 3);
@@ -186,32 +179,35 @@ export function mainPage(): string {
           pos[i*3] = (Math.random() - 0.5) * 20;
           pos[i*3+1] = (Math.random() - 0.5) * 20;
           pos[i*3+2] = (Math.random() - 0.5) * 20;
-          // Gold-ish colors
-          colors[i*3] = 0.78 + Math.random() * 0.1;
-          colors[i*3+1] = 0.66 + Math.random() * 0.1;
-          colors[i*3+2] = 0.38 + Math.random() * 0.15;
+          // Gold and silver tones
+          const isGold = Math.random() > 0.4;
+          if (isGold) {
+            colors[i*3] = 0.78 + Math.random() * 0.1;
+            colors[i*3+1] = 0.66 + Math.random() * 0.1;
+            colors[i*3+2] = 0.38 + Math.random() * 0.15;
+          } else {
+            colors[i*3] = 0.75 + Math.random() * 0.15;
+            colors[i*3+1] = 0.75 + Math.random() * 0.15;
+            colors[i*3+2] = 0.78 + Math.random() * 0.15;
+          }
         }
         geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
         geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-        const mat = new THREE.PointsMaterial({ size: 0.03, vertexColors: true, transparent: true, opacity: 0.6, sizeAttenuation: true });
+        const mat = new THREE.PointsMaterial({ size: 0.025, vertexColors: true, transparent: true, opacity: 0.4, sizeAttenuation: true });
         const particles = new THREE.Points(geo, mat);
         scene.add(particles);
 
-        // Lines
+        // Lines — very subtle
         const lineGeo = new THREE.BufferGeometry();
-        const linePos = new Float32Array(200 * 6);
-        for (let i = 0; i < 200; i++) {
+        const linePos = new Float32Array(150 * 6);
+        for (let i = 0; i < 150; i++) {
           const idx = Math.floor(Math.random() * count);
           const idx2 = Math.floor(Math.random() * count);
-          linePos[i*6] = pos[idx*3];
-          linePos[i*6+1] = pos[idx*3+1];
-          linePos[i*6+2] = pos[idx*3+2];
-          linePos[i*6+3] = pos[idx2*3];
-          linePos[i*6+4] = pos[idx2*3+1];
-          linePos[i*6+5] = pos[idx2*3+2];
+          linePos[i*6] = pos[idx*3]; linePos[i*6+1] = pos[idx*3+1]; linePos[i*6+2] = pos[idx*3+2];
+          linePos[i*6+3] = pos[idx2*3]; linePos[i*6+4] = pos[idx2*3+1]; linePos[i*6+5] = pos[idx2*3+2];
         }
         lineGeo.setAttribute('position', new THREE.BufferAttribute(linePos, 3));
-        const lineMat = new THREE.LineBasicMaterial({ color: 0xC9A962, transparent: true, opacity: 0.04 });
+        const lineMat = new THREE.LineBasicMaterial({ color: 0xC9A962, transparent: true, opacity: 0.03 });
         scene.add(new THREE.LineSegments(lineGeo, lineMat));
 
         camera.position.z = 6;
@@ -223,8 +219,8 @@ export function mainPage(): string {
 
         function animate() {
           requestAnimationFrame(animate);
-          particles.rotation.y += 0.0003;
-          particles.rotation.x += 0.0001;
+          particles.rotation.y += 0.0002;
+          particles.rotation.x += 0.00008;
           camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.02;
           camera.position.y += (-mouseY * 0.5 - camera.position.y) * 0.02;
           camera.lookAt(scene.position);
@@ -251,35 +247,32 @@ export function mainPage(): string {
         .from('#heroStats', { opacity: 0, y: 20, duration: 0.7, ease: 'power3.out' }, '-=0.3')
         .from('#heroVisual', { opacity: 0, x: 80, scale: 0.95, duration: 1.2, ease: 'power4.out' }, '-=1');
     </script>
-    <style>@keyframes spin { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }</style>
   </section>
 
-  <!-- ========== TRANSITION MARQUEE ========== -->
-  <div class="relative bg-charcoal py-6 overflow-hidden border-y border-white/[0.04]">
+  <!-- ========== TRANSITION MARQUEE (White) ========== -->
+  <div class="relative bg-snow-50 py-6 overflow-hidden border-y border-gray-100">
     <div class="flex whitespace-nowrap marquee-track">
       ${Array(10).fill(`
-        <span class="mx-10 text-sm tracking-[0.05em] text-white/[0.07] font-bold">임플란트</span>
+        <span class="mx-10 text-sm tracking-[0.05em] text-gray-200 font-bold">임플란트</span>
         <span class="mx-3 text-gold/20">✦</span>
-        <span class="mx-10 text-sm tracking-[0.05em] text-white/[0.07] font-bold">인비절라인</span>
+        <span class="mx-10 text-sm tracking-[0.05em] text-gray-200 font-bold">인비절라인</span>
         <span class="mx-3 text-gold/20">✦</span>
-        <span class="mx-10 text-sm tracking-[0.05em] text-white/[0.07] font-bold">CEREC 당일보철</span>
+        <span class="mx-10 text-sm tracking-[0.05em] text-gray-200 font-bold">CEREC 당일보철</span>
         <span class="mx-3 text-gold/20">✦</span>
-        <span class="mx-10 text-sm tracking-[0.05em] text-white/[0.07] font-bold">심미보철</span>
+        <span class="mx-10 text-sm tracking-[0.05em] text-gray-200 font-bold">심미보철</span>
         <span class="mx-3 text-gold/20">✦</span>
-        <span class="mx-10 text-sm tracking-[0.05em] text-white/[0.07] font-bold">사랑니발치</span>
+        <span class="mx-10 text-sm tracking-[0.05em] text-gray-200 font-bold">사랑니발치</span>
         <span class="mx-3 text-gold/20">✦</span>
       `).join('')}
     </div>
   </div>
 
-  <!-- ========== WHY GANGNAM — Premium Bento ========== -->
+  <!-- ========== WHY GANGNAM — White Bento ========== -->
   <section class="py-32 md:py-48 bg-white relative overflow-hidden">
-    <!-- Background accents -->
-    <div class="absolute top-0 left-0 w-[600px] h-[600px] bg-gold/[0.03] rounded-full blur-[200px] -translate-x-1/2 -translate-y-1/2"></div>
-    <div class="absolute bottom-0 right-0 w-[400px] h-[400px] bg-gold/[0.02] rounded-full blur-[150px] translate-x-1/3 translate-y-1/3"></div>
+    <div class="absolute top-0 left-0 w-[600px] h-[600px] bg-gold/[0.02] rounded-full blur-[200px] -translate-x-1/2 -translate-y-1/2"></div>
+    <div class="absolute bottom-0 right-0 w-[400px] h-[400px] bg-blue-100/[0.04] rounded-full blur-[150px] translate-x-1/3 translate-y-1/3"></div>
 
     <div class="max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 relative">
-      <!-- Section header -->
       <div class="text-center mb-24 reveal">
         <div class="section-label section-label-gold mx-auto mb-8">
           <span class="w-1.5 h-1.5 rounded-full bg-gold"></span>WHY GANGNAM DENTAL
@@ -298,7 +291,7 @@ export function mainPage(): string {
         
         <!-- Card 1: Big hero card — Specialists (spans 7) -->
         <div class="lg:col-span-7 card-premium p-10 md:p-14 flex flex-col justify-between min-h-[480px] stagger-item relative group">
-          <div class="absolute top-0 right-0 w-64 h-64 bg-gold/[0.04] rounded-full blur-[100px] group-hover:bg-gold/[0.08] transition-all duration-1000"></div>
+          <div class="absolute top-0 right-0 w-64 h-64 bg-gold/[0.03] rounded-full blur-[100px] group-hover:bg-gold/[0.06] transition-all duration-1000"></div>
           <div class="relative z-10">
             <div class="flex items-center gap-4 mb-8">
               <div class="w-16 h-16 rounded-2xl gold-grad flex items-center justify-center gold-glow">
@@ -317,8 +310,8 @@ export function mainPage(): string {
           </div>
           <div class="relative z-10 mt-10 flex items-center gap-6 pt-8 border-t border-gray-100">
             <div class="flex -space-x-3">
-              <div class="w-14 h-14 rounded-2xl bg-charcoal flex items-center justify-center text-gold text-lg font-bold border-2 border-white shadow-lg">이</div>
-              <div class="w-14 h-14 rounded-2xl bg-charcoal-light flex items-center justify-center text-gold text-lg font-bold border-2 border-white shadow-lg">최</div>
+              <div class="w-14 h-14 rounded-2xl bg-snow-100 flex items-center justify-center text-gold text-lg font-bold border-2 border-white shadow-lg">이</div>
+              <div class="w-14 h-14 rounded-2xl bg-snow-200 flex items-center justify-center text-gold text-lg font-bold border-2 border-white shadow-lg">최</div>
             </div>
             <div>
               <div class="text-charcoal font-bold">이태형 · 최민혜 원장</div>
@@ -385,7 +378,7 @@ export function mainPage(): string {
               { name:'iTero', desc:'교정 시뮬레이션' },
               { name:'SpeedFire', desc:'초고속 소성' }
             ].map(d => `
-              <div class="flex items-center gap-3 py-2.5 px-4 rounded-xl bg-gray-50 border border-gray-100 group-hover:bg-gold/[0.03] group-hover:border-gold/10 transition-all duration-500">
+              <div class="flex items-center gap-3 py-2.5 px-4 rounded-xl bg-snow-50 border border-gray-100 group-hover:bg-gold/[0.03] group-hover:border-gold/10 transition-all duration-500">
                 <div class="w-2 h-2 rounded-full bg-gold flex-shrink-0"></div>
                 <span class="text-charcoal text-sm font-bold">${d.name}</span>
                 <span class="text-gray-400 text-xs ml-auto">${d.desc}</span>
@@ -404,7 +397,6 @@ export function mainPage(): string {
             불필요한 재내원을 최소화합니다.<br>바쁜 일상 속에서도 효율적 치료.
           </p>
           <div class="relative py-6">
-            <!-- Timeline -->
             <div class="absolute left-5 top-0 bottom-0 w-[2px] bg-gradient-to-b from-gold via-gold/50 to-gold/10"></div>
             <div class="space-y-6 pl-12 relative">
               <div>
@@ -428,7 +420,7 @@ export function mainPage(): string {
 
         <!-- Card 5: New Tech (spans 4) -->
         <div class="lg:col-span-4 card-premium p-8 md:p-10 stagger-item relative overflow-hidden">
-          <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-gold/[0.04] rounded-full blur-[60px]"></div>
+          <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-gold/[0.03] rounded-full blur-[60px]"></div>
           <div class="relative z-10">
             <div class="w-14 h-14 rounded-2xl gold-grad flex items-center justify-center mb-6 gold-glow">
               <i class="fas fa-rocket text-white text-xl"></i>
@@ -439,7 +431,7 @@ export function mainPage(): string {
             </p>
             <div class="flex flex-wrap gap-2">
               ${['디지털 임플란트', 'CEREC 5', '3D 프린팅', 'AI 진단', '레이저 치료'].map(t => `
-                <span class="px-3.5 py-2 rounded-full bg-charcoal text-white/80 text-[11px] font-bold">${t}</span>
+                <span class="px-3.5 py-2 rounded-full bg-snow-100 text-charcoal text-[11px] font-bold border border-gray-100">${t}</span>
               `).join('')}
             </div>
           </div>
@@ -448,19 +440,18 @@ export function mainPage(): string {
     </div>
   </section>
 
-  <!-- ========== TREATMENTS — Cinematic Dark ========== -->
-  <section class="py-32 md:py-48 bg-charcoal relative overflow-hidden noise-overlay" id="treatments">
-    <div class="orb orb-gold w-[700px] h-[700px] -top-96 right-0 opacity-30"></div>
-    <div class="orb orb-gold w-[400px] h-[400px] bottom-0 -left-48 opacity-20"></div>
-    <div class="absolute inset-0 grid-pattern opacity-30"></div>
+  <!-- ========== TREATMENTS — White Elevated ========== -->
+  <section class="py-32 md:py-48 section-snow relative overflow-hidden" id="treatments">
+    <div class="orb orb-gold w-[700px] h-[700px] -top-96 right-0 opacity-20"></div>
+    <div class="absolute inset-0 grid-pattern opacity-40"></div>
 
     <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
       <div class="text-center mb-24 reveal">
-        <div class="section-label section-label-white mx-auto mb-8">
+        <div class="section-label section-label-gold mx-auto mb-8">
           <span class="w-1.5 h-1.5 rounded-full bg-gold"></span>TREATMENTS
         </div>
-        <h2 class="display-xl text-white mb-6">강남치과의원<br><span class="gold-grad-text">주력 진료</span></h2>
-        <p class="text-white/30 text-lg max-w-xl mx-auto">각 분야 전문의가 직접 진료합니다</p>
+        <h2 class="display-xl text-charcoal mb-6">강남치과의원<br><span class="gold-grad-text">주력 진료</span></h2>
+        <p class="text-gray-400 text-lg max-w-xl mx-auto">각 분야 전문의가 직접 진료합니다</p>
       </div>
 
       <!-- Treatment cards grid -->
@@ -469,43 +460,43 @@ export function mainPage(): string {
           { slug:'implant', icon:'fa-tooth', label:'IMPLANT',
             title:'임플란트', sub:'구강외과 전문의 직접 수술',
             worry:'"수술이 무서워요…"', answer:'구강악안면외과 전문의가 직접 수술합니다. CT 정밀진단으로 안전하게.',
-            tags:['CT 정밀진단','뼈이식 가능','상악동 수술','디지털 가이드'], color:'from-amber-500/10 to-transparent' },
+            tags:['CT 정밀진단','뼈이식 가능','상악동 수술','디지털 가이드'] },
           { slug:'cerec', icon:'fa-bolt', label:'CEREC · SAME DAY',
             title:'당일 보철', sub:'CEREC 원데이 시스템',
             worry:'"치과 여러 번 가기 귀찮아요…"', answer:'한 번 방문으로 세라믹 보철까지 완성합니다. 재내원 최소화.',
-            tags:['당일 완성','디지털 스캔','세라믹 보철','SpeedFire'], color:'from-emerald-500/10 to-transparent' },
+            tags:['당일 완성','디지털 스캔','세라믹 보철','SpeedFire'] },
           { slug:'invisalign', icon:'fa-teeth', label:'INVISALIGN',
             title:'인비절라인', sub:'투명교정 인증의',
             worry:'"교정기 보이기 싫어요…"', answer:'투명 장치로 눈에 띄지 않게 교정합니다. 식사 시 탈착 가능.',
-            tags:['iTero 스캐너','3D 시뮬레이션','탈착 가능','심미적'], color:'from-blue-500/10 to-transparent' },
+            tags:['iTero 스캐너','3D 시뮬레이션','탈착 가능','심미적'] },
           { slug:'cosmetic', icon:'fa-gem', label:'COSMETIC',
             title:'심미보철', sub:'자연스러운 라미네이트 · 크라운',
             worry:'"자연스러운 이를 갖고 싶어요…"', answer:'CEREC으로 자연치아와 구분 안 되는 보철을 당일 제작합니다.',
-            tags:['라미네이트','올세라믹','당일 제작','맞춤 색상'], color:'from-purple-500/10 to-transparent' }
+            tags:['라미네이트','올세라믹','당일 제작','맞춤 색상'] }
         ].map(item => `
-        <a href="/treatments/${item.slug}" class="card-dark p-8 md:p-10 group block stagger-item">
+        <a href="/treatments/${item.slug}" class="card-white p-8 md:p-10 group block stagger-item">
           <div class="relative z-10">
             <!-- Top -->
             <div class="flex items-start justify-between mb-8">
               <div class="w-16 h-16 rounded-2xl gold-grad flex items-center justify-center gold-glow group-hover:scale-110 transition-transform duration-500">
                 <i class="fas ${item.icon} text-white text-2xl"></i>
               </div>
-              <span class="text-[10px] tracking-[0.2em] text-white/15 font-bold">${item.label}</span>
+              <span class="text-[10px] tracking-[0.2em] text-gray-300 font-bold">${item.label}</span>
             </div>
 
             <!-- Title -->
-            <h3 class="text-2xl md:text-3xl font-extrabold text-white mb-2 group-hover:text-gold transition-colors duration-500">${item.title}</h3>
-            <p class="text-white/40 text-sm mb-6 font-medium">${item.sub}</p>
+            <h3 class="text-2xl md:text-3xl font-extrabold text-charcoal mb-2 group-hover:text-gold transition-colors duration-500">${item.title}</h3>
+            <p class="text-gray-400 text-sm mb-6 font-medium">${item.sub}</p>
 
             <!-- Worry/Answer card -->
-            <div class="p-5 rounded-2xl bg-white/[0.03] border border-white/[0.06] mb-6 group-hover:border-gold/20 transition-colors duration-500">
+            <div class="p-5 rounded-2xl bg-snow-50 border border-gray-100 mb-6 group-hover:border-gold/15 transition-colors duration-500">
               <p class="text-gold text-sm italic mb-2 font-medium">${item.worry}</p>
-              <p class="text-white/60 text-sm leading-relaxed">${item.answer}</p>
+              <p class="text-gray-500 text-sm leading-relaxed">${item.answer}</p>
             </div>
 
             <!-- Tags -->
             <div class="flex flex-wrap gap-2 mb-8">
-              ${item.tags.map(t => `<span class="px-3.5 py-1.5 rounded-full border border-white/[0.06] text-white/30 text-[11px] font-medium group-hover:border-gold/20 group-hover:text-gold/50 transition-all duration-500">${t}</span>`).join('')}
+              ${item.tags.map(t => `<span class="px-3.5 py-1.5 rounded-full border border-gray-100 text-gray-400 text-[11px] font-medium group-hover:border-gold/15 group-hover:text-gold transition-all duration-500">${t}</span>`).join('')}
             </div>
 
             <!-- Link -->
@@ -519,14 +510,14 @@ export function mainPage(): string {
 
       <!-- Wisdom tooth banner -->
       <div class="mt-6 reveal">
-        <a href="/treatments/wisdom-tooth" class="card-dark p-8 md:p-10 group block">
+        <a href="/treatments/wisdom-tooth" class="card-white p-8 md:p-10 group block">
           <div class="flex flex-col md:flex-row md:items-center gap-6">
             <div class="w-16 h-16 rounded-2xl gold-grad flex items-center justify-center flex-shrink-0 gold-glow group-hover:scale-110 transition-transform duration-500">
               <i class="fas fa-hand-holding-medical text-white text-2xl"></i>
             </div>
             <div class="flex-1">
-              <h3 class="text-xl md:text-2xl font-extrabold text-white group-hover:text-gold transition-colors duration-500">사랑니 발치 — 매복 사랑니도 안전하게</h3>
-              <p class="text-white/30 text-sm mt-2">구강악안면외과 전문의가 직접 발치합니다. CT 정밀 진단 · 최소 절개 · 빠른 회복</p>
+              <h3 class="text-xl md:text-2xl font-extrabold text-charcoal group-hover:text-gold transition-colors duration-500">사랑니 발치 — 매복 사랑니도 안전하게</h3>
+              <p class="text-gray-400 text-sm mt-2">구강악안면외과 전문의가 직접 발치합니다. CT 정밀 진단 · 최소 절개 · 빠른 회복</p>
             </div>
             <div class="flex items-center gap-2 text-gold text-sm font-bold group-hover:gap-4 transition-all duration-500 flex-shrink-0">
               자세히 <i class="fas fa-arrow-right text-xs"></i>
@@ -544,7 +535,7 @@ export function mainPage(): string {
     </div>
   </section>
 
-  <!-- ========== DOCTORS — Premium ========== -->
+  <!-- ========== DOCTORS — White Premium ========== -->
   <section class="py-32 md:py-48 bg-white relative overflow-hidden">
     <div class="absolute bottom-0 right-0 w-[600px] h-[600px] bg-gold/[0.02] rounded-full blur-[200px]"></div>
     <div class="absolute top-20 left-20 w-20 h-20 border border-gold/10 rounded-full"></div>
@@ -573,13 +564,12 @@ export function mainPage(): string {
         <a href="/doctors/${doc.slug}" class="group stagger-item block">
           <div class="card-premium overflow-hidden">
             <!-- Photo area -->
-            <div class="relative h-80 md:h-[400px] img-placeholder overflow-hidden">
-              <div class="absolute inset-0 bg-gradient-to-t from-charcoal via-charcoal/30 to-transparent z-10"></div>
-              <!-- Geometric accent -->
+            <div class="relative h-80 md:h-[400px] overflow-hidden bg-gradient-to-br from-snow-100 via-snow-50 to-gold/[0.03]">
+              <div class="absolute inset-0 bg-gradient-to-t from-white via-white/30 to-transparent z-10"></div>
               <div class="absolute top-6 right-6 w-20 h-20 border border-gold/10 rounded-full z-20 group-hover:scale-150 group-hover:opacity-0 transition-all duration-700"></div>
               <!-- Avatar -->
               <div class="absolute inset-0 flex items-center justify-center z-[5]">
-                <div class="w-32 h-32 rounded-3xl glass-dark gold-border flex items-center justify-center group-hover:scale-110 transition-transform duration-700">
+                <div class="w-32 h-32 rounded-3xl bg-white shadow-xl border border-gray-100 flex items-center justify-center group-hover:scale-110 transition-transform duration-700">
                   <span class="gold-grad-text text-5xl font-black">${doc.initial}</span>
                 </div>
               </div>
@@ -587,7 +577,7 @@ export function mainPage(): string {
               <div class="absolute bottom-0 left-0 right-0 p-8 z-20">
                 <div class="flex items-center gap-2 mb-3">
                   <span class="px-4 py-1.5 rounded-full gold-grad text-white text-[11px] font-bold tracking-wide">${doc.title}</span>
-                  <span class="px-4 py-1.5 rounded-full bg-white/10 text-white text-[11px] font-medium backdrop-blur-lg">${doc.spec}</span>
+                  <span class="px-4 py-1.5 rounded-full bg-white/80 text-gray-600 text-[11px] font-medium backdrop-blur-lg border border-gray-200">${doc.spec}</span>
                 </div>
               </div>
             </div>
@@ -610,10 +600,10 @@ export function mainPage(): string {
     </div>
   </section>
 
-  <!-- ========== NUMBERS — Full-width Impact ========== -->
-  <section class="py-28 md:py-36 bg-charcoal relative overflow-hidden noise-overlay">
-    <div class="orb orb-gold w-[500px] h-[500px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-25"></div>
-    <div class="absolute inset-0 grid-pattern opacity-20"></div>
+  <!-- ========== NUMBERS — White Impact ========== -->
+  <section class="py-28 md:py-36 section-snow relative overflow-hidden">
+    <div class="orb orb-gold w-[500px] h-[500px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-15"></div>
+    <div class="absolute inset-0 grid-pattern opacity-30"></div>
     <div class="gold-line-h absolute top-0 left-0 right-0"></div>
     <div class="gold-line-h absolute bottom-0 left-0 right-0"></div>
 
@@ -625,13 +615,13 @@ export function mainPage(): string {
           { num:'1', suffix:'DAY', label:'당일 보철 완성', icon:'fa-bolt', desc:'CEREC 시스템' },
           { num:'5', suffix:'+', label:'디지털 장비', icon:'fa-microchip', desc:'최첨단 진료 환경' }
         ].map(item => `
-        <div class="text-center p-8 md:p-10 rounded-3xl border border-white/[0.04] bg-white/[0.01] stagger-item hover:border-gold/20 hover:bg-white/[0.02] transition-all duration-500 group">
+        <div class="text-center p-8 md:p-10 rounded-3xl border border-gray-100 bg-white stagger-item hover:border-gold/20 hover:shadow-lg hover:shadow-gold/[0.03] transition-all duration-500 group">
           <div class="w-14 h-14 mx-auto rounded-2xl gold-grad flex items-center justify-center mb-6 gold-glow group-hover:scale-110 transition-transform duration-500">
             <i class="fas ${item.icon} text-white text-lg"></i>
           </div>
-          <div class="text-5xl md:text-6xl font-black text-white mb-2 counter" data-target="${item.num}" data-suffix="${item.suffix}">0</div>
-          <div class="text-white/50 font-bold text-sm mb-1">${item.label}</div>
-          <div class="text-white/20 text-xs">${item.desc}</div>
+          <div class="text-5xl md:text-6xl font-black text-charcoal mb-2 counter" data-target="${item.num}" data-suffix="${item.suffix}">0</div>
+          <div class="text-gray-500 font-bold text-sm mb-1">${item.label}</div>
+          <div class="text-gray-300 text-xs">${item.desc}</div>
         </div>
         `).join('')}
       </div>
@@ -639,7 +629,7 @@ export function mainPage(): string {
   </section>
 
   <!-- ========== REVIEWS (Placeholder) ========== -->
-  <section class="py-32 md:py-48 bg-cream relative overflow-hidden">
+  <section class="py-32 md:py-48 bg-white relative overflow-hidden">
     <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/10 to-transparent"></div>
 
     <div class="max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
@@ -666,8 +656,8 @@ export function mainPage(): string {
     </div>
   </section>
 
-  <!-- ========== FAQ — Premium Layout ========== -->
-  <section class="py-32 md:py-48 bg-white relative overflow-hidden">
+  <!-- ========== FAQ — White Premium Layout ========== -->
+  <section class="py-32 md:py-48 section-snow relative overflow-hidden">
     <div class="absolute top-0 left-0 w-[500px] h-[500px] bg-gold/[0.02] rounded-full blur-[200px] -translate-x-1/2 -translate-y-1/3"></div>
 
     <div class="max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
@@ -685,8 +675,8 @@ export function mainPage(): string {
             <a href="/reservation" class="btn-primary !text-sm !py-4 !px-8">
               <i class="fas fa-calendar-check text-xs"></i>상담 예약
             </a>
-            <a href="tel:054-636-8222" class="btn-outline !text-sm !py-4 !px-8 !border-gray-200 !text-gray-600 hover:!bg-gold hover:!text-white hover:!border-gold">
-              <i class="fas fa-phone text-xs"></i>전화 문의
+            <a href="tel:054-636-8222" class="btn-subtle !text-sm !py-4 !px-8">
+              <i class="fas fa-phone text-xs text-gold"></i>전화 문의
             </a>
           </div>
         </div>
@@ -723,10 +713,10 @@ export function mainPage(): string {
     </div>
   </section>
 
-  <!-- ========== FINAL CTA — Cinematic ========== -->
-  <section class="py-36 md:py-48 bg-charcoal relative overflow-hidden noise-overlay">
-    <div class="orb orb-gold w-[800px] h-[800px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-20"></div>
-    <div class="absolute inset-0 grid-pattern opacity-15"></div>
+  <!-- ========== FINAL CTA — White Elegant ========== -->
+  <section class="py-36 md:py-48 bg-white relative overflow-hidden">
+    <div class="orb orb-gold w-[800px] h-[800px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-10"></div>
+    <div class="absolute inset-0 grid-pattern opacity-20"></div>
     <div class="gold-line-h absolute top-0 left-0 right-0"></div>
 
     <div class="relative z-10 max-w-3xl mx-auto px-6 text-center reveal">
@@ -738,10 +728,10 @@ export function mainPage(): string {
         <div class="w-24 h-24 mx-auto rounded-3xl gold-grad flex items-center justify-center mb-10 gold-glow">
           <i class="fas fa-tooth text-white text-4xl"></i>
         </div>
-        <h2 class="display-xl text-white mb-8">
+        <h2 class="display-xl text-charcoal mb-8">
           지금 바로<br><span class="gold-grad-text">상담 예약하세요</span>
         </h2>
-        <p class="text-white/30 text-lg mb-12 leading-relaxed">
+        <p class="text-gray-400 text-lg mb-12 leading-relaxed">
           구강외과 전문의가 직접 상담드립니다.<br>
           부담 없이 연락해 주세요.
         </p>
@@ -749,14 +739,14 @@ export function mainPage(): string {
           <a href="/reservation" class="w-full sm:w-auto btn-primary !py-5 !px-14 !text-base !font-extrabold">
             <i class="fas fa-calendar-check"></i>온라인 상담 예약
           </a>
-          <a href="tel:054-636-8222" class="w-full sm:w-auto btn-white justify-center">
+          <a href="tel:054-636-8222" class="w-full sm:w-auto btn-subtle justify-center">
             <i class="fas fa-phone text-sm text-gold"></i>054-636-8222
           </a>
         </div>
-        <div class="flex items-center justify-center gap-8 text-sm text-white/20">
-          <span><i class="fas fa-clock text-gold/40 mr-2"></i>평일 09:00–17:30</span>
-          <span class="w-1 h-1 rounded-full bg-white/10"></span>
-          <span><i class="fas fa-map-marker-alt text-gold/40 mr-2"></i>영주시 대학로 217</span>
+        <div class="flex items-center justify-center gap-8 text-sm text-gray-400">
+          <span><i class="fas fa-clock text-gold/50 mr-2"></i>평일 09:00–17:30</span>
+          <span class="w-1 h-1 rounded-full bg-gray-300"></span>
+          <span><i class="fas fa-map-marker-alt text-gold/50 mr-2"></i>영주시 대학로 217</span>
         </div>
       </div>
     </div>

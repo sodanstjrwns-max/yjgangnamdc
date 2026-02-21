@@ -25,23 +25,20 @@ const doctors = [
 
 export function doctorsPage(): string {
   return `
-  <!-- Hero -->
-  <section class="relative min-h-[70vh] flex items-end bg-charcoal overflow-hidden noise-overlay">
-    <div class="orb orb-gold w-[600px] h-[600px] -top-64 -right-64 opacity-40"></div>
-    <div class="orb orb-gold w-[300px] h-[300px] bottom-20 left-[-100px] opacity-20"></div>
-    <div class="absolute inset-0 grid-pattern opacity-25"></div>
-    <div class="gold-line-h absolute top-0 left-0 right-0"></div>
+  <!-- Hero (White Theme) -->
+  <section class="relative min-h-[70vh] flex items-end subpage-hero overflow-hidden">
+    <div class="orb orb-gold w-[600px] h-[600px] -top-64 -right-64 opacity-30"></div>
+    <div class="absolute inset-0 grid-pattern opacity-40"></div>
 
     <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 pb-24 pt-48 w-full">
-      <div class="section-label section-label-white mb-8"><span class="w-1.5 h-1.5 rounded-full bg-gold"></span>DOCTORS</div>
-      <h1 class="display-xl text-white mb-6">
+      <div class="section-label section-label-gold mb-8"><span class="w-1.5 h-1.5 rounded-full bg-gold"></span>DOCTORS</div>
+      <h1 class="display-xl text-charcoal mb-6">
         의료진 소개<br><span class="gold-grad-text">구강외과 전문의 2인</span>
       </h1>
-      <p class="text-white/35 text-lg max-w-lg leading-relaxed">
+      <p class="text-gray-400 text-lg max-w-lg leading-relaxed">
         수술이 전문인 구강악안면외과 전문의 2인이<br>직접 진단하고, 직접 수술합니다.
       </p>
     </div>
-    <div class="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-white to-transparent"></div>
   </section>
 
   <!-- Doctor Cards -->
@@ -54,19 +51,18 @@ export function doctorsPage(): string {
         <div class="card-premium overflow-hidden">
           <div class="grid grid-cols-1 lg:grid-cols-5 gap-0">
             <!-- Photo -->
-            <div class="lg:col-span-2 relative min-h-[320px] lg:min-h-[500px] img-placeholder overflow-hidden">
-              <div class="absolute inset-0 bg-gradient-to-t from-charcoal/70 via-charcoal/20 to-transparent z-10"></div>
+            <div class="lg:col-span-2 relative min-h-[320px] lg:min-h-[500px] overflow-hidden bg-gradient-to-br from-snow-100 via-snow-50 to-gold/[0.03]">
+              <div class="absolute inset-0 bg-gradient-to-t from-white/80 via-white/20 to-transparent z-10"></div>
               <div class="absolute top-6 right-6 w-16 h-16 border border-gold/10 rounded-full z-20"></div>
               <div class="absolute inset-0 flex items-center justify-center z-[5]">
-                <div class="w-36 h-36 rounded-3xl glass-dark gold-border flex items-center justify-center">
+                <div class="w-36 h-36 rounded-3xl bg-white shadow-xl border border-gray-100 flex items-center justify-center">
                   <span class="gold-grad-text text-6xl font-black">${doc.initial}</span>
                 </div>
               </div>
-              <!-- Bottom overlay -->
               <div class="absolute bottom-0 left-0 right-0 p-8 z-20">
                 <div class="flex items-center gap-2">
                   <span class="px-4 py-1.5 rounded-full gold-grad text-white text-[11px] font-bold tracking-wide">${doc.title}</span>
-                  <span class="px-4 py-1.5 rounded-full bg-white/10 text-white text-[11px] font-medium backdrop-blur-lg">${doc.specialty}</span>
+                  <span class="px-4 py-1.5 rounded-full bg-white/80 text-gray-600 text-[11px] font-medium backdrop-blur-lg border border-gray-200">${doc.specialty}</span>
                 </div>
               </div>
             </div>
@@ -116,23 +112,23 @@ export function doctorsPage(): string {
     </div>
   </section>
 
-  <!-- CTA -->
-  <section class="py-28 md:py-36 bg-charcoal text-white relative overflow-hidden noise-overlay">
-    <div class="orb orb-gold w-[500px] h-[500px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-20"></div>
-    <div class="absolute inset-0 grid-pattern opacity-15"></div>
+  <!-- CTA (White) -->
+  <section class="py-28 md:py-36 section-snow relative overflow-hidden">
+    <div class="orb orb-gold w-[500px] h-[500px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-15"></div>
+    <div class="absolute inset-0 grid-pattern opacity-20"></div>
     <div class="gold-line-h absolute top-0 left-0 right-0"></div>
 
     <div class="relative z-10 max-w-3xl mx-auto px-6 text-center reveal">
       <div class="w-20 h-20 mx-auto rounded-2xl gold-grad flex items-center justify-center mb-8 gold-glow">
         <i class="fas fa-user-doctor text-white text-3xl"></i>
       </div>
-      <h2 class="display-lg text-white mb-6">전문의와 직접<br><span class="gold-grad-text">상담해보세요</span></h2>
-      <p class="text-white/30 text-lg mb-10">구강외과 전문의가 직접 진단하고 설명드립니다.</p>
+      <h2 class="display-lg text-charcoal mb-6">전문의와 직접<br><span class="gold-grad-text">상담해보세요</span></h2>
+      <p class="text-gray-400 text-lg mb-10">구강외과 전문의가 직접 진단하고 설명드립니다.</p>
       <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
         <a href="/reservation" class="w-full sm:w-auto btn-primary !py-5 !px-12 !font-extrabold">
           <i class="fas fa-calendar-check"></i>상담 예약하기
         </a>
-        <a href="tel:054-636-8222" class="w-full sm:w-auto btn-white justify-center">
+        <a href="tel:054-636-8222" class="w-full sm:w-auto btn-subtle justify-center">
           <i class="fas fa-phone text-sm text-gold"></i>054-636-8222
         </a>
       </div>
@@ -148,38 +144,34 @@ export function doctorProfilePage(slug: string): { html: string; title: string; 
     title: doc.h1, description: doc.description,
     html: `
     <!-- Hero -->
-    <section class="relative min-h-[55vh] flex items-end bg-charcoal overflow-hidden noise-overlay">
-      <div class="orb orb-gold w-[500px] h-[500px] -top-48 -right-48 opacity-30"></div>
-      <div class="absolute inset-0 grid-pattern opacity-20"></div>
-      <div class="gold-line-h absolute top-0 left-0 right-0"></div>
+    <section class="relative min-h-[55vh] flex items-end subpage-hero overflow-hidden">
+      <div class="orb orb-gold w-[500px] h-[500px] -top-48 -right-48 opacity-20"></div>
+      <div class="absolute inset-0 grid-pattern opacity-30"></div>
       <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 pb-24 pt-44 w-full">
-        <a href="/doctors" class="inline-flex items-center gap-2 text-white/25 hover:text-gold transition-colors text-sm mb-8 font-medium">
+        <a href="/doctors" class="inline-flex items-center gap-2 text-gray-400 hover:text-gold transition-colors text-sm mb-8 font-medium">
           <i class="fas fa-arrow-left text-xs"></i>의료진 소개로 돌아가기
         </a>
-        <h1 class="display-lg text-white mb-4">${doc.h1}</h1>
+        <h1 class="display-lg text-charcoal mb-4">${doc.h1}</h1>
         <div class="flex items-center gap-3 mt-4">
           <span class="px-4 py-1.5 rounded-full gold-grad text-white text-[11px] font-bold">${doc.title}</span>
-          <span class="px-4 py-1.5 rounded-full bg-white/10 text-white/70 text-[11px] font-medium">${doc.specialty}</span>
+          <span class="px-4 py-1.5 rounded-full bg-white/80 border border-gray-200 text-gray-600 text-[11px] font-medium">${doc.specialty}</span>
         </div>
       </div>
-      <div class="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-white to-transparent"></div>
     </section>
 
     <!-- Profile -->
     <section class="py-20 md:py-32 bg-white">
       <div class="max-w-5xl mx-auto px-6 md:px-8 lg:px-12">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
-          <!-- Photo column -->
           <div>
-            <div class="aspect-[3/4] img-placeholder rounded-3xl flex items-center justify-center sticky top-28 gold-border-glow overflow-hidden relative">
+            <div class="aspect-[3/4] rounded-3xl flex items-center justify-center sticky top-28 gold-border-glow overflow-hidden relative bg-gradient-to-br from-snow-100 via-snow-50 to-gold/[0.03]">
               <div class="absolute top-4 right-4 w-12 h-12 border border-gold/10 rounded-full"></div>
-              <div class="w-28 h-28 rounded-3xl glass-dark gold-border flex items-center justify-center">
+              <div class="w-28 h-28 rounded-3xl bg-white shadow-xl border border-gray-100 flex items-center justify-center">
                 <span class="gold-grad-text text-5xl font-black">${doc.initial}</span>
               </div>
             </div>
           </div>
 
-          <!-- Info column -->
           <div class="md:col-span-2 space-y-8">
             <div>
               <h2 class="text-3xl md:text-4xl font-extrabold text-charcoal mb-2">${doc.name} <span class="text-gray-400 font-medium text-xl">${doc.title}</span></h2>
@@ -213,7 +205,6 @@ export function doctorProfilePage(slug: string): { html: string; title: string; 
               </div>
             </div>
 
-            <!-- CTA Card -->
             <div class="glass-gold rounded-3xl p-8 relative overflow-hidden">
               <div class="absolute -top-10 -right-10 w-32 h-32 bg-gold/[0.05] rounded-full blur-[60px]"></div>
               <div class="relative z-10">
@@ -221,8 +212,8 @@ export function doctorProfilePage(slug: string): { html: string; title: string; 
                 <p class="text-gray-400 text-sm mb-6">전문 분야에 대해 직접 상담을 받아보세요.</p>
                 <div class="flex flex-wrap gap-3">
                   <a href="/reservation" class="btn-primary !text-sm !py-4 !px-8"><i class="fas fa-calendar-check text-xs"></i>상담 예약하기</a>
-                  <a href="tel:054-636-8222" class="btn-outline !text-sm !py-4 !px-8 !border-gray-200 !text-gray-600 hover:!bg-gold hover:!text-white hover:!border-gold">
-                    <i class="fas fa-phone text-xs"></i>054-636-8222
+                  <a href="tel:054-636-8222" class="btn-subtle !text-sm !py-4 !px-8">
+                    <i class="fas fa-phone text-xs text-gold"></i>054-636-8222
                   </a>
                 </div>
               </div>

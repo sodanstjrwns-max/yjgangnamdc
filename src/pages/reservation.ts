@@ -1,16 +1,14 @@
 export function reservationPage(): string {
   return `
-  <!-- Hero -->
-  <section class="relative min-h-[60vh] flex items-end bg-charcoal overflow-hidden noise-overlay">
-    <div class="orb orb-gold w-[500px] h-[500px] -top-48 -right-48 opacity-30"></div>
-    <div class="absolute inset-0 grid-pattern opacity-25"></div>
-    <div class="gold-line-h absolute top-0 left-0 right-0"></div>
+  <!-- Hero (White) -->
+  <section class="relative min-h-[60vh] flex items-end subpage-hero overflow-hidden">
+    <div class="orb orb-gold w-[500px] h-[500px] -top-48 -right-48 opacity-20"></div>
+    <div class="absolute inset-0 grid-pattern opacity-40"></div>
     <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 pb-24 pt-48 w-full">
-      <div class="section-label section-label-white mb-8"><span class="w-1.5 h-1.5 rounded-full bg-gold"></span>RESERVATION</div>
-      <h1 class="display-xl text-white mb-6">상담 <span class="gold-grad-text">예약하기</span></h1>
-      <p class="text-white/35 text-lg">편하신 방법으로 상담을 예약해 주세요.</p>
+      <div class="section-label section-label-gold mb-8"><span class="w-1.5 h-1.5 rounded-full bg-gold"></span>RESERVATION</div>
+      <h1 class="display-xl text-charcoal mb-6">상담 <span class="gold-grad-text">예약하기</span></h1>
+      <p class="text-gray-400 text-lg">편하신 방법으로 상담을 예약해 주세요.</p>
     </div>
-    <div class="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-white to-transparent"></div>
   </section>
 
   <!-- Content -->
@@ -23,7 +21,7 @@ export function reservationPage(): string {
           <div class="divider-gold mb-10"></div>
 
           <a href="tel:054-636-8222" class="card-premium p-7 flex items-center gap-6 group block relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-32 h-32 bg-gold/[0.03] rounded-full blur-[60px] group-hover:bg-gold/[0.08] transition-all duration-700"></div>
+            <div class="absolute top-0 right-0 w-32 h-32 bg-gold/[0.03] rounded-full blur-[60px] group-hover:bg-gold/[0.06] transition-all duration-700"></div>
             <div class="w-16 h-16 rounded-2xl gold-grad flex items-center justify-center gold-glow flex-shrink-0 group-hover:scale-110 transition-transform duration-500">
               <i class="fas fa-phone text-white text-xl"></i>
             </div>
@@ -56,7 +54,6 @@ export function reservationPage(): string {
             <span class="ml-auto px-3 py-1 rounded-full bg-gray-100 text-gray-400 text-[10px] font-bold">COMING SOON</span>
           </div>
 
-          <!-- Hours -->
           <div class="card-premium p-7 mt-4">
             <h3 class="font-extrabold text-charcoal mb-5 flex items-center gap-3">
               <div class="w-8 h-8 rounded-lg gold-grad flex items-center justify-center"><i class="fas fa-clock text-white text-xs"></i></div>
@@ -88,15 +85,15 @@ export function reservationPage(): string {
               <div class="space-y-6">
                 <div>
                   <label class="block text-sm font-bold text-charcoal mb-2.5">성함 <span class="text-red-400">*</span></label>
-                  <input type="text" required placeholder="성함을 입력해 주세요" class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-gold/20 focus:border-gold/30 transition-all">
+                  <input type="text" required placeholder="성함을 입력해 주세요" class="w-full px-5 py-4 bg-snow-50 border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-gold/20 focus:border-gold/30 transition-all">
                 </div>
                 <div>
                   <label class="block text-sm font-bold text-charcoal mb-2.5">연락처 <span class="text-red-400">*</span></label>
-                  <input type="tel" required placeholder="010-0000-0000" class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-gold/20 focus:border-gold/30 transition-all">
+                  <input type="tel" required placeholder="010-0000-0000" class="w-full px-5 py-4 bg-snow-50 border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-gold/20 focus:border-gold/30 transition-all">
                 </div>
                 <div>
                   <label class="block text-sm font-bold text-charcoal mb-2.5">상담 희망 진료</label>
-                  <select class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-gold/20 focus:border-gold/30 transition-all text-gray-500">
+                  <select class="w-full px-5 py-4 bg-snow-50 border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-gold/20 focus:border-gold/30 transition-all text-gray-500">
                     <option value="">선택해 주세요</option>
                     <option>임플란트</option><option>인비절라인</option><option>당일 보철 (CEREC)</option>
                     <option>심미보철</option><option>사랑니 발치</option><option>충치치료</option>
@@ -105,7 +102,7 @@ export function reservationPage(): string {
                 </div>
                 <div>
                   <label class="block text-sm font-bold text-charcoal mb-2.5">문의 내용</label>
-                  <textarea rows="5" placeholder="궁금하신 점을 자유롭게 적어주세요." class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-gold/20 focus:border-gold/30 transition-all resize-none"></textarea>
+                  <textarea rows="5" placeholder="궁금하신 점을 자유롭게 적어주세요." class="w-full px-5 py-4 bg-snow-50 border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-gold/20 focus:border-gold/30 transition-all resize-none"></textarea>
                 </div>
                 <div class="flex items-start gap-3">
                   <input type="checkbox" required id="privacy" class="mt-1 accent-[#C9A962] w-4 h-4">
