@@ -67,20 +67,195 @@ const doctors = [
 
 export function doctorsPage(): string {
   return `
-  <!-- Hero -->
-  <section class="relative min-h-[70vh] flex items-end subpage-hero overflow-hidden">
-    <div class="orb orb-royal w-[600px] h-[600px] -top-64 -right-64 opacity-30"></div>
-    <div class="absolute inset-0 grid-pattern opacity-40"></div>
+  <!-- ========== CINEMATIC HERO — "헉 뭐지?" ========== -->
+  <section class="relative min-h-screen flex items-center justify-center overflow-hidden" id="doctorHero">
+    <!-- Dark base -->
+    <div class="absolute inset-0 bg-gradient-to-br from-[#0E0618] via-[#1A0D2E] to-[#0E0618]"></div>
+    
+    <!-- Animated grid -->
+    <div class="absolute inset-0" style="background-image: linear-gradient(rgba(91,44,142,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(91,44,142,0.06) 1px, transparent 1px); background-size: 60px 60px;"></div>
 
-    <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 pb-24 pt-48 w-full">
-      <div class="section-label section-label-royal mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>DOCTORS</div>
-      <h1 class="display-xl text-charcoal mb-6">
-        수술이 전문인<br><span class="royal-grad-text">전문의가 합니다</span>
-      </h1>
-      <p class="text-gray-400 text-lg max-w-lg leading-relaxed">
-        일반 치과의사가 아닌, 구강악안면외과 전문의 2인이<br>직접 진단하고, 직접 수술합니다.
-      </p>
+    <!-- Giant glowing orbs -->
+    <div class="absolute top-1/4 left-1/4 w-[700px] h-[700px] bg-royal/[0.08] rounded-full blur-[200px] animate-pulse" style="animation-duration:6s;"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-[#8A5CB5]/[0.06] rounded-full blur-[180px] animate-pulse" style="animation-duration:8s; animation-delay:2s;"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-gold/[0.04] rounded-full blur-[120px]"></div>
+
+    <!-- Particle canvas -->
+    <canvas id="doctorParticles" class="absolute inset-0 w-full h-full" style="z-index:2;"></canvas>
+
+    <!-- Giant "2" watermark -->
+    <div class="absolute inset-0 flex items-center justify-center pointer-events-none select-none" style="z-index:3;">
+      <span class="text-[30vw] md:text-[25vw] font-black text-transparent" style="
+        -webkit-text-stroke: 1px rgba(91,44,142,0.08);
+        line-height: 0.85;
+        letter-spacing: -0.05em;
+      " id="giantNumber">2</span>
     </div>
+
+    <!-- Rotating ring -->
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] md:w-[700px] md:h-[700px] pointer-events-none" style="z-index:3;">
+      <div class="absolute inset-0 rounded-full border border-royal/[0.08]" style="animation: spin-slow 60s linear infinite;"></div>
+      <div class="absolute inset-6 rounded-full border border-royal/[0.05]" style="animation: spin-slow 45s linear infinite reverse;"></div>
+      <!-- Dots on ring -->
+      <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-royal/40 shadow-lg shadow-royal/20"></div>
+      <div class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-2 h-2 rounded-full bg-gold/40"></div>
+      <div class="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-royal/30"></div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="relative max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 w-full py-32" style="z-index:10;">
+      <div class="flex flex-col items-center text-center">
+
+        <!-- Tag -->
+        <div class="inline-flex items-center gap-3 px-6 py-3 rounded-full border border-royal/20 bg-white/[0.03] backdrop-blur-xl mb-10" id="dHeroTag">
+          <span class="relative flex h-2.5 w-2.5">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400"></span>
+          </span>
+          <span class="text-white/70 text-[13px] font-bold tracking-wide">ORAL & MAXILLOFACIAL SURGEONS</span>
+          <span class="w-px h-4 bg-white/10"></span>
+          <span class="text-royal-200 text-[13px] font-bold">2인 상주</span>
+        </div>
+
+        <!-- Headline -->
+        <h1 class="mb-8" id="dHeroTitle">
+          <span class="block text-white/40 text-lg md:text-xl font-medium tracking-wider mb-4" id="dLine0">구강악안면외과 전문의</span>
+          <span class="block overflow-hidden">
+            <span class="block text-white font-black" style="font-size: clamp(3.5rem, 10vw, 8rem); line-height: 1.0; letter-spacing: -0.04em;" id="dLine1">수술 전문</span>
+          </span>
+          <span class="block overflow-hidden">
+            <span class="block font-black" style="font-size: clamp(3.5rem, 10vw, 8rem); line-height: 1.0; letter-spacing: -0.04em; background: linear-gradient(135deg, #B99FD2, #8A5CB5, #C9A96E); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;" id="dLine2">전문의 2인</span>
+          </span>
+        </h1>
+
+        <!-- Sub copy -->
+        <p class="text-white/40 text-lg md:text-xl max-w-2xl leading-relaxed mb-14" id="dHeroSub">
+          일반 치과의사가 아닌, <span class="text-white/70 font-semibold">외과 전문의</span>가 직접 진단하고 직접 수술합니다.<br>
+          임플란트는 뼈에 심는 수술입니다. <span class="text-royal-200 font-semibold">수술은 수술 전문가에게.</span>
+        </p>
+
+        <!-- Two doctor preview cards — floating side by side -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-3xl w-full mb-14" id="dHeroCards">
+          ${doctors.map(doc => `
+          <a href="/doctors/${doc.slug}" class="group relative rounded-3xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-xl p-8 hover:border-royal/30 hover:bg-white/[0.06] transition-all duration-700 overflow-hidden text-left block">
+            <div class="absolute -top-20 -right-20 w-44 h-44 bg-royal/[0.06] rounded-full blur-[80px] group-hover:bg-royal/[0.12] transition-all duration-1000"></div>
+            <div class="relative z-10">
+              <div class="flex items-center gap-4 mb-5">
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-royal/20 to-royal/5 border border-royal/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                  <span class="text-3xl font-black" style="background: linear-gradient(135deg, #B99FD2, #8A5CB5); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${doc.initial}</span>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="text-white text-xl font-extrabold">${doc.name}</span>
+                    <span class="text-white/30 text-sm">${doc.title}</span>
+                  </div>
+                  <span class="text-royal-200 text-xs font-bold tracking-wide">${doc.specialty}</span>
+                </div>
+              </div>
+              <p class="text-white/60 italic font-bold text-[15px] mb-4">${doc.philosophy}</p>
+              <div class="flex flex-wrap gap-1.5">
+                ${doc.specialties.map(s => `<span class="px-3 py-1 rounded-full bg-white/[0.05] text-white/40 text-[10px] font-bold border border-white/[0.06]">${s}</span>`).join('')}
+              </div>
+              <div class="mt-5 flex items-center gap-2 text-royal-200 text-xs font-bold group-hover:gap-4 transition-all duration-500">
+                프로필 보기 <i class="fas fa-arrow-right text-[9px] group-hover:translate-x-1 transition-transform"></i>
+              </div>
+            </div>
+          </a>
+          `).join('')}
+        </div>
+
+        <!-- Scroll indicator -->
+        <div class="flex flex-col items-center gap-3" id="dScrollHint">
+          <span class="text-[9px] tracking-[0.3em] text-white/20 uppercase font-semibold">Scroll to explore</span>
+          <div class="w-[22px] h-[36px] rounded-full border border-white/20 flex items-start justify-center p-1.5">
+            <div class="w-[3px] h-[8px] rounded-full bg-royal-200 animate-bounce"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom gradient fade to white -->
+    <div class="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-white to-transparent" style="z-index:8;"></div>
+
+    <!-- Hero Script -->
+    <script>
+    (function(){
+      // Particle system
+      const canvas = document.getElementById('doctorParticles');
+      if(!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let w, h, particles = [];
+      function resize(){
+        w = canvas.width = canvas.clientWidth;
+        h = canvas.height = canvas.clientHeight;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+      
+      for(let i = 0; i < 80; i++){
+        particles.push({
+          x: Math.random()*w, y: Math.random()*h,
+          vx: (Math.random()-0.5)*0.3, vy: (Math.random()-0.5)*0.3,
+          r: Math.random()*2+0.5,
+          a: Math.random()*0.3+0.05,
+          color: Math.random()>0.7 ? 'rgba(201,169,110,' : 'rgba(138,92,181,'
+        });
+      }
+      
+      function draw(){
+        ctx.clearRect(0,0,w,h);
+        particles.forEach(p=>{
+          p.x += p.vx; p.y += p.vy;
+          if(p.x<0) p.x=w; if(p.x>w) p.x=0;
+          if(p.y<0) p.y=h; if(p.y>h) p.y=0;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+          ctx.fillStyle = p.color + p.a + ')';
+          ctx.fill();
+        });
+        // Lines
+        for(let i=0;i<particles.length;i++){
+          for(let j=i+1;j<particles.length;j++){
+            const dx=particles[i].x-particles[j].x;
+            const dy=particles[i].y-particles[j].y;
+            const dist=Math.sqrt(dx*dx+dy*dy);
+            if(dist<120){
+              ctx.beginPath();
+              ctx.moveTo(particles[i].x,particles[i].y);
+              ctx.lineTo(particles[j].x,particles[j].y);
+              ctx.strokeStyle='rgba(91,44,142,'+(0.04*(1-dist/120))+')';
+              ctx.lineWidth=0.5;
+              ctx.stroke();
+            }
+          }
+        }
+        requestAnimationFrame(draw);
+      }
+      draw();
+
+      // GSAP Hero animation
+      if(window.gsap){
+        const tl = gsap.timeline({delay:0.3});
+        tl.from('#dHeroTag',{opacity:0, y:40, duration:0.8, ease:'power4.out'})
+          .from('#dLine0',{opacity:0, y:20, duration:0.6, ease:'power3.out'},'-=0.3')
+          .from('#dLine1',{y:'120%', duration:1.2, ease:'power4.out'},'-=0.3')
+          .from('#dLine2',{y:'120%', duration:1.2, ease:'power4.out'},'-=0.8')
+          .from('#dHeroSub',{opacity:0, y:30, duration:0.8, ease:'power3.out'},'-=0.6')
+          .from('#dHeroCards',{opacity:0, y:60, duration:1, ease:'power4.out'},'-=0.5')
+          .from('#dScrollHint',{opacity:0, duration:0.6},'-=0.3');
+        
+        // Giant number parallax
+        gsap.to('#giantNumber',{
+          y: -100,
+          scrollTrigger:{ trigger:'#doctorHero', start:'top top', end:'bottom top', scrub:1 }
+        });
+      }
+    })();
+    </script>
+
+    <style>
+      @keyframes spin-slow { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+    </style>
   </section>
 
   <!-- Doctor Cards with Story Preview -->
