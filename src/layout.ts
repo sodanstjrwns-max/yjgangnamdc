@@ -7,12 +7,6 @@ interface LayoutOptions {
 export function layout(content: string, opts: LayoutOptions): string {
   const { title, description, url } = opts
   const fullUrl = `https://gndentalclinic.com${url}`
-  
-  const now = new Date()
-  const kstHour = (now.getUTCHours() + 9) % 24
-  const dayOfWeek = new Date(now.getTime() + 9 * 60 * 60 * 1000).getDay()
-  const isWeekday = dayOfWeek >= 1 && dayOfWeek <= 5
-  const isOpen = isWeekday && kstHour >= 9 && (kstHour < 17 || (kstHour === 17 && now.getUTCMinutes() + 30 <= 60))
 
   const schemaOrg = JSON.stringify({
     "@context": "https://schema.org",
@@ -20,22 +14,12 @@ export function layout(content: string, opts: LayoutOptions): string {
     "name": "강남치과의원",
     "url": "https://gndentalclinic.com",
     "telephone": "+82-54-636-8222",
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "대학로 217, 2층",
-      "addressLocality": "영주시",
-      "addressRegion": "경상북도",
-      "addressCountry": "KR"
-    },
-    "openingHoursSpecification": [
-      { "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"], "opens": "09:00", "closes": "17:30" }
-    ],
+    "address": { "@type": "PostalAddress", "streetAddress": "대학로 217, 2층", "addressLocality": "영주시", "addressRegion": "경상북도", "addressCountry": "KR" },
+    "openingHoursSpecification": [{ "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"], "opens": "09:00", "closes": "17:30" }],
     "founder": { "@type": "Person", "name": "이태형" },
     "foundingDate": "2017",
     "numberOfEmployees": { "@type": "QuantitativeValue", "value": 2 },
-    "medicalSpecialty": ["Oral and Maxillofacial Surgery", "Implantology", "Orthodontics"],
-    "image": "https://gndentalclinic.com/static/og-image.jpg",
-    "priceRange": "$$"
+    "medicalSpecialty": ["Oral and Maxillofacial Surgery", "Implantology", "Orthodontics"]
   })
 
   return `<!DOCTYPE html>
@@ -47,8 +31,6 @@ export function layout(content: string, opts: LayoutOptions): string {
   <meta name="description" content="${description}">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="${fullUrl}">
-  
-  <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="${title}">
   <meta property="og:description" content="${description}">
@@ -57,7 +39,7 @@ export function layout(content: string, opts: LayoutOptions): string {
   <meta property="og:locale" content="ko_KR">
 
   <!-- Fonts -->
-  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
   
   <!-- Tailwind CSS -->
@@ -67,14 +49,12 @@ export function layout(content: string, opts: LayoutOptions): string {
       theme: {
         extend: {
           colors: {
-            gold: { DEFAULT: '#C9A962', light: '#E0CFA0', dark: '#A88B3C', 50: '#FAF6EC', 100: '#F0E6C8' },
-            charcoal: '#1a1a1a',
-            subtext: '#888888',
-            bglight: '#FAFAFA',
-            bggray: '#F5F5F5'
+            gold: { 50:'#FBF8F0', 100:'#F5EDD8', 200:'#EBDBB1', 300:'#E0C98A', 400:'#D5B563', DEFAULT:'#C9A962', dark:'#A88B3C', 900:'#6B5720' },
+            charcoal: { DEFAULT:'#0a0a0a', light:'#111111', 800:'#1a1a1a', 700:'#222222', 600:'#333333', 500:'#444444' },
+            cream: '#FFFDF7'
           },
           fontFamily: {
-            pretendard: ['"Pretendard Variable"', 'Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif']
+            pretendard: ['"Pretendard Variable"', 'Pretendard', '-apple-system', 'system-ui', 'sans-serif']
           }
         }
       }
@@ -83,284 +63,607 @@ export function layout(content: string, opts: LayoutOptions): string {
 
   <!-- Font Awesome -->
   <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" rel="stylesheet">
+
+  <!-- GSAP + Plugins -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollToPlugin.min.js"></script>
+
+  <!-- Three.js for 3D particles -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
   
-  <!-- Schema.org -->
   <script type="application/ld+json">${schemaOrg}</script>
 
   <style>
-    * { font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif; }
-    html { scroll-behavior: smooth; }
-    body { color: #1a1a1a; }
-    
-    .gold-gradient { background: linear-gradient(135deg, #C9A962 0%, #E0CFA0 100%); }
-    .gold-text-gradient { background: linear-gradient(135deg, #C9A962 0%, #A88B3C 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .hero-overlay { background: linear-gradient(135deg, rgba(26,26,26,0.85) 0%, rgba(26,26,26,0.6) 100%); }
-    
-    .card-hover { transition: all 0.3s ease; }
-    .card-hover:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(201,169,98,0.15); }
-    
-    .fade-in { opacity: 0; transform: translateY(20px); transition: all 0.6s ease; }
-    .fade-in.visible { opacity: 1; transform: translateY(0); }
-    
-    .btn-gold { 
-      background: linear-gradient(135deg, #C9A962 0%, #A88B3C 100%); 
-      color: white; 
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(201,169,98,0.3);
+    :root {
+      --gold: #C9A962;
+      --gold-light: #E0CFA0;
+      --gold-dark: #A88B3C;
+      --charcoal: #0a0a0a;
     }
-    .btn-gold:hover { 
-      box-shadow: 0 6px 25px rgba(201,169,98,0.45); 
-      transform: translateY(-1px); 
+    * { font-family: 'Pretendard Variable', Pretendard, -apple-system, system-ui, sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    body { color: #111; background: #0a0a0a; overflow-x: hidden; }
+
+    /* ===== Premium Typography ===== */
+    .display-hero { font-size: clamp(3rem, 8vw, 7rem); line-height: 1.02; letter-spacing: -0.04em; font-weight: 900; }
+    .display-xl { font-size: clamp(2.5rem, 6vw, 5rem); line-height: 1.06; letter-spacing: -0.035em; font-weight: 800; }
+    .display-lg { font-size: clamp(2rem, 4.5vw, 3.5rem); line-height: 1.1; letter-spacing: -0.025em; font-weight: 700; }
+    .display-md { font-size: clamp(1.5rem, 3vw, 2.25rem); line-height: 1.2; letter-spacing: -0.02em; font-weight: 700; }
+
+    /* ===== Gold Gradients ===== */
+    .gold-grad { background: linear-gradient(135deg, #D5B563, #C9A962 40%, #E0CFA0 60%, #C9A962); }
+    .gold-grad-text { background: linear-gradient(135deg, #E0CFA0, #C9A962 30%, #D5B563 60%, #E0CFA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .gold-glow { box-shadow: 0 0 60px rgba(201,169,98,0.25), 0 0 120px rgba(201,169,98,0.08); }
+    .gold-border { border: 1px solid rgba(201,169,98,0.15); }
+    .gold-border-glow { border: 1px solid rgba(201,169,98,0.25); box-shadow: 0 0 30px rgba(201,169,98,0.06); }
+    .gold-line-h { height: 1px; background: linear-gradient(90deg, transparent, rgba(201,169,98,0.4), transparent); }
+    .gold-line-v { width: 1px; background: linear-gradient(180deg, transparent, rgba(201,169,98,0.4), transparent); }
+
+    /* ===== Glass Effects ===== */
+    .glass-dark { background: rgba(10,10,10,0.7); backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%); }
+    .glass-light { background: rgba(255,255,255,0.6); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); }
+    .glass-gold { background: rgba(201,169,98,0.04); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(201,169,98,0.12); }
+    .glass-ultra { background: rgba(255,255,255,0.02); backdrop-filter: blur(40px) saturate(200%); -webkit-backdrop-filter: blur(40px) saturate(200%); }
+
+    /* ===== Cards ===== */
+    .card-premium {
+      background: #fff;
+      border: 1px solid rgba(0,0,0,0.04);
+      border-radius: 28px;
+      transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
     }
-    
-    .btn-outline-gold {
-      border: 2px solid #C9A962;
-      color: #C9A962;
-      transition: all 0.3s ease;
+    .card-premium::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent 10%, #C9A962 50%, transparent 90%);
+      opacity: 0;
+      transition: opacity 0.6s;
     }
-    .btn-outline-gold:hover {
-      background: #C9A962;
-      color: white;
+    .card-premium:hover {
+      transform: translateY(-10px) scale(1.01);
+      box-shadow: 0 30px 80px rgba(201,169,98,0.1), 0 8px 30px rgba(0,0,0,0.04);
+      border-color: rgba(201,169,98,0.15);
+    }
+    .card-premium:hover::before { opacity: 1; }
+
+    .card-dark {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 28px;
+      transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    .card-dark::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(201,169,98,0.06) 0%, transparent 60%);
+      opacity: 0; transition: opacity 0.4s;
+    }
+    .card-dark:hover::before { opacity: 1; }
+    .card-dark:hover {
+      border-color: rgba(201,169,98,0.2);
+      transform: translateY(-8px);
+      box-shadow: 0 25px 60px rgba(201,169,98,0.08);
     }
 
-    .section-divider {
-      width: 60px;
-      height: 3px;
-      background: linear-gradient(135deg, #C9A962 0%, #E0CFA0 100%);
-      margin: 0 auto;
+    /* ===== Buttons ===== */
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 18px 40px;
+      background: linear-gradient(135deg, #D5B563 0%, #C9A962 40%, #A88B3C 100%);
+      color: #fff; font-weight: 700; font-size: 15px;
+      border-radius: 100px; border: none; cursor: pointer;
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 6px 30px rgba(201,169,98,0.35), inset 0 1px 0 rgba(255,255,255,0.2);
+      position: relative; overflow: hidden;
+      text-decoration: none;
+    }
+    .btn-primary::before {
+      content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+      transition: left 0.7s;
+    }
+    .btn-primary:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 12px 50px rgba(201,169,98,0.5), inset 0 1px 0 rgba(255,255,255,0.2); }
+    .btn-primary:hover::before { left: 100%; }
+
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 18px 40px;
+      border: 2px solid rgba(201,169,98,0.4);
+      color: var(--gold); font-weight: 700; font-size: 15px;
+      border-radius: 100px; cursor: pointer; background: transparent;
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      text-decoration: none;
+    }
+    .btn-outline:hover { background: var(--gold); color: #fff; border-color: var(--gold); box-shadow: 0 8px 40px rgba(201,169,98,0.3); transform: translateY(-2px); }
+
+    .btn-white {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 18px 40px;
+      border: 2px solid rgba(255,255,255,0.15);
+      color: #fff; font-weight: 700; font-size: 15px;
+      border-radius: 100px; cursor: pointer; background: rgba(255,255,255,0.03);
+      transition: all 0.5s;
+      text-decoration: none;
+    }
+    .btn-white:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.4); transform: translateY(-2px); }
+
+    /* ===== Section helpers ===== */
+    .section-label {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 20px; border-radius: 100px;
+      font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    }
+    .section-label-gold { background: rgba(201,169,98,0.06); color: var(--gold); border: 1px solid rgba(201,169,98,0.12); }
+    .section-label-white { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.06); }
+
+    .divider-gold { width: 48px; height: 2px; background: linear-gradient(90deg, var(--gold), var(--gold-light)); border-radius: 2px; }
+
+    /* ===== Animations ===== */
+    .reveal { opacity: 0; transform: translateY(50px); }
+    .reveal-left { opacity: 0; transform: translateX(-50px); }
+    .reveal-right { opacity: 0; transform: translateX(50px); }
+    .reveal-scale { opacity: 0; transform: scale(0.92); }
+
+    /* ===== Patterns ===== */
+    .dot-pattern {
+      background-image: radial-gradient(circle, rgba(201,169,98,0.1) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    .grid-pattern {
+      background-image:
+        linear-gradient(rgba(201,169,98,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,169,98,0.04) 1px, transparent 1px);
+      background-size: 80px 80px;
     }
 
-    @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-6px); }
+    /* ===== Noise ===== */
+    .noise-overlay::after {
+      content: ''; position: absolute; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.02'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 1;
     }
-    .float-animation { animation: float 3s ease-in-out infinite; }
-    
-    /* Mobile floating CTA */
+
+    /* ===== Scrollbar ===== */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: #0a0a0a; }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--gold), var(--gold-dark)); border-radius: 4px; }
+
+    /* ===== Mobile CTA ===== */
     .floating-cta {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 50;
-      background: white;
-      border-top: 1px solid #eee;
-      padding: 12px 16px;
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+      padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
       display: none;
-      box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+      background: rgba(10,10,10,0.95);
+      backdrop-filter: blur(24px);
+      border-top: 1px solid rgba(201,169,98,0.15);
     }
     @media (max-width: 768px) {
-      .floating-cta { display: flex; gap: 8px; }
-      body { padding-bottom: 80px; }
+      .floating-cta { display: flex; gap: 10px; }
+      body { padding-bottom: 82px; }
     }
 
-    /* Smooth scrollbar */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: #f1f1f1; }
-    ::-webkit-scrollbar-thumb { background: #C9A962; border-radius: 3px; }
+    /* ===== Marquee ===== */
+    @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+    .marquee-track { animation: marquee 40s linear infinite; }
+
+    /* ===== Orbs ===== */
+    .orb { position: absolute; border-radius: 50%; filter: blur(100px); pointer-events: none; }
+    .orb-gold { background: rgba(201,169,98,0.12); }
+    .orb-blue { background: rgba(100,149,237,0.04); }
+
+    /* ===== Counter ===== */
+    .counter { font-variant-numeric: tabular-nums; }
+
+    /* ===== Image placeholder ===== */
+    .img-placeholder {
+      background: linear-gradient(135deg, #111 0%, #1a1a1a 30%, #222 50%, #1a1a1a 70%, #111 100%);
+      background-size: 300% 300%;
+      animation: shimmer 4s ease infinite;
+    }
+    @keyframes shimmer { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+
+    /* ===== Page transition ===== */
+    .page-transition { animation: pageIn 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+    @keyframes pageIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ===== FAQ ===== */
+    details summary::-webkit-details-marker { display: none; }
+    details[open] .faq-icon { transform: rotate(45deg); }
+
+    /* ===== Float animation ===== */
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
+    @keyframes float-delayed { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+    @keyframes pulse-gold { 0%,100%{box-shadow:0 0 20px rgba(201,169,98,0.2)} 50%{box-shadow:0 0 40px rgba(201,169,98,0.4)} }
+
+    /* ===== Horizontal scroll snap ===== */
+    .snap-x { scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+    .snap-x > * { scroll-snap-align: start; }
+
+    /* ===== Cursor glow ===== */
+    .cursor-glow {
+      position: fixed; width: 400px; height: 400px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(201,169,98,0.06) 0%, transparent 70%);
+      pointer-events: none; z-index: 9999; transform: translate(-50%, -50%);
+      transition: opacity 0.3s;
+    }
+
+    /* ===== Text mask ===== */
+    .text-outline {
+      -webkit-text-stroke: 1px rgba(201,169,98,0.3);
+      color: transparent;
+    }
+
+    /* ===== Grain texture ===== */
+    .grain::before {
+      content: ''; position: absolute; inset: -50%;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0;
+    }
   </style>
 </head>
-<body class="bg-white font-pretendard">
+<body class="font-pretendard page-transition">
 
-  <!-- 상단 정보 바 -->
-  <div class="bg-charcoal text-white text-xs py-2 hidden md:block">
-    <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
-      <div class="flex items-center gap-4">
-        <span><i class="fas fa-map-marker-alt text-gold mr-1"></i>경북 영주시 대학로 217, 2층</span>
-        <span><i class="fas fa-clock text-gold mr-1"></i>평일 09:00~17:30 (토·일·공휴일 휴무)</span>
+  <!-- Cursor glow (desktop only) -->
+  <div class="cursor-glow hidden md:block" id="cursorGlow" style="opacity:0"></div>
+
+  <!-- ===== Top Bar ===== -->
+  <div class="hidden md:block fixed top-0 left-0 right-0 z-[60] bg-charcoal/90 backdrop-blur-xl border-b border-white/[0.04]">
+    <div class="max-w-[1440px] mx-auto px-8 lg:px-12 h-10 flex items-center justify-between">
+      <div class="flex items-center gap-8 text-[11px] text-white/40 tracking-wide">
+        <span class="flex items-center gap-2"><span class="relative flex h-1.5 w-1.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-400"></span></span><span class="text-emerald-400/70 font-medium">진료중</span> 평일 09:00–17:30</span>
+        <span class="hidden lg:inline">경상북도 영주시 대학로 217, 2층</span>
       </div>
-      <div class="flex items-center gap-4">
-        <a href="tel:054-636-8222" class="hover:text-gold transition"><i class="fas fa-phone mr-1"></i>054-636-8222</a>
-        <a href="https://blog.naver.com/gndentalclinic" target="_blank" rel="noopener" class="hover:text-gold transition">
-          <i class="fas fa-blog mr-1"></i>블로그
-        </a>
+      <div class="flex items-center gap-6 text-[11px] text-white/40">
+        <a href="tel:054-636-8222" class="hover:text-gold transition-colors flex items-center gap-1.5"><i class="fas fa-phone text-[9px]"></i>054-636-8222</a>
+        <a href="https://blog.naver.com/gndentalclinic" target="_blank" class="hover:text-gold transition-colors flex items-center gap-1.5"><i class="fas fa-blog text-[9px]"></i>Blog</a>
       </div>
     </div>
   </div>
 
-  <!-- 헤더 / 네비게이션 -->
-  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-100" id="header">
-    <div class="max-w-7xl mx-auto px-4">
-      <div class="flex items-center justify-between h-16 md:h-20">
-        <!-- 로고 -->
-        <a href="/" class="flex items-center gap-2 group">
-          <div class="w-9 h-9 md:w-10 md:h-10 rounded-lg gold-gradient flex items-center justify-center">
-            <i class="fas fa-tooth text-white text-sm md:text-base"></i>
+  <!-- ===== Navigation ===== -->
+  <header class="fixed top-0 md:top-10 left-0 right-0 z-50 transition-all duration-700" id="navbar">
+    <div class="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-12">
+      <nav class="h-16 md:h-[68px] flex items-center justify-between md:rounded-2xl md:px-8 transition-all duration-500" id="navInner" style="background:transparent;">
+        <!-- Logo -->
+        <a href="/" class="flex items-center gap-3 group relative">
+          <div class="w-10 h-10 rounded-xl gold-grad flex items-center justify-center relative overflow-hidden">
+            <i class="fas fa-tooth text-white text-[14px] relative z-10"></i>
+            <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
           </div>
           <div>
-            <div class="text-lg md:text-xl font-bold text-charcoal tracking-tight">강남치과의원</div>
-            <div class="text-[10px] text-subtext -mt-1 hidden sm:block">GANGNAM DENTAL CLINIC</div>
+            <div class="text-[17px] font-extrabold text-white tracking-tight leading-none">강남치과</div>
+            <div class="text-[9px] text-white/25 tracking-[0.2em] font-semibold mt-0.5">GANGNAM DENTAL</div>
           </div>
         </a>
 
-        <!-- 데스크톱 메뉴 -->
-        <nav class="hidden lg:flex items-center gap-1">
-          <a href="/doctors" class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gold transition rounded-lg hover:bg-gold-50">의료진 소개</a>
-          <a href="/treatments" class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gold transition rounded-lg hover:bg-gold-50">진료 안내</a>
-          <a href="/treatments/implant" class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gold transition rounded-lg hover:bg-gold-50">임플란트</a>
-          <a href="/treatments/invisalign" class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gold transition rounded-lg hover:bg-gold-50">인비절라인</a>
-          <a href="/pricing" class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gold transition rounded-lg hover:bg-gold-50">비용 안내</a>
-          <a href="/directions" class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gold transition rounded-lg hover:bg-gold-50">오시는 길</a>
-          <a href="/reservation" class="ml-2 px-5 py-2.5 btn-gold rounded-full text-sm font-semibold">상담 예약</a>
-        </nav>
-
-        <!-- 모바일: 전화 + 햄버거 -->
-        <div class="flex items-center gap-2 lg:hidden">
-          <a href="tel:054-636-8222" class="w-10 h-10 flex items-center justify-center rounded-full bg-gold-50 text-gold">
-            <i class="fas fa-phone text-sm"></i>
+        <!-- Desktop Menu -->
+        <div class="hidden lg:flex items-center gap-0.5">
+          <a href="/doctors" class="px-5 py-2.5 text-[13px] text-white/60 hover:text-white transition-all duration-300 rounded-lg relative group font-medium">
+            의료진
+            <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gold rounded-full group-hover:w-6 transition-all duration-300"></span>
           </a>
-          <button onclick="toggleMobileMenu()" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition" id="menuBtn">
-            <i class="fas fa-bars text-charcoal text-lg" id="menuIcon"></i>
+          <a href="/treatments" class="px-5 py-2.5 text-[13px] text-white/60 hover:text-white transition-all duration-300 rounded-lg relative group font-medium">
+            진료안내
+            <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gold rounded-full group-hover:w-6 transition-all duration-300"></span>
+          </a>
+          <a href="/treatments/implant" class="px-5 py-2.5 text-[13px] text-white/60 hover:text-white transition-all duration-300 rounded-lg relative group font-medium">
+            임플란트
+            <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gold rounded-full group-hover:w-6 transition-all duration-300"></span>
+          </a>
+          <a href="/treatments/invisalign" class="px-5 py-2.5 text-[13px] text-white/60 hover:text-white transition-all duration-300 rounded-lg relative group font-medium">
+            인비절라인
+            <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gold rounded-full group-hover:w-6 transition-all duration-300"></span>
+          </a>
+          <a href="/pricing" class="px-5 py-2.5 text-[13px] text-white/60 hover:text-white transition-all duration-300 rounded-lg relative group font-medium">
+            비용
+            <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gold rounded-full group-hover:w-6 transition-all duration-300"></span>
+          </a>
+          <a href="/directions" class="px-5 py-2.5 text-[13px] text-white/60 hover:text-white transition-all duration-300 rounded-lg relative group font-medium">
+            오시는길
+            <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gold rounded-full group-hover:w-6 transition-all duration-300"></span>
+          </a>
+          <div class="w-px h-5 bg-white/10 mx-3"></div>
+          <a href="/reservation" class="btn-primary !py-2.5 !px-7 !text-[12px] !gap-2 !font-bold">
+            <i class="fas fa-calendar-check text-[10px]"></i>상담예약
+          </a>
+        </div>
+
+        <!-- Mobile -->
+        <div class="flex items-center gap-2 lg:hidden">
+          <a href="tel:054-636-8222" class="w-10 h-10 rounded-xl glass-gold flex items-center justify-center text-gold text-sm">
+            <i class="fas fa-phone"></i>
+          </a>
+          <button onclick="toggleMenu()" class="w-10 h-10 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center" id="menuBtn">
+            <div class="flex flex-col gap-[5px] w-[18px]" id="hamburger">
+              <span class="block h-[1.5px] w-full bg-white/80 rounded transition-all origin-center" id="bar1"></span>
+              <span class="block h-[1.5px] w-full bg-white/80 rounded transition-all" id="bar2"></span>
+              <span class="block h-[1.5px] w-full bg-white/80 rounded transition-all origin-center" id="bar3"></span>
+            </div>
           </button>
         </div>
-      </div>
+      </nav>
     </div>
 
-    <!-- 모바일 메뉴 -->
-    <div class="hidden lg:hidden bg-white border-t border-gray-100 shadow-lg" id="mobileMenu">
-      <div class="max-w-7xl mx-auto px-4 py-4 space-y-1">
-        <a href="/doctors" class="block px-4 py-3 text-sm font-medium text-gray-700 hover:text-gold hover:bg-gold-50 rounded-lg transition">의료진 소개</a>
-        <a href="/treatments" class="block px-4 py-3 text-sm font-medium text-gray-700 hover:text-gold hover:bg-gold-50 rounded-lg transition">진료 안내</a>
-        <a href="/treatments/implant" class="block px-4 py-3 text-sm font-medium text-gray-700 hover:text-gold hover:bg-gold-50 rounded-lg transition">임플란트</a>
-        <a href="/treatments/invisalign" class="block px-4 py-3 text-sm font-medium text-gray-700 hover:text-gold hover:bg-gold-50 rounded-lg transition">인비절라인</a>
-        <a href="/treatments/cerec" class="block px-4 py-3 text-sm font-medium text-gray-700 hover:text-gold hover:bg-gold-50 rounded-lg transition">당일 보철 (CEREC)</a>
-        <a href="/pricing" class="block px-4 py-3 text-sm font-medium text-gray-700 hover:text-gold hover:bg-gold-50 rounded-lg transition">비용 안내</a>
-        <a href="/directions" class="block px-4 py-3 text-sm font-medium text-gray-700 hover:text-gold hover:bg-gold-50 rounded-lg transition">오시는 길</a>
-        <div class="pt-2">
-          <a href="/reservation" class="block w-full text-center px-4 py-3 btn-gold rounded-xl text-sm font-semibold">상담 예약하기</a>
+    <!-- Mobile Menu -->
+    <div class="fixed inset-0 z-40 pointer-events-none opacity-0 transition-all duration-500" id="mobileMenu">
+      <div class="absolute inset-0 bg-charcoal/[0.98] backdrop-blur-2xl pointer-events-auto"></div>
+      <div class="relative z-10 h-full flex flex-col pt-24 pb-8 px-8 pointer-events-auto overflow-y-auto">
+        <div class="flex-1 flex flex-col justify-center gap-1">
+          <a href="/" class="block py-4 text-2xl font-bold text-white/90 hover:text-gold transition-colors border-b border-white/[0.04]">홈</a>
+          <a href="/doctors" class="block py-4 text-2xl font-bold text-white/90 hover:text-gold transition-colors border-b border-white/[0.04]">의료진 소개</a>
+          <a href="/treatments" class="block py-4 text-2xl font-bold text-white/90 hover:text-gold transition-colors border-b border-white/[0.04]">진료 안내</a>
+          <a href="/treatments/implant" class="block py-4 text-2xl font-bold text-white/90 hover:text-gold transition-colors border-b border-white/[0.04]">임플란트</a>
+          <a href="/treatments/invisalign" class="block py-4 text-2xl font-bold text-white/90 hover:text-gold transition-colors border-b border-white/[0.04]">인비절라인</a>
+          <a href="/pricing" class="block py-4 text-2xl font-bold text-white/90 hover:text-gold transition-colors border-b border-white/[0.04]">비용 안내</a>
+          <a href="/directions" class="block py-4 text-2xl font-bold text-white/90 hover:text-gold transition-colors border-b border-white/[0.04]">오시는 길</a>
         </div>
-        <div class="pt-2 flex items-center justify-center gap-4 text-xs text-subtext">
-          <a href="tel:054-636-8222" class="hover:text-gold transition"><i class="fas fa-phone mr-1"></i>054-636-8222</a>
-          <span><i class="fas fa-clock mr-1"></i>평일 09:00~17:30</span>
+        <a href="/reservation" class="btn-primary justify-center w-full !text-base !py-5 !mt-4">
+          <i class="fas fa-calendar-check"></i>상담 예약하기
+        </a>
+        <div class="mt-4 flex items-center justify-center gap-6 text-sm text-white/30">
+          <a href="tel:054-636-8222" class="hover:text-gold transition"><i class="fas fa-phone mr-1.5"></i>054-636-8222</a>
+          <span>평일 09:00–17:30</span>
         </div>
       </div>
     </div>
   </header>
 
-  <!-- 메인 콘텐츠 -->
+  <!-- ===== Main Content ===== -->
   <main>
     ${content}
   </main>
 
-  <!-- 푸터 -->
-  <footer class="bg-charcoal text-white">
-    <div class="max-w-7xl mx-auto px-4 py-16">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
-        <!-- 병원 정보 -->
-        <div>
-          <div class="flex items-center gap-2 mb-4">
-            <div class="w-8 h-8 rounded-lg gold-gradient flex items-center justify-center">
-              <i class="fas fa-tooth text-white text-sm"></i>
+  <!-- ===== Footer ===== -->
+  <footer class="bg-charcoal text-white relative overflow-hidden">
+    <!-- Top accent line -->
+    <div class="gold-line-h"></div>
+
+    <!-- Marquee -->
+    <div class="border-b border-white/[0.04] py-6 overflow-hidden">
+      <div class="flex whitespace-nowrap marquee-track">
+        ${Array(10).fill('<span class="mx-16 text-[11px] tracking-[0.3em] text-white/[0.06] font-bold uppercase">GANGNAM DENTAL CLINIC · 강남치과의원</span>').join('')}
+      </div>
+    </div>
+
+    <div class="max-w-[1440px] mx-auto px-8 lg:px-12 pt-24 pb-16 relative">
+      <div class="orb orb-gold w-[500px] h-[500px] -top-64 -right-64 opacity-20"></div>
+
+      <!-- Main footer grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-20">
+        <!-- Brand column -->
+        <div class="lg:col-span-5">
+          <div class="flex items-center gap-3 mb-8">
+            <div class="w-12 h-12 rounded-xl gold-grad flex items-center justify-center">
+              <i class="fas fa-tooth text-white text-lg"></i>
             </div>
-            <span class="text-lg font-bold">강남치과의원</span>
+            <div>
+              <div class="text-xl font-extrabold">강남치과의원</div>
+              <div class="text-[9px] text-white/20 tracking-[0.25em] font-semibold">GANGNAM DENTAL CLINIC</div>
+            </div>
           </div>
-          <p class="text-gray-400 text-sm leading-relaxed mb-4">
-            구강외과 전문의 2인이 직접 진료하는<br>
-            영주시 프리미엄 치과의원
+          <p class="text-white/30 text-sm leading-relaxed mb-8 max-w-sm">
+            구강악안면외과 전문의 2인이 직접 진료하는<br>경북 영주시 프리미엄 치과의원.<br>
+            빠르게 낫고, 정확하게 오래가는 치과.
           </p>
-          <div class="flex gap-3">
-            <a href="https://blog.naver.com/gndentalclinic" target="_blank" rel="noopener" 
-               class="w-9 h-9 rounded-full bg-gray-700 flex items-center justify-center hover:bg-gold transition text-sm">
-              <i class="fas fa-blog"></i>
+          <div class="flex items-center gap-3">
+            <a href="https://blog.naver.com/gndentalclinic" target="_blank" class="w-10 h-10 rounded-xl border border-white/8 flex items-center justify-center text-white/40 hover:border-gold hover:text-gold transition-all">
+              <i class="fas fa-blog text-sm"></i>
             </a>
           </div>
         </div>
 
-        <!-- 진료 안내 -->
-        <div>
-          <h4 class="font-semibold mb-4 text-gold">진료 안내</h4>
-          <ul class="space-y-2 text-sm text-gray-400">
-            <li><a href="/treatments/implant" class="hover:text-gold transition">임플란트</a></li>
-            <li><a href="/treatments/invisalign" class="hover:text-gold transition">인비절라인</a></li>
-            <li><a href="/treatments/cerec" class="hover:text-gold transition">당일 보철 (CEREC)</a></li>
-            <li><a href="/treatments/cosmetic" class="hover:text-gold transition">심미보철</a></li>
-            <li><a href="/treatments/wisdom-tooth" class="hover:text-gold transition">사랑니 발치</a></li>
-            <li><a href="/treatments" class="hover:text-gold transition">전체 진료 보기 →</a></li>
+        <!-- Links -->
+        <div class="lg:col-span-2">
+          <h4 class="text-gold text-[10px] tracking-[0.2em] font-bold mb-8 uppercase">진료</h4>
+          <ul class="space-y-3.5 text-sm text-white/30">
+            <li><a href="/treatments/implant" class="hover:text-gold transition-colors duration-300">임플란트</a></li>
+            <li><a href="/treatments/invisalign" class="hover:text-gold transition-colors duration-300">인비절라인</a></li>
+            <li><a href="/treatments/cerec" class="hover:text-gold transition-colors duration-300">당일보철 CEREC</a></li>
+            <li><a href="/treatments/cosmetic" class="hover:text-gold transition-colors duration-300">심미보철</a></li>
+            <li><a href="/treatments/wisdom-tooth" class="hover:text-gold transition-colors duration-300">사랑니발치</a></li>
+            <li><a href="/treatments" class="text-gold/50 hover:text-gold transition-colors duration-300 flex items-center gap-1">전체 보기<i class="fas fa-arrow-right text-[8px]"></i></a></li>
           </ul>
         </div>
 
-        <!-- 바로가기 -->
-        <div>
-          <h4 class="font-semibold mb-4 text-gold">바로가기</h4>
-          <ul class="space-y-2 text-sm text-gray-400">
-            <li><a href="/doctors" class="hover:text-gold transition">의료진 소개</a></li>
-            <li><a href="/pricing" class="hover:text-gold transition">비용 안내</a></li>
-            <li><a href="/directions" class="hover:text-gold transition">오시는 길</a></li>
-            <li><a href="/reservation" class="hover:text-gold transition">상담 예약</a></li>
+        <div class="lg:col-span-2">
+          <h4 class="text-gold text-[10px] tracking-[0.2em] font-bold mb-8 uppercase">안내</h4>
+          <ul class="space-y-3.5 text-sm text-white/30">
+            <li><a href="/doctors" class="hover:text-gold transition-colors duration-300">의료진</a></li>
+            <li><a href="/pricing" class="hover:text-gold transition-colors duration-300">비용안내</a></li>
+            <li><a href="/directions" class="hover:text-gold transition-colors duration-300">오시는길</a></li>
+            <li><a href="/reservation" class="hover:text-gold transition-colors duration-300">상담예약</a></li>
           </ul>
         </div>
 
-        <!-- 연락처 -->
-        <div>
-          <h4 class="font-semibold mb-4 text-gold">연락처</h4>
-          <ul class="space-y-3 text-sm text-gray-400">
-            <li class="flex items-start gap-2">
-              <i class="fas fa-map-marker-alt text-gold mt-0.5"></i>
-              <span>경북 영주시 대학로 217, 2층<br>(택지 리첼 사거리)</span>
-            </li>
-            <li class="flex items-center gap-2">
-              <i class="fas fa-phone text-gold"></i>
-              <a href="tel:054-636-8222" class="hover:text-gold transition">054-636-8222</a>
-            </li>
-            <li class="flex items-start gap-2">
-              <i class="fas fa-clock text-gold mt-0.5"></i>
-              <span>평일 09:00~17:30<br>점심 13:00~14:00<br>토·일·공휴일 휴무</span>
-            </li>
-          </ul>
+        <!-- Contact -->
+        <div class="lg:col-span-3">
+          <h4 class="text-gold text-[10px] tracking-[0.2em] font-bold mb-8 uppercase">Contact</h4>
+          <div class="space-y-5 text-sm text-white/30">
+            <a href="tel:054-636-8222" class="flex items-center gap-4 group">
+              <div class="w-11 h-11 rounded-xl border border-white/8 flex items-center justify-center group-hover:border-gold group-hover:bg-gold/5 transition-all duration-300">
+                <i class="fas fa-phone text-xs text-white/30 group-hover:text-gold transition-colors"></i>
+              </div>
+              <div>
+                <div class="text-white/20 text-[10px] font-semibold tracking-wider uppercase mb-0.5">전화</div>
+                <div class="text-white font-bold group-hover:text-gold transition-colors">054-636-8222</div>
+              </div>
+            </a>
+            <div class="flex items-start gap-4">
+              <div class="w-11 h-11 rounded-xl border border-white/8 flex items-center justify-center flex-shrink-0">
+                <i class="fas fa-map-marker-alt text-xs text-white/30"></i>
+              </div>
+              <div>
+                <div class="text-white/20 text-[10px] font-semibold tracking-wider uppercase mb-0.5">주소</div>
+                <div class="text-white/50 leading-relaxed">경북 영주시 대학로 217, 2층</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="w-11 h-11 rounded-xl border border-white/8 flex items-center justify-center flex-shrink-0">
+                <i class="fas fa-clock text-xs text-white/30"></i>
+              </div>
+              <div>
+                <div class="text-white/20 text-[10px] font-semibold tracking-wider uppercase mb-0.5">진료시간</div>
+                <div class="text-white/50 leading-relaxed">평일 09:00–17:30<br><span class="text-white/25">점심 13:00–14:00 · 주말·공휴일 휴무</span></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="border-t border-gray-700 mt-12 pt-8">
-        <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-500">
-          <p>&copy; 2017-${new Date().getFullYear()} 강남치과의원. All rights reserved.</p>
-          <p>대표: 이태형 | 사업자등록번호: 문의 | 경북 영주시 대학로 217, 2층</p>
-        </div>
+      <!-- Bottom bar -->
+      <div class="border-t border-white/[0.04] mt-20 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-[11px] text-white/15">
+        <p>&copy; 2017–${new Date().getFullYear()} 강남치과의원. All rights reserved.</p>
+        <p>대표: 이태형 · 사업자등록번호: 문의</p>
       </div>
     </div>
   </footer>
 
-  <!-- 모바일 플로팅 CTA -->
+  <!-- ===== Mobile Floating CTA ===== -->
   <div class="floating-cta">
-    <a href="tel:054-636-8222" class="flex-1 flex items-center justify-center gap-2 py-3 bg-charcoal text-white rounded-xl text-sm font-semibold">
-      <i class="fas fa-phone"></i>전화상담
+    <a href="tel:054-636-8222" class="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl bg-white/8 text-white text-sm font-bold border border-white/8">
+      <i class="fas fa-phone text-xs"></i>전화상담
     </a>
-    <a href="/reservation" class="flex-1 flex items-center justify-center gap-2 py-3 btn-gold rounded-xl text-sm font-semibold">
-      <i class="fas fa-calendar-check"></i>상담예약
+    <a href="/reservation" class="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl gold-grad text-white text-sm font-bold shadow-lg shadow-gold/20">
+      <i class="fas fa-calendar-check text-xs"></i>상담예약
     </a>
   </div>
 
+  <!-- ===== Scripts ===== -->
   <script>
-    // 모바일 메뉴 토글
-    function toggleMobileMenu() {
-      const menu = document.getElementById('mobileMenu');
-      const icon = document.getElementById('menuIcon');
-      menu.classList.toggle('hidden');
-      icon.classList.toggle('fa-bars');
-      icon.classList.toggle('fa-times');
+    gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+
+    // ===== Cursor glow =====
+    const cg = document.getElementById('cursorGlow');
+    if (cg && window.innerWidth > 768) {
+      document.addEventListener('mousemove', e => {
+        cg.style.left = e.clientX + 'px';
+        cg.style.top = e.clientY + 'px';
+        cg.style.opacity = '1';
+      });
+      document.addEventListener('mouseleave', () => cg.style.opacity = '0');
     }
 
-    // 스크롤 애니메이션
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
+    // ===== Card mouse tracking =====
+    document.querySelectorAll('.card-dark').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty('--mx', ((e.clientX - rect.left) / rect.width * 100) + '%');
+        card.style.setProperty('--my', ((e.clientY - rect.top) / rect.height * 100) + '%');
       });
-    }, { threshold: 0.1 });
+    });
 
-    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    // ===== Reveal animations =====
+    function initReveals() {
+      gsap.utils.toArray('.reveal').forEach(el => {
+        gsap.to(el, {
+          opacity: 1, y: 0, duration: 1.2, ease: 'power4.out',
+          scrollTrigger: { trigger: el, start: 'top 88%', once: true }
+        });
+      });
+      gsap.utils.toArray('.reveal-left').forEach(el => {
+        gsap.to(el, {
+          opacity: 1, x: 0, duration: 1.2, ease: 'power4.out',
+          scrollTrigger: { trigger: el, start: 'top 88%', once: true }
+        });
+      });
+      gsap.utils.toArray('.reveal-right').forEach(el => {
+        gsap.to(el, {
+          opacity: 1, x: 0, duration: 1.2, ease: 'power4.out',
+          scrollTrigger: { trigger: el, start: 'top 88%', once: true }
+        });
+      });
+      gsap.utils.toArray('.reveal-scale').forEach(el => {
+        gsap.to(el, {
+          opacity: 1, scale: 1, duration: 1, ease: 'power4.out',
+          scrollTrigger: { trigger: el, start: 'top 88%', once: true }
+        });
+      });
+      gsap.utils.toArray('.stagger-children').forEach(parent => {
+        const children = parent.querySelectorAll('.stagger-item');
+        gsap.fromTo(children, { opacity: 0, y: 40 }, {
+          opacity: 1, y: 0, duration: 0.8, stagger: 0.12, ease: 'power4.out',
+          scrollTrigger: { trigger: parent, start: 'top 85%', once: true }
+        });
+      });
+    }
 
-    // 헤더 스크롤 효과
-    let lastScroll = 0;
+    // ===== Counter animation =====
+    function animateCounters() {
+      gsap.utils.toArray('.counter').forEach(el => {
+        const target = parseInt(el.dataset.target);
+        const suffix = el.dataset.suffix || '';
+        const prefix = el.dataset.prefix || '';
+        gsap.fromTo(el, { innerText: 0 }, {
+          innerText: target, duration: 2.5, ease: 'power2.out', snap: { innerText: 1 },
+          scrollTrigger: { trigger: el, start: 'top 90%', once: true },
+          onUpdate: function() { el.innerText = prefix + Math.round(parseFloat(el.innerText)) + suffix; }
+        });
+      });
+    }
+
+    // ===== Nav scroll =====
+    const navbar = document.getElementById('navbar');
+    const navInner = document.getElementById('navInner');
     window.addEventListener('scroll', () => {
-      const header = document.getElementById('header');
-      const scroll = window.scrollY;
-      if (scroll > 100) {
-        header.classList.add('shadow-md');
+      const y = window.scrollY;
+      if (y > 100) {
+        navbar.classList.add('md:top-3');
+        navbar.classList.remove('md:top-10');
+        if(navInner) {
+          navInner.style.background = 'rgba(10,10,10,0.8)';
+          navInner.style.backdropFilter = 'blur(24px) saturate(180%)';
+          navInner.style.webkitBackdropFilter = 'blur(24px) saturate(180%)';
+          navInner.style.borderColor = 'rgba(201,169,98,0.1)';
+          navInner.style.border = '1px solid rgba(201,169,98,0.1)';
+        }
       } else {
-        header.classList.remove('shadow-md');
+        navbar.classList.remove('md:top-3');
+        navbar.classList.add('md:top-10');
+        if(navInner) {
+          navInner.style.background = 'transparent';
+          navInner.style.backdropFilter = 'none';
+          navInner.style.webkitBackdropFilter = 'none';
+          navInner.style.border = 'none';
+        }
       }
-      lastScroll = scroll;
+    });
+
+    // ===== Mobile menu =====
+    let menuOpen = false;
+    function toggleMenu() {
+      menuOpen = !menuOpen;
+      const menu = document.getElementById('mobileMenu');
+      const b1 = document.getElementById('bar1');
+      const b2 = document.getElementById('bar2');
+      const b3 = document.getElementById('bar3');
+      if (menuOpen) {
+        menu.classList.remove('opacity-0','pointer-events-none');
+        menu.classList.add('opacity-100');
+        b1.style.transform = 'rotate(45deg) translate(2px, 5px)';
+        b2.style.opacity = '0';
+        b3.style.transform = 'rotate(-45deg) translate(2px, -5px)';
+        document.body.style.overflow = 'hidden';
+      } else {
+        menu.classList.add('opacity-0','pointer-events-none');
+        menu.classList.remove('opacity-100');
+        b1.style.transform = '';
+        b2.style.opacity = '1';
+        b3.style.transform = '';
+        document.body.style.overflow = '';
+      }
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      initReveals();
+      animateCounters();
     });
   </script>
 </body>
