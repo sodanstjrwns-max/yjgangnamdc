@@ -19,7 +19,8 @@ export function layout(content: string, opts: LayoutOptions): string {
     "founder": { "@type": "Person", "name": "이태형" },
     "foundingDate": "2017",
     "numberOfEmployees": { "@type": "QuantitativeValue", "value": 2 },
-    "medicalSpecialty": ["Oral and Maxillofacial Surgery", "Implantology", "Orthodontics"]
+    "medicalSpecialty": ["Oral and Maxillofacial Surgery", "Implantology", "Orthodontics"],
+    "slogan": "빠르게 낫고, 정확하게 오래가는 치과"
   })
 
   return `<!DOCTYPE html>
@@ -49,10 +50,11 @@ export function layout(content: string, opts: LayoutOptions): string {
       theme: {
         extend: {
           colors: {
-            gold: { 50:'#FBF8F0', 100:'#F5EDD8', 200:'#EBDBB1', 300:'#E0C98A', 400:'#D5B563', DEFAULT:'#C9A962', dark:'#A88B3C', 900:'#6B5720' },
-            charcoal: { DEFAULT:'#1a1a1a', light:'#2a2a2a', 800:'#333333', 700:'#444444', 600:'#555555', 500:'#666666' },
-            snow: { DEFAULT:'#FFFFFF', 50:'#FAFBFC', 100:'#F5F6F8', 200:'#EEEEF2', 300:'#E2E3E8' },
-            cream: '#FDFCFA'
+            royal: { 50:'#F8F5FB', 100:'#E8DFF0', 200:'#D1BFE1', 300:'#B99FD2', 400:'#8A5CB5', DEFAULT:'#5B2C8E', dark:'#42206B', 900:'#2E1550' },
+            gold: { 50:'#FBF8F0', 100:'#F5EDD8', DEFAULT:'#C9A96E', dark:'#A88B3C' },
+            charcoal: { DEFAULT:'#1C1C1E', light:'#2a2a2a', 800:'#333333', 700:'#444444' },
+            lavender: { DEFAULT:'#F8F5FB', light:'#FAF8FC', dark:'#F0EBF5' },
+            snow: { DEFAULT:'#FFFFFF', 50:'#FAFBFC', 100:'#F5F6F8' }
           },
           fontFamily: {
             pretendard: ['"Pretendard Variable"', 'Pretendard', '-apple-system', 'system-ui', 'sans-serif']
@@ -77,16 +79,19 @@ export function layout(content: string, opts: LayoutOptions): string {
 
   <style>
     :root {
-      --gold: #C9A962;
-      --gold-light: #E0CFA0;
+      --royal: #5B2C8E;
+      --royal-dark: #42206B;
+      --royal-light: #E8DFF0;
+      --royal-50: #F8F5FB;
+      --gold: #C9A96E;
       --gold-dark: #A88B3C;
-      --charcoal: #1a1a1a;
+      --charcoal: #1C1C1E;
       --white: #FFFFFF;
-      --snow: #FAFBFC;
+      --lavender: #F8F5FB;
     }
     * { font-family: 'Pretendard Variable', Pretendard, -apple-system, system-ui, sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-    body { color: #1a1a1a; background: #FFFFFF; overflow-x: hidden; }
+    body { color: #1C1C1E; background: #FFFFFF; overflow-x: hidden; }
 
     /* ===== Premium Typography ===== */
     .display-hero { font-size: clamp(3rem, 8vw, 7rem); line-height: 1.02; letter-spacing: -0.04em; font-weight: 900; }
@@ -94,21 +99,25 @@ export function layout(content: string, opts: LayoutOptions): string {
     .display-lg { font-size: clamp(2rem, 4.5vw, 3.5rem); line-height: 1.1; letter-spacing: -0.025em; font-weight: 700; }
     .display-md { font-size: clamp(1.5rem, 3vw, 2.25rem); line-height: 1.2; letter-spacing: -0.02em; font-weight: 700; }
 
-    /* ===== Gold Gradients ===== */
-    .gold-grad { background: linear-gradient(135deg, #D5B563, #C9A962 40%, #A88B3C); }
-    .gold-grad-text { background: linear-gradient(135deg, #A88B3C, #C9A962 30%, #D5B563 60%, #C9A962); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .gold-glow { box-shadow: 0 8px 32px rgba(201,169,98,0.2), 0 2px 8px rgba(201,169,98,0.1); }
-    .gold-border { border: 1px solid rgba(201,169,98,0.15); }
-    .gold-border-glow { border: 1px solid rgba(201,169,98,0.2); box-shadow: 0 4px 24px rgba(201,169,98,0.08); }
-    .gold-line-h { height: 1px; background: linear-gradient(90deg, transparent, rgba(201,169,98,0.2), transparent); }
+    /* ===== Royal Purple Gradients ===== */
+    .royal-grad { background: linear-gradient(135deg, #8A5CB5, #5B2C8E 40%, #42206B); }
+    .royal-grad-text { background: linear-gradient(135deg, #42206B, #5B2C8E 30%, #8A5CB5 60%, #5B2C8E); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .royal-glow { box-shadow: 0 8px 32px rgba(91,44,142,0.2), 0 2px 8px rgba(91,44,142,0.1); }
+    .royal-border { border: 1px solid rgba(91,44,142,0.15); }
+    .royal-border-glow { border: 1px solid rgba(91,44,142,0.2); box-shadow: 0 4px 24px rgba(91,44,142,0.08); }
+    .royal-line-h { height: 1px; background: linear-gradient(90deg, transparent, rgba(91,44,142,0.15), transparent); }
 
-    /* ===== Glass Effects (White Theme) ===== */
+    /* ===== Gold Accent ===== */
+    .gold-accent { color: var(--gold); }
+    .gold-accent-bg { background: rgba(201,169,110,0.08); border: 1px solid rgba(201,169,110,0.15); }
+    .gold-grad-text { background: linear-gradient(135deg, #A88B3C, #C9A96E 50%, #A88B3C); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+    /* ===== Glass Effects ===== */
     .glass-white { background: rgba(255,255,255,0.85); backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%); }
-    .glass-light { background: rgba(255,255,255,0.7); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); }
-    .glass-gold { background: rgba(201,169,98,0.04); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(201,169,98,0.12); }
-    .glass-snow { background: rgba(250,251,252,0.95); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px); }
+    .glass-lavender { background: rgba(248,245,251,0.9); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+    .glass-royal { background: rgba(91,44,142,0.04); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(91,44,142,0.1); }
 
-    /* ===== Cards (White Theme) ===== */
+    /* ===== Cards ===== */
     .card-premium {
       background: #fff;
       border: 1px solid rgba(0,0,0,0.05);
@@ -122,14 +131,14 @@ export function layout(content: string, opts: LayoutOptions): string {
       position: absolute;
       top: 0; left: 0; right: 0;
       height: 2px;
-      background: linear-gradient(90deg, transparent 10%, #C9A962 50%, transparent 90%);
+      background: linear-gradient(90deg, transparent 10%, #5B2C8E 50%, transparent 90%);
       opacity: 0;
       transition: opacity 0.6s;
     }
     .card-premium:hover {
       transform: translateY(-8px) scale(1.005);
-      box-shadow: 0 30px 80px rgba(0,0,0,0.06), 0 8px 30px rgba(201,169,98,0.06);
-      border-color: rgba(201,169,98,0.15);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.06), 0 8px 30px rgba(91,44,142,0.06);
+      border-color: rgba(91,44,142,0.15);
     }
     .card-premium:hover::before { opacity: 1; }
 
@@ -144,25 +153,25 @@ export function layout(content: string, opts: LayoutOptions): string {
     .card-white::before {
       content: '';
       position: absolute; inset: 0;
-      background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(201,169,98,0.04) 0%, transparent 60%);
+      background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(91,44,142,0.04) 0%, transparent 60%);
       opacity: 0; transition: opacity 0.4s;
     }
     .card-white:hover::before { opacity: 1; }
     .card-white:hover {
-      border-color: rgba(201,169,98,0.2);
+      border-color: rgba(91,44,142,0.2);
       transform: translateY(-6px);
-      box-shadow: 0 25px 60px rgba(0,0,0,0.06), 0 4px 16px rgba(201,169,98,0.06);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.06), 0 4px 16px rgba(91,44,142,0.06);
     }
 
     /* ===== Buttons ===== */
     .btn-primary {
       display: inline-flex; align-items: center; gap: 10px;
       padding: 18px 40px;
-      background: linear-gradient(135deg, #D5B563 0%, #C9A962 40%, #A88B3C 100%);
+      background: linear-gradient(135deg, #8A5CB5 0%, #5B2C8E 40%, #42206B 100%);
       color: #fff; font-weight: 700; font-size: 15px;
       border-radius: 100px; border: none; cursor: pointer;
       transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 0 6px 30px rgba(201,169,98,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+      box-shadow: 0 6px 30px rgba(91,44,142,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
       position: relative; overflow: hidden;
       text-decoration: none;
     }
@@ -171,19 +180,19 @@ export function layout(content: string, opts: LayoutOptions): string {
       background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
       transition: left 0.7s;
     }
-    .btn-primary:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 12px 50px rgba(201,169,98,0.4), inset 0 1px 0 rgba(255,255,255,0.2); }
+    .btn-primary:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 12px 50px rgba(91,44,142,0.4), inset 0 1px 0 rgba(255,255,255,0.2); }
     .btn-primary:hover::before { left: 100%; }
 
     .btn-outline {
       display: inline-flex; align-items: center; gap: 10px;
       padding: 18px 40px;
-      border: 2px solid rgba(201,169,98,0.3);
-      color: var(--gold); font-weight: 700; font-size: 15px;
+      border: 2px solid rgba(91,44,142,0.3);
+      color: var(--royal); font-weight: 700; font-size: 15px;
       border-radius: 100px; cursor: pointer; background: transparent;
       transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
       text-decoration: none;
     }
-    .btn-outline:hover { background: var(--gold); color: #fff; border-color: var(--gold); box-shadow: 0 8px 40px rgba(201,169,98,0.25); transform: translateY(-2px); }
+    .btn-outline:hover { background: var(--royal); color: #fff; border-color: var(--royal); box-shadow: 0 8px 40px rgba(91,44,142,0.25); transform: translateY(-2px); }
 
     .btn-subtle {
       display: inline-flex; align-items: center; gap: 10px;
@@ -202,10 +211,10 @@ export function layout(content: string, opts: LayoutOptions): string {
       padding: 8px 20px; border-radius: 100px;
       font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
     }
-    .section-label-gold { background: rgba(201,169,98,0.06); color: var(--gold); border: 1px solid rgba(201,169,98,0.12); }
+    .section-label-royal { background: rgba(91,44,142,0.06); color: var(--royal); border: 1px solid rgba(91,44,142,0.12); }
     .section-label-light { background: rgba(0,0,0,0.03); color: rgba(0,0,0,0.4); border: 1px solid rgba(0,0,0,0.05); }
 
-    .divider-gold { width: 48px; height: 2px; background: linear-gradient(90deg, var(--gold), var(--gold-light)); border-radius: 2px; }
+    .divider-royal { width: 48px; height: 2px; background: linear-gradient(90deg, var(--royal), var(--royal-light)); border-radius: 2px; }
 
     /* ===== Animations ===== */
     .reveal { opacity: 0; transform: translateY(50px); }
@@ -213,22 +222,22 @@ export function layout(content: string, opts: LayoutOptions): string {
     .reveal-right { opacity: 0; transform: translateX(50px); }
     .reveal-scale { opacity: 0; transform: scale(0.92); }
 
-    /* ===== Patterns (White Theme) ===== */
+    /* ===== Patterns ===== */
     .dot-pattern {
-      background-image: radial-gradient(circle, rgba(201,169,98,0.06) 1px, transparent 1px);
+      background-image: radial-gradient(circle, rgba(91,44,142,0.05) 1px, transparent 1px);
       background-size: 40px 40px;
     }
     .grid-pattern {
       background-image:
-        linear-gradient(rgba(0,0,0,0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,0,0,0.02) 1px, transparent 1px);
+        linear-gradient(rgba(91,44,142,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(91,44,142,0.02) 1px, transparent 1px);
       background-size: 80px 80px;
     }
 
-    /* ===== Scrollbar (White Theme) ===== */
+    /* ===== Scrollbar ===== */
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: #FAFBFC; }
-    ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--gold), var(--gold-dark)); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--royal), var(--royal-dark)); border-radius: 4px; }
 
     /* ===== Mobile CTA ===== */
     .floating-cta {
@@ -248,17 +257,17 @@ export function layout(content: string, opts: LayoutOptions): string {
     @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
     .marquee-track { animation: marquee 40s linear infinite; }
 
-    /* ===== Orbs (White Theme) ===== */
+    /* ===== Orbs ===== */
     .orb { position: absolute; border-radius: 50%; filter: blur(100px); pointer-events: none; }
-    .orb-gold { background: rgba(201,169,98,0.07); }
-    .orb-blue { background: rgba(100,149,237,0.04); }
+    .orb-royal { background: rgba(91,44,142,0.06); }
+    .orb-lavender { background: rgba(232,223,240,0.3); }
 
     /* ===== Counter ===== */
     .counter { font-variant-numeric: tabular-nums; }
 
-    /* ===== Image placeholder (White Theme) ===== */
+    /* ===== Image placeholder ===== */
     .img-placeholder {
-      background: linear-gradient(135deg, #f5f5f5 0%, #eee 30%, #f0f0f0 50%, #eee 70%, #f5f5f5 100%);
+      background: linear-gradient(135deg, #F8F5FB 0%, #E8DFF0 30%, #F0EBF5 50%, #E8DFF0 70%, #F8F5FB 100%);
       background-size: 300% 300%;
       animation: shimmer 4s ease infinite;
     }
@@ -275,39 +284,33 @@ export function layout(content: string, opts: LayoutOptions): string {
     /* ===== Float animation ===== */
     @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
     @keyframes float-delayed { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
-    @keyframes pulse-gold { 0%,100%{box-shadow:0 0 20px rgba(201,169,98,0.15)} 50%{box-shadow:0 0 40px rgba(201,169,98,0.3)} }
+    @keyframes pulse-royal { 0%,100%{box-shadow:0 0 20px rgba(91,44,142,0.15)} 50%{box-shadow:0 0 40px rgba(91,44,142,0.3)} }
 
     /* ===== Horizontal scroll snap ===== */
     .snap-x { scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
     .snap-x > * { scroll-snap-align: start; }
 
-    /* ===== Cursor glow (white theme) ===== */
+    /* ===== Cursor glow ===== */
     .cursor-glow {
       position: fixed; width: 400px; height: 400px; border-radius: 50%;
-      background: radial-gradient(circle, rgba(201,169,98,0.04) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(91,44,142,0.04) 0%, transparent 70%);
       pointer-events: none; z-index: 9999; transform: translate(-50%, -50%);
       transition: opacity 0.3s;
     }
 
-    /* ===== Text outline ===== */
-    .text-outline {
-      -webkit-text-stroke: 1px rgba(201,169,98,0.2);
-      color: transparent;
-    }
-
-    /* ===== Hero section BG (White) ===== */
+    /* ===== Hero section BG ===== */
     .hero-white {
-      background: linear-gradient(180deg, #FFFFFF 0%, #FAFBFC 40%, #F5F6F8 100%);
+      background: linear-gradient(180deg, #FFFFFF 0%, #FAFBFC 40%, #F8F5FB 100%);
     }
 
     /* ===== Sub page hero ===== */
     .subpage-hero {
-      background: linear-gradient(180deg, #FAFBFC 0%, #F0F1F3 50%, #FFFFFF 100%);
+      background: linear-gradient(180deg, #FAFBFC 0%, #F8F5FB 50%, #FFFFFF 100%);
     }
 
-    /* ===== Snow section ===== */
+    /* ===== Section backgrounds ===== */
+    .section-lavender { background: linear-gradient(180deg, #F8F5FB, #F0EBF5); }
     .section-snow { background: linear-gradient(180deg, #FAFBFC, #F5F6F8); }
-    .section-warm { background: #FDFCFA; }
   </style>
 </head>
 <body class="font-pretendard page-transition">
@@ -315,27 +318,27 @@ export function layout(content: string, opts: LayoutOptions): string {
   <!-- Cursor glow (desktop only) -->
   <div class="cursor-glow hidden md:block" id="cursorGlow" style="opacity:0"></div>
 
-  <!-- ===== Top Bar (White Theme) ===== -->
+  <!-- ===== Top Bar ===== -->
   <div class="hidden md:block fixed top-0 left-0 right-0 z-[60] bg-white/90 backdrop-blur-xl border-b border-black/[0.04]">
     <div class="max-w-[1440px] mx-auto px-8 lg:px-12 h-10 flex items-center justify-between">
       <div class="flex items-center gap-8 text-[11px] text-gray-400 tracking-wide">
-        <span class="flex items-center gap-2"><span class="relative flex h-1.5 w-1.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-400"></span></span><span class="text-emerald-500 font-medium">진료중</span> 평일 09:00–17:30</span>
+        <span class="flex items-center gap-2"><span class="relative flex h-1.5 w-1.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-400"></span></span><span class="text-emerald-500 font-medium">진료중</span> 평일 09:00-17:30</span>
         <span class="hidden lg:inline text-gray-400">경상북도 영주시 대학로 217, 2층</span>
       </div>
       <div class="flex items-center gap-6 text-[11px] text-gray-400">
-        <a href="tel:054-636-8222" class="hover:text-gold transition-colors flex items-center gap-1.5"><i class="fas fa-phone text-[9px]"></i>054-636-8222</a>
-        <a href="https://blog.naver.com/gndentalclinic" target="_blank" class="hover:text-gold transition-colors flex items-center gap-1.5"><i class="fas fa-blog text-[9px]"></i>Blog</a>
+        <a href="tel:054-636-8222" class="hover:text-royal transition-colors flex items-center gap-1.5"><i class="fas fa-phone text-[9px]"></i>054-636-8222</a>
+        <a href="https://blog.naver.com/gndentalclinic" target="_blank" class="hover:text-royal transition-colors flex items-center gap-1.5"><i class="fas fa-blog text-[9px]"></i>Blog</a>
       </div>
     </div>
   </div>
 
-  <!-- ===== Navigation (White Theme) ===== -->
+  <!-- ===== Navigation ===== -->
   <header class="fixed top-0 md:top-10 left-0 right-0 z-50 transition-all duration-700" id="navbar">
     <div class="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-12">
       <nav class="h-16 md:h-[68px] flex items-center justify-between md:rounded-2xl md:px-8 transition-all duration-500" id="navInner" style="background:transparent;">
         <!-- Logo -->
         <a href="/" class="flex items-center gap-3 group relative">
-          <div class="w-10 h-10 rounded-xl gold-grad flex items-center justify-center relative overflow-hidden">
+          <div class="w-10 h-10 rounded-xl royal-grad flex items-center justify-center relative overflow-hidden">
             <i class="fas fa-tooth text-white text-[14px] relative z-10"></i>
             <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
           </div>
@@ -349,27 +352,27 @@ export function layout(content: string, opts: LayoutOptions): string {
         <div class="hidden lg:flex items-center gap-0.5">
           <a href="/doctors" class="px-5 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative group font-medium">
             의료진
-            <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gold rounded-full group-hover:w-6 transition-all duration-300"></span>
+            <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-royal rounded-full group-hover:w-6 transition-all duration-300"></span>
           </a>
           <a href="/treatments" class="px-5 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative group font-medium">
             진료안내
-            <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gold rounded-full group-hover:w-6 transition-all duration-300"></span>
+            <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-royal rounded-full group-hover:w-6 transition-all duration-300"></span>
           </a>
           <a href="/treatments/implant" class="px-5 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative group font-medium">
             임플란트
-            <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gold rounded-full group-hover:w-6 transition-all duration-300"></span>
+            <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-royal rounded-full group-hover:w-6 transition-all duration-300"></span>
           </a>
           <a href="/treatments/invisalign" class="px-5 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative group font-medium">
             인비절라인
-            <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gold rounded-full group-hover:w-6 transition-all duration-300"></span>
+            <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-royal rounded-full group-hover:w-6 transition-all duration-300"></span>
           </a>
           <a href="/pricing" class="px-5 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative group font-medium">
             비용
-            <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gold rounded-full group-hover:w-6 transition-all duration-300"></span>
+            <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-royal rounded-full group-hover:w-6 transition-all duration-300"></span>
           </a>
           <a href="/directions" class="px-5 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative group font-medium">
             오시는길
-            <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gold rounded-full group-hover:w-6 transition-all duration-300"></span>
+            <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-royal rounded-full group-hover:w-6 transition-all duration-300"></span>
           </a>
           <div class="w-px h-5 bg-gray-200 mx-3"></div>
           <a href="/reservation" class="btn-primary !py-2.5 !px-7 !text-[12px] !gap-2 !font-bold">
@@ -379,7 +382,7 @@ export function layout(content: string, opts: LayoutOptions): string {
 
         <!-- Mobile -->
         <div class="flex items-center gap-2 lg:hidden">
-          <a href="tel:054-636-8222" class="w-10 h-10 rounded-xl bg-gold/5 border border-gold/10 flex items-center justify-center text-gold text-sm">
+          <a href="tel:054-636-8222" class="w-10 h-10 rounded-xl bg-royal/5 border border-royal/10 flex items-center justify-center text-royal text-sm">
             <i class="fas fa-phone"></i>
           </a>
           <button onclick="toggleMenu()" class="w-10 h-10 rounded-xl border border-gray-200 bg-white flex items-center justify-center" id="menuBtn">
@@ -393,25 +396,25 @@ export function layout(content: string, opts: LayoutOptions): string {
       </nav>
     </div>
 
-    <!-- Mobile Menu (White Theme) -->
+    <!-- Mobile Menu -->
     <div class="fixed inset-0 z-40 pointer-events-none opacity-0 transition-all duration-500" id="mobileMenu">
       <div class="absolute inset-0 bg-white/[0.98] backdrop-blur-2xl pointer-events-auto"></div>
       <div class="relative z-10 h-full flex flex-col pt-24 pb-8 px-8 pointer-events-auto overflow-y-auto">
         <div class="flex-1 flex flex-col justify-center gap-1">
-          <a href="/" class="block py-4 text-2xl font-bold text-charcoal hover:text-gold transition-colors border-b border-gray-100">홈</a>
-          <a href="/doctors" class="block py-4 text-2xl font-bold text-charcoal hover:text-gold transition-colors border-b border-gray-100">의료진 소개</a>
-          <a href="/treatments" class="block py-4 text-2xl font-bold text-charcoal hover:text-gold transition-colors border-b border-gray-100">진료 안내</a>
-          <a href="/treatments/implant" class="block py-4 text-2xl font-bold text-charcoal hover:text-gold transition-colors border-b border-gray-100">임플란트</a>
-          <a href="/treatments/invisalign" class="block py-4 text-2xl font-bold text-charcoal hover:text-gold transition-colors border-b border-gray-100">인비절라인</a>
-          <a href="/pricing" class="block py-4 text-2xl font-bold text-charcoal hover:text-gold transition-colors border-b border-gray-100">비용 안내</a>
-          <a href="/directions" class="block py-4 text-2xl font-bold text-charcoal hover:text-gold transition-colors border-b border-gray-100">오시는 길</a>
+          <a href="/" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">홈</a>
+          <a href="/doctors" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">의료진 소개</a>
+          <a href="/treatments" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">진료 안내</a>
+          <a href="/treatments/implant" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">임플란트</a>
+          <a href="/treatments/invisalign" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">인비절라인</a>
+          <a href="/pricing" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">비용 안내</a>
+          <a href="/directions" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">오시는 길</a>
         </div>
         <a href="/reservation" class="btn-primary justify-center w-full !text-base !py-5 !mt-4">
           <i class="fas fa-calendar-check"></i>상담 예약하기
         </a>
         <div class="mt-4 flex items-center justify-center gap-6 text-sm text-gray-400">
-          <a href="tel:054-636-8222" class="hover:text-gold transition"><i class="fas fa-phone mr-1.5"></i>054-636-8222</a>
-          <span>평일 09:00–17:30</span>
+          <a href="tel:054-636-8222" class="hover:text-royal transition"><i class="fas fa-phone mr-1.5"></i>054-636-8222</a>
+          <span>평일 09:00-17:30</span>
         </div>
       </div>
     </div>
@@ -422,24 +425,24 @@ export function layout(content: string, opts: LayoutOptions): string {
     ${content}
   </main>
 
-  <!-- ===== Footer (White Theme) ===== -->
-  <footer class="bg-snow-50 text-charcoal relative overflow-hidden border-t border-gray-100">
+  <!-- ===== Footer ===== -->
+  <footer class="bg-lavender text-charcoal relative overflow-hidden border-t border-royal/[0.06]">
     <!-- Marquee -->
-    <div class="border-b border-gray-100 py-6 overflow-hidden">
+    <div class="border-b border-royal/[0.05] py-6 overflow-hidden">
       <div class="flex whitespace-nowrap marquee-track">
-        ${Array(10).fill('<span class="mx-16 text-[11px] tracking-[0.3em] text-gray-200 font-bold uppercase">GANGNAM DENTAL CLINIC · 강남치과의원</span>').join('')}
+        ${Array(10).fill('<span class="mx-16 text-[11px] tracking-[0.3em] text-royal/15 font-bold uppercase">GANGNAM DENTAL CLINIC &middot; 강남치과의원</span>').join('')}
       </div>
     </div>
 
     <div class="max-w-[1440px] mx-auto px-8 lg:px-12 pt-24 pb-16 relative">
-      <div class="orb orb-gold w-[500px] h-[500px] -top-64 -right-64 opacity-10"></div>
+      <div class="orb orb-royal w-[500px] h-[500px] -top-64 -right-64 opacity-10"></div>
 
       <!-- Main footer grid -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-20">
         <!-- Brand column -->
         <div class="lg:col-span-5">
           <div class="flex items-center gap-3 mb-8">
-            <div class="w-12 h-12 rounded-xl gold-grad flex items-center justify-center">
+            <div class="w-12 h-12 rounded-xl royal-grad flex items-center justify-center">
               <i class="fas fa-tooth text-white text-lg"></i>
             </div>
             <div>
@@ -447,12 +450,14 @@ export function layout(content: string, opts: LayoutOptions): string {
               <div class="text-[9px] text-gray-300 tracking-[0.25em] font-semibold">GANGNAM DENTAL CLINIC</div>
             </div>
           </div>
-          <p class="text-gray-400 text-sm leading-relaxed mb-8 max-w-sm">
-            구강악안면외과 전문의 2인이 직접 진료하는<br>경북 영주시 프리미엄 치과의원.<br>
+          <p class="text-gray-400 text-sm leading-relaxed mb-4 max-w-sm">
             빠르게 낫고, 정확하게 오래가는 치과.
           </p>
+          <p class="text-gray-400 text-sm leading-relaxed mb-8 max-w-sm">
+            구강악안면외과 전문의 2인이 직접 진료하는<br>경북 영주시 프리미엄 치과의원.
+          </p>
           <div class="flex items-center gap-3">
-            <a href="https://blog.naver.com/gndentalclinic" target="_blank" class="w-10 h-10 rounded-xl border border-gray-200 flex items-center justify-center text-gray-400 hover:border-gold hover:text-gold transition-all">
+            <a href="https://blog.naver.com/gndentalclinic" target="_blank" class="w-10 h-10 rounded-xl border border-royal/10 flex items-center justify-center text-gray-400 hover:border-royal hover:text-royal transition-all bg-white">
               <i class="fas fa-blog text-sm"></i>
             </a>
           </div>
@@ -460,42 +465,42 @@ export function layout(content: string, opts: LayoutOptions): string {
 
         <!-- Links -->
         <div class="lg:col-span-2">
-          <h4 class="text-gold text-[10px] tracking-[0.2em] font-bold mb-8 uppercase">진료</h4>
+          <h4 class="text-royal text-[10px] tracking-[0.2em] font-bold mb-8 uppercase">진료</h4>
           <ul class="space-y-3.5 text-sm text-gray-400">
-            <li><a href="/treatments/implant" class="hover:text-gold transition-colors duration-300">임플란트</a></li>
-            <li><a href="/treatments/invisalign" class="hover:text-gold transition-colors duration-300">인비절라인</a></li>
-            <li><a href="/treatments/cerec" class="hover:text-gold transition-colors duration-300">당일보철 CEREC</a></li>
-            <li><a href="/treatments/cosmetic" class="hover:text-gold transition-colors duration-300">심미보철</a></li>
-            <li><a href="/treatments/wisdom-tooth" class="hover:text-gold transition-colors duration-300">사랑니발치</a></li>
-            <li><a href="/treatments" class="text-gold/60 hover:text-gold transition-colors duration-300 flex items-center gap-1">전체 보기<i class="fas fa-arrow-right text-[8px]"></i></a></li>
+            <li><a href="/treatments/implant" class="hover:text-royal transition-colors duration-300">임플란트</a></li>
+            <li><a href="/treatments/invisalign" class="hover:text-royal transition-colors duration-300">인비절라인</a></li>
+            <li><a href="/treatments/cerec" class="hover:text-royal transition-colors duration-300">당일보철 CEREC</a></li>
+            <li><a href="/treatments/cosmetic" class="hover:text-royal transition-colors duration-300">심미보철</a></li>
+            <li><a href="/treatments/wisdom-tooth" class="hover:text-royal transition-colors duration-300">사랑니발치</a></li>
+            <li><a href="/treatments" class="text-royal/60 hover:text-royal transition-colors duration-300 flex items-center gap-1">전체 보기<i class="fas fa-arrow-right text-[8px]"></i></a></li>
           </ul>
         </div>
 
         <div class="lg:col-span-2">
-          <h4 class="text-gold text-[10px] tracking-[0.2em] font-bold mb-8 uppercase">안내</h4>
+          <h4 class="text-royal text-[10px] tracking-[0.2em] font-bold mb-8 uppercase">안내</h4>
           <ul class="space-y-3.5 text-sm text-gray-400">
-            <li><a href="/doctors" class="hover:text-gold transition-colors duration-300">의료진</a></li>
-            <li><a href="/pricing" class="hover:text-gold transition-colors duration-300">비용안내</a></li>
-            <li><a href="/directions" class="hover:text-gold transition-colors duration-300">오시는길</a></li>
-            <li><a href="/reservation" class="hover:text-gold transition-colors duration-300">상담예약</a></li>
+            <li><a href="/doctors" class="hover:text-royal transition-colors duration-300">의료진</a></li>
+            <li><a href="/pricing" class="hover:text-royal transition-colors duration-300">비용안내</a></li>
+            <li><a href="/directions" class="hover:text-royal transition-colors duration-300">오시는길</a></li>
+            <li><a href="/reservation" class="hover:text-royal transition-colors duration-300">상담예약</a></li>
           </ul>
         </div>
 
         <!-- Contact -->
         <div class="lg:col-span-3">
-          <h4 class="text-gold text-[10px] tracking-[0.2em] font-bold mb-8 uppercase">Contact</h4>
+          <h4 class="text-royal text-[10px] tracking-[0.2em] font-bold mb-8 uppercase">Contact</h4>
           <div class="space-y-5 text-sm text-gray-400">
             <a href="tel:054-636-8222" class="flex items-center gap-4 group">
-              <div class="w-11 h-11 rounded-xl border border-gray-200 flex items-center justify-center group-hover:border-gold group-hover:bg-gold/5 transition-all duration-300">
-                <i class="fas fa-phone text-xs text-gray-400 group-hover:text-gold transition-colors"></i>
+              <div class="w-11 h-11 rounded-xl border border-royal/10 flex items-center justify-center group-hover:border-royal group-hover:bg-royal/5 transition-all duration-300 bg-white">
+                <i class="fas fa-phone text-xs text-gray-400 group-hover:text-royal transition-colors"></i>
               </div>
               <div>
                 <div class="text-gray-300 text-[10px] font-semibold tracking-wider uppercase mb-0.5">전화</div>
-                <div class="text-charcoal font-bold group-hover:text-gold transition-colors">054-636-8222</div>
+                <div class="text-charcoal font-bold group-hover:text-royal transition-colors">054-636-8222</div>
               </div>
             </a>
             <div class="flex items-start gap-4">
-              <div class="w-11 h-11 rounded-xl border border-gray-200 flex items-center justify-center flex-shrink-0">
+              <div class="w-11 h-11 rounded-xl border border-royal/10 flex items-center justify-center flex-shrink-0 bg-white">
                 <i class="fas fa-map-marker-alt text-xs text-gray-400"></i>
               </div>
               <div>
@@ -504,12 +509,12 @@ export function layout(content: string, opts: LayoutOptions): string {
               </div>
             </div>
             <div class="flex items-start gap-4">
-              <div class="w-11 h-11 rounded-xl border border-gray-200 flex items-center justify-center flex-shrink-0">
+              <div class="w-11 h-11 rounded-xl border border-royal/10 flex items-center justify-center flex-shrink-0 bg-white">
                 <i class="fas fa-clock text-xs text-gray-400"></i>
               </div>
               <div>
                 <div class="text-gray-300 text-[10px] font-semibold tracking-wider uppercase mb-0.5">진료시간</div>
-                <div class="text-gray-500 leading-relaxed">평일 09:00–17:30<br><span class="text-gray-300">점심 13:00–14:00 · 주말·공휴일 휴무</span></div>
+                <div class="text-gray-500 leading-relaxed">평일 09:00-17:30<br><span class="text-gray-300">점심 13:00-14:00 · 주말·공휴일 휴무</span></div>
               </div>
             </div>
           </div>
@@ -517,19 +522,19 @@ export function layout(content: string, opts: LayoutOptions): string {
       </div>
 
       <!-- Bottom bar -->
-      <div class="border-t border-gray-100 mt-20 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-[11px] text-gray-300">
-        <p>&copy; 2017–${new Date().getFullYear()} 강남치과의원. All rights reserved.</p>
+      <div class="border-t border-royal/[0.06] mt-20 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-[11px] text-gray-300">
+        <p>&copy; 2017-${new Date().getFullYear()} 강남치과의원. All rights reserved.</p>
         <p>대표: 이태형 · 사업자등록번호: 문의</p>
       </div>
     </div>
   </footer>
 
-  <!-- ===== Mobile Floating CTA (White Theme) ===== -->
+  <!-- ===== Mobile Floating CTA ===== -->
   <div class="floating-cta">
     <a href="tel:054-636-8222" class="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl bg-gray-100 text-charcoal text-sm font-bold border border-gray-200">
       <i class="fas fa-phone text-xs"></i>전화상담
     </a>
-    <a href="/reservation" class="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl gold-grad text-white text-sm font-bold shadow-lg shadow-gold/20">
+    <a href="/reservation" class="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl royal-grad text-white text-sm font-bold shadow-lg shadow-royal/20">
       <i class="fas fa-calendar-check text-xs"></i>상담예약
     </a>
   </div>
@@ -561,35 +566,20 @@ export function layout(content: string, opts: LayoutOptions): string {
     // ===== Reveal animations =====
     function initReveals() {
       gsap.utils.toArray('.reveal').forEach(el => {
-        gsap.to(el, {
-          opacity: 1, y: 0, duration: 1.2, ease: 'power4.out',
-          scrollTrigger: { trigger: el, start: 'top 88%', once: true }
-        });
+        gsap.to(el, { opacity: 1, y: 0, duration: 1.2, ease: 'power4.out', scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
       });
       gsap.utils.toArray('.reveal-left').forEach(el => {
-        gsap.to(el, {
-          opacity: 1, x: 0, duration: 1.2, ease: 'power4.out',
-          scrollTrigger: { trigger: el, start: 'top 88%', once: true }
-        });
+        gsap.to(el, { opacity: 1, x: 0, duration: 1.2, ease: 'power4.out', scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
       });
       gsap.utils.toArray('.reveal-right').forEach(el => {
-        gsap.to(el, {
-          opacity: 1, x: 0, duration: 1.2, ease: 'power4.out',
-          scrollTrigger: { trigger: el, start: 'top 88%', once: true }
-        });
+        gsap.to(el, { opacity: 1, x: 0, duration: 1.2, ease: 'power4.out', scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
       });
       gsap.utils.toArray('.reveal-scale').forEach(el => {
-        gsap.to(el, {
-          opacity: 1, scale: 1, duration: 1, ease: 'power4.out',
-          scrollTrigger: { trigger: el, start: 'top 88%', once: true }
-        });
+        gsap.to(el, { opacity: 1, scale: 1, duration: 1, ease: 'power4.out', scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
       });
       gsap.utils.toArray('.stagger-children').forEach(parent => {
         const children = parent.querySelectorAll('.stagger-item');
-        gsap.fromTo(children, { opacity: 0, y: 40 }, {
-          opacity: 1, y: 0, duration: 0.8, stagger: 0.12, ease: 'power4.out',
-          scrollTrigger: { trigger: parent, start: 'top 85%', once: true }
-        });
+        gsap.fromTo(children, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.8, stagger: 0.12, ease: 'power4.out', scrollTrigger: { trigger: parent, start: 'top 85%', once: true } });
       });
     }
 
@@ -607,7 +597,7 @@ export function layout(content: string, opts: LayoutOptions): string {
       });
     }
 
-    // ===== Nav scroll (White Theme) =====
+    // ===== Nav scroll =====
     const navbar = document.getElementById('navbar');
     const navInner = document.getElementById('navInner');
     window.addEventListener('scroll', () => {
