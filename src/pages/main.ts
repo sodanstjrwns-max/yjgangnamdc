@@ -279,8 +279,8 @@ export function mainPage(): string {
 
   // Doctors section
   const doctors = [
-    { slug: 'lee-taehyung', name: '이태형', title: '대표원장', spec: '구강악안면외과 전문의', quote: '"한 번 오시면 됩니다. 여러 번 오실 필요 없습니다."', summary: '구강악안면외과 전문의 · 수술 전문<br>고려대 구로병원 레지던트 수료', fields: ['임플란트', '구강외과 수술', '뼈이식', '상악동 수술'], initial: '이' },
-    { slug: 'choi-minhye', name: '최민혜', title: '원장', spec: '구강악안면외과 전문의', quote: '"외과 전문의의 손은 다릅니다."', summary: '구강악안면외과 전문의 · 인제대 백병원 수료<br>임플란트, 틀니, 레이저 치료 전문', fields: ['임플란트', '틀니', '레이저 치료', '심미보철'], initial: '최' }
+    { slug: 'lee-taehyung', name: '이태형', title: '대표원장', spec: '구강악안면외과 전문의', quote: '"한 번 오시면 됩니다. 여러 번 오실 필요 없습니다."', summary: '구강악안면외과 전문의 · 수술 전문<br>고려대 구로병원 레지던트 수료', fields: ['임플란트', '구강외과 수술', '뼈이식', '상악동 수술'], initial: '이', photo: '/static/doctors/lee-taehyung.jpg' },
+    { slug: 'choi-minhye', name: '최민혜', title: '원장', spec: '구강악안면외과 전문의', quote: '"외과 전문의의 손은 다릅니다."', summary: '구강악안면외과 전문의 · 인제대 백병원 수료<br>임플란트, 틀니, 레이저 치료 전문', fields: ['임플란트', '틀니', '레이저 치료', '심미보철'], initial: '최', photo: null as string | null }
   ];
   const doctorsHtml = doctors.map(doc => `
     <a href="/doctors/${doc.slug}" class="group stagger-item block">
@@ -288,7 +288,11 @@ export function mainPage(): string {
         <div class="relative h-80 md:h-[400px] overflow-hidden bg-gradient-to-br from-lavender via-white to-royal/[0.03]">
           <div class="absolute inset-0 bg-gradient-to-t from-white via-white/30 to-transparent z-10"></div>
           <div class="absolute top-6 right-6 w-20 h-20 border border-royal/10 rounded-full z-20 group-hover:scale-150 group-hover:opacity-0 transition-all duration-700"></div>
+          ${doc.photo ? `
+          <img src="${doc.photo}" alt="${doc.name} ${doc.title}" class="absolute inset-0 w-full h-full object-cover object-top z-[5]" loading="lazy">
+          ` : `
           <div class="absolute inset-0 flex items-center justify-center z-[5]"><div class="w-32 h-32 rounded-3xl bg-white shadow-xl border border-royal/[0.08] flex items-center justify-center group-hover:scale-110 transition-transform duration-700"><span class="royal-grad-text text-5xl font-black">${doc.initial}</span></div></div>
+          `}
           <div class="absolute bottom-0 left-0 right-0 p-8 z-20"><div class="flex items-center gap-2 mb-3"><span class="px-4 py-1.5 rounded-full royal-grad text-white text-[11px] font-bold tracking-wide">${doc.title}</span><span class="px-4 py-1.5 rounded-full bg-white/80 text-gray-600 text-[11px] font-medium backdrop-blur-lg border border-royal/10">${doc.spec}</span></div></div>
         </div>
         <div class="p-8 md:p-10">
@@ -555,7 +559,9 @@ export function mainPage(): string {
           </div>
           <div class="relative z-10 mt-10 flex items-center gap-6 pt-8 border-t border-gray-100">
             <div class="flex -space-x-3">
-              <div class="w-14 h-14 rounded-2xl bg-lavender flex items-center justify-center text-royal text-lg font-bold border-2 border-white shadow-lg">이</div>
+              <div class="w-14 h-14 rounded-2xl overflow-hidden border-2 border-white shadow-lg">
+                <img src="/static/doctors/lee-taehyung.jpg" alt="이태형 대표원장" class="w-full h-full object-cover object-top">
+              </div>
               <div class="w-14 h-14 rounded-2xl bg-royal-100 flex items-center justify-center text-royal text-lg font-bold border-2 border-white shadow-lg">최</div>
             </div>
             <div><div class="text-charcoal font-bold">이태형 · 최민혜 원장</div><div class="text-gray-400 text-sm">구강악안면외과 전문의</div></div>

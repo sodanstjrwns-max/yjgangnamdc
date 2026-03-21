@@ -1,6 +1,7 @@
 const doctors = [
   {
     slug: 'lee-taehyung', name: '이태형', title: '대표원장', initial: '이',
+    photo: '/static/doctors/lee-taehyung.jpg',
     specialty: '구강악안면외과 전문의',
     h1: '이태형 대표원장 – 구강악안면외과 전문의',
     description: '강남치과의원 이태형 대표원장. 고려대 구강악안면외과 석사, 구강외과 전문의. 임플란트·뼈이식·구강외과 수술 전문.',
@@ -33,6 +34,7 @@ const doctors = [
   },
   {
     slug: 'choi-minhye', name: '최민혜', title: '원장', initial: '최',
+    photo: null as string | null,
     specialty: '구강악안면외과 전문의',
     h1: '최민혜 원장 – 구강악안면외과 전문의',
     description: '강남치과의원 최민혜 원장. 인제대 백병원 구강악안면외과 수료, 구강외과 전문의. 임플란트·틀니·레이저 치료 전문.',
@@ -141,9 +143,15 @@ export function doctorsPage(): string {
             <div class="absolute -top-20 -right-20 w-44 h-44 bg-royal/[0.06] rounded-full blur-[80px] group-hover:bg-royal/[0.12] transition-all duration-1000"></div>
             <div class="relative z-10">
               <div class="flex items-center gap-4 mb-5">
+                ${doc.photo ? `
+                <div class="w-16 h-16 rounded-2xl border border-royal/20 overflow-hidden group-hover:scale-110 transition-transform duration-500">
+                  <img src="${doc.photo}" alt="${doc.name} ${doc.title}" class="w-full h-full object-cover object-top" loading="lazy">
+                </div>
+                ` : `
                 <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-royal/20 to-royal/5 border border-royal/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
                   <span class="text-3xl font-black" style="background: linear-gradient(135deg, #93DBDC, #4BC3C5); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${doc.initial}</span>
                 </div>
+                `}
                 <div>
                   <div class="flex items-center gap-2 mb-1">
                     <span class="text-white text-xl font-extrabold">${doc.name}</span>
@@ -274,6 +282,10 @@ export function doctorsPage(): string {
           <div class="grid grid-cols-1 lg:grid-cols-5 gap-0">
             <!-- Photo -->
             <div class="lg:col-span-2 relative min-h-[320px] lg:min-h-[560px] overflow-hidden bg-gradient-to-br from-lavender via-white to-royal/[0.03]">
+              ${doc.photo ? `
+              <img src="${doc.photo}" alt="${doc.name} ${doc.title}" class="absolute inset-0 w-full h-full object-cover object-top" loading="lazy">
+              <div class="absolute inset-0 bg-gradient-to-t from-white via-white/20 to-transparent z-10"></div>
+              ` : `
               <div class="absolute inset-0 bg-gradient-to-t from-white/80 via-white/20 to-transparent z-10"></div>
               <div class="absolute top-6 right-6 w-16 h-16 border border-royal/10 rounded-full z-20"></div>
               <div class="absolute inset-0 flex items-center justify-center z-[5]">
@@ -281,6 +293,7 @@ export function doctorsPage(): string {
                   <span class="royal-grad-text text-6xl font-black">${doc.initial}</span>
                 </div>
               </div>
+              `}
               <div class="absolute bottom-0 left-0 right-0 p-8 z-20">
                 <div class="flex items-center gap-2">
                   <span class="px-4 py-1.5 rounded-full royal-grad text-white text-[11px] font-bold tracking-wide">${doc.title}</span>
@@ -432,10 +445,14 @@ export function doctorProfilePage(slug: string): { html: string; title: string; 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
           <div>
             <div class="aspect-[3/4] rounded-3xl flex items-center justify-center sticky top-28 royal-border-glow overflow-hidden relative bg-gradient-to-br from-lavender via-white to-royal/[0.03]">
+              ${doc.photo ? `
+              <img src="${doc.photo}" alt="${doc.name} ${doc.title}" class="absolute inset-0 w-full h-full object-cover object-top" loading="lazy">
+              ` : `
               <div class="absolute top-4 right-4 w-12 h-12 border border-royal/10 rounded-full"></div>
               <div class="w-28 h-28 rounded-3xl bg-white shadow-xl border border-royal/[0.08] flex items-center justify-center">
                 <span class="royal-grad-text text-5xl font-black">${doc.initial}</span>
               </div>
+              `}
             </div>
           </div>
 
