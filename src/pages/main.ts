@@ -468,46 +468,55 @@ export function mainPage(): string {
           </div>
         </div>
 
-        <!-- Right: 3D Implant (Three.js) -->
+        <!-- Right: 3D Tooth (Sketchfab Embed) -->
         <div class="lg:col-span-5 hidden lg:flex items-center justify-center" id="heroVisual">
           <div class="relative">
-            <!-- Three.js Canvas Container -->
-            <div id="implant3DContainer" style="width:460px; height:560px; position:relative;"></div>
+            <!-- Sketchfab 3D Viewer -->
+            <div class="relative" style="width:480px; height:560px;">
+              <iframe 
+                title="3D Dental Model" 
+                frameborder="0" 
+                allowfullscreen 
+                mozallowfullscreen="true" 
+                webkitallowfullscreen="true" 
+                allow="autoplay; fullscreen; xr-spatial-tracking" 
+                src="https://sketchfab.com/models/54376b4e2c3b4091aedaa12d94e15076/embed?autospin=0.3&autostart=1&transparent=1&ui_animations=0&ui_infos=0&ui_stop=0&ui_inspector=0&ui_watermark_link=0&ui_watermark=0&ui_ar=0&ui_help=0&ui_settings=0&ui_vr=0&ui_fullscreen=0&ui_annotations=0&camera=0&preload=1&ui_hint=0&ui_controls=0"
+                style="width:100%; height:100%; border:none; border-radius:24px;"
+                loading="lazy"
+              ></iframe>
+              <!-- Subtle overlay to hide any remaining Sketchfab branding -->
+              <div class="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white via-white/80 to-transparent rounded-b-3xl pointer-events-none"></div>
+            </div>
             
             <!-- Glow behind -->
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] h-[340px] rounded-full pointer-events-none" style="background: radial-gradient(circle, rgba(16,175,178,0.10) 0%, rgba(16,175,178,0.03) 45%, transparent 70%); animation: implantPulse 4s ease-in-out infinite; z-index:-1;"></div>
-
-            <!-- Orbit ring -->
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full border border-royal/[0.06] pointer-events-none" style="animation: orbitSpin 25s linear infinite; z-index:-1;">
-              <div class="absolute -top-1 left-1/2 w-2 h-2 rounded-full bg-royal/20"></div>
-            </div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[380px] h-[380px] rounded-full pointer-events-none" style="background: radial-gradient(circle, rgba(16,175,178,0.08) 0%, rgba(16,175,178,0.02) 50%, transparent 70%); animation: implantPulse 4s ease-in-out infinite; z-index:-1;"></div>
 
             <!-- Floating labels -->
-            <div class="absolute top-[8%] -left-4 p-3.5 rounded-2xl bg-white/90 backdrop-blur-xl border border-royal/10 shadow-xl shadow-royal/[0.06] pointer-events-none" style="animation: float 5s ease-in-out infinite;">
+            <div class="absolute top-[6%] -left-6 p-3.5 rounded-2xl bg-white/90 backdrop-blur-xl border border-royal/10 shadow-xl shadow-royal/[0.06] pointer-events-none" style="animation: float 5s ease-in-out infinite; z-index:20;">
               <div class="flex items-center gap-2.5">
-                <div class="w-9 h-9 rounded-xl royal-grad flex items-center justify-center"><i class="fas fa-tooth text-white text-xs"></i></div>
-                <div><div class="text-charcoal text-[12px] font-bold">교합면</div><div class="text-gray-400 text-[10px]">5개 교두 정밀 재현</div></div>
+                <div class="w-9 h-9 rounded-xl royal-grad flex items-center justify-center"><i class="fas fa-user-doctor text-white text-xs"></i></div>
+                <div><div class="text-charcoal text-[12px] font-bold">전문의 직접 수술</div><div class="text-gray-400 text-[10px]">구강악안면외과 전문의</div></div>
               </div>
             </div>
 
-            <div class="absolute top-[42%] -right-8 p-3.5 rounded-2xl bg-white/90 backdrop-blur-xl border border-royal/10 shadow-xl shadow-royal/[0.06] pointer-events-none" style="animation: float 5s ease-in-out infinite; animation-delay:-2s;">
+            <div class="absolute top-[40%] -right-10 p-3.5 rounded-2xl bg-white/90 backdrop-blur-xl border border-royal/10 shadow-xl shadow-royal/[0.06] pointer-events-none" style="animation: float 5s ease-in-out infinite; animation-delay:-2s; z-index:20;">
               <div class="flex items-center gap-2.5">
-                <div class="w-9 h-9 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center"><i class="fas fa-gem text-gray-500 text-xs"></i></div>
-                <div><div class="text-charcoal text-[12px] font-bold">세라믹 보철</div><div class="text-gray-400 text-[10px]">자연치아 재현</div></div>
+                <div class="w-9 h-9 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center"><i class="fas fa-bolt text-royal text-xs"></i></div>
+                <div><div class="text-charcoal text-[12px] font-bold">CEREC 당일보철</div><div class="text-gray-400 text-[10px]">한 번 방문으로 끝</div></div>
               </div>
             </div>
 
-            <div class="absolute bottom-[12%] -left-2 p-3.5 rounded-2xl bg-white/90 backdrop-blur-xl border border-royal/10 shadow-xl shadow-royal/[0.06] pointer-events-none" style="animation: float 5s ease-in-out infinite; animation-delay:-3.5s;">
+            <div class="absolute bottom-[14%] -left-4 p-3.5 rounded-2xl bg-white/90 backdrop-blur-xl border border-royal/10 shadow-xl shadow-royal/[0.06] pointer-events-none" style="animation: float 5s ease-in-out infinite; animation-delay:-3.5s; z-index:20;">
               <div class="flex items-center gap-2.5">
-                <div class="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center"><i class="fas fa-shield-halved text-emerald-500 text-xs"></i></div>
-                <div><div class="text-charcoal text-[12px] font-bold">치근</div><div class="text-gray-400 text-[10px]">3-root 구조</div></div>
+                <div class="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center"><i class="fas fa-tooth text-emerald-500 text-xs"></i></div>
+                <div><div class="text-charcoal text-[12px] font-bold">3D 정밀진단</div><div class="text-gray-400 text-[10px]">디지털 CT · 구강스캔</div></div>
               </div>
             </div>
 
             <!-- Drag hint -->
-            <div id="dragHint" class="absolute -bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-2 text-gray-300 text-[10px] tracking-wider font-medium pointer-events-none" style="animation: fadeInOut 3s ease-in-out infinite;">
+            <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-2 text-gray-300 text-[10px] tracking-wider font-medium pointer-events-none" style="animation: fadeInOut 3s ease-in-out infinite; z-index:20;">
               <i class="fas fa-hand-pointer text-royal/40"></i>
-              <span>드래그하여 회전</span>
+              <span>드래그하여 360° 회전</span>
             </div>
           </div>
         </div>
@@ -520,11 +529,6 @@ export function mainPage(): string {
         <div class="w-[3px] h-[8px] rounded-full bg-royal animate-bounce"></div>
       </div>
     </div>
-
-    <!-- Three.js r137 (local) + GLTFLoader -->
-    <script src="/static/three.min.js"></script>
-    <script src="/static/GLTFLoader.js"></script>
-    <script src="/static/implant-scene.js"></script>
 
     <script>
       const heroTl = gsap.timeline({ delay: 0.3 });
