@@ -186,9 +186,9 @@ export function noticeDetailPage(notice: any): { html: string; title: string; de
     .notice-content ul, .notice-content ol { color: #6B7280; padding-left: 1.5rem; margin-bottom: 1.5rem; }
     .notice-content li { margin-bottom: 0.5rem; line-height: 1.8; }
     .notice-content img { border-radius: 16px; margin: 2rem 0; width: 100%; }
-    .notice-content blockquote { border-left: 4px solid #5B2C8E; padding: 1rem 1.5rem; background: #F8F5FB; border-radius: 0 12px 12px 0; margin: 2rem 0; color: #5B2C8E; font-style: italic; }
+    .notice-content blockquote { border-left: 4px solid #10AFB2; padding: 1rem 1.5rem; background: #F3FBFB; border-radius: 0 12px 12px 0; margin: 2rem 0; color: #10AFB2; font-style: italic; }
     .notice-content table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.9rem; }
-    .notice-content th { background: #F8F5FB; color: #5B2C8E; font-weight: 700; padding: 12px 16px; text-align: left; border-bottom: 2px solid #E8DFF0; }
+    .notice-content th { background: #F3FBFB; color: #10AFB2; font-weight: 700; padding: 12px 16px; text-align: left; border-bottom: 2px solid #E2F5F5; }
     .notice-content td { padding: 10px 16px; border-bottom: 1px solid #F3F4F6; color: #6B7280; }
     .notice-content tr:hover td { background: #FAFBFC; }
   </style>

@@ -189,7 +189,7 @@ export function blogDetailPage(post: any): { html: string; title: string; descri
     .blog-content ul, .blog-content ol { color: #6B7280; padding-left: 1.5rem; margin-bottom: 1.5rem; }
     .blog-content li { margin-bottom: 0.5rem; line-height: 1.8; }
     .blog-content img { border-radius: 16px; margin: 2rem 0; width: 100%; }
-    .blog-content blockquote { border-left: 4px solid #5B2C8E; padding: 1rem 1.5rem; background: #F8F5FB; border-radius: 0 12px 12px 0; margin: 2rem 0; color: #5B2C8E; font-style: italic; }
+    .blog-content blockquote { border-left: 4px solid #10AFB2; padding: 1rem 1.5rem; background: #F3FBFB; border-radius: 0 12px 12px 0; margin: 2rem 0; color: #10AFB2; font-style: italic; }
   </style>
   `;
 

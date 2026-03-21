@@ -5,31 +5,31 @@ export function adminPage(): string {
   <style>
     .admin-sidebar { min-height: calc(100vh - 80px); }
     .admin-tab { cursor: pointer; padding: 12px 20px; border-radius: 12px; font-size: 14px; font-weight: 600; color: #6B7280; transition: all 0.3s; display: flex; align-items: center; gap: 10px; }
-    .admin-tab:hover { background: rgba(91,44,142,0.04); color: #5B2C8E; }
-    .admin-tab.active { background: linear-gradient(135deg, #8A5CB5, #5B2C8E); color: #fff; }
+    .admin-tab:hover { background: rgba(16,175,178,0.04); color: #10AFB2; }
+    .admin-tab.active { background: linear-gradient(135deg, #4BC3C5, #10AFB2); color: #fff; }
     .admin-tab .badge { background: #EF4444; color: #fff; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 100px; }
     .admin-panel { display: none; }
     .admin-panel.active { display: block; }
     .admin-table { width: 100%; border-collapse: collapse; }
-    .admin-table th { background: #F8F5FB; color: #5B2C8E; font-weight: 700; font-size: 11px; padding: 12px 16px; text-align: left; text-transform: uppercase; letter-spacing: 0.05em; }
+    .admin-table th { background: #F3FBFB; color: #10AFB2; font-weight: 700; font-size: 11px; padding: 12px 16px; text-align: left; text-transform: uppercase; letter-spacing: 0.05em; }
     .admin-table td { padding: 12px 16px; border-bottom: 1px solid #F3F4F6; font-size: 13px; color: #374151; }
     .admin-table tr:hover td { background: #FAFBFC; }
     .admin-card { background: #fff; border: 1px solid rgba(0,0,0,0.06); border-radius: 20px; }
     .admin-stat { text-align: center; }
-    .admin-stat .num { font-size: 2rem; font-weight: 800; background: linear-gradient(135deg, #5B2C8E, #8A5CB5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .admin-stat .num { font-size: 2rem; font-weight: 800; background: linear-gradient(135deg, #10AFB2, #4BC3C5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .admin-stat .label { font-size: 12px; color: #9CA3AF; margin-top: 4px; }
     .status-badge { padding: 4px 12px; border-radius: 100px; font-size: 11px; font-weight: 700; }
     .status-new { background: #FEF3C7; color: #D97706; }
     .status-contacted { background: #DBEAFE; color: #2563EB; }
     .status-completed { background: #D1FAE5; color: #059669; }
     .admin-input { width: 100%; padding: 10px 16px; border: 1px solid #E5E7EB; border-radius: 12px; font-size: 14px; outline: none; transition: border-color 0.3s; }
-    .admin-input:focus { border-color: #5B2C8E; box-shadow: 0 0 0 3px rgba(91,44,142,0.1); }
+    .admin-input:focus { border-color: #10AFB2; box-shadow: 0 0 0 3px rgba(16,175,178,0.1); }
     .admin-textarea { width: 100%; padding: 12px 16px; border: 1px solid #E5E7EB; border-radius: 12px; font-size: 14px; outline: none; min-height: 200px; transition: border-color 0.3s; resize: vertical; }
-    .admin-textarea:focus { border-color: #5B2C8E; box-shadow: 0 0 0 3px rgba(91,44,142,0.1); }
+    .admin-textarea:focus { border-color: #10AFB2; box-shadow: 0 0 0 3px rgba(16,175,178,0.1); }
     .admin-select { padding: 10px 16px; border: 1px solid #E5E7EB; border-radius: 12px; font-size: 14px; outline: none; background: #fff; }
     .admin-btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 24px; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.3s; border: none; }
-    .admin-btn-primary { background: linear-gradient(135deg, #8A5CB5, #5B2C8E); color: #fff; }
-    .admin-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(91,44,142,0.3); }
+    .admin-btn-primary { background: linear-gradient(135deg, #4BC3C5, #10AFB2); color: #fff; }
+    .admin-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(16,175,178,0.3); }
     .admin-btn-danger { background: #FEE2E2; color: #DC2626; }
     .admin-btn-danger:hover { background: #FECACA; }
     .admin-btn-secondary { background: #F3F4F6; color: #374151; }
@@ -280,7 +280,7 @@ export function adminPage(): string {
           <div><label class="text-xs font-bold text-gray-500 mb-1 block">작성자</label><input class="admin-input" id="noticeAuthor" value="강남치과의원"></div>
           <div class="flex items-end">
             <label class="flex items-center gap-3 cursor-pointer">
-              <input type="checkbox" id="noticePinned" class="w-5 h-5 rounded accent-purple-600">
+              <input type="checkbox" id="noticePinned" class="w-5 h-5 rounded accent-teal-600">
               <span class="text-sm font-bold text-gray-600">상단 고정</span>
             </label>
           </div>
@@ -382,7 +382,7 @@ export function adminPage(): string {
         ? '<tr><td colspan="6" class="text-center text-gray-400 py-8">게시글이 없습니다</td></tr>'
         : data.posts.map(p => \`<tr>
           <td><span class="status-badge \${p.is_published ? 'status-completed' : 'status-new'}">\${p.is_published ? '공개' : '비공개'}</span></td>
-          <td class="font-bold max-w-[250px] truncate"><a href="/blog/\${p.slug}" target="_blank" class="hover:text-purple-600">\${p.title}</a></td>
+          <td class="font-bold max-w-[250px] truncate"><a href="/blog/\${p.slug}" target="_blank" class="hover:text-teal-600">\${p.title}</a></td>
           <td>\${p.category}</td>
           <td>\${p.views}</td>
           <td class="text-gray-400 text-xs">\${p.published_at?.split('T')[0] || ''}</td>
@@ -450,7 +450,7 @@ export function adminPage(): string {
         ? '<tr><td colspan="6" class="text-center text-gray-400 py-8">사례가 없습니다</td></tr>'
         : data.cases.map(c => \`<tr>
           <td><span class="status-badge \${c.is_published ? 'status-completed' : 'status-new'}">\${c.is_published ? '공개' : '비공개'}</span></td>
-          <td class="font-bold max-w-[200px] truncate"><a href="/before-after/\${c.slug}" target="_blank" class="hover:text-purple-600">\${c.title}</a></td>
+          <td class="font-bold max-w-[200px] truncate"><a href="/before-after/\${c.slug}" target="_blank" class="hover:text-teal-600">\${c.title}</a></td>
           <td>\${c.category}</td>
           <td>\${c.patient_info || '-'}</td>
           <td>\${c.views}</td>
@@ -524,7 +524,7 @@ export function adminPage(): string {
         ? '<tr><td colspan="6" class="text-center text-gray-400 py-8">공지사항이 없습니다</td></tr>'
         : data.notices.map(n => \`<tr>
           <td><span class="status-badge \${n.is_published ? 'status-completed' : 'status-new'}">\${n.is_published ? '공개' : '비공개'}</span></td>
-          <td class="font-bold max-w-[250px] truncate"><a href="/notices/\${n.slug}" target="_blank" class="hover:text-purple-600">\${n.title}</a></td>
+          <td class="font-bold max-w-[250px] truncate"><a href="/notices/\${n.slug}" target="_blank" class="hover:text-teal-600">\${n.title}</a></td>
           <td>\${n.category}</td>
           <td>\${n.is_pinned ? '<i class="fas fa-thumbtack text-red-400"></i>' : '-'}</td>
           <td>\${n.views}</td>

@@ -73,11 +73,11 @@ export function doctorsPage(): string {
     <div class="absolute inset-0 bg-gradient-to-br from-[#0E0618] via-[#1A0D2E] to-[#0E0618]"></div>
     
     <!-- Animated grid -->
-    <div class="absolute inset-0" style="background-image: linear-gradient(rgba(91,44,142,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(91,44,142,0.06) 1px, transparent 1px); background-size: 60px 60px;"></div>
+    <div class="absolute inset-0" style="background-image: linear-gradient(rgba(16,175,178,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(16,175,178,0.06) 1px, transparent 1px); background-size: 60px 60px;"></div>
 
     <!-- Giant glowing orbs -->
     <div class="absolute top-1/4 left-1/4 w-[700px] h-[700px] bg-royal/[0.08] rounded-full blur-[200px] animate-pulse" style="animation-duration:6s;"></div>
-    <div class="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-[#8A5CB5]/[0.06] rounded-full blur-[180px] animate-pulse" style="animation-duration:8s; animation-delay:2s;"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-[#4BC3C5]/[0.06] rounded-full blur-[180px] animate-pulse" style="animation-duration:8s; animation-delay:2s;"></div>
     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-gold/[0.04] rounded-full blur-[120px]"></div>
 
     <!-- Particle canvas -->
@@ -86,7 +86,7 @@ export function doctorsPage(): string {
     <!-- Giant "2" watermark -->
     <div class="absolute inset-0 flex items-center justify-center pointer-events-none select-none" style="z-index:3;">
       <span class="text-[30vw] md:text-[25vw] font-black text-transparent" style="
-        -webkit-text-stroke: 1px rgba(91,44,142,0.08);
+        -webkit-text-stroke: 1px rgba(16,175,178,0.08);
         line-height: 0.85;
         letter-spacing: -0.05em;
       " id="giantNumber">2</span>
@@ -124,7 +124,7 @@ export function doctorsPage(): string {
             <span class="block text-white font-black" style="font-size: clamp(3.5rem, 10vw, 8rem); line-height: 1.0; letter-spacing: -0.04em;" id="dLine1">수술 전문</span>
           </span>
           <span class="block overflow-hidden">
-            <span class="block font-black" style="font-size: clamp(3.5rem, 10vw, 8rem); line-height: 1.0; letter-spacing: -0.04em; background: linear-gradient(135deg, #B99FD2, #8A5CB5, #C9A96E); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;" id="dLine2">전문의 2인</span>
+            <span class="block font-black" style="font-size: clamp(3.5rem, 10vw, 8rem); line-height: 1.0; letter-spacing: -0.04em; background: linear-gradient(135deg, #93DBDC, #4BC3C5, #C9A96E); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;" id="dLine2">전문의 2인</span>
           </span>
         </h1>
 
@@ -142,7 +142,7 @@ export function doctorsPage(): string {
             <div class="relative z-10">
               <div class="flex items-center gap-4 mb-5">
                 <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-royal/20 to-royal/5 border border-royal/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
-                  <span class="text-3xl font-black" style="background: linear-gradient(135deg, #B99FD2, #8A5CB5); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${doc.initial}</span>
+                  <span class="text-3xl font-black" style="background: linear-gradient(135deg, #93DBDC, #4BC3C5); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${doc.initial}</span>
                 </div>
                 <div>
                   <div class="flex items-center gap-2 mb-1">
@@ -223,7 +223,7 @@ export function doctorsPage(): string {
               ctx.beginPath();
               ctx.moveTo(particles[i].x,particles[i].y);
               ctx.lineTo(particles[j].x,particles[j].y);
-              ctx.strokeStyle='rgba(91,44,142,'+(0.04*(1-dist/120))+')';
+              ctx.strokeStyle='rgba(16,175,178,'+(0.04*(1-dist/120))+')';
               ctx.lineWidth=0.5;
               ctx.stroke();
             }

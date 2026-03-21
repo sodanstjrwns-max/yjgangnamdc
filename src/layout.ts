@@ -281,10 +281,10 @@ export function layout(content: string, opts: LayoutOptions): string {
       theme: {
         extend: {
           colors: {
-            royal: { 50:'#F8F5FB', 100:'#E8DFF0', 200:'#D1BFE1', 300:'#B99FD2', 400:'#8A5CB5', DEFAULT:'#5B2C8E', dark:'#42206B', 900:'#2E1550' },
+            royal: { 50:'#F3FBFB', 100:'#E2F5F5', 200:'#C3EBEB', 300:'#93DBDC', 400:'#4BC3C5', DEFAULT:'#10AFB2', dark:'#0C8385', 900:'#085759' },
             gold: { 50:'#FBF8F0', 100:'#F5EDD8', DEFAULT:'#C9A96E', dark:'#A88B3C' },
             charcoal: { DEFAULT:'#1C1C1E', light:'#2a2a2a', 800:'#333333', 700:'#444444' },
-            lavender: { DEFAULT:'#F8F5FB', light:'#FAF8FC', dark:'#F0EBF5' },
+            lavender: { DEFAULT:'#F3FBFB', light:'#F7FCFC', dark:'#E2F5F5' },
             snow: { DEFAULT:'#FFFFFF', 50:'#FAFBFC', 100:'#F5F6F8' }
           },
           fontFamily: {
@@ -309,15 +309,15 @@ export function layout(content: string, opts: LayoutOptions): string {
 
   <style>
     :root {
-      --royal: #5B2C8E;
-      --royal-dark: #42206B;
-      --royal-light: #E8DFF0;
-      --royal-50: #F8F5FB;
+      --royal: #10AFB2;
+      --royal-dark: #0C8385;
+      --royal-light: #E2F5F5;
+      --royal-50: #F3FBFB;
       --gold: #C9A96E;
       --gold-dark: #A88B3C;
       --charcoal: #1C1C1E;
       --white: #FFFFFF;
-      --lavender: #F8F5FB;
+      --lavender: #F3FBFB;
     }
     * { font-family: 'Pretendard Variable', Pretendard, -apple-system, system-ui, sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
@@ -330,12 +330,12 @@ export function layout(content: string, opts: LayoutOptions): string {
     .display-md { font-size: clamp(1.5rem, 3vw, 2.25rem); line-height: 1.2; letter-spacing: -0.02em; font-weight: 700; }
 
     /* ===== Royal Purple Gradients ===== */
-    .royal-grad { background: linear-gradient(135deg, #8A5CB5, #5B2C8E 40%, #42206B); }
-    .royal-grad-text { background: linear-gradient(135deg, #42206B, #5B2C8E 30%, #8A5CB5 60%, #5B2C8E); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .royal-glow { box-shadow: 0 8px 32px rgba(91,44,142,0.2), 0 2px 8px rgba(91,44,142,0.1); }
-    .royal-border { border: 1px solid rgba(91,44,142,0.15); }
-    .royal-border-glow { border: 1px solid rgba(91,44,142,0.2); box-shadow: 0 4px 24px rgba(91,44,142,0.08); }
-    .royal-line-h { height: 1px; background: linear-gradient(90deg, transparent, rgba(91,44,142,0.15), transparent); }
+    .royal-grad { background: linear-gradient(135deg, #4BC3C5, #10AFB2 40%, #0C8385); }
+    .royal-grad-text { background: linear-gradient(135deg, #0C8385, #10AFB2 30%, #4BC3C5 60%, #10AFB2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .royal-glow { box-shadow: 0 8px 32px rgba(16,175,178,0.25), 0 2px 8px rgba(16,175,178,0.12); }
+    .royal-border { border: 1px solid rgba(16,175,178,0.15); }
+    .royal-border-glow { border: 1px solid rgba(16,175,178,0.2); box-shadow: 0 4px 24px rgba(16,175,178,0.1); }
+    .royal-line-h { height: 1px; background: linear-gradient(90deg, transparent, rgba(16,175,178,0.15), transparent); }
 
     /* ===== Gold Accent ===== */
     .gold-accent { color: var(--gold); }
@@ -345,7 +345,7 @@ export function layout(content: string, opts: LayoutOptions): string {
     /* ===== Glass Effects ===== */
     .glass-white { background: rgba(255,255,255,0.85); backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%); }
     .glass-lavender { background: rgba(248,245,251,0.9); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
-    .glass-royal { background: rgba(91,44,142,0.04); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(91,44,142,0.1); }
+    .glass-royal { background: rgba(16,175,178,0.04); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(16,175,178,0.1); }
 
     /* ===== Cards ===== */
     .card-premium {
@@ -361,14 +361,14 @@ export function layout(content: string, opts: LayoutOptions): string {
       position: absolute;
       top: 0; left: 0; right: 0;
       height: 2px;
-      background: linear-gradient(90deg, transparent 10%, #5B2C8E 50%, transparent 90%);
+      background: linear-gradient(90deg, transparent 10%, #10AFB2 50%, transparent 90%);
       opacity: 0;
       transition: opacity 0.6s;
     }
     .card-premium:hover {
       transform: translateY(-8px) scale(1.005);
-      box-shadow: 0 30px 80px rgba(0,0,0,0.06), 0 8px 30px rgba(91,44,142,0.06);
-      border-color: rgba(91,44,142,0.15);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.06), 0 8px 30px rgba(16,175,178,0.08);
+      border-color: rgba(16,175,178,0.15);
     }
     .card-premium:hover::before { opacity: 1; }
 
@@ -383,25 +383,25 @@ export function layout(content: string, opts: LayoutOptions): string {
     .card-white::before {
       content: '';
       position: absolute; inset: 0;
-      background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(91,44,142,0.04) 0%, transparent 60%);
+      background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(16,175,178,0.05) 0%, transparent 60%);
       opacity: 0; transition: opacity 0.4s;
     }
     .card-white:hover::before { opacity: 1; }
     .card-white:hover {
-      border-color: rgba(91,44,142,0.2);
+      border-color: rgba(16,175,178,0.2);
       transform: translateY(-6px);
-      box-shadow: 0 25px 60px rgba(0,0,0,0.06), 0 4px 16px rgba(91,44,142,0.06);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.06), 0 4px 16px rgba(16,175,178,0.08);
     }
 
     /* ===== Buttons ===== */
     .btn-primary {
       display: inline-flex; align-items: center; gap: 10px;
       padding: 18px 40px;
-      background: linear-gradient(135deg, #8A5CB5 0%, #5B2C8E 40%, #42206B 100%);
+      background: linear-gradient(135deg, #4BC3C5 0%, #10AFB2 40%, #0C8385 100%);
       color: #fff; font-weight: 700; font-size: 15px;
       border-radius: 100px; border: none; cursor: pointer;
       transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 0 6px 30px rgba(91,44,142,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+      box-shadow: 0 6px 30px rgba(16,175,178,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
       position: relative; overflow: hidden;
       text-decoration: none;
     }
@@ -410,19 +410,19 @@ export function layout(content: string, opts: LayoutOptions): string {
       background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
       transition: left 0.7s;
     }
-    .btn-primary:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 12px 50px rgba(91,44,142,0.4), inset 0 1px 0 rgba(255,255,255,0.2); }
+    .btn-primary:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 12px 50px rgba(16,175,178,0.4), inset 0 1px 0 rgba(255,255,255,0.2); }
     .btn-primary:hover::before { left: 100%; }
 
     .btn-outline {
       display: inline-flex; align-items: center; gap: 10px;
       padding: 18px 40px;
-      border: 2px solid rgba(91,44,142,0.3);
+      border: 2px solid rgba(16,175,178,0.3);
       color: var(--royal); font-weight: 700; font-size: 15px;
       border-radius: 100px; cursor: pointer; background: transparent;
       transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
       text-decoration: none;
     }
-    .btn-outline:hover { background: var(--royal); color: #fff; border-color: var(--royal); box-shadow: 0 8px 40px rgba(91,44,142,0.25); transform: translateY(-2px); }
+    .btn-outline:hover { background: var(--royal); color: #fff; border-color: var(--royal); box-shadow: 0 8px 40px rgba(16,175,178,0.25); transform: translateY(-2px); }
 
     .btn-subtle {
       display: inline-flex; align-items: center; gap: 10px;
@@ -441,10 +441,13 @@ export function layout(content: string, opts: LayoutOptions): string {
       padding: 8px 20px; border-radius: 100px;
       font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
     }
-    .section-label-royal { background: rgba(91,44,142,0.06); color: var(--royal); border: 1px solid rgba(91,44,142,0.12); }
+    .section-label-royal { background: rgba(16,175,178,0.06); color: var(--royal); border: 1px solid rgba(16,175,178,0.12); }
     .section-label-light { background: rgba(0,0,0,0.03); color: rgba(0,0,0,0.4); border: 1px solid rgba(0,0,0,0.05); }
 
     .divider-royal { width: 48px; height: 2px; background: linear-gradient(90deg, var(--royal), var(--royal-light)); border-radius: 2px; }
+
+    /* ===== Logo nav shadow ===== */
+    .royal-grad-shadow { box-shadow: 0 4px 20px rgba(16,175,178,0.2); }
 
     /* ===== Animations ===== */
     .reveal { opacity: 0; transform: translateY(50px); }
@@ -454,20 +457,20 @@ export function layout(content: string, opts: LayoutOptions): string {
 
     /* ===== Patterns ===== */
     .dot-pattern {
-      background-image: radial-gradient(circle, rgba(91,44,142,0.05) 1px, transparent 1px);
+      background-image: radial-gradient(circle, rgba(16,175,178,0.05) 1px, transparent 1px);
       background-size: 40px 40px;
     }
     .grid-pattern {
       background-image:
-        linear-gradient(rgba(91,44,142,0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(91,44,142,0.02) 1px, transparent 1px);
+        linear-gradient(rgba(16,175,178,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(16,175,178,0.02) 1px, transparent 1px);
       background-size: 80px 80px;
     }
 
     /* ===== Scrollbar ===== */
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: #FAFBFC; }
-    ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--royal), var(--royal-dark)); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #10AFB2, #0C8385); border-radius: 4px; }
 
     /* ===== Mobile CTA ===== */
     .floating-cta {
@@ -489,15 +492,15 @@ export function layout(content: string, opts: LayoutOptions): string {
 
     /* ===== Orbs ===== */
     .orb { position: absolute; border-radius: 50%; filter: blur(100px); pointer-events: none; }
-    .orb-royal { background: rgba(91,44,142,0.06); }
-    .orb-lavender { background: rgba(232,223,240,0.3); }
+    .orb-royal { background: rgba(16,175,178,0.06); }
+    .orb-lavender { background: rgba(226,245,245,0.3); }
 
     /* ===== Counter ===== */
     .counter { font-variant-numeric: tabular-nums; }
 
     /* ===== Image placeholder ===== */
     .img-placeholder {
-      background: linear-gradient(135deg, #F8F5FB 0%, #E8DFF0 30%, #F0EBF5 50%, #E8DFF0 70%, #F8F5FB 100%);
+      background: linear-gradient(135deg, #F3FBFB 0%, #E2F5F5 30%, #E8F7F7 50%, #E2F5F5 70%, #F3FBFB 100%);
       background-size: 300% 300%;
       animation: shimmer 4s ease infinite;
     }
@@ -514,7 +517,7 @@ export function layout(content: string, opts: LayoutOptions): string {
     /* ===== Float animation ===== */
     @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
     @keyframes float-delayed { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
-    @keyframes pulse-royal { 0%,100%{box-shadow:0 0 20px rgba(91,44,142,0.15)} 50%{box-shadow:0 0 40px rgba(91,44,142,0.3)} }
+    @keyframes pulse-royal { 0%,100%{box-shadow:0 0 20px rgba(16,175,178,0.15)} 50%{box-shadow:0 0 40px rgba(16,175,178,0.3)} }
 
     /* ===== Horizontal scroll snap ===== */
     .snap-x { scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
@@ -540,23 +543,23 @@ export function layout(content: string, opts: LayoutOptions): string {
     /* ===== Cursor glow ===== */
     .cursor-glow {
       position: fixed; width: 400px; height: 400px; border-radius: 50%;
-      background: radial-gradient(circle, rgba(91,44,142,0.04) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(16,175,178,0.04) 0%, transparent 70%);
       pointer-events: none; z-index: 9999; transform: translate(-50%, -50%);
       transition: opacity 0.3s;
     }
 
     /* ===== Hero section BG ===== */
     .hero-white {
-      background: linear-gradient(180deg, #FFFFFF 0%, #FAFBFC 40%, #F8F5FB 100%);
+      background: linear-gradient(180deg, #FFFFFF 0%, #FAFBFC 40%, #F3FBFB 100%);
     }
 
     /* ===== Sub page hero ===== */
     .subpage-hero {
-      background: linear-gradient(180deg, #FAFBFC 0%, #F8F5FB 50%, #FFFFFF 100%);
+      background: linear-gradient(180deg, #FAFBFC 0%, #F3FBFB 50%, #FFFFFF 100%);
     }
 
     /* ===== Section backgrounds ===== */
-    .section-lavender { background: linear-gradient(180deg, #F8F5FB, #F0EBF5); }
+    .section-lavender { background: linear-gradient(180deg, #F3FBFB, #E2F5F5); }
     .section-snow { background: linear-gradient(180deg, #FAFBFC, #F5F6F8); }
   </style>
 </head>
@@ -585,10 +588,7 @@ export function layout(content: string, opts: LayoutOptions): string {
       <nav class="h-16 md:h-[68px] flex items-center justify-between md:rounded-2xl md:px-8 transition-all duration-500" id="navInner" style="background:transparent;">
         <!-- Logo -->
         <a href="/" class="flex items-center gap-3 group relative">
-          <div class="w-10 h-10 rounded-xl royal-grad flex items-center justify-center relative overflow-hidden">
-            <i class="fas fa-tooth text-white text-[14px] relative z-10"></i>
-            <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
-          </div>
+          <img src="/static/logo.png" alt="강남치과의원 로고" class="h-10 w-auto" width="40" height="40">
           <div>
             <div class="text-[17px] font-extrabold text-charcoal tracking-tight leading-none">강남치과</div>
             <div class="text-[9px] text-gray-300 tracking-[0.2em] font-semibold mt-0.5">GANGNAM DENTAL</div>
@@ -691,9 +691,7 @@ export function layout(content: string, opts: LayoutOptions): string {
         <!-- Brand column -->
         <div class="lg:col-span-5">
           <div class="flex items-center gap-3 mb-8">
-            <div class="w-12 h-12 rounded-xl royal-grad flex items-center justify-center">
-              <i class="fas fa-tooth text-white text-lg"></i>
-            </div>
+            <img src="/static/logo.png" alt="강남치과의원 로고" class="h-12 w-auto" width="48" height="48">
             <div>
               <div class="text-xl font-extrabold text-charcoal">강남치과의원</div>
               <div class="text-[9px] text-gray-300 tracking-[0.25em] font-semibold">GANGNAM DENTAL CLINIC</div>
