@@ -145,7 +145,7 @@ export function doctorsPage(): string {
               <div class="flex items-center gap-4 mb-5">
                 ${doc.photo ? `
                 <div class="w-16 h-16 rounded-2xl border border-royal/20 overflow-hidden group-hover:scale-110 transition-transform duration-500">
-                  <img src="${doc.photo}" alt="${doc.name} ${doc.title}" class="w-full h-full object-cover object-top" loading="lazy">
+                  <img src="${doc.photo}" alt="${doc.name} ${doc.title}" class="w-full h-full object-cover" style="object-position: center 20%;" loading="lazy">
                 </div>
                 ` : `
                 <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-royal/20 to-royal/5 border border-royal/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
@@ -283,7 +283,7 @@ export function doctorsPage(): string {
             <!-- Photo -->
             <div class="lg:col-span-2 relative min-h-[320px] lg:min-h-[560px] overflow-hidden bg-gradient-to-br from-lavender via-white to-royal/[0.03]">
               ${doc.photo ? `
-              <img src="${doc.photo}" alt="${doc.name} ${doc.title}" class="absolute inset-0 w-full h-full object-cover object-top" loading="lazy">
+              <img src="${doc.photo}" alt="${doc.name} ${doc.title}" class="absolute inset-0 w-full h-full object-cover" style="object-position: center 20%;" loading="lazy">
               <div class="absolute inset-0 bg-gradient-to-t from-white via-white/20 to-transparent z-10"></div>
               ` : `
               <div class="absolute inset-0 bg-gradient-to-t from-white/80 via-white/20 to-transparent z-10"></div>
@@ -446,7 +446,7 @@ export function doctorProfilePage(slug: string): { html: string; title: string; 
           <div>
             <div class="aspect-[3/4] rounded-3xl flex items-center justify-center sticky top-28 royal-border-glow overflow-hidden relative bg-gradient-to-br from-lavender via-white to-royal/[0.03]">
               ${doc.photo ? `
-              <img src="${doc.photo}" alt="${doc.name} ${doc.title}" class="absolute inset-0 w-full h-full object-cover object-top" loading="lazy">
+              <img src="${doc.photo}" alt="${doc.name} ${doc.title}" class="absolute inset-0 w-full h-full object-cover" style="object-position: center 20%;" loading="lazy">
               ` : `
               <div class="absolute top-4 right-4 w-12 h-12 border border-royal/10 rounded-full"></div>
               <div class="w-28 h-28 rounded-3xl bg-white shadow-xl border border-royal/[0.08] flex items-center justify-center">

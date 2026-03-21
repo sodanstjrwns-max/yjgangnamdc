@@ -289,7 +289,7 @@ export function mainPage(): string {
           <div class="absolute inset-0 bg-gradient-to-t from-white via-white/30 to-transparent z-10"></div>
           <div class="absolute top-6 right-6 w-20 h-20 border border-royal/10 rounded-full z-20 group-hover:scale-150 group-hover:opacity-0 transition-all duration-700"></div>
           ${doc.photo ? `
-          <img src="${doc.photo}" alt="${doc.name} ${doc.title}" class="absolute inset-0 w-full h-full object-cover object-top z-[5]" loading="lazy">
+          <img src="${doc.photo}" alt="${doc.name} ${doc.title}" class="absolute inset-0 w-full h-full object-cover z-[5]" style="object-position: center 20%;" loading="lazy">
           ` : `
           <div class="absolute inset-0 flex items-center justify-center z-[5]"><div class="w-32 h-32 rounded-3xl bg-white shadow-xl border border-royal/[0.08] flex items-center justify-center group-hover:scale-110 transition-transform duration-700"><span class="royal-grad-text text-5xl font-black">${doc.initial}</span></div></div>
           `}
@@ -560,7 +560,7 @@ export function mainPage(): string {
           <div class="relative z-10 mt-10 flex items-center gap-6 pt-8 border-t border-gray-100">
             <div class="flex -space-x-3">
               <div class="w-14 h-14 rounded-2xl overflow-hidden border-2 border-white shadow-lg">
-                <img src="/static/doctors/lee-taehyung.jpg" alt="이태형 대표원장" class="w-full h-full object-cover object-top">
+                <img src="/static/doctors/lee-taehyung.jpg" alt="이태형 대표원장" class="w-full h-full object-cover" style="object-position: center 20%;">
               </div>
               <div class="w-14 h-14 rounded-2xl bg-royal-100 flex items-center justify-center text-royal text-lg font-bold border-2 border-white shadow-lg">최</div>
             </div>
