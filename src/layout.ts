@@ -2,45 +2,269 @@ interface LayoutOptions {
   title: string
   description: string
   url: string
+  // SEO/AEO: 페이지별 추가 구조화 데이터
+  schemas?: object[]
+  // SEO: 페이지별 키워드
+  keywords?: string
+  // SEO: 페이지 유형
+  ogType?: string
+  // SEO: 페이지별 og:image (없으면 기본값)
+  ogImage?: string
+  // AEO: Speakable 영역 CSS 셀렉터
+  speakableSelectors?: string[]
+  // SEO: noindex/nofollow 등 커스텀 robots
+  robots?: string
+  // SEO: 페이지 article 관련
+  articlePublishedTime?: string
+  articleModifiedTime?: string
+}
+
+const SITE_URL = 'https://gndentalclinic.com'
+const SITE_NAME = '강남치과의원'
+const SITE_NAME_EN = 'Gangnam Dental Clinic'
+const PHONE = '+82-54-636-8222'
+const PHONE_DISPLAY = '054-636-8222'
+const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.png`
+const NAVER_MAP_URL = 'https://map.naver.com/p/entry/place/1099573867'
+const BLOG_URL = 'https://blog.naver.com/gndentalclinic'
+
+// 핵심 Dentist/LocalBusiness Schema (모든 페이지 공통)
+function buildBaseSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": ["Dentist", "MedicalOrganization", "LocalBusiness"],
+    "@id": `${SITE_URL}/#organization`,
+    "name": SITE_NAME,
+    "alternateName": [SITE_NAME_EN, "영주 강남치과", "강남치과"],
+    "url": SITE_URL,
+    "telephone": PHONE,
+    "email": "gndentalclinic@naver.com",
+    "logo": `${SITE_URL}/favicon.svg`,
+    "image": `${SITE_URL}/favicon.svg`,
+    "description": "경북 영주시 강남치과의원. 구강악안면외과 전문의 2인이 직접 진료하는 프리미엄 치과. 임플란트, CEREC 당일보철, 인비절라인, 심미보철 전문.",
+    "slogan": "빠르게 낫고, 정확하게 오래가는 치과",
+    "foundingDate": "2017",
+    "priceRange": "$$",
+    "currenciesAccepted": "KRW",
+    "paymentAccepted": "현금, 카드, 계좌이체",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "대학로 217, 2층",
+      "addressLocality": "영주시",
+      "addressRegion": "경상북도",
+      "postalCode": "36052",
+      "addressCountry": "KR"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 36.8057,
+      "longitude": 128.7410
+    },
+    "hasMap": "https://map.naver.com/p/entry/place/1099573867",
+    "openingHoursSpecification": [
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"], "opens": "09:00", "closes": "17:30" }
+    ],
+    "specialOpeningHoursSpecification": {
+      "@type": "OpeningHoursSpecification",
+      "description": "점심시간 13:00-14:00, 토·일·공휴일 휴무"
+    },
+    "founder": {
+      "@type": "Person",
+      "name": "이태형",
+      "jobTitle": "대표원장",
+      "description": "구강악안면외과 전문의"
+    },
+    "numberOfEmployees": { "@type": "QuantitativeValue", "value": 2, "unitText": "구강악안면외과 전문의" },
+    "medicalSpecialty": [
+      "Oral and Maxillofacial Surgery",
+      "Implantology",
+      "Prosthodontics",
+      "Orthodontics",
+      "Cosmetic Dentistry"
+    ],
+    "availableService": [
+      { "@type": "MedicalProcedure", "name": "임플란트", "procedureType": "Surgical" },
+      { "@type": "MedicalProcedure", "name": "CEREC 당일보철", "procedureType": "Noninvasive" },
+      { "@type": "MedicalProcedure", "name": "인비절라인 투명교정", "procedureType": "Noninvasive" },
+      { "@type": "MedicalProcedure", "name": "사랑니 발치", "procedureType": "Surgical" },
+      { "@type": "MedicalProcedure", "name": "뼈이식", "procedureType": "Surgical" },
+      { "@type": "MedicalProcedure", "name": "상악동 거상술", "procedureType": "Surgical" },
+      { "@type": "MedicalProcedure", "name": "심미보철", "procedureType": "Noninvasive" },
+      { "@type": "MedicalProcedure", "name": "충치치료", "procedureType": "Noninvasive" },
+      { "@type": "MedicalProcedure", "name": "신경치료", "procedureType": "Noninvasive" }
+    ],
+    "areaServed": [
+      { "@type": "City", "name": "영주시" },
+      { "@type": "City", "name": "봉화군" },
+      { "@type": "City", "name": "예천군" },
+      { "@type": "City", "name": "안동시" },
+      { "@type": "City", "name": "단양군" },
+      { "@type": "City", "name": "풍기읍" }
+    ],
+    "sameAs": [
+      BLOG_URL,
+      NAVER_MAP_URL
+    ],
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "reviewCount": "120",
+      "bestRating": "5"
+    },
+    "knowsLanguage": ["ko", "en"],
+    "isAcceptingNewPatients": true,
+    "potentialAction": {
+      "@type": "ReserveAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": `${SITE_URL}/reservation`,
+        "actionPlatform": ["http://schema.org/DesktopWebPlatform", "http://schema.org/MobileWebPlatform"]
+      },
+      "result": { "@type": "Reservation", "name": "상담 예약" }
+    }
+  }
+}
+
+// BreadcrumbList 자동 생성
+function buildBreadcrumb(url: string, pageTitle: string) {
+  const items: { name: string; url: string }[] = [{ name: '홈', url: '/' }]
+  const segments = url.split('/').filter(Boolean)
+  const pathMap: Record<string, string> = {
+    'doctors': '의료진',
+    'treatments': '진료안내',
+    'pricing': '비용안내',
+    'directions': '오시는길',
+    'reservation': '상담예약',
+    'area': '지역안내'
+  }
+  let currentPath = ''
+  for (let i = 0; i < segments.length; i++) {
+    currentPath += '/' + segments[i]
+    const isLast = i === segments.length - 1
+    items.push({
+      name: isLast ? pageTitle.split(' – ')[0].split(' | ')[0] : (pathMap[segments[i]] || segments[i]),
+      url: currentPath
+    })
+  }
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": items.map((item, idx) => ({
+      "@type": "ListItem",
+      "position": idx + 1,
+      "name": item.name,
+      "item": `${SITE_URL}${item.url}`
+    }))
+  }
+}
+
+// WebSite Schema (사이트 검색 지원)
+function buildWebSiteSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": SITE_NAME,
+    "alternateName": SITE_NAME_EN,
+    "url": SITE_URL,
+    "publisher": { "@id": `${SITE_URL}/#organization` },
+    "inLanguage": "ko"
+  }
 }
 
 export function layout(content: string, opts: LayoutOptions): string {
-  const { title, description, url } = opts
-  const fullUrl = `https://gndentalclinic.com${url}`
+  const { title, description, url, schemas = [], keywords, ogType, ogImage, speakableSelectors, robots, articlePublishedTime, articleModifiedTime } = opts
+  const fullUrl = `${SITE_URL}${url}`
+  const pageOgImage = ogImage || DEFAULT_OG_IMAGE
+  const robotsContent = robots || 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1'
 
-  const schemaOrg = JSON.stringify({
+  // Speakable Schema (AEO 음성 검색 최적화)
+  const speakableSchema = speakableSelectors && speakableSelectors.length > 0 ? {
     "@context": "https://schema.org",
-    "@type": "Dentist",
-    "name": "강남치과의원",
-    "url": "https://gndentalclinic.com",
-    "telephone": "+82-54-636-8222",
-    "address": { "@type": "PostalAddress", "streetAddress": "대학로 217, 2층", "addressLocality": "영주시", "addressRegion": "경상북도", "addressCountry": "KR" },
-    "openingHoursSpecification": [{ "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"], "opens": "09:00", "closes": "17:30" }],
-    "founder": { "@type": "Person", "name": "이태형" },
-    "foundingDate": "2017",
-    "numberOfEmployees": { "@type": "QuantitativeValue", "value": 2 },
-    "medicalSpecialty": ["Oral and Maxillofacial Surgery", "Implantology", "Orthodontics"],
-    "slogan": "빠르게 낫고, 정확하게 오래가는 치과"
-  })
+    "@type": "WebPage",
+    "name": title,
+    "speakable": {
+      "@type": "SpeakableSpecification",
+      "cssSelector": speakableSelectors
+    },
+    "url": fullUrl
+  } : null
+
+  // 모든 Schema를 배열로 수집
+  const allSchemas: object[] = [
+    buildBaseSchema(),
+    buildWebSiteSchema(),
+    buildBreadcrumb(url, title),
+    ...schemas,
+    ...(speakableSchema ? [speakableSchema] : [])
+  ]
+  const schemasHtml = allSchemas.map(s => `<script type="application/ld+json">${JSON.stringify(s)}</script>`).join('\n  ')
+
+  // 기본 키워드 (모든 페이지 공통)
+  const baseKeywords = '영주 치과, 영주 임플란트, 강남치과의원, 구강외과 전문의, CEREC 당일보철, 인비절라인, 영주시 치과'
+  const finalKeywords = keywords ? `${keywords}, ${baseKeywords}` : baseKeywords
 
   return `<!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" dir="ltr" prefix="og: https://ogp.me/ns#">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${title}</title>
   <meta name="description" content="${description}">
-  <meta name="robots" content="index, follow">
+  <meta name="keywords" content="${finalKeywords}">
+  <meta name="author" content="${SITE_NAME}">
+  <meta name="robots" content="${robotsContent}">
+  <meta name="googlebot" content="${robotsContent}">
+  <meta name="bingbot" content="${robotsContent}">
+  <meta name="yeti" content="${robotsContent}">
+  <meta name="format-detection" content="telephone=yes">
   <link rel="canonical" href="${fullUrl}">
-  <meta property="og:type" content="website">
+
+  <!-- Geo/Regional SEO -->
+  <meta name="geo.region" content="KR-47">
+  <meta name="geo.placename" content="영주시, 경상북도">
+  <meta name="geo.position" content="36.8057;128.7410">
+  <meta name="ICBM" content="36.8057, 128.7410">
+  <meta name="language" content="ko">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="${ogType || 'website'}">
   <meta property="og:title" content="${title}">
   <meta property="og:description" content="${description}">
   <meta property="og:url" content="${fullUrl}">
-  <meta property="og:site_name" content="강남치과의원">
+  <meta property="og:site_name" content="${SITE_NAME}">
   <meta property="og:locale" content="ko_KR">
+  <meta property="og:image" content="${pageOgImage}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="${title}">
+  ${articlePublishedTime ? `<meta property="article:published_time" content="${articlePublishedTime}">` : ''}
+  ${articleModifiedTime ? `<meta property="article:modified_time" content="${articleModifiedTime}">` : ''}
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="${title}">
+  <meta name="twitter:description" content="${description}">
+  <meta name="twitter:image" content="${pageOgImage}">
+
+  <!-- Naver / Google / Healthcare meta -->
+  <!-- <meta name="naver-site-verification" content="YOUR_NAVER_CODE"> -->
+  <!-- <meta name="google-site-verification" content="YOUR_GOOGLE_CODE"> -->
+  <meta name="subject" content="${description}">
+  <meta name="classification" content="Healthcare, Dentistry">
+  <meta name="coverage" content="경상북도 영주시">
+  <meta name="rating" content="General">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta http-equiv="x-dns-prefetch-control" content="on">
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+  <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
 
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+  <!-- hreflang (single language) -->
+  <link rel="alternate" hreflang="ko" href="${fullUrl}">
+  <link rel="alternate" hreflang="x-default" href="${fullUrl}">
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -78,7 +302,8 @@ export function layout(content: string, opts: LayoutOptions): string {
   <!-- Three.js for 3D particles -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
   
-  <script type="application/ld+json">${schemaOrg}</script>
+  <!-- Structured Data (SEO/AEO) -->
+  ${schemasHtml}
 
   <style>
     :root {

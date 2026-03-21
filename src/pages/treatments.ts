@@ -104,14 +104,14 @@ export function treatmentsPage(): string {
   const catDescs: Record<string, string> = { '전문센터':'구강외과 전문의가 직접 진료하는 주력 진료', '일반':'기본적인 구강 건강을 위한 필수 진료', '잇몸/외과':'잇몸 건강과 외과적 치료', '특수':'전문적인 치과 치료 서비스' }
   return `
   <!-- Hero (White) -->
-  <section class="relative min-h-[65vh] flex items-end subpage-hero overflow-hidden">
+  <section class="relative min-h-[65vh] flex items-end subpage-hero overflow-hidden" aria-label="전체 진료 안내 히어로">
     <div class="orb orb-gold w-[600px] h-[600px] -top-64 -right-64 opacity-30"></div>
     <div class="absolute inset-0 grid-pattern opacity-40"></div>
 
     <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 pb-24 pt-48 w-full">
       <div class="section-label section-label-gold mb-8"><span class="w-1.5 h-1.5 rounded-full bg-gold"></span>ALL TREATMENTS</div>
-      <h1 class="display-xl text-charcoal mb-6">전체 <span class="gold-grad-text">진료 안내</span></h1>
-      <p class="text-gray-400 text-lg max-w-lg">구강외과 전문의 2인이 직접 진료하는<br>프리미엄 치과진료 서비스</p>
+      <h1 class="display-xl text-charcoal mb-6" data-speakable="true">전체 <span class="gold-grad-text">진료 안내</span></h1>
+      <p class="text-gray-400 text-lg max-w-lg" data-speakable="true">영주 강남치과의원 — 구강외과 전문의 2인이 직접 진료하는<br>프리미엄 치과진료 서비스</p>
     </div>
   </section>
 
@@ -173,11 +173,50 @@ export function treatmentsPage(): string {
   `
 }
 
-export function treatmentDetailPage(slug: string): { html: string; title: string; description: string } | null {
+export function treatmentDetailPage(slug: string): { html: string; title: string; description: string; schemas: object[] } | null {
   const t = treatments.find(tr => tr.slug === slug)
   if (!t) return null
+
+  // MedicalProcedure Schema for each treatment
+  const medicalProcedureSchema = {
+    "@context": "https://schema.org",
+    "@type": "MedicalProcedure",
+    "name": t.title,
+    "alternateName": t.h1,
+    "description": t.description,
+    "procedureType": t.slug === 'implant' || t.slug === 'wisdom-tooth' || t.slug === 'bone-graft' || t.slug === 'sinus-lift' ? "Surgical" : "Noninvasive",
+    "howPerformed": t.heroDesc,
+    "url": `https://gndentalclinic.com/treatments/${t.slug}`,
+    "bodyLocation": "Mouth",
+    "preparation": "3D CT 촬영 및 정밀 진단, 전문의 상담",
+    "followup": "정기 경과 관찰",
+    "status": "https://schema.org/ActiveActionStatus",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `https://gndentalclinic.com/treatments/${t.slug}`
+    }
+  }
+
+  // Service Schema
+  const serviceSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": `${t.title} - 강남치과의원`,
+    "description": t.description,
+    "provider": {
+      "@id": "https://gndentalclinic.com/#organization"
+    },
+    "areaServed": {
+      "@type": "City",
+      "name": "영주시"
+    },
+    "serviceType": "Dental Service",
+    "category": t.category
+  }
+
   return {
     title: t.h1, description: t.description,
+    schemas: [medicalProcedureSchema, serviceSchema],
     html: `
     <!-- Hero (White) -->
     <section class="relative min-h-[60vh] flex items-end subpage-hero overflow-hidden">

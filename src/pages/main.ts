@@ -1,3 +1,87 @@
+// ===== AEO: FAQ Schema.org 구조화 데이터 =====
+export function mainPageSchemas(): object[] {
+  const faqItems = [
+    { q: '임플란트 비용은 얼마인가요?', a: '임플란트 비용은 잔존 뼈 상태, 뼈이식 여부, 보철 종류에 따라 달라집니다. 정확한 비용은 CT 촬영 후 상담 시 안내드립니다. 상담은 무료입니다, 부담 없이 문의해 주세요.' },
+    { q: 'CEREC 당일 보철이란 무엇인가요?', a: 'CEREC은 디지털 스캐너로 치아를 촬영하고, 컴퓨터로 보철을 설계한 뒤, 밀링 머신이 세라믹 블록을 깎아 보철을 만드는 시스템입니다. 본 뜨고, 기공소 보내고, 기다리고, 다시 오는 과정 없이 하루 만에 보철까지 완성합니다.' },
+    { q: '인비절라인은 얼마나 걸리나요?', a: '보통 6개월~2년으로, 치아 상태에 따라 다릅니다. 간단한 경우 6개월 이내에 완료되기도 합니다. 정밀 검사 후 예상 기간을 안내드립니다.' },
+    { q: '사랑니를 꼭 빼야 하나요?', a: '모든 사랑니를 빼야 하는 것은 아닙니다. 매복되어 앞 치아를 밀고 있거나, 충치·염증이 반복되는 경우 발치를 권합니다. 구강악안면외과 전문의가 정확히 진단합니다.' },
+    { q: '토요일에도 진료하나요?', a: '현재 평일(월~금) 09:00~17:30 진료하며, 점심시간은 13:00~14:00입니다. 토·일·공휴일은 휴무입니다.' },
+    { q: '주차가 가능한가요?', a: '네, 건물 전용 주차장을 이용하실 수 있습니다. 넉넉한 주차 공간이 마련되어 있어 편하게 방문해 주세요.' },
+    { q: '처음 방문하면 당일 치료도 가능한가요?', a: '네, 간단한 치료(충치, 스케일링 등)는 당일 바로 시작할 수 있습니다. 임플란트 등 큰 치료는 CT 촬영 후 상담을 거쳐 최적의 치료 계획을 세운 뒤 진행합니다.' },
+    { q: '뼈가 부족해도 임플란트가 가능한가요?', a: '가능합니다. 뼈이식, 상악동 거상술 등의 시술로 부족한 뼈를 보충한 후 임플란트를 식립합니다. 이러한 고난이도 수술은 구강외과 전문의의 전문 영역입니다.' },
+    { q: '영주에서 임플란트 잘하는 치과가 어디인가요?', a: '강남치과의원은 구강악안면외과 전문의 2인이 직접 임플란트를 수술합니다. 뼈이식, 상악동 거상술 등 고난이도 수술까지 가능하며, 대학병원급 디지털 장비(3D CT, CEREC, PrimeScan)를 갖추고 있습니다.' },
+    { q: '구강외과 전문의와 일반 치과의사는 어떻게 다른가요?', a: '구강악안면외과 전문의는 치과대학 졸업 후 대학병원에서 4년간 구강·악안면 수술 전문 수련을 받은 전문의입니다. 뼈를 보는 눈, 신경을 피하는 기술, 봉합의 정밀함이 일반 치과의사와 다릅니다. 임플란트, 사랑니 발치, 뼈이식 등 외과적 술기가 필요한 치료에 특히 전문성이 높습니다.' }
+  ];
+
+  // FAQPage Schema (Google 검색 FAQ 리치 스니펫 + 음성 검색 AEO)
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faqItems.map(item => ({
+      "@type": "Question",
+      "name": item.q,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": item.a
+      }
+    }))
+  };
+
+  // HowTo Schema — CEREC 당일 보철 프로세스 (구글 HowTo 리치 스니펫)
+  const howToSchema = {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "CEREC 당일 보철 완성 과정",
+    "description": "강남치과의원의 CEREC 시스템을 이용한 당일 보철 완성 과정입니다. 디지털 스캔부터 보철 장착까지 약 1~2시간이면 완료됩니다.",
+    "totalTime": "PT2H",
+    "tool": [
+      { "@type": "HowToTool", "name": "CEREC MC X 밀링 머신" },
+      { "@type": "HowToTool", "name": "PrimeScan 구강 스캐너" },
+      { "@type": "HowToTool", "name": "SpeedFire 소성로" }
+    ],
+    "step": [
+      { "@type": "HowToStep", "position": 1, "name": "디지털 스캔", "text": "구강 스캐너(PrimeScan)로 치아를 3D 촬영합니다. 불편한 인상재(본뜨기)가 필요 없습니다.", "url": "https://gndentalclinic.com/treatments/cerec" },
+      { "@type": "HowToStep", "position": 2, "name": "AI 보철 설계", "text": "컴퓨터가 환자의 치아에 딱 맞는 보철을 자동 설계합니다. 0.01mm 정밀도로 맞춤 제작됩니다." },
+      { "@type": "HowToStep", "position": 3, "name": "밀링 제작", "text": "세라믹 블록을 CEREC MC X 밀링 머신이 깎아 보철을 만듭니다. 기공소 외주 없이 원내에서 완성합니다." },
+      { "@type": "HowToStep", "position": 4, "name": "소성 및 장착", "text": "SpeedFire로 초고속 소성 후 바로 장착합니다. 자연치아와 구분이 어려운 색감을 구현합니다." }
+    ]
+  };
+
+  // MedicalClinic Service Schema (더 구체적인 의료 서비스 마크업)
+  const medicalServiceSchema = {
+    "@context": "https://schema.org",
+    "@type": "MedicalClinic",
+    "name": "강남치과의원",
+    "url": "https://gndentalclinic.com",
+    "medicalSpecialty": [
+      {
+        "@type": "MedicalSpecialty",
+        "name": "Oral and Maxillofacial Surgery"
+      }
+    ],
+    "availableService": [
+      {
+        "@type": "MedicalProcedure",
+        "name": "임플란트 수술",
+        "procedureType": "Surgical",
+        "howPerformed": "구강악안면외과 전문의가 3D CT 기반 정밀 진단 후 디지털 가이드를 이용하여 임플란트를 식립합니다.",
+        "preparation": "3D CT 촬영, 디지털 구강 스캔, 전문의 상담",
+        "followup": "정기 경과 관찰, CEREC 당일 보철 장착 가능"
+      },
+      {
+        "@type": "MedicalProcedure",
+        "name": "CEREC 당일 보철",
+        "procedureType": "Noninvasive",
+        "howPerformed": "PrimeScan 디지털 스캐너로 구강을 스캔한 후, CEREC 밀링 머신으로 세라믹 보철을 원내에서 당일 제작하여 장착합니다.",
+        "preparation": "디지털 구강 스캔",
+        "followup": "당일 보철 장착 완료, 추가 내원 불필요"
+      }
+    ]
+  };
+
+  return [faqSchema, howToSchema, medicalServiceSchema];
+}
+
 export function mainPage(): string {
   // ===== Pre-build all dynamic HTML sections =====
 
@@ -286,7 +370,7 @@ export function mainPage(): string {
   return `
 
   <!-- ========== HERO — WHITE + ROYAL PURPLE ========== -->
-  <section class="relative min-h-screen flex items-center overflow-hidden hero-white" id="hero">
+  <section class="relative min-h-screen flex items-center overflow-hidden hero-white" id="hero" aria-label="강남치과의원 메인 히어로" itemscope itemtype="https://schema.org/WPHeader">
     <!-- 3D Particle Canvas -->
     <canvas id="heroCanvas" class="absolute inset-0 w-full h-full" style="z-index:1;"></canvas>
 
@@ -311,7 +395,7 @@ export function mainPage(): string {
             <span class="text-royal text-[13px] font-bold">구강악안면외과 전문의 2인 직접 진료</span>
           </div>
 
-          <h1 class="display-hero text-charcoal mb-8" id="heroTitle">
+          <h1 class="display-hero text-charcoal mb-8" id="heroTitle" data-speakable="true">
             <span class="block overflow-hidden">
               <span class="block" id="heroLine1">외과 전문의 2명이</span>
             </span>
@@ -320,10 +404,11 @@ export function mainPage(): string {
             </span>
           </h1>
 
-          <div class="text-lg md:text-xl text-gray-400 leading-relaxed mb-12 max-w-xl" id="heroSub">
-            <p>임플란트는 뼈에 심는 수술입니다.</p>
-            <p>수술 전문 외과 전문의가 직접 합니다. <span class="text-royal font-semibold">한 번 오시면 됩니다.</span></p>
-          </div>
+          <p class="text-lg md:text-xl text-gray-400 leading-relaxed mb-12 max-w-xl" id="heroSub" data-speakable="true">
+            <span>영주 강남치과의원 — 구강악안면외과 전문의 2인이 임플란트, CEREC 당일보철, 인비절라인을 직접 진료합니다.</span><br>
+            <span>임플란트는 뼈에 심는 수술입니다.</span>
+            <span>수술 전문 외과 전문의가 직접 합니다. <strong class="text-royal font-semibold">한 번 오시면 됩니다.</strong></span>
+          </p>
 
           <div class="flex flex-wrap gap-4 mb-16" id="heroCTA">
             <a href="/reservation" class="btn-primary !py-5 !px-12 !text-[15px] !font-extrabold group">
@@ -481,13 +566,13 @@ export function mainPage(): string {
   </div>
 
   <!-- ========== WHY GANGNAM — 환자 관점 차별점 ========== -->
-  <section class="py-32 md:py-48 bg-white relative overflow-hidden">
+  <section class="py-32 md:py-48 bg-white relative overflow-hidden" aria-label="강남치과 차별점">
     <div class="absolute top-0 left-0 w-[600px] h-[600px] bg-royal/[0.02] rounded-full blur-[200px] -translate-x-1/2 -translate-y-1/2"></div>
     <div class="max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 relative">
       <div class="text-center mb-24 reveal">
         <div class="section-label section-label-royal mx-auto mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>WHY GANGNAM DENTAL</div>
-        <h2 class="display-xl text-charcoal mb-6">왜 <span class="royal-grad-text">강남치과</span>일까요?</h2>
-        <p class="text-gray-400 text-lg max-w-2xl mx-auto leading-relaxed">영주에서 대학병원 수준의 치과 수술을,<br class="hidden md:block">동네 치과의 편안함으로.</p>
+        <h2 class="display-xl text-charcoal mb-6" data-speakable="true">왜 <span class="royal-grad-text">강남치과</span>일까요?</h2>
+        <p class="text-gray-400 text-lg max-w-2xl mx-auto leading-relaxed" data-speakable="true">영주에서 대학병원 수준의 치과 수술을,<br class="hidden md:block">동네 치과의 편안함으로.</p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-5 stagger-children">
         <div class="lg:col-span-7 card-premium p-10 md:p-14 flex flex-col justify-between min-h-[480px] stagger-item relative group">
@@ -570,14 +655,14 @@ export function mainPage(): string {
   </section>
 
   <!-- ========== 일반 치과 vs 강남치과 비교 ========== -->
-  <section class="py-32 md:py-48 section-lavender relative overflow-hidden">
+  <section class="py-32 md:py-48 section-lavender relative overflow-hidden" aria-label="일반치과와 강남치과 비교">
     <div class="orb orb-royal w-[600px] h-[600px] -top-48 -left-48 opacity-15"></div>
     <div class="absolute inset-0 grid-pattern opacity-30"></div>
     <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
       <div class="text-center mb-20 reveal">
         <div class="section-label section-label-royal mx-auto mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>COMPARISON</div>
-        <h2 class="display-xl text-charcoal mb-6">일반 치과와<br><span class="royal-grad-text">무엇이 다를까요?</span></h2>
-        <p class="text-gray-400 text-lg">같은 임플란트, 같은 보철이라도 과정이 다릅니다</p>
+        <h2 class="display-xl text-charcoal mb-6" data-speakable="true">일반 치과와<br><span class="royal-grad-text">무엇이 다를까요?</span></h2>
+        <p class="text-gray-400 text-lg" data-speakable="true">같은 임플란트, 같은 보철이라도 과정이 다릅니다. 강남치과의원은 구강외과 전문의가 직접 수술하고, CEREC 시스템으로 당일 보철을 완성하여 최대 50% 내원 횟수를 줄입니다.</p>
       </div>
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-5xl mx-auto stagger-children">
         <!-- 일반 치과 -->
@@ -610,7 +695,7 @@ export function mainPage(): string {
   </section>
 
   <!-- ========== CEREC 프로세스 인포그래픽 ========== -->
-  <section class="py-32 md:py-48 bg-white relative overflow-hidden">
+  <section class="py-32 md:py-48 bg-white relative overflow-hidden" aria-label="CEREC 당일보철 프로세스">
     <div class="absolute bottom-0 right-0 w-[500px] h-[500px] bg-royal/[0.02] rounded-full blur-[200px]"></div>
     <div class="max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
       <div class="text-center mb-20 reveal">
@@ -635,7 +720,7 @@ export function mainPage(): string {
   </section>
 
   <!-- ========== TREATMENTS — 환자 공감 카피 ========== -->
-  <section class="py-32 md:py-48 section-lavender relative overflow-hidden" id="treatments">
+  <section class="py-32 md:py-48 section-lavender relative overflow-hidden" id="treatments" aria-label="주력 진료 안내">
     <div class="orb orb-royal w-[700px] h-[700px] -top-96 right-0 opacity-20"></div>
     <div class="absolute inset-0 grid-pattern opacity-40"></div>
     <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
@@ -661,7 +746,7 @@ export function mainPage(): string {
   </section>
 
   <!-- ========== 환자 페르소나 공감 섹션 ========== -->
-  <section class="py-32 md:py-48 bg-white relative overflow-hidden">
+  <section class="py-32 md:py-48 bg-white relative overflow-hidden" aria-label="환자 유형별 솔루션">
     <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-royal/[0.02] rounded-full blur-[200px]"></div>
     <div class="max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
       <div class="text-center mb-20 reveal">
@@ -676,7 +761,7 @@ export function mainPage(): string {
   </section>
 
   <!-- ========== 장비 갤러리 (가로 스크롤) ========== -->
-  <section class="py-32 md:py-48 section-lavender relative overflow-hidden">
+  <section class="py-32 md:py-48 section-lavender relative overflow-hidden" aria-label="대학병원급 디지털 장비">
     <div class="absolute inset-0 grid-pattern opacity-20"></div>
     <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
       <div class="text-center mb-16 reveal">
@@ -692,7 +777,7 @@ export function mainPage(): string {
   </section>
 
   <!-- ========== 첫 방문 가이드 (진료 흐름도) ========== -->
-  <section class="py-32 md:py-48 bg-white relative overflow-hidden">
+  <section class="py-32 md:py-48 bg-white relative overflow-hidden" aria-label="첫 방문 가이드">
     <div class="absolute top-0 left-0 w-[600px] h-[600px] bg-royal/[0.02] rounded-full blur-[200px] -translate-x-1/2"></div>
     <div class="max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
@@ -716,7 +801,7 @@ export function mainPage(): string {
   </section>
 
   <!-- ========== DOCTORS — 스토리형 소개 요약 ========== -->
-  <section class="py-32 md:py-48 section-lavender relative overflow-hidden">
+  <section class="py-32 md:py-48 section-lavender relative overflow-hidden" aria-label="의료진 소개">
     <div class="absolute bottom-0 right-0 w-[600px] h-[600px] bg-royal/[0.02] rounded-full blur-[200px]"></div>
     <div class="absolute inset-0 grid-pattern opacity-20"></div>
     <div class="max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 relative z-10">
@@ -732,7 +817,7 @@ export function mainPage(): string {
   </section>
 
   <!-- ========== NUMBERS ========== -->
-  <section class="py-28 md:py-36 bg-white relative overflow-hidden">
+  <section class="py-28 md:py-36 bg-white relative overflow-hidden" aria-label="강남치과 핵심 수치">
     <div class="orb orb-royal w-[500px] h-[500px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-15"></div>
     <div class="absolute inset-0 grid-pattern opacity-30"></div>
     <div class="royal-line-h absolute top-0 left-0 right-0"></div>
@@ -744,7 +829,7 @@ export function mainPage(): string {
   </section>
 
   <!-- ========== 주변 지역 접근성 ========== -->
-  <section class="py-28 md:py-36 section-lavender relative overflow-hidden">
+  <section class="py-28 md:py-36 section-lavender relative overflow-hidden" aria-label="주변 지역 접근성">
     <div class="absolute inset-0 grid-pattern opacity-20"></div>
     <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
       <div class="text-center mb-16 reveal">
@@ -762,7 +847,7 @@ export function mainPage(): string {
   </section>
 
   <!-- ========== REVIEWS (Placeholder) ========== -->
-  <section class="py-32 md:py-48 bg-white relative overflow-hidden">
+  <section class="py-32 md:py-48 bg-white relative overflow-hidden" aria-label="환자 리뷰">
     <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-royal/10 to-transparent"></div>
     <div class="max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
       <div class="text-center mb-20 reveal">
@@ -782,7 +867,7 @@ export function mainPage(): string {
   </section>
 
   <!-- ========== FAQ ========== -->
-  <section class="py-32 md:py-48 section-lavender relative overflow-hidden">
+  <section class="py-32 md:py-48 section-lavender relative overflow-hidden" id="faq" aria-label="자주 묻는 질문">
     <div class="absolute top-0 left-0 w-[500px] h-[500px] bg-royal/[0.02] rounded-full blur-[200px] -translate-x-1/2 -translate-y-1/3"></div>
     <div class="max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
@@ -803,7 +888,7 @@ export function mainPage(): string {
   </section>
 
   <!-- ========== FINAL CTA ========== -->
-  <section class="py-36 md:py-48 bg-white relative overflow-hidden">
+  <section class="py-36 md:py-48 bg-white relative overflow-hidden" aria-label="상담 예약">
     <div class="orb orb-royal w-[800px] h-[800px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-10"></div>
     <div class="absolute inset-0 grid-pattern opacity-20"></div>
     <div class="royal-line-h absolute top-0 left-0 right-0"></div>

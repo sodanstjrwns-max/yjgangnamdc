@@ -68,7 +68,7 @@ const doctors = [
 export function doctorsPage(): string {
   return `
   <!-- ========== CINEMATIC HERO — "헉 뭐지?" ========== -->
-  <section class="relative min-h-screen flex items-center justify-center overflow-hidden" id="doctorHero">
+  <section class="relative min-h-screen flex items-center justify-center overflow-hidden" id="doctorHero" aria-label="의료진 히어로">
     <!-- Dark base -->
     <div class="absolute inset-0 bg-gradient-to-br from-[#0E0618] via-[#1A0D2E] to-[#0E0618]"></div>
     
@@ -118,7 +118,7 @@ export function doctorsPage(): string {
         </div>
 
         <!-- Headline -->
-        <h1 class="mb-8" id="dHeroTitle">
+        <h1 class="mb-8" id="dHeroTitle" data-speakable="true">
           <span class="block text-white/40 text-lg md:text-xl font-medium tracking-wider mb-4" id="dLine0">구강악안면외과 전문의</span>
           <span class="block overflow-hidden">
             <span class="block text-white font-black" style="font-size: clamp(3.5rem, 10vw, 8rem); line-height: 1.0; letter-spacing: -0.04em;" id="dLine1">수술 전문</span>
@@ -129,8 +129,8 @@ export function doctorsPage(): string {
         </h1>
 
         <!-- Sub copy -->
-        <p class="text-white/40 text-lg md:text-xl max-w-2xl leading-relaxed mb-14" id="dHeroSub">
-          일반 치과의사가 아닌, <span class="text-white/70 font-semibold">외과 전문의</span>가 직접 진단하고 직접 수술합니다.<br>
+        <p class="text-white/40 text-lg md:text-xl max-w-2xl leading-relaxed mb-14" id="dHeroSub" data-speakable="true">
+          영주 강남치과의원의 구강악안면외과 전문의 2인이 직접 진단하고 직접 수술합니다.<br>
           임플란트는 뼈에 심는 수술입니다. <span class="text-royal-200 font-semibold">수술은 수술 전문가에게.</span>
         </p>
 
@@ -259,12 +259,17 @@ export function doctorsPage(): string {
   </section>
 
   <!-- Doctor Cards with Story Preview -->
-  <section class="py-24 md:py-36 bg-white relative overflow-hidden">
+  <section class="py-24 md:py-36 bg-white relative overflow-hidden" aria-label="의료진 상세 소개">
     <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-royal/[0.02] rounded-full blur-[200px]"></div>
 
     <div class="max-w-6xl mx-auto px-6 md:px-8 lg:px-12 space-y-24">
       ${doctors.map((doc, i) => `
-      <div class="reveal${i % 2 ? '-right' : '-left'}">
+      <article class="reveal${i % 2 ? '-right' : '-left'}" itemscope itemtype="https://schema.org/Physician">
+        <meta itemprop="name" content="${doc.name}">
+        <meta itemprop="jobTitle" content="${doc.title}">
+        <meta itemprop="medicalSpecialty" content="Oral and Maxillofacial Surgery">
+        <meta itemprop="description" content="${doc.description}">
+        <link itemprop="url" href="https://gndentalclinic.com/doctors/${doc.slug}">
         <div class="card-premium overflow-hidden">
           <div class="grid grid-cols-1 lg:grid-cols-5 gap-0">
             <!-- Photo -->
@@ -330,20 +335,20 @@ export function doctorsPage(): string {
             </div>
           </div>
         </div>
-      </div>
+      </article>
       `).join('')}
     </div>
   </section>
 
   <!-- Mission & Vision -->
-  <section class="py-24 md:py-32 section-lavender relative overflow-hidden">
+  <section class="py-24 md:py-32 section-lavender relative overflow-hidden" aria-label="강남치과 미션">
     <div class="absolute inset-0 grid-pattern opacity-30"></div>
     <div class="royal-line-h absolute top-0 left-0 right-0"></div>
 
     <div class="relative z-10 max-w-5xl mx-auto px-6 md:px-8 lg:px-12 reveal">
       <div class="text-center mb-16">
         <div class="section-label section-label-royal mx-auto mb-6"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>MISSION</div>
-        <h2 class="display-lg text-charcoal mb-6">
+        <h2 class="display-lg text-charcoal mb-6" data-speakable="true">
           영주에서 대학병원 수준의 치과 수술을,<br><span class="royal-grad-text">동네 치과의 편안함으로.</span>
         </h2>
       </div>
