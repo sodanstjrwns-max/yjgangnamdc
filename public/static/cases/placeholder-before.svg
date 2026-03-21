@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <rect width="400" height="300" fill="#F8F5FB"/>
+  <rect x="10" y="10" width="380" height="280" rx="16" fill="#F0EBF5" stroke="#E8DFF0" stroke-width="2"/>
+  <text x="200" y="130" text-anchor="middle" fill="#B99FD2" font-family="system-ui" font-size="16" font-weight="700">BEFORE</text>
+  <text x="200" y="160" text-anchor="middle" fill="#D1BFE1" font-family="system-ui" font-size="12">치료 전 사진</text>
+  <circle cx="200" cy="210" r="30" fill="#E8DFF0"/>
+  <path d="M190 200 L195 215 L210 218 L197 225 L200 240 L190 230 L180 240 L183 225 L170 218 L185 215Z" fill="#B99FD2"/>
+</svg>

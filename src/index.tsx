@@ -7,9 +7,15 @@ import { reservationPage } from './pages/reservation'
 import { directionsPage } from './pages/directions'
 import { pricingPage } from './pages/pricing'
 import { areaPage } from './pages/area'
+import { blogListPage, blogDetailPage } from './pages/blog'
+import { beforeAfterListPage, beforeAfterDetailPage } from './pages/beforeafter'
 import { layout } from './layout'
 
-const app = new Hono()
+type Bindings = {
+  DB: D1Database;
+}
+
+const app = new Hono<{ Bindings: Bindings }>()
 
 app.use('/api/*', cors())
 
@@ -19,6 +25,7 @@ app.get('/robots.txt', (c) => {
   return c.body(`User-agent: *
 Allow: /
 Disallow: /api/
+Disallow: /admin/
 
 # Sitemap
 Sitemap: https://gndentalclinic.com/sitemap.xml
@@ -28,12 +35,12 @@ Crawl-delay: 1
 `)
 })
 
-// ===== SEO: sitemap.xml =====
-app.get('/sitemap.xml', (c) => {
+// ===== SEO: sitemap.xml (동적 생성) =====
+app.get('/sitemap.xml', async (c) => {
   const baseUrl = 'https://gndentalclinic.com'
   const today = new Date().toISOString().split('T')[0]
-  
-  const pages = [
+
+  const staticPages = [
     { url: '/', priority: '1.0', changefreq: 'weekly' },
     { url: '/doctors', priority: '0.9', changefreq: 'monthly' },
     { url: '/doctors/lee-taehyung', priority: '0.8', changefreq: 'monthly' },
@@ -55,10 +62,11 @@ app.get('/sitemap.xml', (c) => {
     { url: '/treatments/denture', priority: '0.5', changefreq: 'monthly' },
     { url: '/treatments/bone-graft', priority: '0.6', changefreq: 'monthly' },
     { url: '/treatments/pediatric', priority: '0.5', changefreq: 'monthly' },
+    { url: '/blog', priority: '0.8', changefreq: 'weekly' },
+    { url: '/before-after', priority: '0.8', changefreq: 'weekly' },
     { url: '/pricing', priority: '0.8', changefreq: 'monthly' },
     { url: '/directions', priority: '0.7', changefreq: 'yearly' },
     { url: '/reservation', priority: '0.8', changefreq: 'yearly' },
-    // 지역 SEO 페이지
     { url: '/area/%EC%98%81%EC%A3%BC%EC%8B%9C', priority: '0.6', changefreq: 'yearly' },
     { url: '/area/%ED%92%8D%EA%B8%B0', priority: '0.5', changefreq: 'yearly' },
     { url: '/area/%EB%B4%89%ED%99%94', priority: '0.5', changefreq: 'yearly' },
@@ -67,7 +75,25 @@ app.get('/sitemap.xml', (c) => {
     { url: '/area/%EB%8B%A8%EC%96%91', priority: '0.5', changefreq: 'yearly' },
   ]
 
-  const urls = pages.map(p => `  <url>
+  // 동적 블로그 URL 추가
+  let dynamicPages: typeof staticPages = []
+  try {
+    const blogPosts = await c.env.DB.prepare('SELECT slug, updated_at FROM blog_posts WHERE is_published = 1 ORDER BY published_at DESC').all()
+    dynamicPages = dynamicPages.concat(blogPosts.results.map((p: any) => ({
+      url: `/blog/${p.slug}`,
+      priority: '0.6',
+      changefreq: 'monthly' as const
+    })))
+    const baCases = await c.env.DB.prepare('SELECT slug, updated_at FROM before_after_cases WHERE is_published = 1 ORDER BY sort_order DESC').all()
+    dynamicPages = dynamicPages.concat(baCases.results.map((p: any) => ({
+      url: `/before-after/${p.slug}`,
+      priority: '0.6',
+      changefreq: 'monthly' as const
+    })))
+  } catch (e) { /* DB not available, skip dynamic pages */ }
+
+  const allPages = [...staticPages, ...dynamicPages]
+  const urls = allPages.map(p => `  <url>
     <loc>${baseUrl}${p.url}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>${p.changefreq}</changefreq>
@@ -165,6 +191,113 @@ app.get('/treatments/:slug', (c) => {
   }))
 })
 
+// ===== 블로그 게시판 =====
+app.get('/blog', async (c) => {
+  const category = c.req.query('category')
+  let posts: any[] = []
+  try {
+    if (category && category !== '전체') {
+      const result = await c.env.DB.prepare('SELECT * FROM blog_posts WHERE is_published = 1 AND category = ? ORDER BY published_at DESC LIMIT 50').bind(category).all()
+      posts = result.results
+    } else {
+      const result = await c.env.DB.prepare('SELECT * FROM blog_posts WHERE is_published = 1 ORDER BY published_at DESC LIMIT 50').all()
+      posts = result.results
+    }
+  } catch (e) { /* DB not available */ }
+
+  return c.html(layout(blogListPage(posts), {
+    title: '강남치과의원 블로그 | 치과 건강정보 · 임플란트 · CEREC · 교정',
+    description: '구강악안면외과 전문의가 직접 전하는 치과 건강정보. 임플란트, CEREC 당일보철, 인비절라인, 사랑니 발치 등 치과 치료에 대한 정확한 정보를 제공합니다.',
+    url: '/blog',
+    keywords: '영주 치과 블로그, 임플란트 정보, CEREC 당일보철, 인비절라인 후기, 사랑니 발치 정보, 치과 건강정보',
+    schemas: [{
+      "@context": "https://schema.org",
+      "@type": "Blog",
+      "name": "강남치과의원 블로그",
+      "description": "구강외과 전문의가 전하는 치과 건강정보",
+      "url": "https://gndentalclinic.com/blog",
+      "publisher": { "@id": "https://gndentalclinic.com/#organization" },
+      "inLanguage": "ko"
+    }]
+  }))
+})
+
+app.get('/blog/:slug', async (c) => {
+  const slug = c.req.param('slug')
+  let post: any = null
+  try {
+    const result = await c.env.DB.prepare('SELECT * FROM blog_posts WHERE slug = ? AND is_published = 1').bind(slug).first()
+    post = result
+    if (post) {
+      await c.env.DB.prepare('UPDATE blog_posts SET views = views + 1 WHERE slug = ?').bind(slug).run()
+    }
+  } catch (e) { /* DB not available */ }
+
+  if (!post) return c.notFound()
+  const page = blogDetailPage(post)
+  return c.html(layout(page.html, {
+    title: page.title,
+    description: page.description,
+    url: `/blog/${slug}`,
+    ogType: 'article',
+    schemas: page.schemas,
+    articlePublishedTime: post.published_at,
+    articleModifiedTime: post.updated_at || post.published_at
+  }))
+})
+
+// ===== 비포/애프터 게시판 =====
+app.get('/before-after', async (c) => {
+  const category = c.req.query('category')
+  let cases: any[] = []
+  try {
+    if (category && category !== '전체') {
+      const result = await c.env.DB.prepare('SELECT * FROM before_after_cases WHERE is_published = 1 AND category = ? ORDER BY sort_order DESC, published_at DESC LIMIT 50').bind(category).all()
+      cases = result.results
+    } else {
+      const result = await c.env.DB.prepare('SELECT * FROM before_after_cases WHERE is_published = 1 ORDER BY sort_order DESC, published_at DESC LIMIT 50').all()
+      cases = result.results
+    }
+  } catch (e) { /* DB not available */ }
+
+  return c.html(layout(beforeAfterListPage(cases), {
+    title: '치료 전후 사례 | 강남치과의원 비포&애프터 · 임플란트 · CEREC · 교정',
+    description: '강남치과의원 실제 치료 전후 사례. 구강외과 전문의가 직접 시행한 임플란트, CEREC 당일보철, 인비절라인, 심미보철 치료 결과를 확인하세요.',
+    url: '/before-after',
+    keywords: '영주 임플란트 전후, 치과 비포 애프터, CEREC 당일보철 사례, 인비절라인 전후, 영주 치과 치료 사례',
+    schemas: [{
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "강남치과의원 치료 전후 사례",
+      "description": "구강외과 전문의가 직접 시행한 치료 전후 사례 모음",
+      "url": "https://gndentalclinic.com/before-after",
+      "publisher": { "@id": "https://gndentalclinic.com/#organization" }
+    }]
+  }))
+})
+
+app.get('/before-after/:slug', async (c) => {
+  const slug = c.req.param('slug')
+  let caseData: any = null
+  try {
+    const result = await c.env.DB.prepare('SELECT * FROM before_after_cases WHERE slug = ? AND is_published = 1').bind(slug).first()
+    caseData = result
+    if (caseData) {
+      await c.env.DB.prepare('UPDATE before_after_cases SET views = views + 1 WHERE slug = ?').bind(slug).run()
+    }
+  } catch (e) { /* DB not available */ }
+
+  if (!caseData) return c.notFound()
+  const page = beforeAfterDetailPage(caseData)
+  return c.html(layout(page.html, {
+    title: page.title,
+    description: page.description,
+    url: `/before-after/${slug}`,
+    ogType: 'article',
+    schemas: page.schemas
+  }))
+})
+
 // ===== 예약/상담 =====
 app.get('/reservation', (c) => c.html(layout(reservationPage(), {
   title: '강남치과의원 상담 예약 | 무료 상담 · 054-636-8222',
@@ -202,7 +335,150 @@ app.get('/area/:region', (c) => {
   }))
 })
 
-// ===== API =====
+// ===== API: 상담 문의 접수 (D1 저장) =====
+app.post('/api/inquiries', async (c) => {
+  try {
+    const { name, phone, treatment, message } = await c.req.json()
+
+    if (!name || !phone) {
+      return c.json({ success: false, error: '성함과 연락처는 필수입니다.' }, 400)
+    }
+
+    const result = await c.env.DB.prepare(
+      'INSERT INTO inquiries (name, phone, treatment, message) VALUES (?, ?, ?, ?)'
+    ).bind(name, phone, treatment || '', message || '').run()
+
+    return c.json({
+      success: true,
+      id: result.meta.last_row_id,
+      message: '상담 문의가 접수되었습니다. 영업일 기준 1일 이내 연락드리겠습니다.'
+    })
+  } catch (e: any) {
+    return c.json({ success: false, error: '접수 중 오류가 발생했습니다. 전화(054-636-8222)로 문의해 주세요.' }, 500)
+  }
+})
+
+// ===== API: 상담 문의 목록 조회 (관리자용) =====
+app.get('/api/inquiries', async (c) => {
+  const key = c.req.query('key')
+  if (key !== 'gangnam2017admin') {
+    return c.json({ error: 'Unauthorized' }, 401)
+  }
+  try {
+    const status = c.req.query('status') || 'all'
+    let result
+    if (status === 'all') {
+      result = await c.env.DB.prepare('SELECT * FROM inquiries ORDER BY created_at DESC LIMIT 100').all()
+    } else {
+      result = await c.env.DB.prepare('SELECT * FROM inquiries WHERE status = ? ORDER BY created_at DESC LIMIT 100').bind(status).all()
+    }
+    return c.json({ success: true, inquiries: result.results, total: result.results.length })
+  } catch (e) {
+    return c.json({ success: false, error: '조회 실패' }, 500)
+  }
+})
+
+// ===== API: 문의 상태 변경 =====
+app.patch('/api/inquiries/:id', async (c) => {
+  const key = c.req.query('key')
+  if (key !== 'gangnam2017admin') {
+    return c.json({ error: 'Unauthorized' }, 401)
+  }
+  try {
+    const id = c.req.param('id')
+    const { status } = await c.req.json()
+    await c.env.DB.prepare('UPDATE inquiries SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?').bind(status, id).run()
+    return c.json({ success: true })
+  } catch (e) {
+    return c.json({ success: false, error: '업데이트 실패' }, 500)
+  }
+})
+
+// ===== API: 블로그 CRUD (관리자용) =====
+app.post('/api/blog', async (c) => {
+  const key = c.req.query('key')
+  if (key !== 'gangnam2017admin') return c.json({ error: 'Unauthorized' }, 401)
+  try {
+    const { slug, title, category, summary, content, thumbnail, tags, author } = await c.req.json()
+    if (!slug || !title || !content) return c.json({ error: 'slug, title, content 필수' }, 400)
+    await c.env.DB.prepare(
+      'INSERT INTO blog_posts (slug, title, category, summary, content, thumbnail, tags, author) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+    ).bind(slug, title, category || '일반', summary || '', content, thumbnail || '', tags || '', author || '강남치과의원').run()
+    return c.json({ success: true, slug })
+  } catch (e: any) {
+    return c.json({ success: false, error: e.message }, 500)
+  }
+})
+
+app.put('/api/blog/:slug', async (c) => {
+  const key = c.req.query('key')
+  if (key !== 'gangnam2017admin') return c.json({ error: 'Unauthorized' }, 401)
+  try {
+    const slug = c.req.param('slug')
+    const { title, category, summary, content, thumbnail, tags, author, is_published } = await c.req.json()
+    await c.env.DB.prepare(
+      'UPDATE blog_posts SET title=?, category=?, summary=?, content=?, thumbnail=?, tags=?, author=?, is_published=?, updated_at=CURRENT_TIMESTAMP WHERE slug=?'
+    ).bind(title, category, summary, content, thumbnail || '', tags || '', author, is_published ?? 1, slug).run()
+    return c.json({ success: true })
+  } catch (e: any) {
+    return c.json({ success: false, error: e.message }, 500)
+  }
+})
+
+app.delete('/api/blog/:slug', async (c) => {
+  const key = c.req.query('key')
+  if (key !== 'gangnam2017admin') return c.json({ error: 'Unauthorized' }, 401)
+  try {
+    await c.env.DB.prepare('DELETE FROM blog_posts WHERE slug = ?').bind(c.req.param('slug')).run()
+    return c.json({ success: true })
+  } catch (e: any) {
+    return c.json({ success: false, error: e.message }, 500)
+  }
+})
+
+// ===== API: 비포/애프터 CRUD (관리자용) =====
+app.post('/api/before-after', async (c) => {
+  const key = c.req.query('key')
+  if (key !== 'gangnam2017admin') return c.json({ error: 'Unauthorized' }, 401)
+  try {
+    const { slug, title, category, patient_info, treatment_desc, before_image, after_image, duration, doctor, tags, sort_order } = await c.req.json()
+    if (!slug || !title || !before_image || !after_image) return c.json({ error: 'slug, title, before_image, after_image 필수' }, 400)
+    await c.env.DB.prepare(
+      'INSERT INTO before_after_cases (slug, title, category, patient_info, treatment_desc, before_image, after_image, duration, doctor, tags, sort_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+    ).bind(slug, title, category || '기타', patient_info || '', treatment_desc || '', before_image, after_image, duration || '', doctor || '', tags || '', sort_order || 0).run()
+    return c.json({ success: true, slug })
+  } catch (e: any) {
+    return c.json({ success: false, error: e.message }, 500)
+  }
+})
+
+app.put('/api/before-after/:slug', async (c) => {
+  const key = c.req.query('key')
+  if (key !== 'gangnam2017admin') return c.json({ error: 'Unauthorized' }, 401)
+  try {
+    const slug = c.req.param('slug')
+    const { title, category, patient_info, treatment_desc, before_image, after_image, duration, doctor, tags, sort_order, is_published } = await c.req.json()
+    await c.env.DB.prepare(
+      'UPDATE before_after_cases SET title=?, category=?, patient_info=?, treatment_desc=?, before_image=?, after_image=?, duration=?, doctor=?, tags=?, sort_order=?, is_published=?, updated_at=CURRENT_TIMESTAMP WHERE slug=?'
+    ).bind(title, category, patient_info, treatment_desc, before_image, after_image, duration, doctor, tags, sort_order || 0, is_published ?? 1, slug).run()
+    return c.json({ success: true })
+  } catch (e: any) {
+    return c.json({ success: false, error: e.message }, 500)
+  }
+})
+
+app.delete('/api/before-after/:slug', async (c) => {
+  const key = c.req.query('key')
+  if (key !== 'gangnam2017admin') return c.json({ error: 'Unauthorized' }, 401)
+  try {
+    await c.env.DB.prepare('DELETE FROM before_after_cases WHERE slug = ?').bind(c.req.param('slug')).run()
+    return c.json({ success: true })
+  } catch (e: any) {
+    return c.json({ success: false, error: e.message }, 500)
+  }
+})
+
+// ===== API: Health =====
 app.get('/api/health', (c) => c.json({ status: 'ok', clinic: '강남치과의원' }))
 
 export default app

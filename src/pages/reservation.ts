@@ -121,7 +121,45 @@ export function reservationPage(): string {
   </section>
 
   <script>
-    function handleSubmit(e) { e.preventDefault(); alert('상담 문의가 접수되었습니다.\\n영업일 기준 1일 이내 연락드리겠습니다.\\n감사합니다.'); e.target.reset(); }
+    async function handleSubmit(e) {
+      e.preventDefault();
+      const form = e.target;
+      const btn = form.querySelector('button[type="submit"]');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin text-sm"></i>접수 중...';
+      btn.disabled = true;
+
+      const inputs = form.querySelectorAll('input, select, textarea');
+      const data = {
+        name: inputs[0].value,
+        phone: inputs[1].value,
+        treatment: inputs[2].value,
+        message: inputs[3].value
+      };
+
+      try {
+        const res = await fetch('/api/inquiries', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const result = await res.json();
+        if (result.success) {
+          form.reset();
+          // Show success message
+          const formArea = form.parentElement;
+          formArea.innerHTML = '<div class="text-center py-12"><div class="w-20 h-20 mx-auto rounded-3xl bg-emerald-50 border border-emerald-200 flex items-center justify-center mb-6"><i class="fas fa-check text-emerald-500 text-3xl"></i></div><h3 class="text-2xl font-extrabold text-charcoal mb-3">접수 완료</h3><p class="text-gray-400 leading-relaxed mb-2">상담 문의가 정상적으로 접수되었습니다.</p><p class="text-gray-400 leading-relaxed mb-8">영업일 기준 1일 이내 연락드리겠습니다.</p><a href="/" class="btn-primary !py-4 !px-10 !text-sm"><i class="fas fa-home text-xs"></i>홈으로</a></div>';
+        } else {
+          alert(result.error || '접수 중 오류가 발생했습니다.');
+          btn.innerHTML = originalText;
+          btn.disabled = false;
+        }
+      } catch (err) {
+        alert('네트워크 오류가 발생했습니다. 전화(054-636-8222)로 문의해 주세요.');
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }
+    }
   </script>
   `
 }

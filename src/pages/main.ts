@@ -371,8 +371,20 @@ export function mainPage(): string {
 
   <!-- ========== HERO — WHITE + ROYAL PURPLE ========== -->
   <section class="relative min-h-screen flex items-center overflow-hidden hero-white" id="hero" aria-label="강남치과의원 메인 히어로" itemscope itemtype="https://schema.org/WPHeader">
-    <!-- 3D Particle Canvas -->
-    <canvas id="heroCanvas" class="absolute inset-0 w-full h-full" style="z-index:1;"></canvas>
+    <!-- CSS Particle Background (lightweight replacement for Three.js) -->
+    <div class="absolute inset-0" style="z-index:1;">
+      <div class="css-particles">
+        ${Array.from({length: 30}, (_, i) => {
+          const x = Math.random() * 100;
+          const y = Math.random() * 100;
+          const size = 2 + Math.random() * 4;
+          const dur = 15 + Math.random() * 25;
+          const delay = Math.random() * -30;
+          const opacity = 0.08 + Math.random() * 0.15;
+          return `<div class="css-particle" style="left:${x}%;top:${y}%;width:${size}px;height:${size}px;animation-duration:${dur}s;animation-delay:${delay}s;opacity:${opacity};"></div>`;
+        }).join('')}
+      </div>
+    </div>
 
     <!-- Subtle patterns -->
     <div class="absolute inset-0 grid-pattern opacity-60" style="z-index:2;"></div>
@@ -502,52 +514,7 @@ export function mainPage(): string {
     </div>
 
     <script>
-      (function() {
-        const canvas = document.getElementById('heroCanvas');
-        if (!canvas || !window.THREE) return;
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-        renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        const count = 400;
-        const geo = new THREE.BufferGeometry();
-        const pos = new Float32Array(count * 3);
-        const colors = new Float32Array(count * 3);
-        for (let i = 0; i < count; i++) {
-          pos[i*3] = (Math.random() - 0.5) * 20; pos[i*3+1] = (Math.random() - 0.5) * 20; pos[i*3+2] = (Math.random() - 0.5) * 20;
-          const isPurple = Math.random() > 0.3;
-          if (isPurple) { colors[i*3] = 0.36+Math.random()*0.2; colors[i*3+1] = 0.17+Math.random()*0.15; colors[i*3+2] = 0.56+Math.random()*0.2; }
-          else { colors[i*3] = 0.78+Math.random()*0.1; colors[i*3+1] = 0.66+Math.random()*0.1; colors[i*3+2] = 0.43+Math.random()*0.1; }
-        }
-        geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-        geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-        const mat = new THREE.PointsMaterial({ size: 0.025, vertexColors: true, transparent: true, opacity: 0.4, sizeAttenuation: true });
-        const particles = new THREE.Points(geo, mat);
-        scene.add(particles);
-        const lineGeo = new THREE.BufferGeometry();
-        const linePos = new Float32Array(150 * 6);
-        for (let i = 0; i < 150; i++) {
-          const idx = Math.floor(Math.random() * count), idx2 = Math.floor(Math.random() * count);
-          linePos[i*6]=pos[idx*3]; linePos[i*6+1]=pos[idx*3+1]; linePos[i*6+2]=pos[idx*3+2];
-          linePos[i*6+3]=pos[idx2*3]; linePos[i*6+4]=pos[idx2*3+1]; linePos[i*6+5]=pos[idx2*3+2];
-        }
-        lineGeo.setAttribute('position', new THREE.BufferAttribute(linePos, 3));
-        scene.add(new THREE.LineSegments(lineGeo, new THREE.LineBasicMaterial({ color: 0x5B2C8E, transparent: true, opacity: 0.03 })));
-        camera.position.z = 6;
-        let mouseX = 0, mouseY = 0;
-        document.addEventListener('mousemove', e => { mouseX = (e.clientX/window.innerWidth - 0.5)*2; mouseY = (e.clientY/window.innerHeight - 0.5)*2; });
-        function animate() {
-          requestAnimationFrame(animate);
-          particles.rotation.y += 0.0002; particles.rotation.x += 0.00008;
-          camera.position.x += (mouseX*0.5 - camera.position.x)*0.02;
-          camera.position.y += (-mouseY*0.5 - camera.position.y)*0.02;
-          camera.lookAt(scene.position); renderer.render(scene, camera);
-        }
-        animate();
-        window.addEventListener('resize', () => { camera.aspect = canvas.clientWidth/canvas.clientHeight; camera.updateProjectionMatrix(); renderer.setSize(canvas.clientWidth, canvas.clientHeight); });
-      })();
-      const heroTl = gsap.timeline({ delay: 0.5 });
+      const heroTl = gsap.timeline({ delay: 0.3 });
       heroTl.from('#heroTag',{opacity:0,y:30,duration:0.8,ease:'power4.out'})
         .from('#heroLine1',{y:'110%',duration:1,ease:'power4.out'},'-=0.4')
         .from('#heroLine2',{y:'110%',duration:1,ease:'power4.out'},'-=0.7')

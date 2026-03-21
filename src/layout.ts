@@ -294,13 +294,11 @@ export function layout(content: string, opts: LayoutOptions): string {
   <!-- Font Awesome -->
   <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" rel="stylesheet">
 
-  <!-- GSAP + Plugins -->
+  <!-- GSAP + ScrollTrigger -->
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollToPlugin.min.js"></script>
 
-  <!-- Three.js for 3D particles -->
-  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+  <!-- Three.js removed for performance - using CSS particles instead -->
   
   <!-- Structured Data (SEO/AEO) -->
   ${schemasHtml}
@@ -518,6 +516,23 @@ export function layout(content: string, opts: LayoutOptions): string {
     .snap-x { scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
     .snap-x > * { scroll-snap-align: start; }
 
+    /* ===== CSS Particles (Three.js replacement) ===== */
+    .css-particles { position: absolute; inset: 0; overflow: hidden; }
+    .css-particle {
+      position: absolute;
+      border-radius: 50%;
+      background: var(--royal);
+      animation: particleFloat linear infinite;
+    }
+    .css-particle:nth-child(odd) { background: var(--gold); }
+    @keyframes particleFloat {
+      0% { transform: translate(0, 0) scale(1); }
+      25% { transform: translate(30px, -40px) scale(1.2); }
+      50% { transform: translate(-20px, -80px) scale(0.8); }
+      75% { transform: translate(40px, -30px) scale(1.1); }
+      100% { transform: translate(0, 0) scale(1); }
+    }
+
     /* ===== Cursor glow ===== */
     .cursor-glow {
       position: fixed; width: 400px; height: 400px; border-radius: 50%;
@@ -594,12 +609,12 @@ export function layout(content: string, opts: LayoutOptions): string {
             인비절라인
             <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-royal rounded-full group-hover:w-6 transition-all duration-300"></span>
           </a>
-          <a href="/pricing" class="px-5 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative group font-medium">
-            비용
+          <a href="/before-after" class="px-5 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative group font-medium">
+            치료전후
             <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-royal rounded-full group-hover:w-6 transition-all duration-300"></span>
           </a>
-          <a href="/directions" class="px-5 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative group font-medium">
-            오시는길
+          <a href="/blog" class="px-5 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative group font-medium">
+            블로그
             <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-royal rounded-full group-hover:w-6 transition-all duration-300"></span>
           </a>
           <div class="w-px h-5 bg-gray-200 mx-3"></div>
@@ -634,6 +649,8 @@ export function layout(content: string, opts: LayoutOptions): string {
           <a href="/treatments" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">진료 안내</a>
           <a href="/treatments/implant" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">임플란트</a>
           <a href="/treatments/invisalign" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">인비절라인</a>
+          <a href="/before-after" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">치료 전후</a>
+          <a href="/blog" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">블로그</a>
           <a href="/pricing" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">비용 안내</a>
           <a href="/directions" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">오시는 길</a>
         </div>
@@ -708,6 +725,8 @@ export function layout(content: string, opts: LayoutOptions): string {
           <h4 class="text-royal text-[10px] tracking-[0.2em] font-bold mb-8 uppercase">안내</h4>
           <ul class="space-y-3.5 text-sm text-gray-400">
             <li><a href="/doctors" class="hover:text-royal transition-colors duration-300">의료진</a></li>
+            <li><a href="/before-after" class="hover:text-royal transition-colors duration-300">치료전후</a></li>
+            <li><a href="/blog" class="hover:text-royal transition-colors duration-300">블로그</a></li>
             <li><a href="/pricing" class="hover:text-royal transition-colors duration-300">비용안내</a></li>
             <li><a href="/directions" class="hover:text-royal transition-colors duration-300">오시는길</a></li>
             <li><a href="/reservation" class="hover:text-royal transition-colors duration-300">상담예약</a></li>
@@ -769,7 +788,7 @@ export function layout(content: string, opts: LayoutOptions): string {
 
   <!-- ===== Scripts ===== -->
   <script>
-    gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+    gsap.registerPlugin(ScrollTrigger);
 
     // ===== Cursor glow =====
     const cg = document.getElementById('cursorGlow');
