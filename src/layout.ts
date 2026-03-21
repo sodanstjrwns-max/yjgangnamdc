@@ -516,6 +516,12 @@ export function layout(content: string, opts: LayoutOptions): string {
     @keyframes float-delayed { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
     @keyframes pulse-royal { 0%,100%{box-shadow:0 0 20px rgba(16,175,178,0.15)} 50%{box-shadow:0 0 40px rgba(16,175,178,0.3)} }
 
+    /* ===== 3D Implant animations ===== */
+    @keyframes implantFloat { 0%,100%{transform:translateY(0) rotateY(0deg)} 25%{transform:translateY(-12px) rotateY(3deg)} 50%{transform:translateY(0) rotateY(0deg)} 75%{transform:translateY(-8px) rotateY(-3deg)} }
+    @keyframes implantPulse { 0%,100%{transform:translate(-50%,-50%) scale(1); opacity:1} 50%{transform:translate(-50%,-50%) scale(1.15); opacity:0.6} }
+    @keyframes orbitSpin { 0%{transform:translate(-50%,-50%) rotate(0deg)} 100%{transform:translate(-50%,-50%) rotate(360deg)} }
+    @keyframes fadeInOut { 0%,100%{opacity:0} 30%,70%{opacity:1} }
+
     /* ===== Horizontal scroll snap ===== */
     .snap-x { scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
     .snap-x > * { scroll-snap-align: start; }

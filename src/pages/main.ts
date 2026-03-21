@@ -468,42 +468,61 @@ export function mainPage(): string {
           </div>
         </div>
 
-        <!-- Right: Premium visual (5 cols) -->
-        <div class="lg:col-span-5 hidden lg:block" id="heroVisual">
-          <div class="relative">
-            <div class="relative w-full aspect-[3/4] rounded-[32px] overflow-hidden border border-royal/10 shadow-2xl shadow-royal/[0.04]">
-              <div class="absolute inset-0 bg-gradient-to-br from-lavender via-white to-royal/[0.03]"></div>
-              <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-10">
-                <div class="w-28 h-28 rounded-3xl royal-grad flex items-center justify-center mb-8 royal-glow relative">
-                  <i class="fas fa-tooth text-white text-4xl"></i>
-                  <div class="absolute -inset-4 rounded-3xl border border-royal/10 animate-pulse"></div>
-                </div>
-                <p class="text-charcoal text-xl font-bold mb-2">강남치과의원</p>
-                <p class="text-gray-400 text-sm">촬영 사진 업데이트 예정</p>
-                <div class="mt-6 flex items-center gap-2 text-royal/30 text-xs">
-                  <span class="w-8 h-px bg-royal/20"></span>SINCE 2017<span class="w-8 h-px bg-royal/20"></span>
-                </div>
+        <!-- Right: 3D Implant Object -->
+        <div class="lg:col-span-5 hidden lg:flex items-center justify-center" id="heroVisual">
+          <div class="relative" style="perspective:1200px;">
+            
+            <!-- Glow ring behind implant -->
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] h-[340px] rounded-full" style="background: radial-gradient(circle, rgba(16,175,178,0.12) 0%, rgba(16,175,178,0.04) 40%, transparent 70%); animation: implantPulse 4s ease-in-out infinite;"></div>
+            
+            <!-- Orbit ring 1 -->
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[380px] h-[380px] rounded-full border border-royal/[0.08]" style="animation: orbitSpin 20s linear infinite; transform-style:preserve-3d;">
+              <div class="absolute -top-1.5 left-1/2 w-3 h-3 rounded-full bg-royal/30 shadow-lg shadow-royal/20"></div>
+              <div class="absolute -bottom-1.5 left-1/2 w-2 h-2 rounded-full bg-royal/20"></div>
+            </div>
+            
+            <!-- Orbit ring 2 -->
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] rounded-full border border-dashed border-royal/[0.06]" style="animation: orbitSpin 15s linear infinite reverse;"></div>
+
+            <!-- 3D Rotating implant container -->
+            <div id="implant3D" class="relative cursor-grab active:cursor-grabbing" style="transform-style:preserve-3d; animation: implantFloat 6s ease-in-out infinite;">
+              <img 
+                src="/static/implant-3d.png" 
+                alt="임플란트 3D 구조 - 크라운, 어버트먼트, 픽스쳐" 
+                class="w-auto select-none pointer-events-none" 
+                style="height:480px; filter: drop-shadow(0 20px 60px rgba(16,175,178,0.15)) drop-shadow(0 8px 20px rgba(0,0,0,0.08));"
+                draggable="false"
+              >
+              <!-- Reflection -->
+              <div class="absolute -bottom-4 left-1/2 -translate-x-1/2 w-[60%] h-8 rounded-[50%]" style="background: radial-gradient(ellipse, rgba(16,175,178,0.08) 0%, transparent 70%);"></div>
+            </div>
+
+            <!-- Floating labels -->
+            <div class="absolute top-[12%] -left-8 p-3.5 rounded-2xl bg-white/90 backdrop-blur-xl border border-royal/10 shadow-xl shadow-royal/[0.06]" style="animation: float 5s ease-in-out infinite;">
+              <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-xl royal-grad flex items-center justify-center"><i class="fas fa-crown text-white text-xs"></i></div>
+                <div><div class="text-charcoal text-[12px] font-bold">크라운</div><div class="text-gray-400 text-[10px]">세라믹 보철</div></div>
               </div>
             </div>
-            <div class="absolute -left-12 top-16 p-4 rounded-2xl bg-white border border-royal/10 shadow-xl shadow-royal/[0.04]" style="animation: float 5s ease-in-out infinite;">
-              <div class="flex items-center gap-3">
-                <div class="w-11 h-11 rounded-xl royal-grad flex items-center justify-center royal-glow"><i class="fas fa-microchip text-white text-sm"></i></div>
-                <div><div class="text-charcoal text-[13px] font-bold">디지털 장비 완비</div><div class="text-gray-400 text-[11px]">CT · CEREC · iTero · PrimeScan</div></div>
+
+            <div class="absolute top-[42%] -right-12 p-3.5 rounded-2xl bg-white/90 backdrop-blur-xl border border-royal/10 shadow-xl shadow-royal/[0.06]" style="animation: float 5s ease-in-out infinite; animation-delay:-2s;">
+              <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center"><i class="fas fa-link text-gray-500 text-xs"></i></div>
+                <div><div class="text-charcoal text-[12px] font-bold">어버트먼트</div><div class="text-gray-400 text-[10px]">연결 장치</div></div>
               </div>
             </div>
-            <div class="absolute -right-8 top-1/3 p-4 rounded-2xl bg-white border border-royal/10 shadow-xl shadow-royal/[0.04]" style="animation: float 5s ease-in-out infinite; animation-delay: -2.5s;">
-              <div class="flex items-center gap-2 mb-2">
-                <span class="px-2.5 py-1 rounded-full bg-royal/10 text-royal text-[10px] font-bold">전문의</span>
-                <span class="px-2.5 py-1 rounded-full royal-accent-bg text-royal text-[10px] font-bold">인증의</span>
+
+            <div class="absolute bottom-[15%] -left-4 p-3.5 rounded-2xl bg-white/90 backdrop-blur-xl border border-royal/10 shadow-xl shadow-royal/[0.06]" style="animation: float 5s ease-in-out infinite; animation-delay:-3.5s;">
+              <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center"><i class="fas fa-screw-driver-wrench text-emerald-500 text-xs"></i></div>
+                <div><div class="text-charcoal text-[12px] font-bold">픽스쳐</div><div class="text-gray-400 text-[10px]">티타늄 나사</div></div>
               </div>
-              <div class="text-charcoal text-[13px] font-bold">구강외과 전문의 2인</div>
-              <div class="text-gray-400 text-[11px]">대학병원 수련 완료</div>
             </div>
-            <div class="absolute -left-6 bottom-24 p-4 rounded-2xl bg-white border border-royal/10 shadow-xl shadow-royal/[0.04]" style="animation: float 5s ease-in-out infinite; animation-delay: -1.5s;">
-              <div class="flex items-center gap-3">
-                <div class="w-11 h-11 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center"><i class="fas fa-check text-emerald-500 text-sm"></i></div>
-                <div><div class="text-charcoal text-[13px] font-bold">오늘 끝납니다</div><div class="text-emerald-500 text-[11px]">CEREC 당일 보철</div></div>
-              </div>
+
+            <!-- Drag hint -->
+            <div id="dragHint" class="absolute -bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-2 text-gray-300 text-[10px] tracking-wider font-medium" style="animation: fadeInOut 3s ease-in-out infinite;">
+              <i class="fas fa-hand-pointer text-royal/40"></i>
+              <span>드래그하여 회전</span>
             </div>
           </div>
         </div>
@@ -518,6 +537,82 @@ export function mainPage(): string {
     </div>
 
     <script>
+      // ===== 3D Implant rotation =====
+      (function(){
+        const el = document.getElementById('implant3D');
+        if(!el) return;
+        let isDragging = false, startX = 0, startY = 0, rotY = 0, rotX = 0, curRotY = 0, curRotX = 0;
+        let autoRotate = true, autoAngle = 0, momentum = 0, lastMoveX = 0;
+        
+        function applyTransform(ry, rx) {
+          el.style.transform = 'rotateY(' + ry + 'deg) rotateX(' + rx + 'deg)';
+        }
+        
+        // Auto-rotate
+        function autoLoop() {
+          if (autoRotate && !isDragging) {
+            autoAngle += 0.3;
+            applyTransform(autoAngle, Math.sin(autoAngle * 0.02) * 3);
+          } else if (!isDragging && Math.abs(momentum) > 0.1) {
+            curRotY += momentum;
+            momentum *= 0.96;
+            applyTransform(curRotY, curRotX);
+          }
+          requestAnimationFrame(autoLoop);
+        }
+        autoLoop();
+
+        el.parentElement.addEventListener('mousedown', function(e) {
+          isDragging = true; autoRotate = false;
+          startX = e.clientX; startY = e.clientY;
+          curRotY = curRotY || autoAngle;
+          el.style.animation = 'none';
+          var hint = document.getElementById('dragHint');
+          if(hint) hint.style.opacity = '0';
+          e.preventDefault();
+        });
+        
+        document.addEventListener('mousemove', function(e) {
+          if (!isDragging) return;
+          var dx = e.clientX - startX, dy = e.clientY - startY;
+          lastMoveX = e.clientX - startX;
+          rotY = curRotY + dx * 0.5;
+          rotX = Math.max(-15, Math.min(15, curRotX + dy * 0.15));
+          applyTransform(rotY, rotX);
+          startX = e.clientX; startY = e.clientY;
+          curRotY = rotY; curRotX = rotX;
+        });
+        
+        document.addEventListener('mouseup', function() {
+          if (isDragging) { isDragging = false; momentum = lastMoveX * 0.3; }
+        });
+
+        // Touch support
+        el.parentElement.addEventListener('touchstart', function(e) {
+          isDragging = true; autoRotate = false;
+          startX = e.touches[0].clientX; startY = e.touches[0].clientY;
+          curRotY = curRotY || autoAngle;
+          el.style.animation = 'none';
+          var hint = document.getElementById('dragHint');
+          if(hint) hint.style.opacity = '0';
+        }, {passive:true});
+        
+        document.addEventListener('touchmove', function(e) {
+          if (!isDragging) return;
+          var dx = e.touches[0].clientX - startX, dy = e.touches[0].clientY - startY;
+          lastMoveX = dx;
+          rotY = curRotY + dx * 0.5;
+          rotX = Math.max(-15, Math.min(15, curRotX + dy * 0.15));
+          applyTransform(rotY, rotX);
+          startX = e.touches[0].clientX; startY = e.touches[0].clientY;
+          curRotY = rotY; curRotX = rotX;
+        }, {passive:true});
+        
+        document.addEventListener('touchend', function() {
+          if (isDragging) { isDragging = false; momentum = lastMoveX * 0.3; }
+        });
+      })();
+
       const heroTl = gsap.timeline({ delay: 0.3 });
       heroTl.from('#heroTag',{opacity:0,y:30,duration:0.8,ease:'power4.out'})
         .from('#heroLine1',{y:'110%',duration:1,ease:'power4.out'},'-=0.4')
