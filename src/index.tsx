@@ -9,6 +9,8 @@ import { pricingPage } from './pages/pricing'
 import { areaPage } from './pages/area'
 import { blogListPage, blogDetailPage } from './pages/blog'
 import { beforeAfterListPage, beforeAfterDetailPage } from './pages/beforeafter'
+import { noticeListPage, noticeDetailPage } from './pages/notices'
+import { adminPage } from './pages/admin'
 import { layout } from './layout'
 
 type Bindings = {
@@ -64,6 +66,7 @@ app.get('/sitemap.xml', async (c) => {
     { url: '/treatments/pediatric', priority: '0.5', changefreq: 'monthly' },
     { url: '/blog', priority: '0.8', changefreq: 'weekly' },
     { url: '/before-after', priority: '0.8', changefreq: 'weekly' },
+    { url: '/notices', priority: '0.7', changefreq: 'weekly' },
     { url: '/pricing', priority: '0.8', changefreq: 'monthly' },
     { url: '/directions', priority: '0.7', changefreq: 'yearly' },
     { url: '/reservation', priority: '0.8', changefreq: 'yearly' },
@@ -88,6 +91,12 @@ app.get('/sitemap.xml', async (c) => {
     dynamicPages = dynamicPages.concat(baCases.results.map((p: any) => ({
       url: `/before-after/${p.slug}`,
       priority: '0.6',
+      changefreq: 'monthly' as const
+    })))
+    const noticesList = await c.env.DB.prepare('SELECT slug FROM notices WHERE is_published = 1 ORDER BY published_at DESC').all()
+    dynamicPages = dynamicPages.concat(noticesList.results.map((p: any) => ({
+      url: `/notices/${p.slug}`,
+      priority: '0.5',
       changefreq: 'monthly' as const
     })))
   } catch (e) { /* DB not available, skip dynamic pages */ }
@@ -475,6 +484,177 @@ app.delete('/api/before-after/:slug', async (c) => {
     return c.json({ success: true })
   } catch (e: any) {
     return c.json({ success: false, error: e.message }, 500)
+  }
+})
+
+// ===== 공지사항 =====
+app.get('/notices', async (c) => {
+  const category = c.req.query('category')
+  let notices: any[] = []
+  try {
+    if (category && category !== '전체') {
+      const result = await c.env.DB.prepare('SELECT * FROM notices WHERE is_published = 1 AND category = ? ORDER BY is_pinned DESC, published_at DESC LIMIT 50').bind(category).all()
+      notices = result.results
+    } else {
+      const result = await c.env.DB.prepare('SELECT * FROM notices WHERE is_published = 1 ORDER BY is_pinned DESC, published_at DESC LIMIT 50').all()
+      notices = result.results
+    }
+  } catch (e) { /* DB not available */ }
+
+  return c.html(layout(noticeListPage(notices), {
+    title: '강남치과의원 공지사항 | 진료 안내 · 휴진 안내 · 새소식',
+    description: '강남치과의원 공지사항. 진료 안내, 휴진 안내, 장비 도입 소식, 이벤트 등 병원의 새로운 소식을 확인하세요.',
+    url: '/notices',
+    keywords: '영주 강남치과 공지, 강남치과의원 안내, 영주 치과 공지사항, 휴진 안내',
+    schemas: [{
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "강남치과의원 공지사항",
+      "description": "강남치과의원의 진료 안내, 휴진 안내 등 공지사항 모음",
+      "url": "https://gndentalclinic.com/notices",
+      "publisher": { "@id": "https://gndentalclinic.com/#organization" }
+    }]
+  }))
+})
+
+app.get('/notices/:slug', async (c) => {
+  const slug = c.req.param('slug')
+  let notice: any = null
+  try {
+    const result = await c.env.DB.prepare('SELECT * FROM notices WHERE slug = ? AND is_published = 1').bind(slug).first()
+    notice = result
+    if (notice) {
+      await c.env.DB.prepare('UPDATE notices SET views = views + 1 WHERE slug = ?').bind(slug).run()
+    }
+  } catch (e) { /* DB not available */ }
+
+  if (!notice) return c.notFound()
+  const page = noticeDetailPage(notice)
+  return c.html(layout(page.html, {
+    title: page.title,
+    description: page.description,
+    url: `/notices/${slug}`,
+    ogType: 'article',
+    schemas: page.schemas,
+    articlePublishedTime: notice.published_at,
+    articleModifiedTime: notice.updated_at || notice.published_at
+  }))
+})
+
+// ===== 관리자 대시보드 =====
+app.get('/admin', (c) => c.html(layout(adminPage(), {
+  title: '관리자 | 강남치과의원',
+  description: '강남치과의원 관리자 대시보드',
+  url: '/admin',
+  robots: 'noindex, nofollow'
+})))
+
+// ===== API: 공지사항 CRUD =====
+app.post('/api/notices', async (c) => {
+  const key = c.req.query('key')
+  if (key !== 'gangnam2017admin') return c.json({ error: 'Unauthorized' }, 401)
+  try {
+    const { slug, title, category, content, author, is_pinned } = await c.req.json()
+    if (!slug || !title || !content) return c.json({ error: 'slug, title, content 필수' }, 400)
+    await c.env.DB.prepare(
+      'INSERT INTO notices (slug, title, category, content, author, is_pinned) VALUES (?, ?, ?, ?, ?, ?)'
+    ).bind(slug, title, category || '공지', content, author || '강남치과의원', is_pinned || 0).run()
+    return c.json({ success: true, slug })
+  } catch (e: any) {
+    return c.json({ success: false, error: e.message }, 500)
+  }
+})
+
+app.put('/api/notices/:slug', async (c) => {
+  const key = c.req.query('key')
+  if (key !== 'gangnam2017admin') return c.json({ error: 'Unauthorized' }, 401)
+  try {
+    const slug = c.req.param('slug')
+    const { title, category, content, author, is_pinned, is_published } = await c.req.json()
+    await c.env.DB.prepare(
+      'UPDATE notices SET title=?, category=?, content=?, author=?, is_pinned=?, is_published=?, updated_at=CURRENT_TIMESTAMP WHERE slug=?'
+    ).bind(title, category, content, author, is_pinned || 0, is_published ?? 1, slug).run()
+    return c.json({ success: true })
+  } catch (e: any) {
+    return c.json({ success: false, error: e.message }, 500)
+  }
+})
+
+app.delete('/api/notices/:slug', async (c) => {
+  const key = c.req.query('key')
+  if (key !== 'gangnam2017admin') return c.json({ error: 'Unauthorized' }, 401)
+  try {
+    await c.env.DB.prepare('DELETE FROM notices WHERE slug = ?').bind(c.req.param('slug')).run()
+    return c.json({ success: true })
+  } catch (e: any) {
+    return c.json({ success: false, error: e.message }, 500)
+  }
+})
+
+// ===== API: 관리자 목록 조회 (블로그/전후사례/공지 - 비공개 포함) =====
+app.get('/api/admin/blog', async (c) => {
+  const key = c.req.query('key')
+  if (key !== 'gangnam2017admin') return c.json({ error: 'Unauthorized' }, 401)
+  try {
+    const result = await c.env.DB.prepare('SELECT * FROM blog_posts ORDER BY published_at DESC LIMIT 100').all()
+    return c.json({ success: true, posts: result.results })
+  } catch (e) {
+    return c.json({ success: false, error: '조회 실패' }, 500)
+  }
+})
+
+app.get('/api/admin/blog/:slug', async (c) => {
+  const key = c.req.query('key')
+  if (key !== 'gangnam2017admin') return c.json({ error: 'Unauthorized' }, 401)
+  try {
+    const post = await c.env.DB.prepare('SELECT * FROM blog_posts WHERE slug = ?').bind(c.req.param('slug')).first()
+    return post ? c.json({ success: true, post }) : c.json({ success: false, error: 'Not found' }, 404)
+  } catch (e) {
+    return c.json({ success: false, error: '조회 실패' }, 500)
+  }
+})
+
+app.get('/api/admin/before-after', async (c) => {
+  const key = c.req.query('key')
+  if (key !== 'gangnam2017admin') return c.json({ error: 'Unauthorized' }, 401)
+  try {
+    const result = await c.env.DB.prepare('SELECT * FROM before_after_cases ORDER BY sort_order DESC, published_at DESC LIMIT 100').all()
+    return c.json({ success: true, cases: result.results })
+  } catch (e) {
+    return c.json({ success: false, error: '조회 실패' }, 500)
+  }
+})
+
+app.get('/api/admin/before-after/:slug', async (c) => {
+  const key = c.req.query('key')
+  if (key !== 'gangnam2017admin') return c.json({ error: 'Unauthorized' }, 401)
+  try {
+    const caseData = await c.env.DB.prepare('SELECT * FROM before_after_cases WHERE slug = ?').bind(c.req.param('slug')).first()
+    return caseData ? c.json({ success: true, case_data: caseData }) : c.json({ success: false, error: 'Not found' }, 404)
+  } catch (e) {
+    return c.json({ success: false, error: '조회 실패' }, 500)
+  }
+})
+
+app.get('/api/admin/notices', async (c) => {
+  const key = c.req.query('key')
+  if (key !== 'gangnam2017admin') return c.json({ error: 'Unauthorized' }, 401)
+  try {
+    const result = await c.env.DB.prepare('SELECT * FROM notices ORDER BY is_pinned DESC, published_at DESC LIMIT 100').all()
+    return c.json({ success: true, notices: result.results })
+  } catch (e) {
+    return c.json({ success: false, error: '조회 실패' }, 500)
+  }
+})
+
+app.get('/api/admin/notices/:slug', async (c) => {
+  const key = c.req.query('key')
+  if (key !== 'gangnam2017admin') return c.json({ error: 'Unauthorized' }, 401)
+  try {
+    const notice = await c.env.DB.prepare('SELECT * FROM notices WHERE slug = ?').bind(c.req.param('slug')).first()
+    return notice ? c.json({ success: true, notice }) : c.json({ success: false, error: 'Not found' }, 404)
+  } catch (e) {
+    return c.json({ success: false, error: '조회 실패' }, 500)
   }
 })
 

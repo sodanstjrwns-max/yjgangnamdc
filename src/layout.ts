@@ -135,7 +135,11 @@ function buildBreadcrumb(url: string, pageTitle: string) {
     'pricing': '비용안내',
     'directions': '오시는길',
     'reservation': '상담예약',
-    'area': '지역안내'
+    'area': '지역안내',
+    'blog': '블로그',
+    'before-after': '치료전후',
+    'notices': '공지사항',
+    'admin': '관리자'
   }
   let currentPath = ''
   for (let i = 0; i < segments.length; i++) {
