@@ -282,7 +282,7 @@ export function layout(content: string, opts: LayoutOptions): string {
         extend: {
           colors: {
             royal: { 50:'#F3FBFB', 100:'#E2F5F5', 200:'#C3EBEB', 300:'#93DBDC', 400:'#4BC3C5', DEFAULT:'#10AFB2', dark:'#0C8385', 900:'#085759' },
-            gold: { 50:'#FBF8F0', 100:'#F5EDD8', DEFAULT:'#C9A96E', dark:'#A88B3C' },
+
             charcoal: { DEFAULT:'#1C1C1E', light:'#2a2a2a', 800:'#333333', 700:'#444444' },
             lavender: { DEFAULT:'#F3FBFB', light:'#F7FCFC', dark:'#E2F5F5' },
             snow: { DEFAULT:'#FFFFFF', 50:'#FAFBFC', 100:'#F5F6F8' }
@@ -313,8 +313,6 @@ export function layout(content: string, opts: LayoutOptions): string {
       --royal-dark: #0C8385;
       --royal-light: #E2F5F5;
       --royal-50: #F3FBFB;
-      --gold: #C9A96E;
-      --gold-dark: #A88B3C;
       --charcoal: #1C1C1E;
       --white: #FFFFFF;
       --lavender: #F3FBFB;
@@ -337,10 +335,9 @@ export function layout(content: string, opts: LayoutOptions): string {
     .royal-border-glow { border: 1px solid rgba(16,175,178,0.2); box-shadow: 0 4px 24px rgba(16,175,178,0.1); }
     .royal-line-h { height: 1px; background: linear-gradient(90deg, transparent, rgba(16,175,178,0.15), transparent); }
 
-    /* ===== Gold Accent ===== */
-    .gold-accent { color: var(--gold); }
-    .gold-accent-bg { background: rgba(201,169,110,0.08); border: 1px solid rgba(201,169,110,0.15); }
-    .gold-grad-text { background: linear-gradient(135deg, #A88B3C, #C9A96E 50%, #A88B3C); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    /* ===== Accent (unified with royal) ===== */
+    .royal-accent { color: var(--royal); }
+    .royal-accent-bg { background: rgba(16,175,178,0.06); border: 1px solid rgba(16,175,178,0.12); }
 
     /* ===== Glass Effects ===== */
     .glass-white { background: rgba(255,255,255,0.85); backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%); }
@@ -531,7 +528,7 @@ export function layout(content: string, opts: LayoutOptions): string {
       background: var(--royal);
       animation: particleFloat linear infinite;
     }
-    .css-particle:nth-child(odd) { background: var(--gold); }
+    .css-particle:nth-child(odd) { background: var(--royal-dark); }
     @keyframes particleFloat {
       0% { transform: translate(0, 0) scale(1); }
       25% { transform: translate(30px, -40px) scale(1.2); }

@@ -105,12 +105,12 @@ export function treatmentsPage(): string {
   return `
   <!-- Hero (White) -->
   <section class="relative min-h-[65vh] flex items-end subpage-hero overflow-hidden" aria-label="전체 진료 안내 히어로">
-    <div class="orb orb-gold w-[600px] h-[600px] -top-64 -right-64 opacity-30"></div>
+    <div class="orb orb-royal w-[600px] h-[600px] -top-64 -right-64 opacity-30"></div>
     <div class="absolute inset-0 grid-pattern opacity-40"></div>
 
     <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 pb-24 pt-48 w-full">
-      <div class="section-label section-label-gold mb-8"><span class="w-1.5 h-1.5 rounded-full bg-gold"></span>ALL TREATMENTS</div>
-      <h1 class="display-xl text-charcoal mb-6" data-speakable="true">전체 <span class="gold-grad-text">진료 안내</span></h1>
+      <div class="section-label section-label-royal mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>ALL TREATMENTS</div>
+      <h1 class="display-xl text-charcoal mb-6" data-speakable="true">전체 <span class="royal-grad-text">진료 안내</span></h1>
       <p class="text-gray-400 text-lg max-w-lg" data-speakable="true">영주 강남치과의원 — 구강외과 전문의 2인이 직접 진료하는<br>프리미엄 치과진료 서비스</p>
     </div>
   </section>
@@ -123,7 +123,7 @@ export function treatmentsPage(): string {
         return `
         <div class="mb-20 reveal">
           <div class="flex items-center gap-4 mb-10">
-            <div class="w-12 h-12 rounded-2xl ${cat === '전문센터' ? 'gold-grad gold-glow' : 'bg-snow-100 border border-gray-100'} flex items-center justify-center">
+            <div class="w-12 h-12 rounded-2xl ${cat === '전문센터' ? 'royal-grad royal-glow' : 'bg-snow-100 border border-gray-100'} flex items-center justify-center">
               <i class="fas ${catIcons[cat]} ${cat === '전문센터' ? 'text-white' : 'text-gray-400'} text-base"></i>
             </div>
             <div>
@@ -135,14 +135,14 @@ export function treatmentsPage(): string {
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 stagger-children">
             ${items.map(t => `
             <a href="/treatments/${t.slug}" class="card-premium p-6 flex items-center gap-4 group stagger-item block">
-              <div class="w-13 h-13 rounded-xl ${t.isTop ? 'gold-grad gold-glow' : 'bg-snow-50 border border-gray-100'} flex items-center justify-center flex-shrink-0" style="width:52px;height:52px;">
+              <div class="w-13 h-13 rounded-xl ${t.isTop ? 'royal-grad royal-glow' : 'bg-snow-50 border border-gray-100'} flex items-center justify-center flex-shrink-0" style="width:52px;height:52px;">
                 <i class="fas ${t.icon} ${t.isTop ? 'text-white' : 'text-gray-400'} text-lg"></i>
               </div>
               <div class="flex-1 min-w-0">
-                <h3 class="font-bold text-charcoal group-hover:text-gold transition-colors duration-300 truncate">${t.title}</h3>
+                <h3 class="font-bold text-charcoal group-hover:text-royal transition-colors duration-300 truncate">${t.title}</h3>
                 <p class="text-gray-400 text-xs mt-1 truncate">${t.heroDesc}</p>
               </div>
-              <i class="fas fa-chevron-right text-gray-200 group-hover:text-gold group-hover:translate-x-1 transition-all duration-300 text-xs"></i>
+              <i class="fas fa-chevron-right text-gray-200 group-hover:text-royal group-hover:translate-x-1 transition-all duration-300 text-xs"></i>
             </a>
             `).join('')}
           </div>
@@ -154,19 +154,19 @@ export function treatmentsPage(): string {
 
   <!-- CTA (White) -->
   <section class="py-28 md:py-36 section-snow relative overflow-hidden">
-    <div class="orb orb-gold w-[500px] h-[500px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-15"></div>
+    <div class="orb orb-royal w-[500px] h-[500px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-15"></div>
     <div class="absolute inset-0 grid-pattern opacity-20"></div>
-    <div class="gold-line-h absolute top-0 left-0 right-0"></div>
+    <div class="royal-line-h absolute top-0 left-0 right-0"></div>
 
     <div class="relative z-10 max-w-3xl mx-auto px-6 text-center reveal">
-      <div class="w-20 h-20 mx-auto rounded-2xl gold-grad flex items-center justify-center mb-8 gold-glow">
+      <div class="w-20 h-20 mx-auto rounded-2xl royal-grad flex items-center justify-center mb-8 royal-glow">
         <i class="fas fa-stethoscope text-white text-3xl"></i>
       </div>
-      <h2 class="display-lg text-charcoal mb-6">어떤 치료가 필요한지<br><span class="gold-grad-text">모르겠다면?</span></h2>
+      <h2 class="display-lg text-charcoal mb-6">어떤 치료가 필요한지<br><span class="royal-grad-text">모르겠다면?</span></h2>
       <p class="text-gray-400 text-lg mb-10">구강외과 전문의가 직접 진단하고 최적의 치료를 안내드립니다.</p>
       <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
         <a href="/reservation" class="w-full sm:w-auto btn-primary !py-5 !px-12 !font-extrabold"><i class="fas fa-calendar-check"></i>무료 상담 예약</a>
-        <a href="tel:054-636-8222" class="w-full sm:w-auto btn-subtle justify-center"><i class="fas fa-phone text-sm text-gold"></i>054-636-8222</a>
+        <a href="tel:054-636-8222" class="w-full sm:w-auto btn-subtle justify-center"><i class="fas fa-phone text-sm text-royal"></i>054-636-8222</a>
       </div>
     </div>
   </section>
@@ -220,16 +220,16 @@ export function treatmentDetailPage(slug: string): { html: string; title: string
     html: `
     <!-- Hero (White) -->
     <section class="relative min-h-[60vh] flex items-end subpage-hero overflow-hidden">
-      <div class="orb orb-gold w-[500px] h-[500px] -top-48 -right-48 opacity-20"></div>
+      <div class="orb orb-royal w-[500px] h-[500px] -top-48 -right-48 opacity-20"></div>
       <div class="absolute inset-0 grid-pattern opacity-30"></div>
 
       <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 pb-24 pt-44 w-full">
-        <a href="/treatments" class="inline-flex items-center gap-2 text-gray-400 hover:text-gold transition-colors text-sm mb-8 font-medium">
+        <a href="/treatments" class="inline-flex items-center gap-2 text-gray-400 hover:text-royal transition-colors text-sm mb-8 font-medium">
           <i class="fas fa-arrow-left text-xs"></i>전체 진료 안내
         </a>
         <div class="flex items-center gap-3 mb-6">
-          <span class="px-4 py-1.5 rounded-full bg-gold/[0.06] border border-gold/[0.1] text-gold text-[11px] font-bold tracking-wide">${t.category}</span>
-          ${t.isTop ? '<span class="px-4 py-1.5 rounded-full bg-gold/10 text-gold text-[11px] font-bold">주력 진료</span>' : ''}
+          <span class="px-4 py-1.5 rounded-full bg-royal/[0.06] border border-royal/[0.1] text-royal text-[11px] font-bold tracking-wide">${t.category}</span>
+          ${t.isTop ? '<span class="px-4 py-1.5 rounded-full bg-royal/10 text-royal text-[11px] font-bold">주력 진료</span>' : ''}
         </div>
         <h1 class="display-lg text-charcoal mb-6">${t.h1}</h1>
         <p class="text-gray-400 text-lg max-w-2xl">${t.heroDesc}</p>
@@ -238,11 +238,11 @@ export function treatmentDetailPage(slug: string): { html: string; title: string
 
     ${t.worry ? `
     <!-- Promise bar -->
-    <section class="py-10 bg-gold/[0.03] border-b border-gold/[0.08] relative">
+    <section class="py-10 bg-royal/[0.03] border-b border-royal/[0.08] relative">
       <div class="max-w-5xl mx-auto px-6 md:px-8 lg:px-12 relative">
         <div class="flex flex-col md:flex-row items-center gap-8">
           <div class="flex-1 text-center md:text-left">
-            <p class="text-gold text-lg italic font-medium mb-2">${t.worry}</p>
+            <p class="text-royal text-lg italic font-medium mb-2">${t.worry}</p>
             <p class="text-charcoal text-xl md:text-2xl font-extrabold">${t.promise}</p>
           </div>
           <a href="/reservation" class="btn-primary !text-sm flex-shrink-0"><i class="fas fa-calendar-check text-xs"></i>상담 예약</a>
@@ -256,7 +256,7 @@ export function treatmentDetailPage(slug: string): { html: string; title: string
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-20 stagger-children">
           ${t.features.map(f => `
           <div class="text-center p-5 card-premium stagger-item">
-            <div class="w-10 h-10 mx-auto rounded-xl gold-grad flex items-center justify-center mb-3 gold-glow">
+            <div class="w-10 h-10 mx-auto rounded-xl royal-grad flex items-center justify-center mb-3 royal-glow">
               <i class="fas fa-check text-white text-xs"></i>
             </div>
             <p class="text-xs font-bold text-charcoal leading-tight">${f}</p>
@@ -268,7 +268,7 @@ export function treatmentDetailPage(slug: string): { html: string; title: string
           ${t.sections.map((s, i) => `
           <div class="reveal${i % 2 ? '-right' : ''}">
             <h2 class="display-md text-charcoal mb-6 flex items-center gap-4">
-              <div class="w-1.5 h-10 rounded-full gold-grad flex-shrink-0"></div>
+              <div class="w-1.5 h-10 rounded-full royal-grad flex-shrink-0"></div>
               ${s.title}
             </h2>
             <div class="pl-6 text-gray-500 text-base leading-relaxed whitespace-pre-line">${s.content}</div>
@@ -280,21 +280,21 @@ export function treatmentDetailPage(slug: string): { html: string; title: string
 
     <!-- Doctors -->
     <section class="py-20 section-snow relative">
-      <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/10 to-transparent"></div>
+      <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-royal/10 to-transparent"></div>
       <div class="max-w-5xl mx-auto px-6 md:px-8 lg:px-12 text-center reveal">
-        <div class="section-label section-label-gold mx-auto mb-6"><span class="w-1.5 h-1.5 rounded-full bg-gold"></span>담당 의료진</div>
-        <h2 class="display-md text-charcoal mb-10">구강외과 전문의가<br><span class="gold-grad-text">직접 진료합니다</span></h2>
+        <div class="section-label section-label-royal mx-auto mb-6"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>담당 의료진</div>
+        <h2 class="display-md text-charcoal mb-10">구강외과 전문의가<br><span class="royal-grad-text">직접 진료합니다</span></h2>
         <div class="flex flex-col sm:flex-row items-center justify-center gap-5">
           ${[{slug:'lee-taehyung',name:'이태형 대표원장',spec:'구강악안면외과 전문의',init:'이'},{slug:'choi-minhye',name:'최민혜 원장',spec:'구강악안면외과 전문의',init:'최'}].map(doc => `
           <a href="/doctors/${doc.slug}" class="card-premium flex items-center gap-5 px-7 py-6 group w-full sm:w-auto">
-            <div class="w-16 h-16 rounded-2xl flex items-center justify-center gold-border-glow flex-shrink-0 bg-gradient-to-br from-snow-100 to-gold/[0.03]">
-              <span class="gold-grad-text font-black text-2xl">${doc.init}</span>
+            <div class="w-16 h-16 rounded-2xl flex items-center justify-center royal-border-glow flex-shrink-0 bg-gradient-to-br from-snow-100 to-royal/[0.03]">
+              <span class="royal-grad-text font-black text-2xl">${doc.init}</span>
             </div>
             <div class="text-left">
-              <p class="font-extrabold text-charcoal group-hover:text-gold transition-colors duration-300">${doc.name}</p>
+              <p class="font-extrabold text-charcoal group-hover:text-royal transition-colors duration-300">${doc.name}</p>
               <p class="text-gray-400 text-sm">${doc.spec}</p>
             </div>
-            <i class="fas fa-chevron-right text-gray-200 group-hover:text-gold ml-auto text-xs transition-colors"></i>
+            <i class="fas fa-chevron-right text-gray-200 group-hover:text-royal ml-auto text-xs transition-colors"></i>
           </a>
           `).join('')}
         </div>
@@ -303,19 +303,19 @@ export function treatmentDetailPage(slug: string): { html: string; title: string
 
     <!-- CTA (White) -->
     <section class="py-28 bg-white relative overflow-hidden">
-      <div class="orb orb-gold w-[500px] h-[500px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-10"></div>
+      <div class="orb orb-royal w-[500px] h-[500px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-10"></div>
       <div class="absolute inset-0 grid-pattern opacity-15"></div>
-      <div class="gold-line-h absolute top-0 left-0 right-0"></div>
+      <div class="royal-line-h absolute top-0 left-0 right-0"></div>
 
       <div class="relative z-10 max-w-3xl mx-auto px-6 text-center reveal">
-        <div class="w-20 h-20 mx-auto rounded-2xl gold-grad flex items-center justify-center mb-8 gold-glow">
+        <div class="w-20 h-20 mx-auto rounded-2xl royal-grad flex items-center justify-center mb-8 royal-glow">
           <i class="fas ${t.icon} text-white text-3xl"></i>
         </div>
-        <h2 class="display-lg text-charcoal mb-6">${t.title}에 대해<br><span class="gold-grad-text">상담받으세요</span></h2>
+        <h2 class="display-lg text-charcoal mb-6">${t.title}에 대해<br><span class="royal-grad-text">상담받으세요</span></h2>
         <p class="text-gray-400 text-lg mb-10">구강외과 전문의가 직접 진단하고 설명드립니다.</p>
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
           <a href="/reservation" class="w-full sm:w-auto btn-primary !py-5 !px-12 !font-extrabold"><i class="fas fa-calendar-check"></i>상담 예약하기</a>
-          <a href="tel:054-636-8222" class="w-full sm:w-auto btn-subtle justify-center"><i class="fas fa-phone text-sm text-gold"></i>054-636-8222</a>
+          <a href="tel:054-636-8222" class="w-full sm:w-auto btn-subtle justify-center"><i class="fas fa-phone text-sm text-royal"></i>054-636-8222</a>
         </div>
       </div>
     </section>

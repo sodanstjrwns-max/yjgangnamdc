@@ -2,11 +2,11 @@ export function directionsPage(): string {
   return `
   <!-- Hero (White) -->
   <section class="relative min-h-[60vh] flex items-end subpage-hero overflow-hidden">
-    <div class="orb orb-gold w-[500px] h-[500px] -top-48 -right-48 opacity-20"></div>
+    <div class="orb orb-royal w-[500px] h-[500px] -top-48 -right-48 opacity-20"></div>
     <div class="absolute inset-0 grid-pattern opacity-40"></div>
     <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 pb-24 pt-48 w-full">
-      <div class="section-label section-label-gold mb-8"><span class="w-1.5 h-1.5 rounded-full bg-gold"></span>DIRECTIONS</div>
-      <h1 class="display-xl text-charcoal mb-6">오시는 <span class="gold-grad-text">길</span></h1>
+      <div class="section-label section-label-royal mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>DIRECTIONS</div>
+      <h1 class="display-xl text-charcoal mb-6">오시는 <span class="royal-grad-text">길</span></h1>
       <p class="text-gray-400 text-lg">경북 영주시 대학로 217, 2층 · 택지 리첼 사거리</p>
     </div>
   </section>
@@ -34,13 +34,13 @@ export function directionsPage(): string {
         <div class="space-y-5 reveal-right">
           ${[
             { icon:'fa-map-marker-alt', label:'주소', value:'경북 영주시 대학로 217, 2층<br><span class="text-gray-400 text-xs">택지 리첼 사거리</span>' },
-            { icon:'fa-phone', label:'전화', value:'<a href="tel:054-636-8222" class="gold-grad-text text-xl font-black hover:underline">054-636-8222</a>' },
+            { icon:'fa-phone', label:'전화', value:'<a href="tel:054-636-8222" class="royal-grad-text text-xl font-black hover:underline">054-636-8222</a>' },
             { icon:'fa-clock', label:'진료시간', value:'평일 09:00–17:30<br><span class="text-gray-400 text-xs">점심 13:00–14:00 · 토일공휴일 휴무</span>' },
             { icon:'fa-car', label:'주차', value:'건물 앞 주차 가능' }
           ].map(item => `
           <div class="card-premium p-6">
             <div class="flex items-start gap-4">
-              <div class="w-12 h-12 rounded-xl gold-grad flex items-center justify-center flex-shrink-0 gold-glow">
+              <div class="w-12 h-12 rounded-xl royal-grad flex items-center justify-center flex-shrink-0 royal-glow">
                 <i class="fas ${item.icon} text-white text-sm"></i>
               </div>
               <div>
@@ -58,10 +58,10 @@ export function directionsPage(): string {
 
   <!-- Transportation -->
   <section class="py-20 md:py-28 section-snow relative">
-    <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/10 to-transparent"></div>
+    <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-royal/10 to-transparent"></div>
     <div class="max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
       <div class="text-center mb-14 reveal">
-        <div class="section-label section-label-gold mx-auto mb-6"><span class="w-1.5 h-1.5 rounded-full bg-gold"></span>TRANSPORTATION</div>
+        <div class="section-label section-label-royal mx-auto mb-6"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>TRANSPORTATION</div>
         <h2 class="display-md text-charcoal">교통 안내</h2>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 stagger-children">
@@ -71,7 +71,7 @@ export function directionsPage(): string {
           { icon:'fa-train', title:'기차', desc:'영주역 하차 후<br>택시 약 10분' }
         ].map(item => `
         <div class="card-premium p-10 text-center stagger-item group">
-          <div class="w-16 h-16 mx-auto rounded-2xl gold-grad flex items-center justify-center mb-6 gold-glow group-hover:scale-110 transition-transform duration-500">
+          <div class="w-16 h-16 mx-auto rounded-2xl royal-grad flex items-center justify-center mb-6 royal-glow group-hover:scale-110 transition-transform duration-500">
             <i class="fas ${item.icon} text-white text-xl"></i>
           </div>
           <h3 class="font-extrabold text-charcoal text-lg mb-2">${item.title}</h3>
@@ -86,7 +86,7 @@ export function directionsPage(): string {
   <section class="py-20 md:py-28 bg-white">
     <div class="max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
       <div class="text-center mb-14 reveal">
-        <div class="section-label section-label-gold mx-auto mb-6"><span class="w-1.5 h-1.5 rounded-full bg-gold"></span>NEARBY</div>
+        <div class="section-label section-label-royal mx-auto mb-6"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>NEARBY</div>
         <h2 class="display-md text-charcoal">주변 지역에서 오시는 길</h2>
       </div>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4 stagger-children">
@@ -95,8 +95,8 @@ export function directionsPage(): string {
           { area:'단양', time:'약 40분' },{ area:'영덕', time:'약 1시간' },{ area:'울진', time:'약 1시간 20분' },{ area:'영주역', time:'약 10분' }
         ].map(item => `
         <a href="/area/${encodeURIComponent(item.area)}" class="card-premium p-6 text-center group stagger-item block">
-          <p class="font-extrabold text-charcoal group-hover:text-gold transition-colors duration-300 text-lg">${item.area}</p>
-          <p class="text-gray-400 text-sm mt-1.5"><i class="fas fa-car text-gold/50 mr-1.5"></i>${item.time}</p>
+          <p class="font-extrabold text-charcoal group-hover:text-royal transition-colors duration-300 text-lg">${item.area}</p>
+          <p class="text-gray-400 text-sm mt-1.5"><i class="fas fa-car text-royal/50 mr-1.5"></i>${item.time}</p>
         </a>
         `).join('')}
       </div>

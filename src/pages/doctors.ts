@@ -80,7 +80,7 @@ export function doctorsPage(): string {
     <!-- Giant glowing orbs -->
     <div class="absolute top-1/4 left-1/4 w-[700px] h-[700px] bg-royal/[0.08] rounded-full blur-[200px] animate-pulse" style="animation-duration:6s;"></div>
     <div class="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-[#4BC3C5]/[0.06] rounded-full blur-[180px] animate-pulse" style="animation-duration:8s; animation-delay:2s;"></div>
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-gold/[0.04] rounded-full blur-[120px]"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-royal/[0.04] rounded-full blur-[120px]"></div>
 
     <!-- Particle canvas -->
     <canvas id="doctorParticles" class="absolute inset-0 w-full h-full" style="z-index:2;"></canvas>
@@ -100,7 +100,7 @@ export function doctorsPage(): string {
       <div class="absolute inset-6 rounded-full border border-royal/[0.05]" style="animation: spin-slow 45s linear infinite reverse;"></div>
       <!-- Dots on ring -->
       <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-royal/40 shadow-lg shadow-royal/20"></div>
-      <div class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-2 h-2 rounded-full bg-gold/40"></div>
+      <div class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-2 h-2 rounded-full bg-royal/40"></div>
       <div class="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-royal/30"></div>
     </div>
 

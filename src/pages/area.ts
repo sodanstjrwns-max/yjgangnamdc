@@ -22,10 +22,10 @@ export function areaPage(region:string): { html:string; title:string; descriptio
     html: `
     <!-- Hero (White) -->
     <section class="relative min-h-[60vh] flex items-end subpage-hero overflow-hidden">
-      <div class="orb orb-gold w-[500px] h-[500px] -top-48 -right-48 opacity-20"></div>
+      <div class="orb orb-royal w-[500px] h-[500px] -top-48 -right-48 opacity-20"></div>
       <div class="absolute inset-0 grid-pattern opacity-40"></div>
       <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 pb-24 pt-44 w-full">
-        <a href="/directions" class="inline-flex items-center gap-2 text-gray-400 hover:text-gold transition-colors text-sm mb-8 font-medium"><i class="fas fa-arrow-left text-xs"></i>오시는 길</a>
+        <a href="/directions" class="inline-flex items-center gap-2 text-gray-400 hover:text-royal transition-colors text-sm mb-8 font-medium"><i class="fas fa-arrow-left text-xs"></i>오시는 길</a>
         <h1 class="display-lg text-charcoal mb-6">${title}</h1>
         <p class="text-gray-400 text-lg">${area.description}</p>
       </div>
@@ -36,17 +36,17 @@ export function areaPage(region:string): { html:string; title:string; descriptio
       <div class="max-w-5xl mx-auto px-6 md:px-8 lg:px-12">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20 stagger-children">
           <div class="card-premium p-10 text-center stagger-item group">
-            <div class="w-14 h-14 mx-auto rounded-2xl gold-grad flex items-center justify-center mb-5 gold-glow group-hover:scale-110 transition-transform duration-500"><i class="fas fa-car text-white text-xl"></i></div>
+            <div class="w-14 h-14 mx-auto rounded-2xl royal-grad flex items-center justify-center mb-5 royal-glow group-hover:scale-110 transition-transform duration-500"><i class="fas fa-car text-white text-xl"></i></div>
             <p class="text-4xl font-black text-charcoal">${area.driveTime}</p>
             <p class="text-gray-400 text-sm mt-2">자동차 소요시간</p>
           </div>
           <div class="card-premium p-10 text-center stagger-item group">
-            <div class="w-14 h-14 mx-auto rounded-2xl gold-grad flex items-center justify-center mb-5 gold-glow group-hover:scale-110 transition-transform duration-500"><i class="fas fa-road text-white text-xl"></i></div>
+            <div class="w-14 h-14 mx-auto rounded-2xl royal-grad flex items-center justify-center mb-5 royal-glow group-hover:scale-110 transition-transform duration-500"><i class="fas fa-road text-white text-xl"></i></div>
             <p class="text-4xl font-black text-charcoal">${area.driveKm}</p>
             <p class="text-gray-400 text-sm mt-2">거리</p>
           </div>
           <div class="card-premium p-10 text-center stagger-item group">
-            <div class="w-14 h-14 mx-auto rounded-2xl gold-grad flex items-center justify-center mb-5 gold-glow group-hover:scale-110 transition-transform duration-500"><i class="fas fa-map-marker-alt text-white text-xl"></i></div>
+            <div class="w-14 h-14 mx-auto rounded-2xl royal-grad flex items-center justify-center mb-5 royal-glow group-hover:scale-110 transition-transform duration-500"><i class="fas fa-map-marker-alt text-white text-xl"></i></div>
             <p class="text-xl font-black text-charcoal">택지 리첼 사거리</p>
             <p class="text-gray-400 text-sm mt-2">위치</p>
           </div>
@@ -55,7 +55,7 @@ export function areaPage(region:string): { html:string; title:string; descriptio
         <!-- Why choose us -->
         <div class="mb-20 reveal">
           <div class="text-center mb-14">
-            <div class="section-label section-label-gold mx-auto mb-6"><span class="w-1.5 h-1.5 rounded-full bg-gold"></span>WHY US</div>
+            <div class="section-label section-label-royal mx-auto mb-6"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>WHY US</div>
             <h2 class="display-md text-charcoal">${area.name} 분들이 선택하는 이유</h2>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-5 stagger-children">
@@ -66,11 +66,11 @@ export function areaPage(region:string): { html:string; title:string; descriptio
               {icon:'fa-clock',title:'빠른 치료 완료',desc:'재내원 최소화로 먼 거리에서 오시는 분도 편리합니다.'}
             ].map(item => `
             <div class="card-premium p-7 flex items-start gap-5 stagger-item group">
-              <div class="w-13 h-13 rounded-xl gold-grad flex items-center justify-center flex-shrink-0 gold-glow group-hover:scale-110 transition-transform duration-500" style="width:52px;height:52px;">
+              <div class="w-13 h-13 rounded-xl royal-grad flex items-center justify-center flex-shrink-0 royal-glow group-hover:scale-110 transition-transform duration-500" style="width:52px;height:52px;">
                 <i class="fas ${item.icon} text-white text-lg"></i>
               </div>
               <div>
-                <h3 class="font-extrabold text-charcoal mb-1.5 group-hover:text-gold transition-colors duration-300">${item.title}</h3>
+                <h3 class="font-extrabold text-charcoal mb-1.5 group-hover:text-royal transition-colors duration-300">${item.title}</h3>
                 <p class="text-gray-400 text-sm leading-relaxed">${item.desc}</p>
               </div>
             </div>
@@ -79,14 +79,14 @@ export function areaPage(region:string): { html:string; title:string; descriptio
         </div>
 
         <!-- Clinic info -->
-        <div class="glass-gold rounded-3xl p-8 reveal relative overflow-hidden">
-          <div class="absolute -top-10 -right-10 w-32 h-32 bg-gold/[0.04] rounded-full blur-[60px]"></div>
+        <div class="glass-royal rounded-3xl p-8 reveal relative overflow-hidden">
+          <div class="absolute -top-10 -right-10 w-32 h-32 bg-royal/[0.04] rounded-full blur-[60px]"></div>
           <h2 class="font-extrabold text-charcoal mb-6 text-lg relative z-10">강남치과의원 정보</h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 text-sm text-gray-500 relative z-10">
-            <div class="flex items-start gap-3"><div class="w-8 h-8 rounded-lg gold-grad flex items-center justify-center flex-shrink-0"><i class="fas fa-map-marker-alt text-white text-[10px]"></i></div><span>경북 영주시 대학로 217, 2층</span></div>
-            <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg gold-grad flex items-center justify-center flex-shrink-0"><i class="fas fa-phone text-white text-[10px]"></i></div><a href="tel:054-636-8222" class="hover:text-gold transition font-bold">054-636-8222</a></div>
-            <div class="flex items-start gap-3"><div class="w-8 h-8 rounded-lg gold-grad flex items-center justify-center flex-shrink-0"><i class="fas fa-clock text-white text-[10px]"></i></div><span>평일 09:00–17:30 · 토일 휴무</span></div>
-            <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg gold-grad flex items-center justify-center flex-shrink-0"><i class="fas fa-car text-white text-[10px]"></i></div><span>건물 앞 주차 가능</span></div>
+            <div class="flex items-start gap-3"><div class="w-8 h-8 rounded-lg royal-grad flex items-center justify-center flex-shrink-0"><i class="fas fa-map-marker-alt text-white text-[10px]"></i></div><span>경북 영주시 대학로 217, 2층</span></div>
+            <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg royal-grad flex items-center justify-center flex-shrink-0"><i class="fas fa-phone text-white text-[10px]"></i></div><a href="tel:054-636-8222" class="hover:text-royal transition font-bold">054-636-8222</a></div>
+            <div class="flex items-start gap-3"><div class="w-8 h-8 rounded-lg royal-grad flex items-center justify-center flex-shrink-0"><i class="fas fa-clock text-white text-[10px]"></i></div><span>평일 09:00–17:30 · 토일 휴무</span></div>
+            <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg royal-grad flex items-center justify-center flex-shrink-0"><i class="fas fa-car text-white text-[10px]"></i></div><span>건물 앞 주차 가능</span></div>
           </div>
         </div>
       </div>
@@ -94,19 +94,19 @@ export function areaPage(region:string): { html:string; title:string; descriptio
 
     <!-- CTA (White) -->
     <section class="py-28 section-snow relative overflow-hidden">
-      <div class="orb orb-gold w-[500px] h-[500px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-15"></div>
+      <div class="orb orb-royal w-[500px] h-[500px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-15"></div>
       <div class="absolute inset-0 grid-pattern opacity-20"></div>
-      <div class="gold-line-h absolute top-0 left-0 right-0"></div>
+      <div class="royal-line-h absolute top-0 left-0 right-0"></div>
 
       <div class="relative z-10 max-w-3xl mx-auto px-6 text-center reveal">
-        <div class="w-20 h-20 mx-auto rounded-2xl gold-grad flex items-center justify-center mb-8 gold-glow">
+        <div class="w-20 h-20 mx-auto rounded-2xl royal-grad flex items-center justify-center mb-8 royal-glow">
           <i class="fas fa-calendar-check text-white text-3xl"></i>
         </div>
-        <h2 class="display-lg text-charcoal mb-6">지금 바로<br><span class="gold-grad-text">상담 예약하세요</span></h2>
+        <h2 class="display-lg text-charcoal mb-6">지금 바로<br><span class="royal-grad-text">상담 예약하세요</span></h2>
         <p class="text-gray-400 text-lg mb-10">${area.name}에서 ${area.driveTime}이면 도착합니다.</p>
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
           <a href="/reservation" class="w-full sm:w-auto btn-primary !py-5 !px-12 !font-extrabold"><i class="fas fa-calendar-check"></i>상담 예약하기</a>
-          <a href="tel:054-636-8222" class="w-full sm:w-auto btn-subtle justify-center"><i class="fas fa-phone text-sm text-gold"></i>054-636-8222</a>
+          <a href="tel:054-636-8222" class="w-full sm:w-auto btn-subtle justify-center"><i class="fas fa-phone text-sm text-royal"></i>054-636-8222</a>
         </div>
       </div>
     </section>

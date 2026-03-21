@@ -343,7 +343,7 @@ export function mainPage(): string {
   `).join('');
 
   // Stars for reviews
-  const starsHtml = Array(5).fill('<i class="fas fa-star text-gold text-2xl"></i>').join('');
+  const starsHtml = Array(5).fill('<i class="fas fa-star text-royal text-2xl"></i>').join('');
 
   // FAQ items
   const faqItems = [
@@ -494,7 +494,7 @@ export function mainPage(): string {
             <div class="absolute -right-8 top-1/3 p-4 rounded-2xl bg-white border border-royal/10 shadow-xl shadow-royal/[0.04]" style="animation: float 5s ease-in-out infinite; animation-delay: -2.5s;">
               <div class="flex items-center gap-2 mb-2">
                 <span class="px-2.5 py-1 rounded-full bg-royal/10 text-royal text-[10px] font-bold">전문의</span>
-                <span class="px-2.5 py-1 rounded-full gold-accent-bg text-gold text-[10px] font-bold">인증의</span>
+                <span class="px-2.5 py-1 rounded-full royal-accent-bg text-royal text-[10px] font-bold">인증의</span>
               </div>
               <div class="text-charcoal text-[13px] font-bold">구강외과 전문의 2인</div>
               <div class="text-gray-400 text-[11px]">대학병원 수련 완료</div>
@@ -551,7 +551,7 @@ export function mainPage(): string {
           <div class="relative z-10">
             <div class="flex items-center gap-4 mb-8">
               <div class="w-16 h-16 rounded-2xl royal-grad flex items-center justify-center royal-glow"><i class="fas fa-user-doctor text-white text-2xl"></i></div>
-              <div><div class="text-[11px] tracking-[0.15em] text-gray-300 font-bold uppercase">Specialist Surgeons</div><div class="mt-1 px-3 py-1 rounded-full gold-accent-bg text-gold text-[10px] font-bold inline-block">전문의 인증</div></div>
+              <div><div class="text-[11px] tracking-[0.15em] text-gray-300 font-bold uppercase">Specialist Surgeons</div><div class="mt-1 px-3 py-1 rounded-full royal-accent-bg text-royal text-[10px] font-bold inline-block">전문의 인증</div></div>
             </div>
             <p class="text-royal text-lg italic font-medium mb-4">"임플란트 수술 안전하게 해주는 거지?"</p>
             <h3 class="text-3xl md:text-4xl font-extrabold text-charcoal mb-4 leading-tight">임플란트는 뼈에 심는 수술입니다.<br><span class="royal-grad-text">수술 전문 외과 전문의가 직접 합니다.</span></h3>
