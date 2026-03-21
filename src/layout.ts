@@ -522,6 +522,27 @@ export function layout(content: string, opts: LayoutOptions): string {
     @keyframes orbitSpin { 0%{transform:translate(-50%,-50%) rotate(0deg)} 100%{transform:translate(-50%,-50%) rotate(360deg)} }
     @keyframes fadeInOut { 0%,100%{opacity:0} 30%,70%{opacity:1} }
 
+    /* ===== 3D Model Toggle Buttons ===== */
+    .model-toggle-btn {
+      color: #9ca3af;
+      background: transparent;
+      cursor: pointer;
+      border: none;
+      outline: none;
+    }
+    .model-toggle-btn:hover {
+      color: #374151;
+      background: rgba(16,175,178,0.04);
+    }
+    .model-toggle-btn.active-model {
+      color: #fff;
+      background: linear-gradient(135deg, var(--royal), var(--royal-dark));
+      box-shadow: 0 4px 15px rgba(16,175,178,0.3);
+    }
+    .hero-labels {
+      transition: opacity 0.4s ease;
+    }
+
     /* ===== Horizontal scroll snap ===== */
     .snap-x { scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
     .snap-x > * { scroll-snap-align: start; }
