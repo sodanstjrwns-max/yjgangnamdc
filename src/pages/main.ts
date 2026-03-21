@@ -485,9 +485,10 @@ export function mainPage(): string {
                 style="width:100%; height:100%; border:none; border-radius:24px;"
                 loading="lazy"
               ></iframe>
-              <!-- Overlay to hide Sketchfab branding -->
-              <div class="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-white via-white/70 to-transparent rounded-t-3xl pointer-events-none" style="z-index:5;"></div>
-              <div class="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white via-white/80 to-transparent rounded-b-3xl pointer-events-none" style="z-index:5;"></div>
+              <!-- Overlay to hide Sketchfab branding — top/bottom/corners -->
+              <div class="absolute top-0 left-0 right-0 h-24 rounded-t-3xl pointer-events-none" style="z-index:5; background: linear-gradient(to bottom, white 0%, white 40%, rgba(255,255,255,0.85) 60%, rgba(255,255,255,0) 100%);"></div>
+              <div class="absolute top-0 left-0 w-48 h-20 rounded-tl-3xl pointer-events-none" style="z-index:6; background: linear-gradient(135deg, white 0%, white 50%, rgba(255,255,255,0) 100%);"></div>
+              <div class="absolute bottom-0 left-0 right-0 h-16 rounded-b-3xl pointer-events-none" style="z-index:5; background: linear-gradient(to top, white 0%, white 30%, rgba(255,255,255,0.85) 55%, rgba(255,255,255,0) 100%);"></div>
             </div>
             
             <!-- Glow behind -->
