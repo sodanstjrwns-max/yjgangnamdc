@@ -1,5 +1,6 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
+import { createMiddleware } from 'hono/factory'
 import { mainPage, mainPageSchemas } from './pages/main'
 import { doctorsPage, doctorProfilePage } from './pages/doctors'
 import { treatmentsPage, treatmentDetailPage } from './pages/treatments'
@@ -20,6 +21,13 @@ type Bindings = {
 const app = new Hono<{ Bindings: Bindings }>()
 
 app.use('/api/*', cors())
+
+// ===== Admin auth middleware =====
+const adminAuth = createMiddleware(async (c, next) => {
+  const key = c.req.query('key')
+  if (key !== 'gangnam2017admin') return c.json({ error: 'Unauthorized' }, 401)
+  await next()
+})
 
 // ===== SEO: robots.txt =====
 app.get('/robots.txt', (c) => {
@@ -368,11 +376,7 @@ app.post('/api/inquiries', async (c) => {
 })
 
 // ===== API: 상담 문의 목록 조회 (관리자용) =====
-app.get('/api/inquiries', async (c) => {
-  const key = c.req.query('key')
-  if (key !== 'gangnam2017admin') {
-    return c.json({ error: 'Unauthorized' }, 401)
-  }
+app.get('/api/inquiries', adminAuth, async (c) => {
   try {
     const status = c.req.query('status') || 'all'
     let result
@@ -388,11 +392,7 @@ app.get('/api/inquiries', async (c) => {
 })
 
 // ===== API: 문의 상태 변경 =====
-app.patch('/api/inquiries/:id', async (c) => {
-  const key = c.req.query('key')
-  if (key !== 'gangnam2017admin') {
-    return c.json({ error: 'Unauthorized' }, 401)
-  }
+app.patch('/api/inquiries/:id', adminAuth, async (c) => {
   try {
     const id = c.req.param('id')
     const { status } = await c.req.json()
@@ -404,9 +404,7 @@ app.patch('/api/inquiries/:id', async (c) => {
 })
 
 // ===== API: 블로그 CRUD (관리자용) =====
-app.post('/api/blog', async (c) => {
-  const key = c.req.query('key')
-  if (key !== 'gangnam2017admin') return c.json({ error: 'Unauthorized' }, 401)
+app.post('/api/blog', adminAuth, async (c) => {
   try {
     const { slug, title, category, summary, content, thumbnail, tags, author } = await c.req.json()
     if (!slug || !title || !content) return c.json({ error: 'slug, title, content 필수' }, 400)
@@ -419,9 +417,7 @@ app.post('/api/blog', async (c) => {
   }
 })
 
-app.put('/api/blog/:slug', async (c) => {
-  const key = c.req.query('key')
-  if (key !== 'gangnam2017admin') return c.json({ error: 'Unauthorized' }, 401)
+app.put('/api/blog/:slug', adminAuth, async (c) => {
   try {
     const slug = c.req.param('slug')
     const { title, category, summary, content, thumbnail, tags, author, is_published } = await c.req.json()
@@ -434,9 +430,7 @@ app.put('/api/blog/:slug', async (c) => {
   }
 })
 
-app.delete('/api/blog/:slug', async (c) => {
-  const key = c.req.query('key')
-  if (key !== 'gangnam2017admin') return c.json({ error: 'Unauthorized' }, 401)
+app.delete('/api/blog/:slug', adminAuth, async (c) => {
   try {
     await c.env.DB.prepare('DELETE FROM blog_posts WHERE slug = ?').bind(c.req.param('slug')).run()
     return c.json({ success: true })
@@ -446,9 +440,7 @@ app.delete('/api/blog/:slug', async (c) => {
 })
 
 // ===== API: 비포/애프터 CRUD (관리자용) =====
-app.post('/api/before-after', async (c) => {
-  const key = c.req.query('key')
-  if (key !== 'gangnam2017admin') return c.json({ error: 'Unauthorized' }, 401)
+app.post('/api/before-after', adminAuth, async (c) => {
   try {
     const { slug, title, category, patient_info, treatment_desc, before_image, after_image, duration, doctor, tags, sort_order } = await c.req.json()
     if (!slug || !title || !before_image || !after_image) return c.json({ error: 'slug, title, before_image, after_image 필수' }, 400)
@@ -461,9 +453,7 @@ app.post('/api/before-after', async (c) => {
   }
 })
 
-app.put('/api/before-after/:slug', async (c) => {
-  const key = c.req.query('key')
-  if (key !== 'gangnam2017admin') return c.json({ error: 'Unauthorized' }, 401)
+app.put('/api/before-after/:slug', adminAuth, async (c) => {
   try {
     const slug = c.req.param('slug')
     const { title, category, patient_info, treatment_desc, before_image, after_image, duration, doctor, tags, sort_order, is_published } = await c.req.json()
@@ -476,9 +466,7 @@ app.put('/api/before-after/:slug', async (c) => {
   }
 })
 
-app.delete('/api/before-after/:slug', async (c) => {
-  const key = c.req.query('key')
-  if (key !== 'gangnam2017admin') return c.json({ error: 'Unauthorized' }, 401)
+app.delete('/api/before-after/:slug', adminAuth, async (c) => {
   try {
     await c.env.DB.prepare('DELETE FROM before_after_cases WHERE slug = ?').bind(c.req.param('slug')).run()
     return c.json({ success: true })
@@ -550,9 +538,7 @@ app.get('/admin', (c) => c.html(layout(adminPage(), {
 })))
 
 // ===== API: 공지사항 CRUD =====
-app.post('/api/notices', async (c) => {
-  const key = c.req.query('key')
-  if (key !== 'gangnam2017admin') return c.json({ error: 'Unauthorized' }, 401)
+app.post('/api/notices', adminAuth, async (c) => {
   try {
     const { slug, title, category, content, author, is_pinned } = await c.req.json()
     if (!slug || !title || !content) return c.json({ error: 'slug, title, content 필수' }, 400)
@@ -565,9 +551,7 @@ app.post('/api/notices', async (c) => {
   }
 })
 
-app.put('/api/notices/:slug', async (c) => {
-  const key = c.req.query('key')
-  if (key !== 'gangnam2017admin') return c.json({ error: 'Unauthorized' }, 401)
+app.put('/api/notices/:slug', adminAuth, async (c) => {
   try {
     const slug = c.req.param('slug')
     const { title, category, content, author, is_pinned, is_published } = await c.req.json()
@@ -580,9 +564,7 @@ app.put('/api/notices/:slug', async (c) => {
   }
 })
 
-app.delete('/api/notices/:slug', async (c) => {
-  const key = c.req.query('key')
-  if (key !== 'gangnam2017admin') return c.json({ error: 'Unauthorized' }, 401)
+app.delete('/api/notices/:slug', adminAuth, async (c) => {
   try {
     await c.env.DB.prepare('DELETE FROM notices WHERE slug = ?').bind(c.req.param('slug')).run()
     return c.json({ success: true })
@@ -592,9 +574,7 @@ app.delete('/api/notices/:slug', async (c) => {
 })
 
 // ===== API: 관리자 목록 조회 (블로그/전후사례/공지 - 비공개 포함) =====
-app.get('/api/admin/blog', async (c) => {
-  const key = c.req.query('key')
-  if (key !== 'gangnam2017admin') return c.json({ error: 'Unauthorized' }, 401)
+app.get('/api/admin/blog', adminAuth, async (c) => {
   try {
     const result = await c.env.DB.prepare('SELECT * FROM blog_posts ORDER BY published_at DESC LIMIT 100').all()
     return c.json({ success: true, posts: result.results })
@@ -603,9 +583,7 @@ app.get('/api/admin/blog', async (c) => {
   }
 })
 
-app.get('/api/admin/blog/:slug', async (c) => {
-  const key = c.req.query('key')
-  if (key !== 'gangnam2017admin') return c.json({ error: 'Unauthorized' }, 401)
+app.get('/api/admin/blog/:slug', adminAuth, async (c) => {
   try {
     const post = await c.env.DB.prepare('SELECT * FROM blog_posts WHERE slug = ?').bind(c.req.param('slug')).first()
     return post ? c.json({ success: true, post }) : c.json({ success: false, error: 'Not found' }, 404)
@@ -614,9 +592,7 @@ app.get('/api/admin/blog/:slug', async (c) => {
   }
 })
 
-app.get('/api/admin/before-after', async (c) => {
-  const key = c.req.query('key')
-  if (key !== 'gangnam2017admin') return c.json({ error: 'Unauthorized' }, 401)
+app.get('/api/admin/before-after', adminAuth, async (c) => {
   try {
     const result = await c.env.DB.prepare('SELECT * FROM before_after_cases ORDER BY sort_order DESC, published_at DESC LIMIT 100').all()
     return c.json({ success: true, cases: result.results })
@@ -625,9 +601,7 @@ app.get('/api/admin/before-after', async (c) => {
   }
 })
 
-app.get('/api/admin/before-after/:slug', async (c) => {
-  const key = c.req.query('key')
-  if (key !== 'gangnam2017admin') return c.json({ error: 'Unauthorized' }, 401)
+app.get('/api/admin/before-after/:slug', adminAuth, async (c) => {
   try {
     const caseData = await c.env.DB.prepare('SELECT * FROM before_after_cases WHERE slug = ?').bind(c.req.param('slug')).first()
     return caseData ? c.json({ success: true, case_data: caseData }) : c.json({ success: false, error: 'Not found' }, 404)
@@ -636,9 +610,7 @@ app.get('/api/admin/before-after/:slug', async (c) => {
   }
 })
 
-app.get('/api/admin/notices', async (c) => {
-  const key = c.req.query('key')
-  if (key !== 'gangnam2017admin') return c.json({ error: 'Unauthorized' }, 401)
+app.get('/api/admin/notices', adminAuth, async (c) => {
   try {
     const result = await c.env.DB.prepare('SELECT * FROM notices ORDER BY is_pinned DESC, published_at DESC LIMIT 100').all()
     return c.json({ success: true, notices: result.results })
@@ -647,9 +619,7 @@ app.get('/api/admin/notices', async (c) => {
   }
 })
 
-app.get('/api/admin/notices/:slug', async (c) => {
-  const key = c.req.query('key')
-  if (key !== 'gangnam2017admin') return c.json({ error: 'Unauthorized' }, 401)
+app.get('/api/admin/notices/:slug', adminAuth, async (c) => {
   try {
     const notice = await c.env.DB.prepare('SELECT * FROM notices WHERE slug = ?').bind(c.req.param('slug')).first()
     return notice ? c.json({ success: true, notice }) : c.json({ success: false, error: 'Not found' }, 404)

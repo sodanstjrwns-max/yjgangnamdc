@@ -513,35 +513,28 @@ export function layout(content: string, opts: LayoutOptions): string {
 
     /* ===== Float animation ===== */
     @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
-    @keyframes float-delayed { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
     @keyframes pulse-royal { 0%,100%{box-shadow:0 0 20px rgba(16,175,178,0.15)} 50%{box-shadow:0 0 40px rgba(16,175,178,0.3)} }
 
     /* ===== 3D Implant animations ===== */
-    @keyframes implantFloat { 0%,100%{transform:translateY(0) rotateY(0deg)} 25%{transform:translateY(-12px) rotateY(3deg)} 50%{transform:translateY(0) rotateY(0deg)} 75%{transform:translateY(-8px) rotateY(-3deg)} }
     @keyframes implantPulse { 0%,100%{transform:translate(-50%,-50%) scale(1); opacity:1} 50%{transform:translate(-50%,-50%) scale(1.15); opacity:0.6} }
-    @keyframes orbitSpin { 0%{transform:translate(-50%,-50%) rotate(0deg)} 100%{transform:translate(-50%,-50%) rotate(360deg)} }
     @keyframes fadeInOut { 0%,100%{opacity:0} 30%,70%{opacity:1} }
 
-    /* ===== 3D Model Toggle Buttons ===== */
-    .model-toggle-btn {
-      color: #9ca3af;
-      background: transparent;
-      cursor: pointer;
-      border: none;
-      outline: none;
+    /* ===== Floating label (hero) ===== */
+    .float-label {
+      position: absolute;
+      padding: 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(16,175,178,0.1);
+      box-shadow: 0 20px 25px -5px rgba(16,175,178,0.06);
+      pointer-events: none;
+      z-index: 20;
+      animation: float 5s ease-in-out infinite;
     }
-    .model-toggle-btn:hover {
-      color: #374151;
-      background: rgba(16,175,178,0.04);
-    }
-    .model-toggle-btn.active-model {
-      color: #fff;
-      background: linear-gradient(135deg, var(--royal), var(--royal-dark));
-      box-shadow: 0 4px 15px rgba(16,175,178,0.3);
-    }
-    .hero-labels {
-      transition: opacity 0.4s ease;
-    }
+    .float-label-d1 { animation-delay: -2s; }
+    .float-label-d2 { animation-delay: -3.5s; }
 
     /* ===== Horizontal scroll snap ===== */
     .snap-x { scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }

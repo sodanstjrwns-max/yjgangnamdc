@@ -495,21 +495,21 @@ export function mainPage(): string {
             <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[440px] h-[440px] rounded-full pointer-events-none" style="background: radial-gradient(circle, rgba(59,130,246,0.08) 0%, rgba(59,130,246,0.02) 50%, transparent 70%); animation: implantPulse 4s ease-in-out infinite; z-index:-1;"></div>
 
             <!-- Floating labels - Implant -->
-            <div class="absolute top-[5%] -left-8 p-3.5 rounded-2xl bg-white/90 backdrop-blur-xl border border-royal/10 shadow-xl shadow-royal/[0.06] pointer-events-none" style="animation: float 5s ease-in-out infinite; z-index:20;">
+            <div class="float-label top-[5%] -left-8">
               <div class="flex items-center gap-2.5">
                 <div class="w-9 h-9 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center"><i class="fas fa-shield-halved text-blue-500 text-xs"></i></div>
                 <div><div class="text-charcoal text-[12px] font-bold">티타늄 픽스쳐</div><div class="text-gray-400 text-[10px]">생체적합성 99.9%</div></div>
               </div>
             </div>
 
-            <div class="absolute top-[38%] -right-12 p-3.5 rounded-2xl bg-white/90 backdrop-blur-xl border border-royal/10 shadow-xl shadow-royal/[0.06] pointer-events-none" style="animation: float 5s ease-in-out infinite; animation-delay:-2s; z-index:20;">
+            <div class="float-label float-label-d1 top-[38%] -right-12">
               <div class="flex items-center gap-2.5">
                 <div class="w-9 h-9 rounded-xl royal-grad flex items-center justify-center"><i class="fas fa-user-doctor text-white text-xs"></i></div>
                 <div><div class="text-charcoal text-[12px] font-bold">전문의 직접 수술</div><div class="text-gray-400 text-[10px]">구강악안면외과 전문의</div></div>
               </div>
             </div>
 
-            <div class="absolute bottom-[12%] -left-6 p-3.5 rounded-2xl bg-white/90 backdrop-blur-xl border border-royal/10 shadow-xl shadow-royal/[0.06] pointer-events-none" style="animation: float 5s ease-in-out infinite; animation-delay:-3.5s; z-index:20;">
+            <div class="float-label float-label-d2 bottom-[12%] -left-6">
               <div class="flex items-center gap-2.5">
                 <div class="w-9 h-9 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center"><i class="fas fa-bolt text-amber-500 text-xs"></i></div>
                 <div><div class="text-charcoal text-[12px] font-bold">3D 정밀식립</div><div class="text-gray-400 text-[10px]">디지털 가이드 수술</div></div>
