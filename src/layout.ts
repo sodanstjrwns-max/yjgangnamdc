@@ -474,7 +474,7 @@ export function layout(content: string, opts: LayoutOptions): string {
 
     /* ===== Mobile CTA ===== */
     .floating-cta {
-      position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 9960;
       padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
       display: none;
       background: rgba(255,255,255,0.95);
@@ -544,7 +544,7 @@ export function layout(content: string, opts: LayoutOptions): string {
     .cursor-glow {
       position: fixed; width: 400px; height: 400px; border-radius: 50%;
       background: radial-gradient(circle, rgba(16,175,178,0.04) 0%, transparent 70%);
-      pointer-events: none; z-index: 9999; transform: translate(-50%, -50%);
+      pointer-events: none; z-index: 1; transform: translate(-50%, -50%);
       transition: opacity 0.3s;
     }
 
@@ -569,7 +569,7 @@ export function layout(content: string, opts: LayoutOptions): string {
   <div class="cursor-glow hidden md:block" id="cursorGlow" style="opacity:0"></div>
 
   <!-- ===== Top Bar ===== -->
-  <div class="hidden md:block fixed top-0 left-0 right-0 z-[60] bg-white/90 backdrop-blur-xl border-b border-black/[0.04]" style="pointer-events: auto;">
+  <div class="hidden md:block fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-b border-black/[0.04]" style="z-index:9970; pointer-events: auto;">
     <div class="max-w-[1440px] mx-auto px-8 lg:px-12 h-10 flex items-center justify-between">
       <div class="flex items-center gap-8 text-[11px] text-gray-400 tracking-wide">
         <span class="flex items-center gap-2"><span class="relative flex h-1.5 w-1.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-400"></span></span><span class="text-emerald-500 font-medium">진료중</span> 평일 09:00-17:30</span>
@@ -583,9 +583,9 @@ export function layout(content: string, opts: LayoutOptions): string {
   </div>
 
   <!-- ===== Navigation ===== -->
-  <header class="fixed top-0 md:top-10 left-0 right-0 z-[70] transition-all duration-700" id="navbar">
+  <header class="fixed top-0 md:top-10 left-0 right-0 transition-all duration-700" id="navbar" style="z-index:9990;">
     <div class="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-12">
-      <nav class="h-16 md:h-[68px] flex items-center justify-between md:rounded-2xl md:px-8 transition-all duration-500" id="navInner" style="background:transparent;">
+      <nav class="h-16 md:h-[68px] flex items-center justify-between md:rounded-2xl md:px-8 px-4 transition-all duration-500" id="navInner" style="background: rgba(255,255,255,0.95); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);">
         <!-- Logo -->
         <a href="/" class="flex items-center gap-3 group relative">
           <img src="/static/logo.png" alt="강남치과의원 로고" class="h-10 w-auto" width="40" height="40">
@@ -644,7 +644,7 @@ export function layout(content: string, opts: LayoutOptions): string {
     </div>
 
     <!-- Mobile Menu -->
-    <div class="fixed inset-0 z-[65] pointer-events-none opacity-0 transition-all duration-500" id="mobileMenu">
+    <div class="fixed inset-0 pointer-events-none opacity-0 transition-all duration-500" id="mobileMenu" style="z-index:9980;">
       <div class="absolute inset-0 bg-white/[0.98] backdrop-blur-2xl pointer-events-auto"></div>
       <div class="relative z-10 h-full flex flex-col pt-24 pb-8 px-8 pointer-events-auto overflow-y-auto">
         <div class="flex-1 flex flex-col justify-center gap-1">
@@ -855,21 +855,21 @@ export function layout(content: string, opts: LayoutOptions): string {
         navbar.classList.add('md:top-3');
         navbar.classList.remove('md:top-10');
         if(navInner) {
-          navInner.style.background = 'rgba(255,255,255,0.85)';
+          navInner.style.background = 'rgba(255,255,255,0.95)';
           navInner.style.backdropFilter = 'blur(24px) saturate(180%)';
           navInner.style.webkitBackdropFilter = 'blur(24px) saturate(180%)';
-          navInner.style.border = '1px solid rgba(0,0,0,0.06)';
-          navInner.style.boxShadow = '0 8px 32px rgba(0,0,0,0.04)';
+          navInner.style.border = '1px solid rgba(0,0,0,0.08)';
+          navInner.style.boxShadow = '0 8px 32px rgba(0,0,0,0.06)';
         }
       } else {
         navbar.classList.remove('md:top-3');
         navbar.classList.add('md:top-10');
         if(navInner) {
-          navInner.style.background = 'transparent';
-          navInner.style.backdropFilter = 'none';
-          navInner.style.webkitBackdropFilter = 'none';
-          navInner.style.border = 'none';
-          navInner.style.boxShadow = 'none';
+          navInner.style.background = 'rgba(255,255,255,0.95)';
+          navInner.style.backdropFilter = 'blur(24px)';
+          navInner.style.webkitBackdropFilter = 'blur(24px)';
+          navInner.style.border = '1px solid rgba(0,0,0,0.04)';
+          navInner.style.boxShadow = '0 4px 16px rgba(0,0,0,0.03)';
         }
       }
     });
