@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html><head><title>Click Debug</title></head>
+<body style="margin:0; font-family:monospace; font-size:12px;">
+<div id="log" style="position:fixed;bottom:0;left:0;right:0;height:40vh;overflow:auto;background:#111;color:#0f0;padding:10px;z-index:99999;"></div>
+<iframe src="/" style="width:100%;height:60vh;border:none;" id="frame"></iframe>
+<script>
+const log = document.getElementById('log');
+function addLog(msg) {
+  log.innerHTML += msg + '<br>';
+  log.scrollTop = log.scrollHeight;
+}
+
+const frame = document.getElementById('frame');
+frame.onload = () => {
+  const doc = frame.contentDocument;
+  
+  // Log nav structure
+  const header = doc.querySelector('header#navbar');
+  if (header) {
+    const cs = frame.contentWindow.getComputedStyle(header);
+    addLog('HEADER: position=' + cs.position + ' z-index=' + cs.zIndex + ' top=' + cs.top);
+    
+    const nav = doc.querySelector('#navInner');
+    if (nav) {
+      const ns = frame.contentWindow.getComputedStyle(nav);
+      addLog('NAV: bg=' + ns.background?.substring(0,50) + ' pointer-events=' + ns.pointerEvents);
+    }
+  }
+  
+  // Check all elements at nav link positions
+  const links = doc.querySelectorAll('#navInner a');
+  links.forEach(link => {
+    const rect = link.getBoundingClientRect();
+    if (rect.width === 0) return;
+    const cx = rect.left + rect.width/2;
+    const cy = rect.top + rect.height/2;
+    const topEl = doc.elementFromPoint(cx, cy);
+    const isOK = topEl === link || link.contains(topEl);
+    const color = isOK ? '#0f0' : '#f00';
+    addLog('<span style="color:'+color+'">' + 
+      link.getAttribute('href') + ' → topElement: ' + 
+      (topEl ? topEl.tagName + '#' + topEl.id + '.' + (topEl.className||'').substring(0,40) : 'NULL') +
+      ' | clickable=' + isOK + '</span>');
+  });
+  
+  // Add click interceptor
+  doc.addEventListener('click', (e) => {
+    const el = e.target;
+    addLog('CLICK: tag=' + el.tagName + ' id=' + el.id + ' class=' + (el.className||'').substring(0,50) + ' href=' + (el.getAttribute?.('href')||'none'));
+    
+    // Check what's at click point
+    const topEl = doc.elementFromPoint(e.clientX, e.clientY);
+    addLog('  elementFromPoint: ' + topEl?.tagName + '#' + topEl?.id + '.' + (topEl?.className||'').substring(0,40));
+  }, true);
+  
+  addLog('--- Debug ready. Click nav links in the iframe above ---');
+};
+</script>
+</body></html>

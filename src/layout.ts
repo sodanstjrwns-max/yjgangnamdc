@@ -583,9 +583,9 @@ export function layout(content: string, opts: LayoutOptions): string {
   </div>
 
   <!-- ===== Navigation ===== -->
-  <header class="fixed top-0 md:top-10 left-0 right-0 transition-all duration-700" id="navbar" style="z-index:9990;">
+  <header class="fixed top-0 md:top-10 left-0 right-0 transition-all duration-700" id="navbar" style="z-index:9990; pointer-events:none;">
     <div class="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-12">
-      <nav class="h-16 md:h-[68px] flex items-center justify-between md:rounded-2xl md:px-8 px-4 transition-all duration-500" id="navInner" style="background: rgba(255,255,255,0.95); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);">
+      <nav class="h-16 md:h-[68px] flex items-center justify-between md:rounded-2xl md:px-8 px-4 transition-all duration-500" id="navInner" style="background: rgba(255,255,255,0.95); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); pointer-events:auto; position:relative;">
         <!-- Logo -->
         <a href="/" class="flex items-center gap-3 group relative">
           <img src="/static/logo.png" alt="강남치과의원 로고" class="h-10 w-auto" width="40" height="40">
@@ -643,11 +643,13 @@ export function layout(content: string, opts: LayoutOptions): string {
       </nav>
     </div>
 
-    <!-- Mobile Menu -->
-    <div class="fixed inset-0 pointer-events-none opacity-0 transition-all duration-500" id="mobileMenu" style="z-index:9980;">
-      <div class="absolute inset-0 bg-white/[0.98] backdrop-blur-2xl pointer-events-auto"></div>
-      <div class="relative z-10 h-full flex flex-col pt-24 pb-8 px-8 pointer-events-auto overflow-y-auto">
-        <div class="flex-1 flex flex-col justify-center gap-1">
+  </header>
+
+    <!-- Mobile Menu (OUTSIDE header to prevent stacking context issues) -->
+    <div id="mobileMenu" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; z-index:9980; opacity:0; transition: opacity 0.4s ease;">
+      <div style="position:absolute; top:0; left:0; right:0; bottom:0; background:rgba(255,255,255,0.98); backdrop-filter:blur(40px); -webkit-backdrop-filter:blur(40px);"></div>
+      <div style="position:relative; z-index:10; height:100%; display:flex; flex-direction:column; padding:96px 32px 32px 32px; overflow-y:auto;">
+        <div style="flex:1; display:flex; flex-direction:column; justify-content:center; gap:4px;">
           <a href="/" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">홈</a>
           <a href="/doctors" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">의료진 소개</a>
           <a href="/treatments" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">진료 안내</a>
@@ -667,7 +669,6 @@ export function layout(content: string, opts: LayoutOptions): string {
         </div>
       </div>
     </div>
-  </header>
 
   <!-- ===== Main Content ===== -->
   <main>
@@ -883,15 +884,15 @@ export function layout(content: string, opts: LayoutOptions): string {
       const b2 = document.getElementById('bar2');
       const b3 = document.getElementById('bar3');
       if (menuOpen) {
-        menu.classList.remove('opacity-0','pointer-events-none');
-        menu.classList.add('opacity-100');
+        menu.style.display = 'block';
+        requestAnimationFrame(() => { menu.style.opacity = '1'; });
         b1.style.transform = 'rotate(45deg) translate(2px, 5px)';
         b2.style.opacity = '0';
         b3.style.transform = 'rotate(-45deg) translate(2px, -5px)';
         document.body.style.overflow = 'hidden';
       } else {
-        menu.classList.add('opacity-0','pointer-events-none');
-        menu.classList.remove('opacity-100');
+        menu.style.opacity = '0';
+        setTimeout(() => { menu.style.display = 'none'; }, 400);
         b1.style.transform = '';
         b2.style.opacity = '1';
         b3.style.transform = '';
@@ -903,6 +904,35 @@ export function layout(content: string, opts: LayoutOptions): string {
     window.addEventListener('DOMContentLoaded', () => {
       initReveals();
       animateCounters();
+      
+      // DEBUG: Click diagnostic
+      document.addEventListener('click', function(e) {
+        const topEl = document.elementFromPoint(e.clientX, e.clientY);
+        console.log('[CLICK DEBUG]', {
+          clickedTag: e.target.tagName,
+          clickedId: e.target.id,
+          clickedClass: (e.target.className || '').substring(0, 60),
+          clickedHref: e.target.getAttribute?.('href'),
+          topElementTag: topEl?.tagName,
+          topElementId: topEl?.id,
+          topElementClass: (topEl?.className || '').substring(0, 60),
+          x: e.clientX,
+          y: e.clientY
+        });
+      }, true);
+      
+      // DEBUG: Check nav links clickability
+      const navLinks = document.querySelectorAll('#navInner a');
+      navLinks.forEach(link => {
+        const rect = link.getBoundingClientRect();
+        if (rect.width === 0) return;
+        const cx = rect.left + rect.width/2;
+        const cy = rect.top + rect.height/2;
+        const topEl = document.elementFromPoint(cx, cy);
+        const ok = topEl === link || link.contains(topEl);
+        console.log('[NAV DEBUG]', link.getAttribute('href'), 
+          ok ? 'CLICKABLE' : 'BLOCKED by ' + topEl?.tagName + '#' + topEl?.id + '.' + (topEl?.className||'').substring(0,40));
+      });
     });
   </script>
 </body>
