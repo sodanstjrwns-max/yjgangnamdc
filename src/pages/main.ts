@@ -468,35 +468,11 @@ export function mainPage(): string {
           </div>
         </div>
 
-        <!-- Right: 3D Model Viewer with Toggle -->
+        <!-- Right: 3D Implant Model (Sketchfab) -->
         <div class="lg:col-span-5 hidden lg:flex items-center justify-center" id="heroVisual">
           <div class="relative">
-            <!-- Toggle Buttons -->
-            <div class="absolute -top-14 left-1/2 -translate-x-1/2 flex items-center gap-1 p-1 bg-white/80 backdrop-blur-xl rounded-2xl border border-gray-200/60 shadow-lg shadow-gray-200/30" style="z-index:30;">
-              <button id="btnMolar" onclick="switchModel('molar')" class="model-toggle-btn active-model px-5 py-2.5 rounded-xl text-[12px] font-bold tracking-wide transition-all duration-300">
-                <i class="fas fa-tooth mr-1.5"></i>어금니
-              </button>
-              <button id="btnImplant" onclick="switchModel('implant')" class="model-toggle-btn px-5 py-2.5 rounded-xl text-[12px] font-bold tracking-wide transition-all duration-300">
-                <i class="fas fa-screwdriver-wrench mr-1.5"></i>임플란트
-              </button>
-            </div>
-
-            <!-- Sketchfab 3D Viewers Container -->
-            <div class="relative" style="width:480px; height:560px;">
-              <!-- Molar Model (default visible) -->
-              <iframe 
-                id="iframeMolar"
-                title="3D Molar Tooth" 
-                frameborder="0" 
-                allowfullscreen 
-                mozallowfullscreen="true" 
-                webkitallowfullscreen="true" 
-                allow="autoplay; fullscreen; xr-spatial-tracking" 
-                src="https://sketchfab.com/models/54376b4e2c3b4091aedaa12d94e15076/embed?autospin=0.3&autostart=1&transparent=1&ui_animations=0&ui_infos=0&ui_stop=0&ui_inspector=0&ui_watermark_link=0&ui_watermark=0&ui_ar=0&ui_help=0&ui_settings=0&ui_vr=0&ui_fullscreen=0&ui_annotations=0&camera=0&preload=1&ui_hint=0&ui_controls=0"
-                style="width:100%; height:100%; border:none; border-radius:24px; position:absolute; top:0; left:0; transition: opacity 0.5s ease;"
-                loading="lazy"
-              ></iframe>
-              <!-- Implant Model (hidden initially, lazy-loaded on toggle) -->
+            <!-- Sketchfab 3D Implant Viewer (bigger size) -->
+            <div class="relative" style="width:540px; height:640px;">
               <iframe 
                 id="iframeImplant"
                 title="3D Dental Implant" 
@@ -505,8 +481,8 @@ export function mainPage(): string {
                 mozallowfullscreen="true" 
                 webkitallowfullscreen="true" 
                 allow="autoplay; fullscreen; xr-spatial-tracking" 
-                data-src="https://sketchfab.com/models/dcfc91171cd34b6780a23a42effd29fc/embed?autospin=0.3&autostart=1&transparent=1&ui_animations=0&ui_infos=0&ui_stop=0&ui_inspector=0&ui_watermark_link=0&ui_watermark=0&ui_ar=0&ui_help=0&ui_settings=0&ui_vr=0&ui_fullscreen=0&ui_annotations=0&camera=0&preload=1&ui_hint=0&ui_controls=0"
-                style="width:100%; height:100%; border:none; border-radius:24px; position:absolute; top:0; left:0; opacity:0; pointer-events:none; transition: opacity 0.5s ease;"
+                src="https://sketchfab.com/models/dcfc91171cd34b6780a23a42effd29fc/embed?autospin=0.3&autostart=1&transparent=1&ui_animations=0&ui_infos=0&ui_stop=0&ui_inspector=0&ui_watermark_link=0&ui_watermark=0&ui_ar=0&ui_help=0&ui_settings=0&ui_vr=0&ui_fullscreen=0&ui_annotations=0&camera=0&preload=1&ui_hint=0&ui_controls=0"
+                style="width:100%; height:100%; border:none; border-radius:24px;"
                 loading="lazy"
               ></iframe>
               <!-- Subtle overlay to hide any remaining Sketchfab branding -->
@@ -514,49 +490,27 @@ export function mainPage(): string {
             </div>
             
             <!-- Glow behind -->
-            <div id="heroGlow" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[380px] h-[380px] rounded-full pointer-events-none" style="background: radial-gradient(circle, rgba(16,175,178,0.08) 0%, rgba(16,175,178,0.02) 50%, transparent 70%); animation: implantPulse 4s ease-in-out infinite; z-index:-1;"></div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[440px] h-[440px] rounded-full pointer-events-none" style="background: radial-gradient(circle, rgba(59,130,246,0.08) 0%, rgba(59,130,246,0.02) 50%, transparent 70%); animation: implantPulse 4s ease-in-out infinite; z-index:-1;"></div>
 
-            <!-- Floating labels - Molar -->
-            <div id="labelsMolar" class="hero-labels">
-              <div class="absolute top-[6%] -left-6 p-3.5 rounded-2xl bg-white/90 backdrop-blur-xl border border-royal/10 shadow-xl shadow-royal/[0.06] pointer-events-none" style="animation: float 5s ease-in-out infinite; z-index:20;">
-                <div class="flex items-center gap-2.5">
-                  <div class="w-9 h-9 rounded-xl royal-grad flex items-center justify-center"><i class="fas fa-tooth text-white text-xs"></i></div>
-                  <div><div class="text-charcoal text-[12px] font-bold">자연치아 형태</div><div class="text-gray-400 text-[10px]">140K 폴리곤 정밀 모델</div></div>
-                </div>
-              </div>
-              <div class="absolute top-[40%] -right-10 p-3.5 rounded-2xl bg-white/90 backdrop-blur-xl border border-royal/10 shadow-xl shadow-royal/[0.06] pointer-events-none" style="animation: float 5s ease-in-out infinite; animation-delay:-2s; z-index:20;">
-                <div class="flex items-center gap-2.5">
-                  <div class="w-9 h-9 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center"><i class="fas fa-gem text-royal text-xs"></i></div>
-                  <div><div class="text-charcoal text-[12px] font-bold">세라믹 보철</div><div class="text-gray-400 text-[10px]">자연치아 색상 재현</div></div>
-                </div>
-              </div>
-              <div class="absolute bottom-[14%] -left-4 p-3.5 rounded-2xl bg-white/90 backdrop-blur-xl border border-royal/10 shadow-xl shadow-royal/[0.06] pointer-events-none" style="animation: float 5s ease-in-out infinite; animation-delay:-3.5s; z-index:20;">
-                <div class="flex items-center gap-2.5">
-                  <div class="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center"><i class="fas fa-crown text-emerald-500 text-xs"></i></div>
-                  <div><div class="text-charcoal text-[12px] font-bold">CEREC 당일제작</div><div class="text-gray-400 text-[10px]">원데이 보철 시스템</div></div>
-                </div>
+            <!-- Floating labels - Implant -->
+            <div class="absolute top-[5%] -left-8 p-3.5 rounded-2xl bg-white/90 backdrop-blur-xl border border-royal/10 shadow-xl shadow-royal/[0.06] pointer-events-none" style="animation: float 5s ease-in-out infinite; z-index:20;">
+              <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center"><i class="fas fa-shield-halved text-blue-500 text-xs"></i></div>
+                <div><div class="text-charcoal text-[12px] font-bold">티타늄 픽스쳐</div><div class="text-gray-400 text-[10px]">생체적합성 99.9%</div></div>
               </div>
             </div>
 
-            <!-- Floating labels - Implant -->
-            <div id="labelsImplant" class="hero-labels" style="display:none;">
-              <div class="absolute top-[6%] -left-6 p-3.5 rounded-2xl bg-white/90 backdrop-blur-xl border border-royal/10 shadow-xl shadow-royal/[0.06] pointer-events-none" style="animation: float 5s ease-in-out infinite; z-index:20;">
-                <div class="flex items-center gap-2.5">
-                  <div class="w-9 h-9 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center"><i class="fas fa-shield-halved text-blue-500 text-xs"></i></div>
-                  <div><div class="text-charcoal text-[12px] font-bold">티타늄 픽스쳐</div><div class="text-gray-400 text-[10px]">생체적합성 99.9%</div></div>
-                </div>
+            <div class="absolute top-[38%] -right-12 p-3.5 rounded-2xl bg-white/90 backdrop-blur-xl border border-royal/10 shadow-xl shadow-royal/[0.06] pointer-events-none" style="animation: float 5s ease-in-out infinite; animation-delay:-2s; z-index:20;">
+              <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-xl royal-grad flex items-center justify-center"><i class="fas fa-user-doctor text-white text-xs"></i></div>
+                <div><div class="text-charcoal text-[12px] font-bold">전문의 직접 수술</div><div class="text-gray-400 text-[10px]">구강악안면외과 전문의</div></div>
               </div>
-              <div class="absolute top-[40%] -right-10 p-3.5 rounded-2xl bg-white/90 backdrop-blur-xl border border-royal/10 shadow-xl shadow-royal/[0.06] pointer-events-none" style="animation: float 5s ease-in-out infinite; animation-delay:-2s; z-index:20;">
-                <div class="flex items-center gap-2.5">
-                  <div class="w-9 h-9 rounded-xl royal-grad flex items-center justify-center"><i class="fas fa-user-doctor text-white text-xs"></i></div>
-                  <div><div class="text-charcoal text-[12px] font-bold">전문의 직접 수술</div><div class="text-gray-400 text-[10px]">구강악안면외과 전문의</div></div>
-                </div>
-              </div>
-              <div class="absolute bottom-[14%] -left-4 p-3.5 rounded-2xl bg-white/90 backdrop-blur-xl border border-royal/10 shadow-xl shadow-royal/[0.06] pointer-events-none" style="animation: float 5s ease-in-out infinite; animation-delay:-3.5s; z-index:20;">
-                <div class="flex items-center gap-2.5">
-                  <div class="w-9 h-9 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center"><i class="fas fa-bolt text-amber-500 text-xs"></i></div>
-                  <div><div class="text-charcoal text-[12px] font-bold">3D 정밀식립</div><div class="text-gray-400 text-[10px]">디지털 가이드 수술</div></div>
-                </div>
+            </div>
+
+            <div class="absolute bottom-[12%] -left-6 p-3.5 rounded-2xl bg-white/90 backdrop-blur-xl border border-royal/10 shadow-xl shadow-royal/[0.06] pointer-events-none" style="animation: float 5s ease-in-out infinite; animation-delay:-3.5s; z-index:20;">
+              <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center"><i class="fas fa-bolt text-amber-500 text-xs"></i></div>
+                <div><div class="text-charcoal text-[12px] font-bold">3D 정밀식립</div><div class="text-gray-400 text-[10px]">디지털 가이드 수술</div></div>
               </div>
             </div>
 
@@ -586,48 +540,6 @@ export function mainPage(): string {
         .from('#heroCTA',{opacity:0,y:20,duration:0.7,ease:'power3.out'},'-=0.4')
         .from('#heroStats',{opacity:0,y:20,duration:0.7,ease:'power3.out'},'-=0.3')
         .from('#heroVisual',{opacity:0,x:80,scale:0.95,duration:1.2,ease:'power4.out'},'-=1');
-
-      // 3D Model Toggle (Molar ↔ Implant)
-      let currentModel = 'molar';
-      let implantLoaded = false;
-
-      function switchModel(model) {
-        if (model === currentModel) return;
-        currentModel = model;
-
-        const iframeMolar = document.getElementById('iframeMolar');
-        const iframeImplant = document.getElementById('iframeImplant');
-        const labelsMolar = document.getElementById('labelsMolar');
-        const labelsImplant = document.getElementById('labelsImplant');
-        const btnMolar = document.getElementById('btnMolar');
-        const btnImplant = document.getElementById('btnImplant');
-        const glow = document.getElementById('heroGlow');
-
-        if (model === 'implant') {
-          // Lazy-load implant iframe on first toggle
-          if (!implantLoaded && iframeImplant) {
-            const src = iframeImplant.getAttribute('data-src');
-            if (src) { iframeImplant.src = src; implantLoaded = true; }
-          }
-          if (iframeMolar) { iframeMolar.style.opacity = '0'; iframeMolar.style.pointerEvents = 'none'; }
-          if (iframeImplant) { iframeImplant.style.opacity = '1'; iframeImplant.style.pointerEvents = 'auto'; }
-          if (labelsMolar) { labelsMolar.style.display = 'none'; }
-          if (labelsImplant) { labelsImplant.style.display = 'block'; }
-          if (btnMolar) { btnMolar.classList.remove('active-model'); }
-          if (btnImplant) { btnImplant.classList.add('active-model'); }
-          if (glow) { glow.style.background = 'radial-gradient(circle, rgba(59,130,246,0.08) 0%, rgba(59,130,246,0.02) 50%, transparent 70%)'; }
-        } else {
-          if (iframeMolar) { iframeMolar.style.opacity = '1'; iframeMolar.style.pointerEvents = 'auto'; }
-          if (iframeImplant) { iframeImplant.style.opacity = '0'; iframeImplant.style.pointerEvents = 'none'; }
-          if (labelsMolar) { labelsMolar.style.display = 'block'; }
-          if (labelsImplant) { labelsImplant.style.display = 'none'; }
-          if (btnMolar) { btnMolar.classList.add('active-model'); }
-          if (btnImplant) { btnImplant.classList.remove('active-model'); }
-          if (glow) { glow.style.background = 'radial-gradient(circle, rgba(16,175,178,0.08) 0%, rgba(16,175,178,0.02) 50%, transparent 70%)'; }
-        }
-      }
-      // Make switchModel available globally
-      window.switchModel = switchModel;
     </script>
   </section>
 
