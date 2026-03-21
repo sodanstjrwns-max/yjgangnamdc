@@ -485,22 +485,22 @@ export function mainPage(): string {
             <!-- Floating labels -->
             <div class="absolute top-[8%] -left-4 p-3.5 rounded-2xl bg-white/90 backdrop-blur-xl border border-royal/10 shadow-xl shadow-royal/[0.06] pointer-events-none" style="animation: float 5s ease-in-out infinite;">
               <div class="flex items-center gap-2.5">
-                <div class="w-9 h-9 rounded-xl royal-grad flex items-center justify-center"><i class="fas fa-crown text-white text-xs"></i></div>
-                <div><div class="text-charcoal text-[12px] font-bold">크라운</div><div class="text-gray-400 text-[10px]">세라믹 보철</div></div>
+                <div class="w-9 h-9 rounded-xl royal-grad flex items-center justify-center"><i class="fas fa-tooth text-white text-xs"></i></div>
+                <div><div class="text-charcoal text-[12px] font-bold">교합면</div><div class="text-gray-400 text-[10px]">5개 교두 정밀 재현</div></div>
               </div>
             </div>
 
             <div class="absolute top-[42%] -right-8 p-3.5 rounded-2xl bg-white/90 backdrop-blur-xl border border-royal/10 shadow-xl shadow-royal/[0.06] pointer-events-none" style="animation: float 5s ease-in-out infinite; animation-delay:-2s;">
               <div class="flex items-center gap-2.5">
-                <div class="w-9 h-9 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center"><i class="fas fa-link text-gray-500 text-xs"></i></div>
-                <div><div class="text-charcoal text-[12px] font-bold">어버트먼트</div><div class="text-gray-400 text-[10px]">연결 장치</div></div>
+                <div class="w-9 h-9 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center"><i class="fas fa-gem text-gray-500 text-xs"></i></div>
+                <div><div class="text-charcoal text-[12px] font-bold">세라믹 보철</div><div class="text-gray-400 text-[10px]">자연치아 재현</div></div>
               </div>
             </div>
 
             <div class="absolute bottom-[12%] -left-2 p-3.5 rounded-2xl bg-white/90 backdrop-blur-xl border border-royal/10 shadow-xl shadow-royal/[0.06] pointer-events-none" style="animation: float 5s ease-in-out infinite; animation-delay:-3.5s;">
               <div class="flex items-center gap-2.5">
-                <div class="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center"><i class="fas fa-screwdriver-wrench text-emerald-500 text-xs"></i></div>
-                <div><div class="text-charcoal text-[12px] font-bold">픽스쳐</div><div class="text-gray-400 text-[10px]">티타늄 나사</div></div>
+                <div class="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center"><i class="fas fa-shield-halved text-emerald-500 text-xs"></i></div>
+                <div><div class="text-charcoal text-[12px] font-bold">치근</div><div class="text-gray-400 text-[10px]">3-root 구조</div></div>
               </div>
             </div>
 
@@ -521,8 +521,9 @@ export function mainPage(): string {
       </div>
     </div>
 
-    <!-- Three.js (local copy) -->
+    <!-- Three.js r137 (local) + GLTFLoader -->
     <script src="/static/three.min.js"></script>
+    <script src="/static/GLTFLoader.js"></script>
     <script src="/static/implant-scene.js"></script>
 
     <script>
