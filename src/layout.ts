@@ -212,11 +212,12 @@ export function layout(content: string, opts: LayoutOptions): string {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="/favicon.ico">
-  <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon-16x16.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png">
+  <!-- Favicon (logo-based, v2) -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png?v=2">
+  <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon-16x16.png?v=2">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico?v=2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png?v=2">
   <title>${title}</title>
   <meta name="description" content="${description}">
   <meta name="keywords" content="${finalKeywords}">
@@ -268,9 +269,7 @@ export function layout(content: string, opts: LayoutOptions): string {
   <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
   <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
-  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <!-- Favicon (duplicate removed, using first block above) -->
 
   <!-- hreflang (single language) -->
   <link rel="alternate" hreflang="ko" href="${fullUrl}">
