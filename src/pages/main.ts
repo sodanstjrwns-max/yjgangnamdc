@@ -451,8 +451,8 @@ export function mainPage(): string {
 
           <p class="text-lg md:text-xl text-gray-400 leading-relaxed mb-12 max-w-xl" id="heroSub" data-speakable="true">
             <span>영주 강남치과의원 — 구강악안면외과 전문의 2인이 임플란트, CEREC 당일보철, 인비절라인을 직접 진료합니다.</span><br>
-            <span>임플란트는 뼈에 심는 수술입니다.</span>
-            <span>수술 전문 외과 전문의가 직접 합니다. <strong class="text-royal font-semibold">한 번 오시면 됩니다.</strong></span>
+            <span>빠르게 낫고, 정확하게 오래가는 치과.</span>
+            <span><strong class="text-royal font-semibold">일상으로의 빠른 복귀, 강남치과의 기쁨입니다.</strong></span>
           </p>
 
           <div class="flex flex-wrap gap-4 mb-16" id="heroCTA">
@@ -592,7 +592,7 @@ export function mainPage(): string {
       <div class="text-center mb-24 reveal">
         <div class="section-label section-label-royal mx-auto mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>WHY GANGNAM DENTAL</div>
         <h2 class="display-xl text-charcoal mb-6" data-speakable="true">왜 <span class="royal-grad-text">강남치과</span>일까요?</h2>
-        <p class="text-gray-400 text-lg max-w-2xl mx-auto leading-relaxed" data-speakable="true">영주에서 대학병원 수준의 치과 수술을,<br class="hidden md:block">동네 치과의 편안함으로.</p>
+        <p class="text-gray-400 text-lg max-w-2xl mx-auto leading-relaxed" data-speakable="true">일상으로의 빠른 복귀, 강남치과의 기쁨입니다.<br class="hidden md:block">정확한 진단, 빠른 치료, 오래가는 결과.</p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-5 stagger-children">
         <div class="lg:col-span-7 card-premium p-10 md:p-14 flex flex-col justify-between min-h-[480px] stagger-item relative group">
@@ -961,8 +961,8 @@ export function mainPage(): string {
       <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] border border-royal/[0.03] rounded-full"></div>
       <div class="relative z-10">
         <div class="w-24 h-24 mx-auto rounded-3xl royal-grad flex items-center justify-center mb-10 royal-glow"><i class="fas fa-tooth text-white text-4xl"></i></div>
-        <h2 class="display-xl text-charcoal mb-8">상담은 언제든<br><span class="royal-grad-text">열려있습니다.</span></h2>
-        <p class="text-gray-400 text-lg mb-12 leading-relaxed">구강외과 전문의가 직접 상담드립니다.<br>빠르게 낫고, 정확하게 오래가는 치과.</p>
+        <h2 class="display-xl text-charcoal mb-8">일상으로의 빠른 복귀,<br><span class="royal-grad-text">강남치과의 기쁨입니다.</span></h2>
+        <p class="text-gray-400 text-lg mb-12 leading-relaxed">구강외과 전문의가 직접 상담드립니다.<br>상담은 언제든 열려있습니다. 편하게 문의해 주세요.</p>
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
           <a href="/reservation" class="w-full sm:w-auto btn-primary !py-5 !px-14 !text-base !font-extrabold"><i class="fas fa-calendar-check"></i>온라인 상담 예약</a>
           <a href="tel:054-636-8222" class="w-full sm:w-auto btn-subtle justify-center"><i class="fas fa-phone text-sm text-royal"></i>054-636-8222</a>

@@ -42,7 +42,7 @@ function buildBaseSchema() {
     "logo": `${SITE_URL}/static/logo.png`,
     "image": `${SITE_URL}/static/logo.png`,
     "description": "경북 영주시 강남치과의원. 구강악안면외과 전문의 2인이 직접 진료하는 프리미엄 치과. 임플란트, CEREC 당일보철, 인비절라인, 심미보철 전문.",
-    "slogan": "빠르게 낫고, 정확하게 오래가는 치과",
+    "slogan": "일상으로의 빠른 복귀, 강남치과의 기쁨입니다",
     "foundingDate": "2017",
     "priceRange": "$$",
     "currenciesAccepted": "KRW",
@@ -831,7 +831,7 @@ export function layout(content: string, opts: LayoutOptions): string {
             </div>
           </div>
           <p class="text-gray-400 text-sm leading-relaxed mb-4 max-w-sm">
-            빠르게 낫고, 정확하게 오래가는 치과.
+            일상으로의 빠른 복귀, 강남치과의 기쁨입니다.
           </p>
           <p class="text-gray-400 text-sm leading-relaxed mb-8 max-w-sm">
             구강악안면외과 전문의 2인이 직접 진료하는<br>경북 영주시 프리미엄 치과의원.

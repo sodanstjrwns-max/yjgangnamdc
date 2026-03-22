@@ -360,33 +360,45 @@ export function doctorsPage(): string {
 
     <div class="relative z-10 max-w-5xl mx-auto px-6 md:px-8 lg:px-12 reveal">
       <div class="text-center mb-16">
-        <div class="section-label section-label-royal mx-auto mb-6"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>MISSION</div>
+        <div class="section-label section-label-royal mx-auto mb-6"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>OUR MISSION</div>
         <h2 class="display-lg text-charcoal mb-6" data-speakable="true">
-          영주에서 대학병원 수준의 치과 수술을,<br><span class="royal-grad-text">동네 치과의 편안함으로.</span>
+          일상으로의 빠른 복귀,<br><span class="royal-grad-text">강남치과의 기쁨입니다.</span>
         </h2>
+        <p class="text-gray-400 text-lg max-w-2xl mx-auto leading-relaxed">정확한 진단과 빠른 치료로 환자분이 하루라도 빨리 일상으로 돌아갈 수 있도록.<br>그것이 저희가 진료하는 이유입니다.</p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="card-premium p-10">
           <div class="w-14 h-14 rounded-2xl royal-grad flex items-center justify-center mb-6 royal-glow">
-            <i class="fas fa-user-doctor text-white text-xl"></i>
+            <i class="fas fa-bullseye text-white text-xl"></i>
           </div>
-          <h3 class="text-xl font-extrabold text-charcoal mb-3">수술은 전문의가</h3>
+          <h3 class="text-xl font-extrabold text-charcoal mb-3">정확한 진단</h3>
           <p class="text-gray-400 leading-relaxed">
-            모든 임플란트 수술, 뼈이식, 상악동 거상술,<br>
-            사랑니 발치를 <strong class="text-charcoal">구강외과 전문의가 직접</strong> 시행합니다.<br>
-            전문의 2인 체제라 교차 검증도 가능합니다.
+            3D CT와 디지털 스캐너로 정밀하게 진단합니다.<br>
+            구강악안면외과 <strong class="text-charcoal">전문의 2인이 직접</strong> 확인하고,<br>
+            불필요한 치료 없이 최적의 계획을 세웁니다.
           </p>
         </div>
         <div class="card-premium p-10">
           <div class="w-14 h-14 rounded-2xl royal-grad flex items-center justify-center mb-6 royal-glow">
             <i class="fas fa-bolt text-white text-xl"></i>
           </div>
-          <h3 class="text-xl font-extrabold text-charcoal mb-3">내원은 한 번만</h3>
+          <h3 class="text-xl font-extrabold text-charcoal mb-3">빠른 치료</h3>
           <p class="text-gray-400 leading-relaxed">
-            CEREC 당일 보철 시스템으로<br>
-            <strong class="text-charcoal">본 뜨고, 기다리고, 다시 오는 과정을 없앴습니다.</strong><br>
-            바쁜 환자분들이 여러 번 오실 필요가 없습니다.
+            CEREC 당일 보철로 <strong class="text-charcoal">내원 횟수를 최소화</strong>합니다.<br>
+            본 뜨고 기다리고 다시 오는 과정 없이,<br>
+            바쁜 일상으로 빠르게 복귀할 수 있습니다.
+          </p>
+        </div>
+        <div class="card-premium p-10">
+          <div class="w-14 h-14 rounded-2xl royal-grad flex items-center justify-center mb-6 royal-glow">
+            <i class="fas fa-heart text-white text-xl"></i>
+          </div>
+          <h3 class="text-xl font-extrabold text-charcoal mb-3">오래가는 결과</h3>
+          <p class="text-gray-400 leading-relaxed">
+            수술 전문 외과 전문의의 <strong class="text-charcoal">정밀한 술기</strong>로<br>
+            오래 쓰는 치료 결과를 만듭니다.<br>
+            한 번 치료, 오래 편안하게.
           </p>
         </div>
       </div>
@@ -432,8 +444,8 @@ export function doctorsPage(): string {
       <div class="w-20 h-20 mx-auto rounded-2xl royal-grad flex items-center justify-center mb-8 royal-glow">
         <i class="fas fa-user-doctor text-white text-3xl"></i>
       </div>
-      <h2 class="display-lg text-charcoal mb-6">상담은 언제든<br><span class="royal-grad-text">열려있습니다.</span></h2>
-      <p class="text-gray-400 text-lg mb-10">구강외과 전문의가 직접 진단하고 설명드립니다.</p>
+      <h2 class="display-lg text-charcoal mb-6">일상으로의 빠른 복귀,<br><span class="royal-grad-text">강남치과의 기쁨입니다.</span></h2>
+      <p class="text-gray-400 text-lg mb-10">구강외과 전문의가 직접 진단하고 설명드립니다.<br>상담은 언제든 열려있습니다.</p>
       <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
         <a href="/reservation" class="w-full sm:w-auto btn-primary !py-5 !px-12 !font-extrabold">
           <i class="fas fa-calendar-check"></i>상담 예약하기
