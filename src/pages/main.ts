@@ -442,17 +442,17 @@ export function mainPage(): string {
 
           <h1 class="display-hero text-charcoal mb-8" id="heroTitle" data-speakable="true">
             <span class="block overflow-hidden">
-              <span class="block" id="heroLine1">외과 전문의 2명이</span>
+              <span class="block" id="heroLine1">일상으로의 빠른 복귀,</span>
             </span>
             <span class="block overflow-hidden">
-              <span class="block royal-grad-text" id="heroLine2">직접 수술합니다</span>
+              <span class="block royal-grad-text" id="heroLine2">강남치과의 기쁨입니다.</span>
             </span>
           </h1>
 
           <p class="text-lg md:text-xl text-gray-400 leading-relaxed mb-12 max-w-xl" id="heroSub" data-speakable="true">
-            <span>영주 강남치과의원 — 구강악안면외과 전문의 2인이 임플란트, CEREC 당일보철, 인비절라인을 직접 진료합니다.</span><br>
-            <span>빠르게 낫고, 정확하게 오래가는 치과.</span>
-            <span><strong class="text-royal font-semibold">일상으로의 빠른 복귀, 강남치과의 기쁨입니다.</strong></span>
+            <span>구강악안면외과 전문의 2인이 직접 수술합니다.</span><br>
+            <span>영주 강남치과의원 — 임플란트, CEREC 당일보철, 인비절라인.</span>
+            <span><strong class="text-royal font-semibold">정확하게 진단하고, 빠르게 치료하고, 오래가는 결과를 만듭니다.</strong></span>
           </p>
 
           <div class="flex flex-wrap gap-4 mb-16" id="heroCTA">
