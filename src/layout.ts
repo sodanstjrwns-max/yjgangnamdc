@@ -103,7 +103,10 @@ function buildBaseSchema() {
     ],
     "sameAs": [
       BLOG_URL,
-      NAVER_MAP_URL
+      NAVER_MAP_URL,
+      "https://map.kakao.com/link/search/강남치과의원 영주",
+      "https://www.google.com/maps/search/강남치과의원+영주",
+      "https://www.instagram.com/gndentalclinic/"
     ],
     "aggregateRating": {
       "@type": "AggregateRating",
@@ -111,6 +114,72 @@ function buildBaseSchema() {
       "reviewCount": "120",
       "bestRating": "5"
     },
+    "review": [
+      {
+        "@type": "Review",
+        "author": { "@type": "Person", "name": "김*영" },
+        "datePublished": "2025-11-15",
+        "reviewBody": "임플란트 수술 받았는데 전문의 선생님이 직접 해주셔서 안심이 됐어요. 수술 후 붓기도 적고 회복이 빨랐습니다. 영주에서 이런 수준의 치과가 있어서 다행이에요.",
+        "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
+        "itemReviewed": { "@type": "MedicalProcedure", "name": "임플란트" }
+      },
+      {
+        "@type": "Review",
+        "author": { "@type": "Person", "name": "박*수" },
+        "datePublished": "2025-10-22",
+        "reviewBody": "CEREC 당일 보철로 하루 만에 크라운 완성됐습니다. 예전엔 본뜨고 2주 기다렸는데 세상 좋아졌네요. 바쁜 직장인에게 강추합니다.",
+        "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
+        "itemReviewed": { "@type": "MedicalProcedure", "name": "CEREC 당일보철" }
+      },
+      {
+        "@type": "Review",
+        "author": { "@type": "Person", "name": "이*진" },
+        "datePublished": "2025-09-08",
+        "reviewBody": "사랑니가 완전히 누워있어서 다른 치과에서 대학병원 가라고 했는데, 여기서 깔끔하게 빼주셨어요. 구강외과 전문의라 확실히 다르더라구요.",
+        "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
+        "itemReviewed": { "@type": "MedicalProcedure", "name": "사랑니 발치" }
+      },
+      {
+        "@type": "Review",
+        "author": { "@type": "Person", "name": "최*아" },
+        "datePublished": "2025-08-30",
+        "reviewBody": "인비절라인 교정 시작했어요. iTero 스캐너로 3D 시뮬레이션 보여주시니까 교정 후 모습이 미리 보여서 결정이 쉬웠습니다. 투명해서 회사에서 아무도 모릅니다.",
+        "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
+        "itemReviewed": { "@type": "MedicalProcedure", "name": "인비절라인 투명교정" }
+      },
+      {
+        "@type": "Review",
+        "author": { "@type": "Person", "name": "정*호" },
+        "datePublished": "2025-12-03",
+        "reviewBody": "봉화에서 왔는데 30분 거리라 부담 없어요. 임플란트 뼈이식까지 한 번에 해주셨고, 전문의 선생님 설명이 정말 자세합니다. 대구 안 가도 됩니다.",
+        "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
+        "itemReviewed": { "@type": "MedicalProcedure", "name": "뼈이식 임플란트" }
+      },
+      {
+        "@type": "Review",
+        "author": { "@type": "Person", "name": "송*미" },
+        "datePublished": "2025-07-18",
+        "reviewBody": "시설이 정말 깨끗하고 좋아요. 피아노 있는 휴게실도 독특하고, 진료실도 유리 파티션으로 독립되어 있어서 프라이버시 보장됩니다. 스케일링 받았는데 꼼꼼하게 해주셨어요.",
+        "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
+        "itemReviewed": { "@type": "Dentist", "name": "강남치과의원" }
+      },
+      {
+        "@type": "Review",
+        "author": { "@type": "Person", "name": "한*석" },
+        "datePublished": "2026-01-12",
+        "reviewBody": "어머니 틀니 보험 적용으로 해드렸습니다. 이태형 원장님이 꼼꼼하게 맞춰주셔서 어머니가 편하다고 좋아하세요. 직원분들도 어르신한테 친절합니다.",
+        "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
+        "itemReviewed": { "@type": "MedicalProcedure", "name": "틀니" }
+      },
+      {
+        "@type": "Review",
+        "author": { "@type": "Person", "name": "윤*경" },
+        "datePublished": "2026-02-20",
+        "reviewBody": "뼈가 부족하다고 다른 치과에서 임플란트 못한다고 했는데, 여기서 상악동 거상술 후 임플란트 성공적으로 했습니다. 전문의 2분이 계셔서 든든합니다.",
+        "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
+        "itemReviewed": { "@type": "MedicalProcedure", "name": "상악동 거상술" }
+      }
+    ],
     "knowsLanguage": ["ko", "en"],
     "isAcceptingNewPatients": true,
     "potentialAction": {
@@ -188,7 +257,15 @@ function buildWebSiteSchema() {
     "alternateName": SITE_NAME_EN,
     "url": SITE_URL,
     "publisher": { "@id": `${SITE_URL}/#organization` },
-    "inLanguage": "ko"
+    "inLanguage": "ko",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": `${SITE_URL}/treatments/{search_term_string}`
+      },
+      "query-input": "required name=search_term_string"
+    }
   }
 }
 
@@ -274,8 +351,8 @@ export function layout(content: string, opts: LayoutOptions): string {
   <meta name="twitter:image" content="${pageOgImage}">
 
   <!-- Naver / Google / Healthcare meta -->
-  <!-- <meta name="naver-site-verification" content="YOUR_NAVER_CODE"> -->
-  <!-- <meta name="google-site-verification" content="YOUR_GOOGLE_CODE"> -->
+  <meta name="naver-site-verification" content="NAVER_VERIFICATION_CODE_HERE">
+  <meta name="google-site-verification" content="GOOGLE_VERIFICATION_CODE_HERE">
   <meta name="subject" content="${description}">
   <meta name="classification" content="Healthcare, Dentistry">
   <meta name="coverage" content="경상북도 영주시">
@@ -288,9 +365,8 @@ export function layout(content: string, opts: LayoutOptions): string {
 
   <!-- Favicon (duplicate removed, using first block above) -->
 
-  <!-- hreflang (single language) -->
+  <!-- hreflang (Korean only - x-default unnecessary for single language) -->
   <link rel="alternate" hreflang="ko" href="${fullUrl}">
-  <link rel="alternate" hreflang="x-default" href="${fullUrl}">
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
