@@ -106,7 +106,7 @@ export function treatmentsPage(): string {
   <!-- Hero (White) -->
   <section class="relative min-h-[65vh] flex items-end subpage-hero overflow-hidden" aria-label="전체 진료 안내 히어로">
     <div class="absolute inset-0 z-[1]">
-      <img src="https://www.genspark.ai/api/files/s/Wpp3wlfj" alt="강남치과의원 진료실" class="w-full h-full object-cover">
+      <img src="/static/photos/Wpp3wlfj.jpg" alt="강남치과의원 진료실" class="w-full h-full object-cover">
       <div class="absolute inset-0 bg-gradient-to-b from-white/92 via-white/75 to-white"></div>
     </div>
     <div class="orb orb-royal w-[600px] h-[600px] -top-64 -right-64 opacity-30 z-[2]"></div>

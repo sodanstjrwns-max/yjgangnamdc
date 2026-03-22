@@ -3,7 +3,7 @@ export function reservationPage(): string {
   <!-- Hero (White) -->
   <section class="relative min-h-[60vh] flex items-end subpage-hero overflow-hidden">
     <div class="absolute inset-0 z-[1]">
-      <img src="https://www.genspark.ai/api/files/s/CR9dgzgZ" alt="강남치과의원 대기실" class="w-full h-full object-cover">
+      <img src="/static/photos/CR9dgzgZ.jpg" alt="강남치과의원 대기실" class="w-full h-full object-cover">
       <div class="absolute inset-0 bg-gradient-to-b from-white/90 via-white/70 to-white"></div>
     </div>
     <div class="orb orb-royal w-[500px] h-[500px] -top-48 -right-48 opacity-20 z-[2]"></div>

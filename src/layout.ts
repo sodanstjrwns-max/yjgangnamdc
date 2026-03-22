@@ -39,8 +39,8 @@ function buildBaseSchema() {
     "url": SITE_URL,
     "telephone": PHONE,
     "email": "gndentalclinic@naver.com",
-    "logo": `${SITE_URL}/favicon.svg`,
-    "image": `${SITE_URL}/favicon.svg`,
+    "logo": `${SITE_URL}/static/logo.png`,
+    "image": `${SITE_URL}/static/logo.png`,
     "description": "경북 영주시 강남치과의원. 구강악안면외과 전문의 2인이 직접 진료하는 프리미엄 치과. 임플란트, CEREC 당일보철, 인비절라인, 심미보철 전문.",
     "slogan": "빠르게 낫고, 정확하게 오래가는 치과",
     "foundingDate": "2017",
@@ -269,7 +269,8 @@ export function layout(content: string, opts: LayoutOptions): string {
   <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
 
   <!-- hreflang (single language) -->
   <link rel="alternate" hreflang="ko" href="${fullUrl}">

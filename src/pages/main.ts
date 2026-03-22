@@ -228,16 +228,16 @@ export function mainPage(): string {
 
   // Clinic photos (실사 사진)
   const clinicPhotos = [
-    { url: 'https://www.genspark.ai/api/files/s/p9YyzTaw', alt: '강남치과의원 대기실 전경 - 프리미엄 소파와 와이드 디스플레이', label: '대기실', desc: '프리미엄 라운지형 대기 공간' },
-    { url: 'https://www.genspark.ai/api/files/s/KLnijX5L', alt: '강남치과의원 진료실 - 유리 파티션 개별 진료 공간', label: '진료실', desc: '유리 파티션 개별 진료 공간' },
-    { url: 'https://www.genspark.ai/api/files/s/sOkojKif', alt: '강남치과의원 상담실 - 전문의 인증서와 상담 공간', label: '상담실', desc: '전문의 자격증 · 1:1 상담' },
-    { url: 'https://www.genspark.ai/api/files/s/XLqoXGPt', alt: '강남치과의원 X-RAY실과 진료 복도', label: 'X-RAY · 복도', desc: 'X-RAY실 · 디지털 진료 시스템' },
-    { url: 'https://www.genspark.ai/api/files/s/xfkmnFB6', alt: '강남치과의원 진료 장비 클로즈업 - 최신 치과 유닛', label: '진료 장비', desc: '최신 치과 유닛 체어 시스템' },
-    { url: 'https://www.genspark.ai/api/files/s/ZaCoVLBk', alt: '강남치과의원 휴게실 - 그랜드 피아노와 서재', label: '휴게실', desc: '그랜드 피아노 · 서재 공간' },
-    { url: 'https://www.genspark.ai/api/files/s/4fco8xUr', alt: '강남치과의원 대기실 - 무인 키오스크와 소파', label: '접수 · 대기', desc: '무인 키오스크 · 넓은 대기 공간' },
-    { url: 'https://www.genspark.ai/api/files/s/cihnca5u', alt: '강남치과의원 메이크업실', label: '메이크업실', desc: '진료 후 편의 시설' },
-    { url: 'https://www.genspark.ai/api/files/s/3gQUD6CP', alt: '강남치과의원 접수대와 복도 - 강남치과 로고', label: '접수대', desc: '깔끔한 접수대 · 로고 사이니지' },
-    { url: 'https://www.genspark.ai/api/files/s/qBEkv4ph', alt: '강남치과의원 수술실 복도 - 밝고 청결한 환경', label: '수술실 복도', desc: '감염관리 · 청결한 동선' },
+    { url: '/static/photos/p9YyzTaw.jpg', alt: '강남치과의원 대기실 전경 - 프리미엄 소파와 와이드 디스플레이', label: '대기실', desc: '프리미엄 라운지형 대기 공간' },
+    { url: '/static/photos/KLnijX5L.jpg', alt: '강남치과의원 진료실 - 유리 파티션 개별 진료 공간', label: '진료실', desc: '유리 파티션 개별 진료 공간' },
+    { url: '/static/photos/sOkojKif.jpg', alt: '강남치과의원 상담실 - 전문의 인증서와 상담 공간', label: '상담실', desc: '전문의 자격증 · 1:1 상담' },
+    { url: '/static/photos/XLqoXGPt.jpg', alt: '강남치과의원 X-RAY실과 진료 복도', label: 'X-RAY · 복도', desc: 'X-RAY실 · 디지털 진료 시스템' },
+    { url: '/static/photos/xfkmnFB6.jpg', alt: '강남치과의원 진료 장비 클로즈업 - 최신 치과 유닛', label: '진료 장비', desc: '최신 치과 유닛 체어 시스템' },
+    { url: '/static/photos/ZaCoVLBk.jpg', alt: '강남치과의원 휴게실 - 그랜드 피아노와 서재', label: '휴게실', desc: '그랜드 피아노 · 서재 공간' },
+    { url: '/static/photos/4fco8xUr.jpg', alt: '강남치과의원 대기실 - 무인 키오스크와 소파', label: '접수 · 대기', desc: '무인 키오스크 · 넓은 대기 공간' },
+    { url: '/static/photos/cihnca5u.jpg', alt: '강남치과의원 메이크업실', label: '메이크업실', desc: '진료 후 편의 시설' },
+    { url: '/static/photos/3gQUD6CP.jpg', alt: '강남치과의원 접수대와 복도 - 강남치과 로고', label: '접수대', desc: '깔끔한 접수대 · 로고 사이니지' },
+    { url: '/static/photos/qBEkv4ph.jpg', alt: '강남치과의원 수술실 복도 - 밝고 청결한 환경', label: '수술실 복도', desc: '감염관리 · 청결한 동선' },
   ];
   const clinicPhotosHtml = clinicPhotos.map(p => `
     <div class="flex-shrink-0 w-[340px] md:w-[420px] snap-start group cursor-pointer" onclick="openPhotoModal('${p.url}','${p.alt}')">
@@ -502,7 +502,7 @@ export function mainPage(): string {
           <div class="relative">
             <!-- 실사 사진 배경 (진료실) -->
             <div class="absolute -inset-8 rounded-[40px] overflow-hidden opacity-15 blur-[2px]">
-              <img src="https://www.genspark.ai/api/files/s/Wpp3wlfj" alt="강남치과의원 진료실" class="w-full h-full object-cover">
+              <img src="/static/photos/Wpp3wlfj.jpg" alt="강남치과의원 진료실" class="w-full h-full object-cover">
             </div>
             <!-- Sketchfab 3D Implant Viewer (bigger size) -->
             <div class="relative w-[540px] h-[640px]">
@@ -619,7 +619,7 @@ export function mainPage(): string {
         </div>
         <div class="lg:col-span-5 card-premium p-10 md:p-12 flex flex-col justify-between min-h-[480px] stagger-item group relative overflow-hidden">
           <div class="absolute inset-0 opacity-[0.06]">
-            <img src="https://www.genspark.ai/api/files/s/xfkmnFB6" alt="강남치과의원 진료 장비" class="w-full h-full object-cover">
+            <img src="/static/photos/xfkmnFB6.jpg" alt="강남치과의원 진료 장비" class="w-full h-full object-cover">
           </div>
           <div class="relative z-10">
             <div class="flex items-center justify-between mb-8">
@@ -848,7 +848,7 @@ export function mainPage(): string {
           <p class="text-gray-400 leading-relaxed mb-8">첫 방문부터 치료 완료까지,<br>모든 과정을 미리 알려드립니다.<br>불안함 없이 편하게 오세요.</p>
           <a href="/reservation" class="btn-primary !text-sm !py-4 !px-8"><i class="fas fa-calendar-check text-xs"></i>첫 방문 예약하기</a>
           <div class="mt-8 rounded-2xl overflow-hidden hidden lg:block shadow-lg shadow-royal/5">
-            <img src="https://www.genspark.ai/api/files/s/yzSmZXZD" alt="강남치과의원 상담실 - 전문의 상담 공간" class="w-full h-48 object-cover" loading="lazy">
+            <img src="/static/photos/yzSmZXZD.jpg" alt="강남치과의원 상담실 - 전문의 상담 공간" class="w-full h-48 object-cover" loading="lazy">
           </div>
         </div>
         <div class="lg:col-span-8">
