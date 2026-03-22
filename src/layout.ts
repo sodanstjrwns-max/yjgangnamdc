@@ -132,14 +132,31 @@ function buildBreadcrumb(url: string, pageTitle: string) {
   const pathMap: Record<string, string> = {
     'doctors': '의료진',
     'treatments': '진료안내',
-    'pricing': '비용안내',
+    'pricing': '수가안내',
     'directions': '오시는길',
     'reservation': '상담예약',
     'area': '지역안내',
     'blog': '블로그',
     'before-after': '치료전후',
     'notices': '공지사항',
-    'admin': '관리자'
+    'admin': '관리자',
+    'implant': '임플란트',
+    'cerec': '당일보철 CEREC',
+    'invisalign': '인비절라인',
+    'cosmetic': '심미보철',
+    'wisdom-tooth': '사랑니 발치',
+    'cavity': '충치치료',
+    'root-canal': '신경치료',
+    'crown': '크라운',
+    'resin': '레진',
+    'whitening': '미백',
+    'scaling': '스케일링',
+    'gum': '잇몸치료',
+    'tmj': '턱관절',
+    'bone-graft': '뼈이식 임플란트',
+    'sinus-lift': '상악동 임플란트',
+    'denture': '틀니',
+    'prevention': '예방치료'
   }
   let currentPath = ''
   for (let i = 0; i < segments.length; i++) {
@@ -277,6 +294,8 @@ export function layout(content: string, opts: LayoutOptions): string {
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+  <link rel="preload" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" as="style">
   <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
   
   <!-- Tailwind CSS -->
@@ -327,7 +346,7 @@ export function layout(content: string, opts: LayoutOptions): string {
     body { color: #1C1C1E; background: #FFFFFF; overflow-x: hidden; }
 
     /* ===== Premium Typography ===== */
-    .display-hero { font-size: clamp(3rem, 8vw, 7rem); line-height: 1.02; letter-spacing: -0.04em; font-weight: 900; }
+    .display-hero { font-size: clamp(2rem, 4.2vw, 3.6rem); line-height: 1.12; letter-spacing: -0.04em; font-weight: 900; }
     .display-xl { font-size: clamp(2.5rem, 6vw, 5rem); line-height: 1.06; letter-spacing: -0.035em; font-weight: 800; }
     .display-lg { font-size: clamp(2rem, 4.5vw, 3.5rem); line-height: 1.1; letter-spacing: -0.025em; font-weight: 700; }
     .display-md { font-size: clamp(1.5rem, 3vw, 2.25rem); line-height: 1.2; letter-spacing: -0.02em; font-weight: 700; }
@@ -728,6 +747,23 @@ export function layout(content: string, opts: LayoutOptions): string {
             블로그
             <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-royal rounded-full group-hover:w-6 transition-all duration-300"></span>
           </a>
+          <div class="relative group/visit">
+            <button class="px-5 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative font-medium flex items-center gap-1">
+              내원안내
+              <i class="fas fa-chevron-down text-[8px] ml-0.5 transition-transform group-hover/visit:rotate-180"></i>
+              <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-royal rounded-full group-hover/visit:w-6 transition-all duration-300"></span>
+            </button>
+            <div class="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 invisible group-hover/visit:opacity-100 group-hover/visit:visible transition-all duration-300">
+              <div class="bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden w-44 py-1">
+                <a href="/directions" class="flex items-center gap-3 px-5 py-3 text-sm text-gray-600 hover:bg-royal/5 hover:text-royal transition-all">
+                  <i class="fas fa-map-marker-alt text-xs text-gray-300"></i>오시는 길
+                </a>
+                <a href="/pricing" class="flex items-center gap-3 px-5 py-3 text-sm text-gray-600 hover:bg-royal/5 hover:text-royal transition-all">
+                  <i class="fas fa-won-sign text-xs text-gray-300"></i>수가 안내
+                </a>
+              </div>
+            </div>
+          </div>
           <div class="w-px h-5 bg-gray-200 mx-3"></div>
           <a href="/reservation" class="btn-primary !py-2.5 !px-7 !text-[12px] !gap-2 !font-bold">
             <i class="fas fa-calendar-check text-[10px]"></i>상담예약
@@ -779,8 +815,17 @@ export function layout(content: string, opts: LayoutOptions): string {
           <a href="/treatments/invisalign" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">인비절라인</a>
           <a href="/before-after" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">치료 전후</a>
           <a href="/blog" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">블로그</a>
-          <a href="/pricing" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">비용 안내</a>
-          <a href="/directions" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">오시는 길</a>
+          <div class="border-b border-gray-100">
+            <div class="py-4 text-2xl font-bold text-gray-400">내원 안내</div>
+            <div class="pl-4 pb-3 space-y-1">
+              <a href="/directions" class="flex items-center gap-3 py-2.5 text-lg font-medium text-charcoal hover:text-royal transition-colors">
+                <i class="fas fa-map-marker-alt text-sm text-royal/50 w-5 text-center"></i>오시는 길
+              </a>
+              <a href="/pricing" class="flex items-center gap-3 py-2.5 text-lg font-medium text-charcoal hover:text-royal transition-colors">
+                <i class="fas fa-won-sign text-sm text-royal/50 w-5 text-center"></i>수가 안내
+              </a>
+            </div>
+          </div>
         </nav>
         <a href="/reservation" class="btn-primary justify-center w-full !text-base !py-5 !mt-4">
           <i class="fas fa-calendar-check" aria-hidden="true"></i>상담 예약하기

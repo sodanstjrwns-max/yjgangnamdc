@@ -94,16 +94,40 @@ async function getSessionUser(c: any): Promise<any | null> {
 // ===== SEO: robots.txt =====
 app.get('/robots.txt', (c) => {
   c.header('Content-Type', 'text/plain')
-  return c.body(`User-agent: *
+  c.header('Cache-Control', 'public, max-age=86400')
+  return c.body(`# 강남치과의원 robots.txt
+# Updated: 2026-03-22
+
+User-agent: *
 Allow: /
 Disallow: /api/
 Disallow: /admin/
+Disallow: /login
+Disallow: /register
 
-# Sitemap
+User-agent: Googlebot
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /login
+Disallow: /register
+
+User-agent: Yeti
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /login
+Disallow: /register
+
+User-agent: Bingbot
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /login
+Disallow: /register
+
+# Sitemaps
 Sitemap: https://gndentalclinic.com/sitemap.xml
-
-# Crawl-delay
-Crawl-delay: 1
 `)
 })
 
@@ -133,7 +157,8 @@ app.get('/sitemap.xml', async (c) => {
     { url: '/treatments/tmj', priority: '0.5', changefreq: 'monthly' },
     { url: '/treatments/denture', priority: '0.5', changefreq: 'monthly' },
     { url: '/treatments/bone-graft', priority: '0.6', changefreq: 'monthly' },
-    { url: '/treatments/pediatric', priority: '0.5', changefreq: 'monthly' },
+    { url: '/treatments/sinus-lift', priority: '0.6', changefreq: 'monthly' },
+    { url: '/treatments/prevention', priority: '0.5', changefreq: 'monthly' },
     { url: '/blog', priority: '0.8', changefreq: 'weekly' },
     { url: '/before-after', priority: '0.8', changefreq: 'weekly' },
     { url: '/notices', priority: '0.7', changefreq: 'weekly' },
@@ -253,7 +278,25 @@ app.get('/treatments', (c) => c.html(layout(treatmentsPage(), {
   title: '강남치과의원 진료안내 | 임플란트·당일보철·인비절라인·심미보철·사랑니',
   description: '강남치과의원 전체 진료 안내. 임플란트, CEREC 당일보철, 인비절라인 투명교정, 심미보철, 사랑니 발치, 충치치료, 신경치료 등. 각 분야 전문의가 직접 진료합니다.',
   url: '/treatments',
-  keywords: '영주 임플란트, 영주 당일보철, 영주 인비절라인, 영주 심미보철, 영주 사랑니'
+  keywords: '영주 임플란트, 영주 당일보철, 영주 인비절라인, 영주 심미보철, 영주 사랑니',
+  speakableSelectors: ['[data-speakable]', 'h1', 'h2'],
+  schemas: [{
+    "@context": "https://schema.org",
+    "@type": "MedicalWebPage",
+    "name": "강남치과의원 진료안내",
+    "about": { "@type": "MedicalBusiness", "name": "강남치과의원" },
+    "url": "https://gndentalclinic.com/treatments",
+    "mainContentOfPage": {
+      "@type": "WebPageElement",
+      "cssSelector": "#main-content"
+    },
+    "specialty": [
+      "Oral and Maxillofacial Surgery",
+      "Implantology",
+      "Prosthodontics",
+      "Orthodontics"
+    ]
+  }]
 })))
 
 app.get('/treatments/:slug', (c) => {
@@ -266,7 +309,8 @@ app.get('/treatments/:slug', (c) => {
     url: `/treatments/${slug}`,
     keywords: `영주 ${result.title.split(' – ')[0]}, ${result.title.split(' – ')[0]} 잘하는곳, 경북 ${result.title.split(' – ')[0]}`,
     ogType: 'article',
-    schemas: result.schemas || []
+    schemas: result.schemas || [],
+    speakableSelectors: ['[data-speakable]', 'h1', 'h2', '.treatment-section']
   }))
 })
 
@@ -289,6 +333,7 @@ app.get('/blog', async (c) => {
     description: '구강악안면외과 전문의가 직접 전하는 치과 건강정보. 임플란트, CEREC 당일보철, 인비절라인, 사랑니 발치 등 치과 치료에 대한 정확한 정보를 제공합니다.',
     url: '/blog',
     keywords: '영주 치과 블로그, 임플란트 정보, CEREC 당일보철, 인비절라인 후기, 사랑니 발치 정보, 치과 건강정보',
+    speakableSelectors: ['[data-speakable]', 'h1', 'h2'],
     schemas: [{
       "@context": "https://schema.org",
       "@type": "Blog",
@@ -516,7 +561,19 @@ app.get('/reservation', (c) => c.html(layout(reservationPage(), {
   title: '강남치과의원 상담 예약 | 상담 안내 · 054-636-8222',
   description: '강남치과의원 상담 예약. 전화 054-636-8222 또는 온라인으로 간편하게 예약하세요. 구강외과 전문의가 직접 상담드립니다.',
   url: '/reservation',
-  keywords: '영주 치과 예약, 강남치과 상담, 영주 임플란트 상담'
+  keywords: '영주 치과 예약, 강남치과 상담, 영주 임플란트 상담',
+  speakableSelectors: ['[data-speakable]', 'h1'],
+  schemas: [{
+    "@context": "https://schema.org",
+    "@type": "ReserveAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": "https://gndentalclinic.com/reservation",
+      "actionPlatform": ["http://schema.org/DesktopWebPlatform", "http://schema.org/MobileWebPlatform"]
+    },
+    "result": { "@type": "Reservation", "name": "상담 예약" },
+    "provider": { "@id": "https://gndentalclinic.com/#organization" }
+  }]
 })))
 
 // ===== 오시는 길 =====
@@ -524,7 +581,37 @@ app.get('/directions', (c) => c.html(layout(directionsPage(), {
   title: '강남치과의원 오시는 길 | 영주시 대학로 217 · 주차 가능 · 영주역 10분',
   description: '경북 영주시 대학로 217, 2층 (택지 사거리 모모제인 건물). 건물 후면 지상·지하 주차장 완비. 영주역에서 택시 10분. 풍기, 봉화, 예천, 안동, 단양에서 접근 용이. 054-636-8222.',
   url: '/directions',
-  keywords: '영주 강남치과 위치, 강남치과 주소, 영주 치과 주차, 영주 대학로 치과, 영주 치과 오시는길'
+  keywords: '영주 강남치과 위치, 강남치과 주소, 영주 치과 주차, 영주 대학로 치과, 영주 치과 오시는길',
+  speakableSelectors: ['[data-speakable]', 'h1', '.card-premium'],
+  schemas: [
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "강남치과의원",
+      "image": "https://gndentalclinic.com/static/photos/3gQUD6CP.jpg",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "대학로 217, 2층",
+        "addressLocality": "영주시",
+        "addressRegion": "경상북도",
+        "postalCode": "36052",
+        "addressCountry": "KR"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 36.8057,
+        "longitude": 128.7410
+      },
+      "url": "https://gndentalclinic.com/directions",
+      "telephone": "+82-54-636-8222",
+      "openingHoursSpecification": [
+        { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"], "opens": "09:00", "closes": "17:30" }
+      ],
+      "hasMap": "https://map.naver.com/p/entry/place/1099573867",
+      "parking": "건물 후면 지상·지하 주차장 완비",
+      "publicAccess": true
+    }
+  ]
 })))
 
 // ===== 비용 안내 =====
@@ -532,7 +619,38 @@ app.get('/pricing', (c) => c.html(layout(pricingPage(), {
   title: '강남치과의원 진료비용 안내 | 임플란트·보철·교정 가격',
   description: '강남치과의원 임플란트, 인비절라인, CEREC 당일보철, 심미보철 등 진료비용을 안내합니다. 상담 후 정확한 견적을 받아보세요. 054-636-8222.',
   url: '/pricing',
-  keywords: '영주 임플란트 가격, 영주 치과 비용, 영주 인비절라인 가격, 영주 당일보철 비용'
+  keywords: '영주 임플란트 가격, 영주 치과 비용, 영주 인비절라인 가격, 영주 당일보철 비용',
+  speakableSelectors: ['[data-speakable]', 'h1', 'h2'],
+  schemas: [
+    {
+      "@context": "https://schema.org",
+      "@type": "OfferCatalog",
+      "name": "강남치과의원 진료비용 안내",
+      "description": "영주시 강남치과의원 진료 항목별 비용 안내",
+      "url": "https://gndentalclinic.com/pricing",
+      "provider": { "@id": "https://gndentalclinic.com/#organization" },
+      "itemListElement": [
+        { "@type": "OfferCatalog", "name": "임플란트", "itemListElement": [
+          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "임플란트 (1개)" }, "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "상담 후 안내" } },
+          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "뼈이식 (단순)" }, "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "상담 후 안내" } },
+          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "상악동 거상술" }, "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "상담 후 안내" } }
+        ]},
+        { "@type": "OfferCatalog", "name": "교정", "itemListElement": [
+          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "인비절라인 (풀)" }, "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "상담 후 안내" } },
+          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "인비절라인 (부분)" }, "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "상담 후 안내" } }
+        ]},
+        { "@type": "OfferCatalog", "name": "보철 / 심미", "itemListElement": [
+          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "CEREC 크라운 (당일)" }, "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "상담 후 안내" } },
+          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "지르코니아 크라운" }, "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "상담 후 안내" } }
+        ]},
+        { "@type": "OfferCatalog", "name": "일반 / 외과", "itemListElement": [
+          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "스케일링" }, "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "건강보험 적용" } },
+          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "사랑니 발치" }, "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "건강보험 적용" } },
+          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "신경치료" }, "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "건강보험 적용" } }
+        ]}
+      ]
+    }
+  ]
 })))
 
 // ===== 지역 SEO =====
@@ -690,6 +808,7 @@ app.get('/notices', async (c) => {
     description: '강남치과의원 공지사항. 진료 안내, 휴진 안내, 장비 도입 소식, 이벤트 등 병원의 새로운 소식을 확인하세요.',
     url: '/notices',
     keywords: '영주 강남치과 공지, 강남치과의원 안내, 영주 치과 공지사항, 휴진 안내',
+    speakableSelectors: ['[data-speakable]', 'h1'],
     schemas: [{
       "@context": "https://schema.org",
       "@type": "CollectionPage",
