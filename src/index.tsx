@@ -1,5 +1,6 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
+import { secureHeaders } from 'hono/secure-headers'
 import { createMiddleware } from 'hono/factory'
 import { mainPage, mainPageSchemas } from './pages/main'
 import { doctorsPage, doctorProfilePage } from './pages/doctors'
@@ -19,6 +20,21 @@ type Bindings = {
 }
 
 const app = new Hono<{ Bindings: Bindings }>()
+
+// ===== 보안 헤더 (전역) =====
+app.use('*', secureHeaders({
+  xFrameOptions: 'SAMEORIGIN',
+  xContentTypeOptions: 'nosniff',
+  xXssProtection: '1; mode=block',
+  referrerPolicy: 'strict-origin-when-cross-origin',
+  strictTransportSecurity: 'max-age=31536000; includeSubDomains; preload',
+  permissionsPolicy: {
+    camera: [],
+    microphone: [],
+    geolocation: ['self'],
+    payment: ['self'],
+  },
+}))
 
 app.use('/api/*', cors())
 
@@ -630,5 +646,25 @@ app.get('/api/admin/notices/:slug', adminAuth, async (c) => {
 
 // ===== API: Health =====
 app.get('/api/health', (c) => c.json({ status: 'ok', clinic: '강남치과의원' }))
+
+// ===== 404 커스텀 =====
+app.notFound((c) => {
+  return c.html(layout(
+    `<section class="min-h-[60vh] flex items-center justify-center">
+      <div class="text-center">
+        <p class="text-8xl font-black text-royal/20 mb-4">404</p>
+        <h1 class="text-2xl font-bold text-charcoal mb-2">페이지를 찾을 수 없습니다</h1>
+        <p class="text-gray-400 mb-8">요청하신 페이지가 존재하지 않거나 이동되었습니다.</p>
+        <a href="/" class="btn-primary"><i class="fas fa-home"></i>홈으로 돌아가기</a>
+      </div>
+    </section>`,
+    {
+      title: '404 - 페이지를 찾을 수 없습니다 | 강남치과의원',
+      description: '요청하신 페이지를 찾을 수 없습니다.',
+      url: '/404',
+      robots: 'noindex, nofollow'
+    }
+  ), 404)
+})
 
 export default app

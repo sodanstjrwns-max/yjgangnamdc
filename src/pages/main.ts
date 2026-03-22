@@ -289,7 +289,7 @@ export function mainPage(): string {
           <div class="absolute inset-0 bg-gradient-to-t from-white via-white/30 to-transparent z-10"></div>
           <div class="absolute top-6 right-6 w-20 h-20 border border-royal/10 rounded-full z-20 group-hover:scale-150 group-hover:opacity-0 transition-all duration-700"></div>
           ${doc.photo ? `
-          <img src="${doc.photo}" alt="${doc.name} ${doc.title}" class="absolute inset-0 w-full h-full object-cover z-[5]" style="object-position: center 20%;" loading="lazy">
+          <img src="${doc.photo}" alt="${doc.name} ${doc.title}" class="absolute inset-0 w-full h-full object-cover z-[5] obj-top-20" loading="lazy">
           ` : `
           <div class="absolute inset-0 flex items-center justify-center z-[5]"><div class="w-32 h-32 rounded-3xl bg-white shadow-xl border border-royal/[0.08] flex items-center justify-center group-hover:scale-110 transition-transform duration-700"><span class="royal-grad-text text-5xl font-black">${doc.initial}</span></div></div>
           `}
@@ -376,7 +376,7 @@ export function mainPage(): string {
   <!-- ========== HERO — WHITE + ROYAL PURPLE ========== -->
   <section class="relative min-h-screen flex items-center overflow-hidden hero-white" id="hero" aria-label="강남치과의원 메인 히어로" itemscope itemtype="https://schema.org/WPHeader">
     <!-- CSS Particle Background (lightweight replacement for Three.js) -->
-    <div class="absolute inset-0" style="z-index:1;">
+    <div class="absolute inset-0 z-[1]">
       <div class="css-particles">
         ${Array.from({length: 30}, (_, i) => {
           const x = Math.random() * 100;
@@ -391,14 +391,14 @@ export function mainPage(): string {
     </div>
 
     <!-- Subtle patterns -->
-    <div class="absolute inset-0 grid-pattern opacity-60" style="z-index:2;"></div>
+    <div class="absolute inset-0 grid-pattern opacity-60 z-[2]"></div>
     
     <!-- Decorative orbs -->
-    <div class="absolute -top-32 -right-32 w-[600px] h-[600px] bg-royal/[0.04] rounded-full blur-[150px]" style="z-index:2;"></div>
-    <div class="absolute -bottom-32 -left-32 w-[500px] h-[500px] bg-royal-100/[0.15] rounded-full blur-[150px]" style="z-index:2;"></div>
+    <div class="absolute -top-32 -right-32 w-[600px] h-[600px] bg-royal/[0.04] rounded-full blur-[150px] z-[2]"></div>
+    <div class="absolute -bottom-32 -left-32 w-[500px] h-[500px] bg-royal-100/[0.15] rounded-full blur-[150px] z-[2]"></div>
 
     <!-- Content -->
-    <div class="relative max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 w-full py-36 md:py-0" style="z-index:10;">
+    <div class="relative max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 w-full py-36 md:py-0 z-overlay-10">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center min-h-screen">
 
         <!-- Left: Copy (7 cols) -->
@@ -439,8 +439,8 @@ export function mainPage(): string {
 
           <div class="flex flex-wrap gap-3" id="heroStats">
             <div class="flex items-center gap-3 px-5 py-3 rounded-2xl border border-royal/10 bg-white/80 shadow-sm">
-              <div class="w-10 h-10 rounded-xl royal-grad flex items-center justify-center" style="animation: pulse-royal 3s ease infinite;">
-                <i class="fas fa-user-doctor text-white text-sm"></i>
+              <div class="w-10 h-10 rounded-xl royal-grad flex items-center justify-center pulse-royal-anim">
+                <i class="fas fa-user-doctor text-white text-sm" aria-hidden="true"></i>
               </div>
               <div>
                 <div class="text-charcoal font-extrabold text-base leading-none">전문의 <span class="counter royal-grad-text text-lg" data-target="2">0</span>인</div>
@@ -448,8 +448,8 @@ export function mainPage(): string {
               </div>
             </div>
             <div class="flex items-center gap-3 px-5 py-3 rounded-2xl border border-royal/10 bg-white/80 shadow-sm">
-              <div class="w-10 h-10 rounded-xl royal-grad flex items-center justify-center" style="animation: pulse-royal 3s ease infinite; animation-delay: 1s;">
-                <i class="fas fa-bolt text-white text-sm"></i>
+              <div class="w-10 h-10 rounded-xl royal-grad flex items-center justify-center pulse-royal-d1">
+                <i class="fas fa-bolt text-white text-sm" aria-hidden="true"></i>
               </div>
               <div>
                 <div class="text-charcoal font-extrabold text-base leading-none">당일 완성</div>
@@ -457,8 +457,8 @@ export function mainPage(): string {
               </div>
             </div>
             <div class="hidden md:flex items-center gap-3 px-5 py-3 rounded-2xl border border-royal/10 bg-white/80 shadow-sm">
-              <div class="w-10 h-10 rounded-xl royal-grad flex items-center justify-center" style="animation: pulse-royal 3s ease infinite; animation-delay: 2s;">
-                <i class="fas fa-microchip text-white text-sm"></i>
+              <div class="w-10 h-10 rounded-xl royal-grad flex items-center justify-center pulse-royal-d2">
+                <i class="fas fa-microchip text-white text-sm" aria-hidden="true"></i>
               </div>
               <div>
                 <div class="text-charcoal font-extrabold text-base leading-none">디지털 <span class="counter royal-grad-text text-lg" data-target="5" data-suffix="+">0</span></div>
@@ -472,7 +472,7 @@ export function mainPage(): string {
         <div class="lg:col-span-5 hidden lg:flex items-center justify-center" id="heroVisual">
           <div class="relative">
             <!-- Sketchfab 3D Implant Viewer (bigger size) -->
-            <div class="relative" style="width:540px; height:640px;">
+            <div class="relative w-[540px] h-[640px]">
               <iframe 
                 id="iframeImplant"
                 title="3D Dental Implant" 
@@ -486,13 +486,13 @@ export function mainPage(): string {
                 loading="lazy"
               ></iframe>
               <!-- Overlay to hide Sketchfab branding — top/bottom/corners -->
-              <div class="absolute top-0 left-0 right-0 h-24 rounded-t-3xl pointer-events-none" style="z-index:5; background: linear-gradient(to bottom, white 0%, white 40%, rgba(255,255,255,0.85) 60%, rgba(255,255,255,0) 100%);"></div>
-              <div class="absolute top-0 left-0 w-48 h-20 rounded-tl-3xl pointer-events-none" style="z-index:6; background: linear-gradient(135deg, white 0%, white 50%, rgba(255,255,255,0) 100%);"></div>
-              <div class="absolute bottom-0 left-0 right-0 h-16 rounded-b-3xl pointer-events-none" style="z-index:5; background: linear-gradient(to top, white 0%, white 30%, rgba(255,255,255,0.85) 55%, rgba(255,255,255,0) 100%);"></div>
+              <div class="absolute top-0 left-0 right-0 h-24 rounded-t-3xl pointer-events-none z-overlay-5 sf-overlay-top" aria-hidden="true"></div>
+              <div class="absolute top-0 left-0 w-48 h-20 rounded-tl-3xl pointer-events-none z-overlay-6 sf-overlay-corner" aria-hidden="true"></div>
+              <div class="absolute bottom-0 left-0 right-0 h-16 rounded-b-3xl pointer-events-none z-overlay-5 sf-overlay-bottom" aria-hidden="true"></div>
             </div>
             
             <!-- Glow behind -->
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[440px] h-[440px] rounded-full pointer-events-none" style="background: radial-gradient(circle, rgba(59,130,246,0.08) 0%, rgba(59,130,246,0.02) 50%, transparent 70%); animation: implantPulse 4s ease-in-out infinite; z-index:-1;"></div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[440px] h-[440px] rounded-full pointer-events-none implant-glow z-behind" aria-hidden="true"></div>
 
             <!-- Floating labels - Implant -->
             <div class="float-label top-[5%] -left-8">
@@ -517,7 +517,7 @@ export function mainPage(): string {
             </div>
 
             <!-- Drag hint -->
-            <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-2 text-gray-300 text-[10px] tracking-wider font-medium pointer-events-none" style="animation: fadeInOut 3s ease-in-out infinite; z-index:20;">
+            <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-2 text-gray-300 text-[10px] tracking-wider font-medium pointer-events-none z-overlay-20" style="animation: fadeInOut 3s ease-in-out infinite;" aria-hidden="true">
               <i class="fas fa-hand-pointer text-royal/40"></i>
               <span>드래그하여 360° 회전</span>
             </div>
@@ -526,7 +526,7 @@ export function mainPage(): string {
       </div>
     </div>
 
-    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3" style="z-index:10;">
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-overlay-10" aria-hidden="true">
       <span class="text-[9px] tracking-[0.3em] text-gray-300 uppercase font-semibold">Scroll Down</span>
       <div class="w-[22px] h-[36px] rounded-full border border-gray-300 flex items-start justify-center p-1.5">
         <div class="w-[3px] h-[8px] rounded-full bg-royal animate-bounce"></div>
@@ -576,7 +576,7 @@ export function mainPage(): string {
           <div class="relative z-10 mt-10 flex items-center gap-6 pt-8 border-t border-gray-100">
             <div class="flex -space-x-3">
               <div class="w-14 h-14 rounded-2xl overflow-hidden border-2 border-white shadow-lg">
-                <img src="/static/doctors/lee-taehyung.jpg" alt="이태형 대표원장" class="w-full h-full object-cover" style="object-position: center 20%;">
+                <img src="/static/doctors/lee-taehyung.jpg" alt="이태형 대표원장 - 구강악안면외과 전문의" class="w-full h-full object-cover obj-top-20">
               </div>
               <div class="w-14 h-14 rounded-2xl bg-royal-100 flex items-center justify-center text-royal text-lg font-bold border-2 border-white shadow-lg">최</div>
             </div>
@@ -758,7 +758,7 @@ export function mainPage(): string {
         <h2 class="display-xl text-charcoal mb-6">대학병원급<br><span class="royal-grad-text">디지털 장비</span></h2>
         <p class="text-gray-400 text-lg">정확한 진단과 빠른 치료를 위한 최첨단 장비를 갖추고 있습니다</p>
       </div>
-      <div class="flex gap-5 overflow-x-auto snap-x pb-6 -mx-6 px-6 scrollbar-hide stagger-children" style="scrollbar-width:none; -ms-overflow-style:none;">
+      <div class="flex gap-5 overflow-x-auto snap-x pb-6 -mx-6 px-6 scrollbar-none stagger-children">
         ${equipGalleryHtml}
       </div>
       <div class="text-center mt-4"><span class="text-gray-300 text-xs"><i class="fas fa-arrows-left-right mr-1"></i>좌우로 스크롤하세요</span></div>

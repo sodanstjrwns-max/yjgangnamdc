@@ -24,7 +24,7 @@ const SITE_NAME = '강남치과의원'
 const SITE_NAME_EN = 'Gangnam Dental Clinic'
 const PHONE = '+82-54-636-8222'
 const PHONE_DISPLAY = '054-636-8222'
-const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.png`
+const DEFAULT_OG_IMAGE = `${SITE_URL}/static/og-image.png`
 const NAVER_MAP_URL = 'https://map.naver.com/p/entry/place/1099573867'
 const BLOG_URL = 'https://blog.naver.com/gndentalclinic'
 
@@ -583,15 +583,100 @@ export function layout(content: string, opts: LayoutOptions): string {
     /* ===== Section backgrounds ===== */
     .section-lavender { background: linear-gradient(180deg, #F3FBFB, #E2F5F5); }
     .section-snow { background: linear-gradient(180deg, #FAFBFC, #F5F6F8); }
+    /* ===== Skip Navigation (접근성) ===== */
+    .skip-nav {
+      position: absolute; top: -100%; left: 50%; transform: translateX(-50%);
+      padding: 12px 24px; background: var(--royal); color: #fff;
+      border-radius: 0 0 12px 12px; font-weight: 700; font-size: 14px;
+      z-index: 99999; transition: top 0.3s;
+      text-decoration: none;
+    }
+    .skip-nav:focus { top: 0; }
+
+    /* ===== Layout z-index system ===== */
+    .z-topbar { z-index: 9970; pointer-events: auto; }
+    .z-navbar { z-index: 9990; pointer-events: none; }
+    .z-navbar-inner { pointer-events: auto; position: relative; }
+    .z-mobile-menu { z-index: 9980; }
+    .z-overlay-5 { z-index: 5; }
+    .z-overlay-6 { z-index: 6; }
+    .z-overlay-10 { z-index: 10; }
+    .z-overlay-20 { z-index: 20; }
+    .z-behind { z-index: -1; }
+
+    /* ===== Mobile menu ===== */
+    .mobile-menu-overlay {
+      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      opacity: 0; transition: opacity 0.4s ease;
+    }
+    .mobile-menu-bg {
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(255,255,255,0.98);
+      backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+    }
+    .mobile-menu-content {
+      position: relative; z-index: 10; height: 100%;
+      display: flex; flex-direction: column;
+      padding: 96px 32px 32px 32px; overflow-y: auto;
+    }
+    .mobile-menu-links {
+      flex: 1; display: flex; flex-direction: column;
+      justify-content: center; gap: 4px;
+    }
+
+    /* ===== Nav inner default ===== */
+    .nav-glass {
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+    }
+
+    /* ===== Sketchfab overlays ===== */
+    .sf-overlay-top {
+      background: linear-gradient(to bottom, white 0%, white 40%, rgba(255,255,255,0.85) 60%, rgba(255,255,255,0) 100%);
+    }
+    .sf-overlay-corner {
+      background: linear-gradient(135deg, white 0%, white 50%, rgba(255,255,255,0) 100%);
+    }
+    .sf-overlay-bottom {
+      background: linear-gradient(to top, white 0%, white 30%, rgba(255,255,255,0.85) 55%, rgba(255,255,255,0) 100%);
+    }
+
+    /* ===== Hero implant glow ===== */
+    .implant-glow {
+      background: radial-gradient(circle, rgba(59,130,246,0.08) 0%, rgba(59,130,246,0.02) 50%, transparent 70%);
+      animation: implantPulse 4s ease-in-out infinite;
+    }
+
+    /* ===== Scroll snap hide scrollbar ===== */
+    .scrollbar-none { scrollbar-width: none; -ms-overflow-style: none; }
+    .scrollbar-none::-webkit-scrollbar { display: none; }
+
+    /* ===== Object position for doctor photos ===== */
+    .obj-top-20 { object-position: center 20%; }
+
+    /* ===== Hero stat pulse ===== */
+    .pulse-royal-anim { animation: pulse-royal 3s ease infinite; }
+    .pulse-royal-d1 { animation: pulse-royal 3s ease infinite; animation-delay: 1s; }
+    .pulse-royal-d2 { animation: pulse-royal 3s ease infinite; animation-delay: 2s; }
+
+    /* ===== Focus visible (accessibility) ===== */
+    :focus-visible {
+      outline: 3px solid var(--royal);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
   </style>
 </head>
 <body class="font-pretendard page-transition">
 
+  <!-- Skip Navigation (접근성) -->
+  <a href="#main-content" class="skip-nav">본문 바로가기</a>
+
   <!-- Cursor glow (desktop only) -->
-  <div class="cursor-glow hidden md:block" id="cursorGlow" style="opacity:0"></div>
+  <div class="cursor-glow hidden md:block" id="cursorGlow" aria-hidden="true" style="opacity:0"></div>
 
   <!-- ===== Top Bar ===== -->
-  <div class="hidden md:block fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-b border-black/[0.04]" style="z-index:9970; pointer-events: auto;">
+  <div class="hidden md:block fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-b border-black/[0.04] z-topbar" role="banner">
     <div class="max-w-[1440px] mx-auto px-8 lg:px-12 h-10 flex items-center justify-between">
       <div class="flex items-center gap-8 text-[11px] text-gray-400 tracking-wide">
         <span class="flex items-center gap-2"><span class="relative flex h-1.5 w-1.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-400"></span></span><span class="text-emerald-500 font-medium">진료중</span> 평일 09:00-17:30 (접수마감 17:00)</span>
@@ -605,9 +690,9 @@ export function layout(content: string, opts: LayoutOptions): string {
   </div>
 
   <!-- ===== Navigation ===== -->
-  <header class="fixed top-0 md:top-10 left-0 right-0 transition-all duration-700" id="navbar" style="z-index:9990; pointer-events:none;">
+  <header class="fixed top-0 md:top-10 left-0 right-0 transition-all duration-700 z-navbar" id="navbar" role="banner">
     <div class="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-12">
-      <nav class="h-16 md:h-[68px] flex items-center justify-between md:rounded-2xl md:px-8 px-4 transition-all duration-500" id="navInner" style="background: rgba(255,255,255,0.95); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); pointer-events:auto; position:relative;">
+      <nav class="h-16 md:h-[68px] flex items-center justify-between md:rounded-2xl md:px-8 px-4 transition-all duration-500 nav-glass z-navbar-inner" id="navInner" aria-label="메인 네비게이션">
         <!-- Logo -->
         <a href="/" class="flex items-center gap-3 group relative">
           <img src="/static/logo.png" alt="강남치과의원 로고" class="h-10 w-auto" width="40" height="40">
@@ -651,10 +736,10 @@ export function layout(content: string, opts: LayoutOptions): string {
 
         <!-- Mobile -->
         <div class="flex items-center gap-2 lg:hidden">
-          <a href="tel:054-636-8222" class="w-10 h-10 rounded-xl bg-royal/5 border border-royal/10 flex items-center justify-center text-royal text-sm">
-            <i class="fas fa-phone"></i>
+          <a href="tel:054-636-8222" class="w-10 h-10 rounded-xl bg-royal/5 border border-royal/10 flex items-center justify-center text-royal text-sm" aria-label="전화 상담 054-636-8222">
+            <i class="fas fa-phone" aria-hidden="true"></i>
           </a>
-          <button onclick="toggleMenu()" class="w-10 h-10 rounded-xl border border-gray-200 bg-white flex items-center justify-center" id="menuBtn">
+          <button onclick="toggleMenu()" class="w-10 h-10 rounded-xl border border-gray-200 bg-white flex items-center justify-center" id="menuBtn" aria-label="메뉴 열기" aria-expanded="false" aria-controls="mobileMenu">
             <div class="flex flex-col gap-[5px] w-[18px]" id="hamburger">
               <span class="block h-[1.5px] w-full bg-charcoal/70 rounded transition-all origin-center" id="bar1"></span>
               <span class="block h-[1.5px] w-full bg-charcoal/70 rounded transition-all" id="bar2"></span>
@@ -668,10 +753,10 @@ export function layout(content: string, opts: LayoutOptions): string {
   </header>
 
     <!-- Mobile Menu (OUTSIDE header to prevent stacking context issues) -->
-    <div id="mobileMenu" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; z-index:9980; opacity:0; transition: opacity 0.4s ease;">
-      <div style="position:absolute; top:0; left:0; right:0; bottom:0; background:rgba(255,255,255,0.98); backdrop-filter:blur(40px); -webkit-backdrop-filter:blur(40px);"></div>
-      <div style="position:relative; z-index:10; height:100%; display:flex; flex-direction:column; padding:96px 32px 32px 32px; overflow-y:auto;">
-        <div style="flex:1; display:flex; flex-direction:column; justify-content:center; gap:4px;">
+    <div id="mobileMenu" class="mobile-menu-overlay z-mobile-menu" role="dialog" aria-label="모바일 메뉴" aria-modal="true">
+      <div class="mobile-menu-bg"></div>
+      <div class="mobile-menu-content">
+        <nav class="mobile-menu-links" aria-label="모바일 네비게이션">
           <a href="/" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">홈</a>
           <a href="/doctors" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">의료진 소개</a>
           <a href="/treatments" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">진료 안내</a>
@@ -681,24 +766,24 @@ export function layout(content: string, opts: LayoutOptions): string {
           <a href="/blog" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">블로그</a>
           <a href="/pricing" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">비용 안내</a>
           <a href="/directions" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">오시는 길</a>
-        </div>
+        </nav>
         <a href="/reservation" class="btn-primary justify-center w-full !text-base !py-5 !mt-4">
-          <i class="fas fa-calendar-check"></i>상담 예약하기
+          <i class="fas fa-calendar-check" aria-hidden="true"></i>상담 예약하기
         </a>
         <div class="mt-4 flex items-center justify-center gap-6 text-sm text-gray-400">
-          <a href="tel:054-636-8222" class="hover:text-royal transition"><i class="fas fa-phone mr-1.5"></i>054-636-8222</a>
+          <a href="tel:054-636-8222" class="hover:text-royal transition" aria-label="전화 상담"><i class="fas fa-phone mr-1.5" aria-hidden="true"></i>054-636-8222</a>
           <span>평일 09:00-17:30 · 접수마감 17:00</span>
         </div>
       </div>
     </div>
 
   <!-- ===== Main Content ===== -->
-  <main>
+  <main id="main-content" role="main">
     ${content}
   </main>
 
   <!-- ===== Footer ===== -->
-  <footer class="bg-lavender text-charcoal relative overflow-hidden border-t border-royal/[0.06]">
+  <footer class="bg-lavender text-charcoal relative overflow-hidden border-t border-royal/[0.06]" role="contentinfo">
     <!-- Marquee -->
     <div class="border-b border-royal/[0.05] py-6 overflow-hidden">
       <div class="flex whitespace-nowrap marquee-track">
@@ -802,12 +887,12 @@ export function layout(content: string, opts: LayoutOptions): string {
   </footer>
 
   <!-- ===== Mobile Floating CTA ===== -->
-  <div class="floating-cta">
-    <a href="tel:054-636-8222" class="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl bg-gray-100 text-charcoal text-sm font-bold border border-gray-200">
-      <i class="fas fa-phone text-xs"></i>전화상담
+  <div class="floating-cta" role="navigation" aria-label="모바일 빠른 메뉴">
+    <a href="tel:054-636-8222" class="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl bg-gray-100 text-charcoal text-sm font-bold border border-gray-200" aria-label="전화 상담 054-636-8222">
+      <i class="fas fa-phone text-xs" aria-hidden="true"></i>전화상담
     </a>
-    <a href="/reservation" class="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl royal-grad text-white text-sm font-bold shadow-lg shadow-royal/20">
-      <i class="fas fa-calendar-check text-xs"></i>상담예약
+    <a href="/reservation" class="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl royal-grad text-white text-sm font-bold shadow-lg shadow-royal/20" aria-label="온라인 상담 예약">
+      <i class="fas fa-calendar-check text-xs" aria-hidden="true"></i>상담예약
     </a>
   </div>
 
@@ -902,6 +987,7 @@ export function layout(content: string, opts: LayoutOptions): string {
     function toggleMenu() {
       menuOpen = !menuOpen;
       const menu = document.getElementById('mobileMenu');
+      const btn = document.getElementById('menuBtn');
       const b1 = document.getElementById('bar1');
       const b2 = document.getElementById('bar2');
       const b3 = document.getElementById('bar3');
@@ -912,6 +998,8 @@ export function layout(content: string, opts: LayoutOptions): string {
         b2.style.opacity = '0';
         b3.style.transform = 'rotate(-45deg) translate(2px, -5px)';
         document.body.style.overflow = 'hidden';
+        btn.setAttribute('aria-expanded', 'true');
+        btn.setAttribute('aria-label', '메뉴 닫기');
       } else {
         menu.style.opacity = '0';
         setTimeout(() => { menu.style.display = 'none'; }, 400);
@@ -919,6 +1007,8 @@ export function layout(content: string, opts: LayoutOptions): string {
         b2.style.opacity = '1';
         b3.style.transform = '';
         document.body.style.overflow = '';
+        btn.setAttribute('aria-expanded', 'false');
+        btn.setAttribute('aria-label', '메뉴 열기');
       }
     }
 
@@ -926,35 +1016,6 @@ export function layout(content: string, opts: LayoutOptions): string {
     window.addEventListener('DOMContentLoaded', () => {
       initReveals();
       animateCounters();
-      
-      // DEBUG: Click diagnostic
-      document.addEventListener('click', function(e) {
-        const topEl = document.elementFromPoint(e.clientX, e.clientY);
-        console.log('[CLICK DEBUG]', {
-          clickedTag: e.target.tagName,
-          clickedId: e.target.id,
-          clickedClass: (e.target.className || '').substring(0, 60),
-          clickedHref: e.target.getAttribute?.('href'),
-          topElementTag: topEl?.tagName,
-          topElementId: topEl?.id,
-          topElementClass: (topEl?.className || '').substring(0, 60),
-          x: e.clientX,
-          y: e.clientY
-        });
-      }, true);
-      
-      // DEBUG: Check nav links clickability
-      const navLinks = document.querySelectorAll('#navInner a');
-      navLinks.forEach(link => {
-        const rect = link.getBoundingClientRect();
-        if (rect.width === 0) return;
-        const cx = rect.left + rect.width/2;
-        const cy = rect.top + rect.height/2;
-        const topEl = document.elementFromPoint(cx, cy);
-        const ok = topEl === link || link.contains(topEl);
-        console.log('[NAV DEBUG]', link.getAttribute('href'), 
-          ok ? 'CLICKABLE' : 'BLOCKED by ' + topEl?.tagName + '#' + topEl?.id + '.' + (topEl?.className||'').substring(0,40));
-      });
     });
   </script>
 </body>
