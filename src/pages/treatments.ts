@@ -242,41 +242,132 @@ export function treatmentDetailPage(slug: string): { html: string; title: string
   const t = treatments.find(tr => tr.slug === slug)
   if (!t) return null
 
-  // MedicalProcedure Schema for each treatment
-  const medicalProcedureSchema = {
+  const isSurgical = t.slug === 'implant' || t.slug === 'wisdom-tooth' || t.slug === 'bone-graft' || t.slug === 'sinus-lift'
+
+  // 진료별 상세 스키마 속성 매핑
+  const treatmentMeta: Record<string, {
+    bodyLocation?: string; risk?: string; contraindication?: string; expectedPrognosis?: string;
+    indication?: string; outcome?: string; followup?: string; preparation?: string;
+    relatedDrug?: string; howPerformed?: string; estimatedCost?: string;
+    recognizingAuthority?: string; relevantSpecialty?: string;
+  }> = {
+    'implant': {
+      bodyLocation: '턱뼈 (상악/하악)',
+      risk: '일시적 부기·출혈 (정상 치유 과정), 드문 경우 신경 손상 가능',
+      contraindication: '조절되지 않는 당뇨, 방사선 치료 이력, 심한 골다공증 (상대적 금기)',
+      expectedPrognosis: '10년 이상 장기 사용 가능. 정기 관리 시 반영구적. 성공률 95% 이상.',
+      indication: '치아 상실, 브릿지 대체, 틀니 고정, 뼈가 부족한 경우 (뼈이식 병행)',
+      preparation: '3D CT 촬영, PrimeScan 디지털 구강 스캔, 전문의 상담, 디지털 가이드 제작',
+      followup: '정기 경과 관찰 (1주·1개월·3개월·6개월), CEREC 당일 보철 장착 가능',
+      howPerformed: '구강악안면외과 전문의가 3D CT 기반 정밀 진단 후 디지털 수술 가이드를 이용하여 정확한 위치에 임플란트(티타늄 픽스쳐)를 식립합니다.',
+      relevantSpecialty: 'Oral and Maxillofacial Surgery, Implantology'
+    },
+    'cerec': {
+      bodyLocation: '치아 (구강 내)',
+      expectedPrognosis: '10년 이상 사용 가능. 세라믹 소재 생체친화성 우수. 자연치아에 가까운 색감.',
+      indication: '충치 후 크라운, 인레이, 온레이, 라미네이트, 브릿지 (일부)',
+      preparation: 'PrimeScan 디지털 구강 스캔 (본뜨기 불필요)',
+      followup: '당일 보철 장착 완료. 추가 내원 불필요.',
+      howPerformed: 'PrimeScan 디지털 스캐너 → 컴퓨터 AI 보철 설계 → CEREC MC X 밀링 → SpeedFire 1600℃ 소성 → 장착. 총 1~2시간.',
+      relevantSpecialty: 'Prosthodontics'
+    },
+    'invisalign': {
+      bodyLocation: '치아 전체 (교합)',
+      expectedPrognosis: '6개월~2년 치료 기간. 교정 성공률 우수. 유지장치 착용으로 장기 유지.',
+      indication: '부정교합, 치아 사이 벌어짐, 삐뚤어진 치아, 재교정',
+      contraindication: '심한 골격성 부정교합, 성장기 어린이 (일부 제한)',
+      preparation: 'iTero 디지털 스캐너 구강 스캔, 파노라마·두부계측 촬영, 3D 클린체크 시뮬레이션',
+      followup: '4~8주마다 경과 체크, 교정 완료 후 유지장치(리테이너) 착용 필수',
+      howPerformed: '인비절라인 인증의가 3D 시뮬레이션을 기반으로 맞춤형 투명 교정장치(얼라이너)를 설계합니다. 1~2주마다 새 얼라이너로 교체하며 치아를 이동시킵니다.',
+      relevantSpecialty: 'Orthodontics'
+    },
+    'wisdom-tooth': {
+      bodyLocation: '사랑니 (제3대구치) 부위',
+      risk: '2~3일 부기 (정상), 드문 경우 하치조신경 감각 이상',
+      contraindication: '급성 감염 시 항생제 선 투여 후 발치 권장',
+      expectedPrognosis: '7일 후 실밥 제거, 2~4주 완전 회복',
+      indication: '매복 사랑니, 반복 염증(지치주위염), 인접 치아 충치, 교정 목적',
+      preparation: '3D CT 촬영, 신경관 위치 분석, 최적 발치 전략 수립',
+      followup: '7일 후 실밥 제거 및 경과 확인',
+      howPerformed: '3D CT로 신경관·사랑니 위치 정밀 분석 후, 구강외과 전문의가 최소 절개·최소 뼈 삭제로 안전하게 발치합니다.',
+      relevantSpecialty: 'Oral and Maxillofacial Surgery'
+    },
+    'bone-graft': {
+      bodyLocation: '턱뼈 (뼈 부족 부위)',
+      risk: '일시적 부기·통증 (정상 치유 과정)',
+      expectedPrognosis: '4~6개월 뼈 생착 기간 후 임플란트 식립 가능',
+      indication: '치아 발치 후 뼈 흡수, 치주염으로 뼈 소실, 선천적 턱뼈 부족, 임플란트 재수술',
+      preparation: '3D CT 촬영, 턱뼈 두께·높이·밀도 분석, 이식재 선택',
+      howPerformed: '구강외과 전문의가 3D CT 분석 후 자가골·동종골·이종골·합성골 이식재를 이용하여 부족한 뼈를 보충합니다. 임플란트 동시 식립 가능.',
+      relevantSpecialty: 'Oral and Maxillofacial Surgery'
+    },
+    'sinus-lift': {
+      bodyLocation: '상악동 (윗턱 부비강)',
+      risk: '코 풀기·빨대 사용 제한 (2~3주), 드문 경우 상악동 점막 천공',
+      expectedPrognosis: '4~6개월 뼈 생착 기간 후 임플란트 식립 가능',
+      indication: '윗턱 어금니 뼈 부족, 상악동 확장으로 임플란트 식립 공간 부족',
+      preparation: '3D CT로 상악동 점막 상태·잔존 뼈 높이 분석',
+      howPerformed: '구강외과 전문의가 상악동 점막을 손상 없이 거상하고, 뼈 이식재를 충전하여 임플란트 식립 공간을 확보합니다.',
+      relevantSpecialty: 'Oral and Maxillofacial Surgery'
+    }
+  }
+  const meta = treatmentMeta[t.slug] || {}
+
+  // MedicalProcedure Schema (프리미엄급)
+  const medicalProcedureSchema: any = {
     "@context": "https://schema.org",
     "@type": "MedicalProcedure",
+    "@id": `https://gndentalclinic.com/treatments/${t.slug}#procedure`,
     "name": t.title,
     "alternateName": t.h1,
     "description": t.description,
-    "procedureType": t.slug === 'implant' || t.slug === 'wisdom-tooth' || t.slug === 'bone-graft' || t.slug === 'sinus-lift' ? "Surgical" : "Noninvasive",
-    "howPerformed": t.heroDesc,
+    "procedureType": isSurgical ? "Surgical" : "Noninvasive",
+    "howPerformed": meta.howPerformed || t.heroDesc,
     "url": `https://gndentalclinic.com/treatments/${t.slug}`,
-    "bodyLocation": "Mouth",
-    "preparation": "3D CT 촬영 및 정밀 진단, 전문의 상담",
-    "followup": "정기 경과 관찰",
+    "bodyLocation": meta.bodyLocation || "구강 내",
+    "preparation": meta.preparation || "정밀 진단 및 전문의 상담",
+    "followup": meta.followup || "정기 경과 관찰",
     "status": "https://schema.org/ActiveActionStatus",
     "mainEntityOfPage": {
-      "@type": "WebPage",
-      "@id": `https://gndentalclinic.com/treatments/${t.slug}`
-    }
+      "@type": "MedicalWebPage",
+      "@id": `https://gndentalclinic.com/treatments/${t.slug}`,
+      "dateModified": new Date().toISOString().split('T')[0],
+      "lastReviewed": new Date().toISOString().split('T')[0]
+    },
+    "performedBy": [
+      { "@type": "Physician", "@id": "https://gndentalclinic.com/doctors/lee-taehyung#physician", "name": "이태형", "jobTitle": "대표원장" },
+      { "@type": "Physician", "@id": "https://gndentalclinic.com/doctors/choi-minhye#physician", "name": "최민혜", "jobTitle": "원장" }
+    ]
   }
+  if (meta.risk) medicalProcedureSchema.possibleComplication = meta.risk
+  if (meta.contraindication) medicalProcedureSchema.contraindication = meta.contraindication
+  if (meta.expectedPrognosis) medicalProcedureSchema.expectedPrognosis = meta.expectedPrognosis
+  if (meta.indication) medicalProcedureSchema.indication = meta.indication
+  if (meta.relevantSpecialty) medicalProcedureSchema.relevantSpecialty = meta.relevantSpecialty
 
-  // Service Schema
+  // Service Schema (강화)
   const serviceSchema = {
     "@context": "https://schema.org",
-    "@type": "Service",
+    "@type": "MedicalTherapy",
     "name": `${t.title} - 강남치과의원`,
     "description": t.description,
     "provider": {
       "@id": "https://gndentalclinic.com/#organization"
     },
-    "areaServed": {
-      "@type": "City",
-      "name": "영주시"
-    },
+    "areaServed": [
+      { "@type": "City", "name": "영주시" },
+      { "@type": "City", "name": "봉화군" },
+      { "@type": "City", "name": "예천군" },
+      { "@type": "City", "name": "안동시" }
+    ],
     "serviceType": "Dental Service",
-    "category": t.category
+    "category": t.category,
+    "url": `https://gndentalclinic.com/treatments/${t.slug}`,
+    "availableChannel": {
+      "@type": "ServiceChannel",
+      "serviceUrl": "https://gndentalclinic.com/reservation",
+      "servicePhone": { "@type": "ContactPoint", "telephone": "+82-54-636-8222" }
+    }
   }
 
   return {

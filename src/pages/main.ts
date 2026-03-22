@@ -47,17 +47,90 @@ export function mainPageSchemas(): object[] {
     ]
   };
 
-  // MedicalClinic Service Schema (더 구체적인 의료 서비스 마크업)
+  // MedicalClinic Service Schema (프리미엄급 의료 서비스 마크업)
   const medicalServiceSchema = {
     "@context": "https://schema.org",
     "@type": "MedicalClinic",
+    "@id": "https://gndentalclinic.com/#medicalClinic",
     "name": "강남치과의원",
+    "alternateName": ["Gangnam Dental Clinic", "영주 강남치과"],
     "url": "https://gndentalclinic.com",
+    "logo": "https://gndentalclinic.com/static/logo.png",
+    "image": [
+      "https://gndentalclinic.com/static/photos/3gQUD6CP.jpg",
+      "https://gndentalclinic.com/static/photos/KLnijX5L.jpg",
+      "https://gndentalclinic.com/static/photos/p9YyzTaw.jpg"
+    ],
+    "telephone": "+82-54-636-8222",
+    "email": "gndentalclinic@naver.com",
     "medicalSpecialty": [
+      { "@type": "MedicalSpecialty", "name": "Oral and Maxillofacial Surgery" },
+      { "@type": "MedicalSpecialty", "name": "Implantology" },
+      { "@type": "MedicalSpecialty", "name": "Prosthodontics" },
+      { "@type": "MedicalSpecialty", "name": "Orthodontics" },
+      { "@type": "MedicalSpecialty", "name": "Cosmetic Dentistry" }
+    ],
+    "department": [
       {
-        "@type": "MedicalSpecialty",
-        "name": "Oral and Maxillofacial Surgery"
+        "@type": "MedicalBusiness",
+        "name": "임플란트 전문센터",
+        "description": "구강외과 전문의 2인이 직접 수술. 뼈이식·상악동 거상술 고난이도 수술 가능.",
+        "medicalSpecialty": "Implantology",
+        "url": "https://gndentalclinic.com/treatments/implant"
+      },
+      {
+        "@type": "MedicalBusiness",
+        "name": "CEREC 당일보철 센터",
+        "description": "PrimeScan + CEREC MC X + SpeedFire 시스템으로 당일 보철 완성.",
+        "url": "https://gndentalclinic.com/treatments/cerec"
+      },
+      {
+        "@type": "MedicalBusiness",
+        "name": "인비절라인 교정센터",
+        "description": "인비절라인 인증의 + iTero 디지털 스캐너 교정 시뮬레이션.",
+        "medicalSpecialty": "Orthodontics",
+        "url": "https://gndentalclinic.com/treatments/invisalign"
+      },
+      {
+        "@type": "MedicalBusiness",
+        "name": "구강외과 수술센터",
+        "description": "사랑니 발치, 뼈이식, 상악동 거상술 등 고난이도 외과 수술.",
+        "medicalSpecialty": "Oral and Maxillofacial Surgery"
       }
+    ],
+    "employee": [
+      {
+        "@type": "Physician",
+        "@id": "https://gndentalclinic.com/doctors/lee-taehyung#physician",
+        "name": "이태형",
+        "jobTitle": "대표원장",
+        "medicalSpecialty": "Oral and Maxillofacial Surgery",
+        "image": "https://gndentalclinic.com/static/doctors/lee-taehyung.jpg",
+        "url": "https://gndentalclinic.com/doctors/lee-taehyung",
+        "hasCredential": { "@type": "EducationalOccupationalCredential", "name": "보건복지부 구강악안면외과 전문의" },
+        "alumniOf": [
+          { "@type": "CollegeOrUniversity", "name": "고려대학교 구강악안면외과 석사" },
+          { "@type": "Hospital", "name": "고려대학교 구로병원 레지던트" }
+        ]
+      },
+      {
+        "@type": "Physician",
+        "@id": "https://gndentalclinic.com/doctors/choi-minhye#physician",
+        "name": "최민혜",
+        "jobTitle": "원장",
+        "medicalSpecialty": "Oral and Maxillofacial Surgery",
+        "url": "https://gndentalclinic.com/doctors/choi-minhye",
+        "hasCredential": { "@type": "EducationalOccupationalCredential", "name": "보건복지부 구강악안면외과 전문의" },
+        "alumniOf": [
+          { "@type": "CollegeOrUniversity", "name": "고려대학교 구강악안면외과 석사" },
+          { "@type": "Hospital", "name": "인제대학교 백병원 레지던트" }
+        ]
+      }
+    ],
+    "hasCredential": [
+      { "@type": "EducationalOccupationalCredential", "name": "구강악안면외과 전문의 2인 상주", "credentialCategory": "전문의" },
+      { "@type": "EducationalOccupationalCredential", "name": "인비절라인 인증의", "credentialCategory": "인증의" },
+      { "@type": "EducationalOccupationalCredential", "name": "대한구강악안면성형재건외과학회 인정의", "credentialCategory": "학회인정의" }
     ],
     "availableService": [
       {
@@ -66,17 +139,72 @@ export function mainPageSchemas(): object[] {
         "procedureType": "Surgical",
         "howPerformed": "구강악안면외과 전문의가 3D CT 기반 정밀 진단 후 디지털 가이드를 이용하여 임플란트를 식립합니다.",
         "preparation": "3D CT 촬영, 디지털 구강 스캔, 전문의 상담",
-        "followup": "정기 경과 관찰, CEREC 당일 보철 장착 가능"
+        "followup": "정기 경과 관찰, CEREC 당일 보철 장착 가능",
+        "status": "EventScheduled",
+        "url": "https://gndentalclinic.com/treatments/implant",
+        "bodyLocation": "턱뼈 (상악/하악)",
+        "possibleComplication": "일시적 부기, 출혈 (정상 치유 과정)",
+        "expectedPrognosis": "10년 이상 장기 사용 가능, 정기 관리 시 반영구적"
       },
       {
         "@type": "MedicalProcedure",
         "name": "CEREC 당일 보철",
         "procedureType": "Noninvasive",
         "howPerformed": "PrimeScan 디지털 스캐너로 구강을 스캔한 후, CEREC 밀링 머신으로 세라믹 보철을 원내에서 당일 제작하여 장착합니다.",
-        "preparation": "디지털 구강 스캔",
-        "followup": "당일 보철 장착 완료, 추가 내원 불필요"
+        "preparation": "디지털 구강 스캔 (본뜨기 불필요)",
+        "followup": "당일 보철 장착 완료, 추가 내원 불필요",
+        "url": "https://gndentalclinic.com/treatments/cerec",
+        "expectedPrognosis": "10년 이상 사용 가능, 세라믹 소재 생체친화성 우수"
+      },
+      {
+        "@type": "MedicalProcedure",
+        "name": "인비절라인 투명교정",
+        "procedureType": "Noninvasive",
+        "howPerformed": "iTero 디지털 스캐너로 3D 시뮬레이션 후 맞춤형 투명 교정장치로 교정합니다.",
+        "preparation": "iTero 디지털 스캔, 3D 시뮬레이션(클린체크), 교정 계획 수립",
+        "followup": "4~8주마다 경과 체크, 유지장치 착용",
+        "url": "https://gndentalclinic.com/treatments/invisalign",
+        "expectedPrognosis": "6개월~2년 치료 기간, 교정 성공률 우수"
+      },
+      {
+        "@type": "MedicalProcedure",
+        "name": "사랑니 발치",
+        "procedureType": "Surgical",
+        "howPerformed": "3D CT로 사랑니 위치·신경관 분석 후, 구강외과 전문의가 최소 절개로 발치합니다.",
+        "preparation": "3D CT 촬영, 신경관 위치 분석",
+        "followup": "7일 후 실밥 제거, 경과 확인",
+        "url": "https://gndentalclinic.com/treatments/wisdom-tooth"
+      },
+      {
+        "@type": "MedicalProcedure",
+        "name": "뼈이식",
+        "procedureType": "Surgical",
+        "howPerformed": "부족한 턱뼈를 뼈이식재로 보충한 후 임플란트를 식립합니다.",
+        "url": "https://gndentalclinic.com/treatments/bone-graft"
+      },
+      {
+        "@type": "MedicalProcedure",
+        "name": "상악동 거상술",
+        "procedureType": "Surgical",
+        "howPerformed": "윗턱 뼈가 부족한 경우 상악동 점막을 거상하고 뼈이식 후 임플란트를 식립합니다.",
+        "url": "https://gndentalclinic.com/treatments/sinus-lift"
       }
-    ]
+    ],
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "강남치과의원 진료비용",
+      "url": "https://gndentalclinic.com/pricing"
+    },
+    "isAcceptingNewPatients": true,
+    "smokingAllowed": false,
+    "currenciesAccepted": "KRW",
+    "paymentAccepted": ["현금", "신용카드", "체크카드", "계좌이체"],
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "reviewCount": "120",
+      "bestRating": "5"
+    }
   };
 
   return [faqSchema, howToSchema, medicalServiceSchema];
