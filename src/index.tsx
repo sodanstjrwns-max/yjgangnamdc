@@ -13,6 +13,7 @@ import { blogListPage, blogDetailPage } from './pages/blog'
 import { beforeAfterListPage, beforeAfterDetailPage } from './pages/beforeafter'
 import { noticeListPage, noticeDetailPage } from './pages/notices'
 import { adminPage } from './pages/admin'
+import { registerPage, loginPage, loginRequiredPage } from './pages/auth'
 import { layout } from './layout'
 
 type Bindings = {
@@ -44,6 +45,51 @@ const adminAuth = createMiddleware(async (c, next) => {
   if (key !== 'gangnam2017admin') return c.json({ error: 'Unauthorized' }, 401)
   await next()
 })
+
+// ===== 비밀번호 해싱 유틸 (Web Crypto API) =====
+async function hashPassword(password: string): Promise<string> {
+  const encoder = new TextEncoder()
+  const salt = crypto.getRandomValues(new Uint8Array(16))
+  const keyMaterial = await crypto.subtle.importKey('raw', encoder.encode(password), 'PBKDF2', false, ['deriveBits'])
+  const hash = await crypto.subtle.deriveBits({ name: 'PBKDF2', salt, iterations: 100000, hash: 'SHA-256' }, keyMaterial, 256)
+  const saltHex = Array.from(salt).map(b => b.toString(16).padStart(2, '0')).join('')
+  const hashHex = Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('')
+  return `${saltHex}:${hashHex}`
+}
+
+async function verifyPassword(password: string, stored: string): Promise<boolean> {
+  const [saltHex, hashHex] = stored.split(':')
+  if (!saltHex || !hashHex) return false
+  const salt = new Uint8Array(saltHex.match(/.{2}/g)!.map(h => parseInt(h, 16)))
+  const encoder = new TextEncoder()
+  const keyMaterial = await crypto.subtle.importKey('raw', encoder.encode(password), 'PBKDF2', false, ['deriveBits'])
+  const hash = await crypto.subtle.deriveBits({ name: 'PBKDF2', salt, iterations: 100000, hash: 'SHA-256' }, keyMaterial, 256)
+  const computed = Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('')
+  return computed === hashHex
+}
+
+function generateSessionId(): string {
+  const arr = crypto.getRandomValues(new Uint8Array(32))
+  return Array.from(arr).map(b => b.toString(16).padStart(2, '0')).join('')
+}
+
+function getCookie(cookieHeader: string | undefined, name: string): string | null {
+  if (!cookieHeader) return null
+  const match = cookieHeader.match(new RegExp(`(?:^|;\\s*)${name}=([^;]*)`))
+  return match ? decodeURIComponent(match[1]) : null
+}
+
+async function getSessionUser(c: any): Promise<any | null> {
+  try {
+    const cookieHeader = c.req.header('Cookie')
+    const sessionId = getCookie(cookieHeader, 'session')
+    if (!sessionId) return null
+    const session = await c.env.DB.prepare(
+      'SELECT s.*, u.id as user_id, u.name, u.email, u.phone FROM sessions s JOIN users u ON s.user_id = u.id WHERE s.id = ? AND s.expires_at > datetime("now")'
+    ).bind(sessionId).first()
+    return session || null
+  } catch { return null }
+}
 
 // ===== SEO: robots.txt =====
 app.get('/robots.txt', (c) => {
@@ -279,8 +325,132 @@ app.get('/blog/:slug', async (c) => {
   }))
 })
 
-// ===== 비포/애프터 게시판 =====
+// ===== 회원가입 / 로그인 페이지 =====
+app.get('/register', (c) => c.html(layout(registerPage(), {
+  title: '회원가입 | 강남치과의원',
+  description: '강남치과의원 회원가입. 치료 전후 사례 열람을 위해 회원가입해 주세요.',
+  url: '/register',
+  robots: 'noindex, nofollow'
+})))
+
+app.get('/login', (c) => {
+  const redirect = c.req.query('redirect')
+  return c.html(layout(loginPage(redirect), {
+    title: '로그인 | 강남치과의원',
+    description: '강남치과의원 로그인. 치료 전후 사례를 확인하시려면 로그인해 주세요.',
+    url: '/login',
+    robots: 'noindex, nofollow'
+  }))
+})
+
+// ===== 인증 API =====
+app.post('/api/auth/register', async (c) => {
+  try {
+    const { name, email, phone, password } = await c.req.json()
+    if (!name || !email || !phone || !password) {
+      return c.json({ success: false, error: '모든 필수 항목을 입력해 주세요.' }, 400)
+    }
+    if (password.length < 6) {
+      return c.json({ success: false, error: '비밀번호는 6자 이상이어야 합니다.' }, 400)
+    }
+    const cleanPhone = phone.replace(/-/g, '')
+    if (!/^[0-9]{10,11}$/.test(cleanPhone)) {
+      return c.json({ success: false, error: '올바른 전화번호를 입력해 주세요.' }, 400)
+    }
+
+    // 이메일 중복 체크
+    const existing = await c.env.DB.prepare('SELECT id FROM users WHERE email = ?').bind(email).first()
+    if (existing) {
+      return c.json({ success: false, error: '이미 등록된 이메일입니다.' }, 409)
+    }
+
+    const passwordHash = await hashPassword(password)
+    const result = await c.env.DB.prepare(
+      'INSERT INTO users (email, phone, password_hash, name) VALUES (?, ?, ?, ?)'
+    ).bind(email, cleanPhone, passwordHash, name).run()
+
+    // 자동 로그인 (세션 생성)
+    const sessionId = generateSessionId()
+    const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() // 30일
+    await c.env.DB.prepare(
+      'INSERT INTO sessions (id, user_id, expires_at) VALUES (?, ?, ?)'
+    ).bind(sessionId, result.meta.last_row_id, expiresAt).run()
+
+    return c.json({ success: true, message: '회원가입이 완료되었습니다.' }, 201, {
+      'Set-Cookie': `session=${sessionId}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${30 * 24 * 3600}`
+    })
+  } catch (e: any) {
+    return c.json({ success: false, error: '회원가입 처리 중 오류가 발생했습니다.' }, 500)
+  }
+})
+
+app.post('/api/auth/login', async (c) => {
+  try {
+    const { email, password } = await c.req.json()
+    if (!email || !password) {
+      return c.json({ success: false, error: '이메일과 비밀번호를 입력해 주세요.' }, 400)
+    }
+
+    const user = await c.env.DB.prepare('SELECT * FROM users WHERE email = ? AND is_active = 1').bind(email).first() as any
+    if (!user) {
+      return c.json({ success: false, error: '이메일 또는 비밀번호가 올바르지 않습니다.' }, 401)
+    }
+
+    const valid = await verifyPassword(password, user.password_hash)
+    if (!valid) {
+      return c.json({ success: false, error: '이메일 또는 비밀번호가 올바르지 않습니다.' }, 401)
+    }
+
+    // 세션 생성
+    const sessionId = generateSessionId()
+    const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+    await c.env.DB.prepare(
+      'INSERT INTO sessions (id, user_id, expires_at) VALUES (?, ?, ?)'
+    ).bind(sessionId, user.id, expiresAt).run()
+
+    return c.json({ success: true, message: '로그인되었습니다.', user: { name: user.name, email: user.email } }, 200, {
+      'Set-Cookie': `session=${sessionId}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${30 * 24 * 3600}`
+    })
+  } catch (e: any) {
+    return c.json({ success: false, error: '로그인 처리 중 오류가 발생했습니다.' }, 500)
+  }
+})
+
+app.post('/api/auth/logout', async (c) => {
+  try {
+    const cookieHeader = c.req.header('Cookie')
+    const sessionId = getCookie(cookieHeader, 'session')
+    if (sessionId) {
+      await c.env.DB.prepare('DELETE FROM sessions WHERE id = ?').bind(sessionId).run()
+    }
+    return c.json({ success: true }, 200, {
+      'Set-Cookie': 'session=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0'
+    })
+  } catch {
+    return c.json({ success: true }, 200, {
+      'Set-Cookie': 'session=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0'
+    })
+  }
+})
+
+app.get('/api/auth/me', async (c) => {
+  const user = await getSessionUser(c)
+  if (!user) return c.json({ loggedIn: false })
+  return c.json({ loggedIn: true, user: { name: user.name, email: user.email } })
+})
+
+// ===== 비포/애프터 게시판 (로그인 필요) =====
 app.get('/before-after', async (c) => {
+  const user = await getSessionUser(c)
+  if (!user) {
+    return c.html(layout(loginRequiredPage(), {
+      title: '로그인 필요 | 치료 전후 사례 – 강남치과의원',
+      description: '치료 전후 사례를 열람하시려면 로그인이 필요합니다.',
+      url: '/before-after',
+      robots: 'noindex, nofollow'
+    }))
+  }
+
   const category = c.req.query('category')
   let cases: any[] = []
   try {
@@ -310,6 +480,16 @@ app.get('/before-after', async (c) => {
 })
 
 app.get('/before-after/:slug', async (c) => {
+  const user = await getSessionUser(c)
+  if (!user) {
+    return c.html(layout(loginRequiredPage(), {
+      title: '로그인 필요 | 치료 전후 사례 – 강남치과의원',
+      description: '치료 전후 사례를 열람하시려면 로그인이 필요합니다.',
+      url: '/before-after',
+      robots: 'noindex, nofollow'
+    }))
+  }
+
   const slug = c.req.param('slug')
   let caseData: any = null
   try {

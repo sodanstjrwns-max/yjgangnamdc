@@ -732,6 +732,21 @@ export function layout(content: string, opts: LayoutOptions): string {
           <a href="/reservation" class="btn-primary !py-2.5 !px-7 !text-[12px] !gap-2 !font-bold">
             <i class="fas fa-calendar-check text-[10px]"></i>상담예약
           </a>
+          <!-- Auth Button (Desktop) -->
+          <div id="authBtnDesktop" class="ml-2">
+            <a href="/login" id="loginBtnDesktop" class="px-4 py-2.5 text-[12px] text-gray-500 hover:text-royal transition-all duration-300 rounded-lg font-bold border border-gray-200 hover:border-royal/30 flex items-center gap-1.5">
+              <i class="fas fa-sign-in-alt text-[10px]"></i>로그인
+            </a>
+            <div id="userBtnDesktop" class="hidden relative">
+              <button onclick="toggleUserMenu()" class="px-4 py-2.5 text-[12px] text-royal font-bold rounded-lg border border-royal/20 bg-royal/5 flex items-center gap-1.5 hover:bg-royal/10 transition-all">
+                <i class="fas fa-user text-[10px]"></i><span id="userNameDesktop">회원</span>
+              </button>
+              <div id="userDropdown" class="hidden absolute right-0 top-full mt-2 w-40 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-50">
+                <a href="/before-after" class="block px-4 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-royal transition-all"><i class="fas fa-images text-xs mr-2"></i>전후 사례</a>
+                <button onclick="doLogout()" class="w-full text-left px-4 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-red-500 transition-all border-t border-gray-50"><i class="fas fa-sign-out-alt text-xs mr-2"></i>로그아웃</button>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Mobile -->
@@ -770,6 +785,16 @@ export function layout(content: string, opts: LayoutOptions): string {
         <a href="/reservation" class="btn-primary justify-center w-full !text-base !py-5 !mt-4">
           <i class="fas fa-calendar-check" aria-hidden="true"></i>상담 예약하기
         </a>
+        <!-- Auth (Mobile) -->
+        <div id="authBtnMobile" class="mt-3">
+          <a href="/login" id="loginBtnMobile" class="flex items-center justify-center gap-2 w-full py-4 rounded-xl border border-gray-200 text-gray-500 font-bold text-base hover:border-royal/30 hover:text-royal transition-all">
+            <i class="fas fa-sign-in-alt"></i>로그인 / 회원가입
+          </a>
+          <div id="userBtnMobile" class="hidden flex items-center justify-between gap-3">
+            <span class="flex-1 text-center py-4 rounded-xl bg-royal/5 border border-royal/10 text-royal font-bold text-base"><i class="fas fa-user mr-2 text-sm"></i><span id="userNameMobile">회원</span>님</span>
+            <button onclick="doLogout()" class="px-6 py-4 rounded-xl border border-gray-200 text-gray-500 font-bold text-sm hover:text-red-500 transition-all"><i class="fas fa-sign-out-alt mr-1"></i>로그아웃</button>
+          </div>
+        </div>
         <div class="mt-4 flex items-center justify-center gap-6 text-sm text-gray-400">
           <a href="tel:054-636-8222" class="hover:text-royal transition" aria-label="전화 상담"><i class="fas fa-phone mr-1.5" aria-hidden="true"></i>054-636-8222</a>
           <span>평일 09:00-17:30 · 접수마감 17:00</span>
@@ -1016,7 +1041,49 @@ export function layout(content: string, opts: LayoutOptions): string {
     window.addEventListener('DOMContentLoaded', () => {
       initReveals();
       animateCounters();
+      checkAuthStatus();
     });
+
+    // ===== Auth =====
+    async function checkAuthStatus() {
+      try {
+        const res = await fetch('/api/auth/me');
+        const data = await res.json();
+        if (data.loggedIn && data.user) {
+          // Desktop
+          const loginD = document.getElementById('loginBtnDesktop');
+          const userD = document.getElementById('userBtnDesktop');
+          const nameD = document.getElementById('userNameDesktop');
+          if (loginD) loginD.style.display = 'none';
+          if (userD) userD.classList.remove('hidden');
+          if (nameD) nameD.textContent = data.user.name;
+          // Mobile
+          const loginM = document.getElementById('loginBtnMobile');
+          const userM = document.getElementById('userBtnMobile');
+          const nameM = document.getElementById('userNameMobile');
+          if (loginM) loginM.style.display = 'none';
+          if (userM) userM.classList.remove('hidden');
+          if (nameM) nameM.textContent = data.user.name;
+        }
+      } catch {}
+    }
+
+    function toggleUserMenu() {
+      const dd = document.getElementById('userDropdown');
+      if (dd) dd.classList.toggle('hidden');
+    }
+
+    // Close user dropdown on outside click
+    document.addEventListener('click', function(e) {
+      const dd = document.getElementById('userDropdown');
+      const btn = document.getElementById('userBtnDesktop');
+      if (dd && btn && !btn.contains(e.target)) dd.classList.add('hidden');
+    });
+
+    async function doLogout() {
+      try { await fetch('/api/auth/logout', { method: 'POST' }); } catch {}
+      window.location.href = '/';
+    }
   </script>
 </body>
 </html>`
