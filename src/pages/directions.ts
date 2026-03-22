@@ -2,8 +2,12 @@ export function directionsPage(): string {
   return `
   <!-- Hero (White) -->
   <section class="relative min-h-[60vh] flex items-end subpage-hero overflow-hidden">
-    <div class="orb orb-royal w-[500px] h-[500px] -top-48 -right-48 opacity-20"></div>
-    <div class="absolute inset-0 grid-pattern opacity-40"></div>
+    <div class="absolute inset-0 z-[1]">
+      <img src="https://www.genspark.ai/api/files/s/3gQUD6CP" alt="강남치과의원 접수대와 로고" class="w-full h-full object-cover">
+      <div class="absolute inset-0 bg-gradient-to-b from-white/90 via-white/70 to-white"></div>
+    </div>
+    <div class="orb orb-royal w-[500px] h-[500px] -top-48 -right-48 opacity-20 z-[2]"></div>
+    <div class="absolute inset-0 grid-pattern opacity-40 z-[2]"></div>
     <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 pb-24 pt-48 w-full">
       <div class="section-label section-label-royal mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>DIRECTIONS</div>
       <h1 class="display-xl text-charcoal mb-6">오시는 <span class="royal-grad-text">길</span></h1>
@@ -85,6 +89,32 @@ export function directionsPage(): string {
   <!-- Nearby areas -->
   <section class="py-20 md:py-28 bg-white">
     <div class="max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
+      <!-- Internal photos -->
+      <div class="mb-20 reveal">
+        <div class="text-center mb-10">
+          <div class="section-label section-label-royal mx-auto mb-6"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>INSIDE</div>
+          <h2 class="display-md text-charcoal">병원 내부 미리보기</h2>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 stagger-children">
+          <div class="card-premium overflow-hidden stagger-item group">
+            <div class="aspect-[4/3] overflow-hidden"><img src="https://www.genspark.ai/api/files/s/p9YyzTaw" alt="강남치과의원 대기실" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy"></div>
+            <div class="p-4"><h4 class="font-extrabold text-charcoal text-sm">대기실</h4><p class="text-gray-400 text-xs mt-0.5">프리미엄 라운지형 대기 공간</p></div>
+          </div>
+          <div class="card-premium overflow-hidden stagger-item group">
+            <div class="aspect-[4/3] overflow-hidden"><img src="https://www.genspark.ai/api/files/s/KLnijX5L" alt="강남치과의원 진료실" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy"></div>
+            <div class="p-4"><h4 class="font-extrabold text-charcoal text-sm">진료실</h4><p class="text-gray-400 text-xs mt-0.5">유리 파티션 개별 진료 공간</p></div>
+          </div>
+          <div class="card-premium overflow-hidden stagger-item group">
+            <div class="aspect-[4/3] overflow-hidden"><img src="https://www.genspark.ai/api/files/s/sOkojKif" alt="강남치과의원 상담실" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy"></div>
+            <div class="p-4"><h4 class="font-extrabold text-charcoal text-sm">상담실</h4><p class="text-gray-400 text-xs mt-0.5">전문의 1:1 상담 공간</p></div>
+          </div>
+          <div class="card-premium overflow-hidden stagger-item group">
+            <div class="aspect-[4/3] overflow-hidden"><img src="https://www.genspark.ai/api/files/s/ZaCoVLBk" alt="강남치과의원 휴게실" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy"></div>
+            <div class="p-4"><h4 class="font-extrabold text-charcoal text-sm">휴게실</h4><p class="text-gray-400 text-xs mt-0.5">그랜드 피아노 · 서재 공간</p></div>
+          </div>
+        </div>
+      </div>
+
       <!-- Facilities -->
       <div class="mb-20 reveal">
         <div class="text-center mb-10">

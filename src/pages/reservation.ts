@@ -2,8 +2,12 @@ export function reservationPage(): string {
   return `
   <!-- Hero (White) -->
   <section class="relative min-h-[60vh] flex items-end subpage-hero overflow-hidden">
-    <div class="orb orb-royal w-[500px] h-[500px] -top-48 -right-48 opacity-20"></div>
-    <div class="absolute inset-0 grid-pattern opacity-40"></div>
+    <div class="absolute inset-0 z-[1]">
+      <img src="https://www.genspark.ai/api/files/s/CR9dgzgZ" alt="강남치과의원 대기실" class="w-full h-full object-cover">
+      <div class="absolute inset-0 bg-gradient-to-b from-white/90 via-white/70 to-white"></div>
+    </div>
+    <div class="orb orb-royal w-[500px] h-[500px] -top-48 -right-48 opacity-20 z-[2]"></div>
+    <div class="absolute inset-0 grid-pattern opacity-40 z-[2]"></div>
     <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 pb-24 pt-48 w-full">
       <div class="section-label section-label-royal mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>RESERVATION</div>
       <h1 class="display-xl text-charcoal mb-6">상담 <span class="royal-grad-text">예약하기</span></h1>

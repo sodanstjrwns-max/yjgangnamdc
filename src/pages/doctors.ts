@@ -393,8 +393,38 @@ export function doctorsPage(): string {
     </div>
   </section>
 
+  <!-- ========== 진료 환경 ========== -->
+  <section class="py-28 md:py-36 bg-white relative overflow-hidden" aria-label="진료 환경">
+    <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-royal/10 to-transparent"></div>
+    <div class="max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
+      <div class="text-center mb-16 reveal">
+        <div class="section-label section-label-royal mx-auto mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>CLINIC ENVIRONMENT</div>
+        <h2 class="display-lg text-charcoal mb-6">전문의가 진료하는<br><span class="royal-grad-text">대학병원급 환경</span></h2>
+        <p class="text-gray-400 text-lg">구강외과 전문의 2인이 최첨단 장비로 직접 진료합니다</p>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 stagger-children">
+        <div class="card-premium overflow-hidden stagger-item group">
+          <div class="aspect-[4/3] overflow-hidden"><img src="https://www.genspark.ai/api/files/s/KLnijX5L" alt="강남치과의원 진료실" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy"></div>
+          <div class="p-4"><h4 class="font-extrabold text-charcoal text-sm">진료실</h4><p class="text-gray-400 text-xs mt-0.5">유리 파티션 개별 진료 공간</p></div>
+        </div>
+        <div class="card-premium overflow-hidden stagger-item group">
+          <div class="aspect-[4/3] overflow-hidden"><img src="https://www.genspark.ai/api/files/s/xfkmnFB6" alt="강남치과의원 진료 장비" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy"></div>
+          <div class="p-4"><h4 class="font-extrabold text-charcoal text-sm">진료 장비</h4><p class="text-gray-400 text-xs mt-0.5">최신 치과 유닛 체어 시스템</p></div>
+        </div>
+        <div class="card-premium overflow-hidden stagger-item group">
+          <div class="aspect-[4/3] overflow-hidden"><img src="https://www.genspark.ai/api/files/s/XLqoXGPt" alt="강남치과의원 X-RAY 복도" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy"></div>
+          <div class="p-4"><h4 class="font-extrabold text-charcoal text-sm">X-RAY · 복도</h4><p class="text-gray-400 text-xs mt-0.5">디지털 진료 시스템</p></div>
+        </div>
+        <div class="card-premium overflow-hidden stagger-item group">
+          <div class="aspect-[4/3] overflow-hidden"><img src="https://www.genspark.ai/api/files/s/sOkojKif" alt="강남치과의원 상담실" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy"></div>
+          <div class="p-4"><h4 class="font-extrabold text-charcoal text-sm">상담실</h4><p class="text-gray-400 text-xs mt-0.5">전문의 1:1 상담 공간</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- CTA -->
-  <section class="py-28 md:py-36 bg-white relative overflow-hidden">
+  <section class="py-28 md:py-36 section-lavender relative overflow-hidden">
     <div class="orb orb-royal w-[500px] h-[500px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-15"></div>
     <div class="absolute inset-0 grid-pattern opacity-20"></div>
 

@@ -226,6 +226,35 @@ export function mainPage(): string {
     </div>
   `).join('');
 
+  // Clinic photos (실사 사진)
+  const clinicPhotos = [
+    { url: 'https://www.genspark.ai/api/files/s/p9YyzTaw', alt: '강남치과의원 대기실 전경 - 프리미엄 소파와 와이드 디스플레이', label: '대기실', desc: '프리미엄 라운지형 대기 공간' },
+    { url: 'https://www.genspark.ai/api/files/s/KLnijX5L', alt: '강남치과의원 진료실 - 유리 파티션 개별 진료 공간', label: '진료실', desc: '유리 파티션 개별 진료 공간' },
+    { url: 'https://www.genspark.ai/api/files/s/sOkojKif', alt: '강남치과의원 상담실 - 전문의 인증서와 상담 공간', label: '상담실', desc: '전문의 자격증 · 1:1 상담' },
+    { url: 'https://www.genspark.ai/api/files/s/XLqoXGPt', alt: '강남치과의원 X-RAY실과 진료 복도', label: 'X-RAY · 복도', desc: 'X-RAY실 · 디지털 진료 시스템' },
+    { url: 'https://www.genspark.ai/api/files/s/xfkmnFB6', alt: '강남치과의원 진료 장비 클로즈업 - 최신 치과 유닛', label: '진료 장비', desc: '최신 치과 유닛 체어 시스템' },
+    { url: 'https://www.genspark.ai/api/files/s/ZaCoVLBk', alt: '강남치과의원 휴게실 - 그랜드 피아노와 서재', label: '휴게실', desc: '그랜드 피아노 · 서재 공간' },
+    { url: 'https://www.genspark.ai/api/files/s/4fco8xUr', alt: '강남치과의원 대기실 - 무인 키오스크와 소파', label: '접수 · 대기', desc: '무인 키오스크 · 넓은 대기 공간' },
+    { url: 'https://www.genspark.ai/api/files/s/cihnca5u', alt: '강남치과의원 메이크업실', label: '메이크업실', desc: '진료 후 편의 시설' },
+    { url: 'https://www.genspark.ai/api/files/s/3gQUD6CP', alt: '강남치과의원 접수대와 복도 - 강남치과 로고', label: '접수대', desc: '깔끔한 접수대 · 로고 사이니지' },
+    { url: 'https://www.genspark.ai/api/files/s/qBEkv4ph', alt: '강남치과의원 수술실 복도 - 밝고 청결한 환경', label: '수술실 복도', desc: '감염관리 · 청결한 동선' },
+  ];
+  const clinicPhotosHtml = clinicPhotos.map(p => `
+    <div class="flex-shrink-0 w-[340px] md:w-[420px] snap-start group cursor-pointer" onclick="openPhotoModal('${p.url}','${p.alt}')">
+      <div class="relative rounded-3xl overflow-hidden aspect-[4/3] mb-4">
+        <img src="${p.url}" alt="${p.alt}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy">
+        <div class="absolute inset-0 bg-gradient-to-t from-charcoal/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        <div class="absolute bottom-4 left-4 right-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+          <span class="px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-md text-charcoal text-xs font-bold">${p.label}</span>
+        </div>
+      </div>
+      <div class="px-1">
+        <h4 class="text-charcoal font-bold text-sm">${p.label}</h4>
+        <p class="text-gray-400 text-xs mt-0.5">${p.desc}</p>
+      </div>
+    </div>
+  `).join('');
+
   // Equipment gallery
   const equipGallery = [
     { name: '3D CT (CBCT)', desc: '0.1mm 정밀도의 3D 입체 촬영. 뼈 두께, 신경 위치, 염증 범위를 정확하게 파악합니다.', icon: 'fa-x-ray', spec: 'Voxel 0.1mm · 3D 360° · 파노라마 겸용' },
@@ -468,9 +497,13 @@ export function mainPage(): string {
           </div>
         </div>
 
-        <!-- Right: 3D Implant Model (Sketchfab) -->
+        <!-- Right: 3D Implant Model (Sketchfab) + 실사 사진 배경 -->
         <div class="lg:col-span-5 hidden lg:flex items-center justify-center" id="heroVisual">
           <div class="relative">
+            <!-- 실사 사진 배경 (진료실) -->
+            <div class="absolute -inset-8 rounded-[40px] overflow-hidden opacity-15 blur-[2px]">
+              <img src="https://www.genspark.ai/api/files/s/Wpp3wlfj" alt="강남치과의원 진료실" class="w-full h-full object-cover">
+            </div>
             <!-- Sketchfab 3D Implant Viewer (bigger size) -->
             <div class="relative w-[540px] h-[640px]">
               <iframe 
@@ -584,8 +617,11 @@ export function mainPage(): string {
             <a href="/doctors" class="ml-auto hidden md:inline-flex items-center gap-2 text-royal text-sm font-bold hover:gap-3 transition-all">의료진 보기 <i class="fas fa-arrow-right text-xs"></i></a>
           </div>
         </div>
-        <div class="lg:col-span-5 card-premium p-10 md:p-12 flex flex-col justify-between min-h-[480px] stagger-item group">
-          <div>
+        <div class="lg:col-span-5 card-premium p-10 md:p-12 flex flex-col justify-between min-h-[480px] stagger-item group relative overflow-hidden">
+          <div class="absolute inset-0 opacity-[0.06]">
+            <img src="https://www.genspark.ai/api/files/s/xfkmnFB6" alt="강남치과의원 진료 장비" class="w-full h-full object-cover">
+          </div>
+          <div class="relative z-10">
             <div class="flex items-center justify-between mb-8">
               <div class="w-16 h-16 rounded-2xl royal-grad flex items-center justify-center royal-glow"><i class="fas fa-bolt text-white text-2xl"></i></div>
               <div class="px-4 py-2 rounded-full bg-emerald-50 text-emerald-600 text-[11px] font-bold tracking-wider uppercase border border-emerald-100">1 DAY</div>
@@ -765,6 +801,42 @@ export function mainPage(): string {
     </div>
   </section>
 
+  <!-- ========== 시설 갤러리 (실사 사진) ========== -->
+  <section class="py-32 md:py-48 bg-white relative overflow-hidden" aria-label="강남치과의원 시설 안내">
+    <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-royal/[0.02] rounded-full blur-[200px]"></div>
+    <div class="max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
+      <div class="text-center mb-16 reveal">
+        <div class="section-label section-label-royal mx-auto mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>FACILITIES</div>
+        <h2 class="display-xl text-charcoal mb-6">직접 보세요,<br><span class="royal-grad-text">이런 치과입니다</span></h2>
+        <p class="text-gray-400 text-lg">대학병원급 시설 · 호텔 라운지급 대기실 · 피아노가 있는 휴게실</p>
+      </div>
+      <div class="flex gap-5 overflow-x-auto snap-x pb-6 -mx-6 px-6 scrollbar-none" id="facilityGallery">
+        ${clinicPhotosHtml}
+      </div>
+      <div class="text-center mt-4"><span class="text-gray-300 text-xs"><i class="fas fa-arrows-left-right mr-1"></i>좌우로 스크롤하여 시설을 둘러보세요</span></div>
+    </div>
+
+    <!-- Photo Modal -->
+    <div id="photoModal" class="fixed inset-0 z-[9999] bg-charcoal/90 backdrop-blur-xl items-center justify-center" style="display:none;" onclick="closePhotoModal()">
+      <button class="absolute top-6 right-6 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-xl transition-colors" onclick="closePhotoModal()"><i class="fas fa-times"></i></button>
+      <img id="photoModalImg" src="" alt="" class="max-w-[90vw] max-h-[85vh] rounded-2xl object-contain shadow-2xl" onclick="event.stopPropagation()">
+    </div>
+    <script>
+      function openPhotoModal(url, alt) {
+        const m = document.getElementById('photoModal');
+        const img = document.getElementById('photoModalImg');
+        img.src = url; img.alt = alt;
+        m.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+      }
+      function closePhotoModal() {
+        document.getElementById('photoModal').style.display = 'none';
+        document.body.style.overflow = '';
+      }
+      document.addEventListener('keydown', e => { if (e.key === 'Escape') closePhotoModal(); });
+    </script>
+  </section>
+
   <!-- ========== 첫 방문 가이드 (진료 흐름도) ========== -->
   <section class="py-32 md:py-48 bg-white relative overflow-hidden" aria-label="첫 방문 가이드">
     <div class="absolute top-0 left-0 w-[600px] h-[600px] bg-royal/[0.02] rounded-full blur-[200px] -translate-x-1/2"></div>
@@ -775,6 +847,9 @@ export function mainPage(): string {
           <h2 class="display-lg text-charcoal mb-6">처음 오시나요?<br><span class="royal-grad-text">이렇게 진행됩니다</span></h2>
           <p class="text-gray-400 leading-relaxed mb-8">첫 방문부터 치료 완료까지,<br>모든 과정을 미리 알려드립니다.<br>불안함 없이 편하게 오세요.</p>
           <a href="/reservation" class="btn-primary !text-sm !py-4 !px-8"><i class="fas fa-calendar-check text-xs"></i>첫 방문 예약하기</a>
+          <div class="mt-8 rounded-2xl overflow-hidden hidden lg:block shadow-lg shadow-royal/5">
+            <img src="https://www.genspark.ai/api/files/s/yzSmZXZD" alt="강남치과의원 상담실 - 전문의 상담 공간" class="w-full h-48 object-cover" loading="lazy">
+          </div>
         </div>
         <div class="lg:col-span-8">
           <div class="relative">
