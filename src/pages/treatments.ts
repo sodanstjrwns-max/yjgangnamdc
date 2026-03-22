@@ -169,7 +169,7 @@ export function treatmentsPage(): string {
       <h2 class="display-lg text-charcoal mb-6">어떤 치료가 필요한지<br><span class="royal-grad-text">모르겠다면?</span></h2>
       <p class="text-gray-400 text-lg mb-10">구강외과 전문의가 직접 진단하고 최적의 치료를 안내드립니다.</p>
       <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-        <a href="/reservation" class="w-full sm:w-auto btn-primary !py-5 !px-12 !font-extrabold"><i class="fas fa-calendar-check"></i>무료 상담 예약</a>
+        <a href="/reservation" class="w-full sm:w-auto btn-primary !py-5 !px-12 !font-extrabold"><i class="fas fa-calendar-check"></i>상담 예약하기</a>
         <a href="tel:054-636-8222" class="w-full sm:w-auto btn-subtle justify-center"><i class="fas fa-phone text-sm text-royal"></i>054-636-8222</a>
       </div>
     </div>

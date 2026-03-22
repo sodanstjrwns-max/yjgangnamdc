@@ -101,7 +101,7 @@ export function beforeAfterListPage(cases: any[]): string {
       <h2 class="display-md text-charcoal mb-4">나도 이렇게 <span class="royal-grad-text">변할 수 있을까?</span></h2>
       <p class="text-gray-400 mb-8">구강 상태에 따라 치료 결과는 달라집니다. 정확한 진단을 받아보세요.</p>
       <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-        <a href="/reservation" class="btn-primary !py-5 !px-12"><i class="fas fa-calendar-check"></i>무료 상담 예약</a>
+        <a href="/reservation" class="btn-primary !py-5 !px-12"><i class="fas fa-calendar-check"></i>상담 예약하기</a>
         <a href="tel:054-636-8222" class="btn-subtle"><i class="fas fa-phone text-sm text-royal"></i>054-636-8222</a>
       </div>
     </div>
@@ -236,7 +236,7 @@ export function beforeAfterDetailPage(c: any): { html: string; title: string; de
     <div class="relative z-10 max-w-3xl mx-auto px-6 text-center reveal">
       <h2 class="display-md text-charcoal mb-4">나도 이렇게 <span class="royal-grad-text">바뀔 수 있을까?</span></h2>
       <p class="text-gray-400 mb-8">구강외과 전문의가 직접 상담드립니다.</p>
-      <a href="/reservation" class="btn-primary !py-5 !px-12"><i class="fas fa-calendar-check"></i>무료 상담 예약</a>
+      <a href="/reservation" class="btn-primary !py-5 !px-12"><i class="fas fa-calendar-check"></i>상담 예약하기</a>
     </div>
   </section>
 

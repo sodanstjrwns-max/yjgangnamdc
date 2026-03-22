@@ -513,8 +513,8 @@ app.get('/before-after/:slug', async (c) => {
 
 // ===== 예약/상담 =====
 app.get('/reservation', (c) => c.html(layout(reservationPage(), {
-  title: '강남치과의원 상담 예약 | 무료 상담 · 054-636-8222',
-  description: '강남치과의원 무료 상담 예약. 전화 054-636-8222 또는 온라인으로 간편하게 예약하세요. 구강외과 전문의가 직접 상담드립니다.',
+  title: '강남치과의원 상담 예약 | 상담 안내 · 054-636-8222',
+  description: '강남치과의원 상담 예약. 전화 054-636-8222 또는 온라인으로 간편하게 예약하세요. 구강외과 전문의가 직접 상담드립니다.',
   url: '/reservation',
   keywords: '영주 치과 예약, 강남치과 상담, 영주 임플란트 상담'
 })))
@@ -530,7 +530,7 @@ app.get('/directions', (c) => c.html(layout(directionsPage(), {
 // ===== 비용 안내 =====
 app.get('/pricing', (c) => c.html(layout(pricingPage(), {
   title: '강남치과의원 진료비용 안내 | 임플란트·보철·교정 가격',
-  description: '강남치과의원 임플란트, 인비절라인, CEREC 당일보철, 심미보철 등 진료비용을 안내합니다. 무료 상담 후 정확한 견적을 받아보세요. 054-636-8222.',
+  description: '강남치과의원 임플란트, 인비절라인, CEREC 당일보철, 심미보철 등 진료비용을 안내합니다. 상담 후 정확한 견적을 받아보세요. 054-636-8222.',
   url: '/pricing',
   keywords: '영주 임플란트 가격, 영주 치과 비용, 영주 인비절라인 가격, 영주 당일보철 비용'
 })))

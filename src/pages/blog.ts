@@ -83,7 +83,7 @@ export function blogListPage(posts: any[]): string {
     <div class="relative z-10 max-w-3xl mx-auto px-6 text-center reveal">
       <h2 class="display-md text-charcoal mb-4">궁금한 점이 있으신가요?</h2>
       <p class="text-gray-400 text-lg mb-8">구강외과 전문의가 직접 상담드립니다.</p>
-      <a href="/reservation" class="btn-primary !py-5 !px-12"><i class="fas fa-calendar-check"></i>무료 상담 예약</a>
+      <a href="/reservation" class="btn-primary !py-5 !px-12"><i class="fas fa-calendar-check"></i>상담 예약하기</a>
     </div>
   </section>
 
@@ -185,7 +185,7 @@ export function blogDetailPage(post: any): { html: string; title: string; descri
       <h2 class="display-md text-charcoal mb-4">이 글이 도움이 되셨나요?</h2>
       <p class="text-gray-400 mb-8">구강외과 전문의가 직접 상담드립니다. 부담 없이 문의해 주세요.</p>
       <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-        <a href="/reservation" class="btn-primary !py-5 !px-12"><i class="fas fa-calendar-check"></i>무료 상담 예약</a>
+        <a href="/reservation" class="btn-primary !py-5 !px-12"><i class="fas fa-calendar-check"></i>상담 예약하기</a>
         <a href="tel:054-636-8222" class="btn-subtle"><i class="fas fa-phone text-sm text-royal"></i>054-636-8222</a>
       </div>
     </div>

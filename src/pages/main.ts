@@ -1,7 +1,7 @@
 // ===== AEO: FAQ Schema.org 구조화 데이터 =====
 export function mainPageSchemas(): object[] {
   const faqItems = [
-    { q: '임플란트 비용은 얼마인가요?', a: '임플란트 비용은 잔존 뼈 상태, 뼈이식 여부, 보철 종류에 따라 달라집니다. 정확한 비용은 CT 촬영 후 상담 시 안내드립니다. 상담은 무료입니다, 부담 없이 문의해 주세요.' },
+    { q: '임플란트 비용은 얼마인가요?', a: '임플란트 비용은 잔존 뼈 상태, 뼈이식 여부, 보철 종류에 따라 달라집니다. 정확한 비용은 CT 촬영 후 상담 시 안내드립니다. 상담은 언제든 열려있으니, 편하게 문의해 주세요.' },
     { q: 'CEREC 당일 보철이란 무엇인가요?', a: 'CEREC은 디지털 스캐너로 치아를 촬영하고, 컴퓨터로 보철을 설계한 뒤, 밀링 머신이 세라믹 블록을 깎아 보철을 만드는 시스템입니다. 본 뜨고, 기공소 보내고, 기다리고, 다시 오는 과정 없이 하루 만에 보철까지 완성합니다.' },
     { q: '인비절라인은 얼마나 걸리나요?', a: '보통 6개월~2년으로, 치아 상태에 따라 다릅니다. 간단한 경우 6개월 이내에 완료되기도 합니다. 정밀 검사 후 예상 기간을 안내드립니다.' },
     { q: '사랑니를 꼭 빼야 하나요?', a: '모든 사랑니를 빼야 하는 것은 아닙니다. 매복되어 앞 치아를 밀고 있거나, 충치·염증이 반복되는 경우 발치를 권합니다. 구강악안면외과 전문의가 정확히 진단합니다.' },
@@ -111,12 +111,12 @@ export function mainPage(): string {
   const boneTags = ['뼈이식', '상악동 수술', '디지털 가이드', 'CT 정밀진단'];
   const boneTagsHtml = boneTags.map(t => `<span class="px-3.5 py-2 rounded-full bg-lavender text-charcoal text-[11px] font-bold border border-royal/[0.06]">${t}</span>`).join('');
 
-  // Comparison - general dental
+  // Comparison - traditional prosthetic process
   const generalSteps = [
     { step: '1회차', desc: '상담 + CT 촬영', time: '30분', icon: 'fa-comment-dots' },
     { step: '2회차', desc: '임플란트 식립 수술', time: '1시간', icon: 'fa-syringe' },
     { step: '3회차', desc: '실밥 제거 + 경과 체크', time: '15분', icon: 'fa-scissors' },
-    { step: '4회차', desc: '인상 채득 (본뜨기)', time: '30분', icon: 'fa-hand' },
+    { step: '4회차', desc: '실리콘 인상채득 (본뜨기)', time: '30분', icon: 'fa-hand' },
     { step: '5회차', desc: '기공소 외주 제작 대기', time: '7~14일 소요', icon: 'fa-hourglass-half' },
     { step: '6회차', desc: '보철 장착', time: '30분', icon: 'fa-crown' }
   ];
@@ -128,7 +128,7 @@ export function mainPage(): string {
     </div>
   `).join('');
 
-  // Comparison - gangnam dental
+  // Comparison - digital (CEREC) prosthetic process
   const gangnamSteps = [
     { step: '1회차', desc: 'CT 촬영 + 전문의 상담 + 디지털 스캔', time: '40분', icon: 'fa-laptop-medical', highlight: true },
     { step: '2회차', desc: '전문의 직접 임플란트 식립', time: '1시간', icon: 'fa-user-doctor', highlight: true },
@@ -376,7 +376,7 @@ export function mainPage(): string {
 
   // FAQ items
   const faqItems = [
-    { q: '임플란트 비용은 얼마인가요?', a: '임플란트 비용은 잔존 뼈 상태, 뼈이식 여부, 보철 종류에 따라 달라집니다. 정확한 비용은 CT 촬영 후 상담 시 안내드립니다. 상담은 무료입니다, 부담 없이 문의해 주세요.' },
+    { q: '임플란트 비용은 얼마인가요?', a: '임플란트 비용은 잔존 뼈 상태, 뼈이식 여부, 보철 종류에 따라 달라집니다. 정확한 비용은 CT 촬영 후 상담 시 안내드립니다. 상담은 언제든 열려있으니, 편하게 문의해 주세요.' },
     { q: 'CEREC 당일 보철이란 무엇인가요?', a: 'CEREC은 디지털 스캐너로 치아를 촬영하고, 컴퓨터로 보철을 설계한 뒤, 밀링 머신이 세라믹 블록을 깎아 보철을 만드는 시스템입니다. 본 뜨고, 기공소 보내고, 기다리고, 다시 오는 과정 없이 하루 만에 보철까지 완성합니다.' },
     { q: '인비절라인은 얼마나 걸리나요?', a: '보통 6개월~2년으로, 치아 상태에 따라 다릅니다. 간단한 경우 6개월 이내에 완료되기도 합니다. 정밀 검사 후 예상 기간을 안내드립니다.' },
     { q: '사랑니를 꼭 빼야 하나요?', a: '모든 사랑니를 빼야 하는 것은 아닙니다. 매복되어 앞 치아를 밀고 있거나, 충치·염증이 반복되는 경우 발치를 권합니다. 구강악안면외과 전문의가 정확히 진단합니다.' },
@@ -458,7 +458,7 @@ export function mainPage(): string {
           <div class="flex flex-wrap gap-4 mb-16" id="heroCTA">
             <a href="/reservation" class="btn-primary !py-5 !px-12 !text-[15px] !font-extrabold group">
               <i class="fas fa-calendar-check"></i>
-              상담은 무료입니다
+              편하게 상담하세요
               <i class="fas fa-arrow-right text-xs opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"></i>
             </a>
             <a href="/pricing" class="btn-subtle !py-5 !px-10">
@@ -604,7 +604,7 @@ export function mainPage(): string {
             </div>
             <p class="text-royal text-lg italic font-medium mb-4">"임플란트 수술 안전하게 해주는 거지?"</p>
             <h3 class="text-3xl md:text-4xl font-extrabold text-charcoal mb-4 leading-tight">임플란트는 뼈에 심는 수술입니다.<br><span class="royal-grad-text">수술 전문 외과 전문의가 직접 합니다.</span></h3>
-            <p class="text-gray-400 text-base leading-relaxed max-w-lg">일반 치과의사와 외과 전문의는 다릅니다.<br>구강악안면외과 전문의 2인이 상주하며,<br>뼈이식, 상악동 수술 등 <strong class="text-charcoal">고난이도 수술</strong>을 일상적으로 시행합니다.</p>
+            <p class="text-gray-400 text-base leading-relaxed max-w-lg">구강악안면외과 전문의는 대학병원에서 4년간 수술 수련을 마친 전문의입니다.<br>전문의 2인이 상주하며,<br>뼈이식, 상악동 수술 등 <strong class="text-charcoal">고난이도 수술</strong>을 일상적으로 시행합니다.</p>
           </div>
           <div class="relative z-10 mt-10 flex items-center gap-6 pt-8 border-t border-gray-100">
             <div class="flex -space-x-3">
@@ -679,22 +679,22 @@ export function mainPage(): string {
     </div>
   </section>
 
-  <!-- ========== 일반 치과 vs 강남치과 비교 ========== -->
-  <section class="py-32 md:py-48 section-lavender relative overflow-hidden" aria-label="일반치과와 강남치과 비교">
+  <!-- ========== 기존 보철 vs 디지털(CEREC) 보철 과정 비교 ========== -->
+  <section class="py-32 md:py-48 section-lavender relative overflow-hidden" aria-label="기존 아날로그 보철 과정과 디지털 CEREC 보철 과정 비교">
     <div class="orb orb-royal w-[600px] h-[600px] -top-48 -left-48 opacity-15"></div>
     <div class="absolute inset-0 grid-pattern opacity-30"></div>
     <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
       <div class="text-center mb-20 reveal">
-        <div class="section-label section-label-royal mx-auto mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>COMPARISON</div>
-        <h2 class="display-xl text-charcoal mb-6" data-speakable="true">일반 치과와<br><span class="royal-grad-text">무엇이 다를까요?</span></h2>
-        <p class="text-gray-400 text-lg" data-speakable="true">같은 임플란트, 같은 보철이라도 과정이 다릅니다. 강남치과의원은 구강외과 전문의가 직접 수술하고, CEREC 시스템으로 당일 보철을 완성하여 최대 50% 내원 횟수를 줄입니다.</p>
+        <div class="section-label section-label-royal mx-auto mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>PROCESS COMPARISON</div>
+        <h2 class="display-xl text-charcoal mb-6" data-speakable="true">보철 제작 방식이<br><span class="royal-grad-text">이렇게 달라집니다</span></h2>
+        <p class="text-gray-400 text-lg" data-speakable="true">같은 보철이라도 제작 방식에 따라 내원 횟수와 기간이 달라집니다.<br>디지털 CEREC 시스템은 기공소 외주 없이 원내에서 당일 보철을 완성합니다.</p>
       </div>
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-5xl mx-auto stagger-children">
-        <!-- 일반 치과 -->
+        <!-- 기존 아날로그 보철 과정 -->
         <div class="card-premium p-8 md:p-10 stagger-item border-gray-200 relative">
-          <div class="absolute top-6 right-6 px-4 py-1.5 rounded-full bg-gray-100 text-gray-400 text-[10px] font-bold">일반 치과</div>
-          <div class="w-14 h-14 rounded-2xl bg-gray-100 flex items-center justify-center mb-6"><i class="fas fa-tooth text-gray-400 text-xl"></i></div>
-          <h3 class="text-xl font-extrabold text-charcoal mb-6">보통 이렇게 진행됩니다</h3>
+          <div class="absolute top-6 right-6 px-4 py-1.5 rounded-full bg-gray-100 text-gray-400 text-[10px] font-bold">기존 아날로그 방식</div>
+          <div class="w-14 h-14 rounded-2xl bg-gray-100 flex items-center justify-center mb-6"><i class="fas fa-hand text-gray-400 text-xl"></i></div>
+          <h3 class="text-xl font-extrabold text-charcoal mb-6">기존 아날로그 보철 과정</h3>
           <div class="space-y-5">
             ${generalStepsHtml}
           </div>
@@ -702,17 +702,17 @@ export function mainPage(): string {
             <div class="flex items-center gap-3"><i class="fas fa-calendar text-gray-400"></i><div><div class="text-charcoal font-bold">총 6회 내원</div><div class="text-gray-400 text-xs">약 2~3개월 소요</div></div></div>
           </div>
         </div>
-        <!-- 강남치과 -->
+        <!-- 디지털 CEREC 보철 과정 -->
         <div class="card-premium p-8 md:p-10 stagger-item relative overflow-hidden">
           <div class="absolute top-0 left-0 right-0 h-1 royal-grad"></div>
-          <div class="absolute top-6 right-6 px-4 py-1.5 rounded-full royal-grad text-white text-[10px] font-bold">강남치과</div>
-          <div class="w-14 h-14 rounded-2xl royal-grad flex items-center justify-center mb-6 royal-glow"><i class="fas fa-tooth text-white text-xl"></i></div>
-          <h3 class="text-xl font-extrabold text-charcoal mb-6">강남치과는 <span class="royal-grad-text">이렇게</span> 합니다</h3>
+          <div class="absolute top-6 right-6 px-4 py-1.5 rounded-full royal-grad text-white text-[10px] font-bold">디지털 CEREC 방식</div>
+          <div class="w-14 h-14 rounded-2xl royal-grad flex items-center justify-center mb-6 royal-glow"><i class="fas fa-microchip text-white text-xl"></i></div>
+          <h3 class="text-xl font-extrabold text-charcoal mb-6">CEREC <span class="royal-grad-text">디지털</span> 보철 과정</h3>
           <div class="space-y-5">
             ${gangnamStepsHtml}
           </div>
           <div class="mt-8 p-5 rounded-2xl bg-royal/[0.04] border border-royal/[0.1]">
-            <div class="flex items-center gap-3"><i class="fas fa-check-circle text-royal text-lg"></i><div><div class="text-charcoal font-bold">총 3~4회 내원 <span class="royal-grad-text">(최대 50% 단축)</span></div><div class="text-gray-400 text-xs">CEREC 당일 보철로 기공소 대기 0일</div></div></div>
+            <div class="flex items-center gap-3"><i class="fas fa-check-circle text-royal text-lg"></i><div><div class="text-charcoal font-bold">총 3~4회 내원 <span class="royal-grad-text">(내원 횟수 최대 50% 단축)</span></div><div class="text-gray-400 text-xs">CEREC 당일 보철로 기공소 대기 시간 제로</div></div></div>
           </div>
         </div>
       </div>
@@ -872,7 +872,7 @@ export function mainPage(): string {
       <div class="text-center mb-24 reveal">
         <div class="section-label section-label-royal mx-auto mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>DOCTORS</div>
         <h2 class="display-xl text-charcoal mb-6">수술이 전문인<br><span class="royal-grad-text">전문의가 합니다</span></h2>
-        <p class="text-gray-400 text-lg">일반 치과의사가 아닌, 외과 전문의가 직접 임플란트를 식립합니다</p>
+        <p class="text-gray-400 text-lg">구강악안면외과 전문의가 직접 임플란트를 식립합니다</p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto stagger-children">
         ${doctorsHtml}
@@ -961,7 +961,7 @@ export function mainPage(): string {
       <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] border border-royal/[0.03] rounded-full"></div>
       <div class="relative z-10">
         <div class="w-24 h-24 mx-auto rounded-3xl royal-grad flex items-center justify-center mb-10 royal-glow"><i class="fas fa-tooth text-white text-4xl"></i></div>
-        <h2 class="display-xl text-charcoal mb-8">상담은 무료입니다.<br><span class="royal-grad-text">부담 없이 전화주세요.</span></h2>
+        <h2 class="display-xl text-charcoal mb-8">상담은 언제든<br><span class="royal-grad-text">열려있습니다.</span></h2>
         <p class="text-gray-400 text-lg mb-12 leading-relaxed">구강외과 전문의가 직접 상담드립니다.<br>빠르게 낫고, 정확하게 오래가는 치과.</p>
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
           <a href="/reservation" class="w-full sm:w-auto btn-primary !py-5 !px-14 !text-base !font-extrabold"><i class="fas fa-calendar-check"></i>온라인 상담 예약</a>

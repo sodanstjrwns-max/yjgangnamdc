@@ -432,7 +432,7 @@ export function doctorsPage(): string {
       <div class="w-20 h-20 mx-auto rounded-2xl royal-grad flex items-center justify-center mb-8 royal-glow">
         <i class="fas fa-user-doctor text-white text-3xl"></i>
       </div>
-      <h2 class="display-lg text-charcoal mb-6">상담은 무료입니다.<br><span class="royal-grad-text">부담 없이 전화주세요.</span></h2>
+      <h2 class="display-lg text-charcoal mb-6">상담은 언제든<br><span class="royal-grad-text">열려있습니다.</span></h2>
       <p class="text-gray-400 text-lg mb-10">구강외과 전문의가 직접 진단하고 설명드립니다.</p>
       <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
         <a href="/reservation" class="w-full sm:w-auto btn-primary !py-5 !px-12 !font-extrabold">
@@ -547,7 +547,7 @@ export function doctorProfilePage(slug: string): { html: string; title: string; 
               <div class="absolute -top-10 -right-10 w-32 h-32 bg-royal/[0.05] rounded-full blur-[60px]"></div>
               <div class="relative z-10">
                 <h3 class="font-extrabold text-charcoal mb-3 text-lg">${doc.name} ${doc.title}에게 상담받기</h3>
-                <p class="text-gray-400 text-sm mb-6">상담은 무료입니다. 부담 없이 문의해 주세요.</p>
+                <p class="text-gray-400 text-sm mb-6">상담은 언제든 열려있습니다. 편하게 문의해 주세요.</p>
                 <div class="flex flex-wrap gap-3">
                   <a href="/reservation" class="btn-primary !text-sm !py-4 !px-8"><i class="fas fa-calendar-check text-xs"></i>상담 예약하기</a>
                   <a href="tel:054-636-8222" class="btn-subtle !text-sm !py-4 !px-8">
