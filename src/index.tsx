@@ -827,6 +827,90 @@ app.get('/api/admin/notices/:slug', adminAuth, async (c) => {
 // ===== API: Health =====
 app.get('/api/health', (c) => c.json({ status: 'ok', clinic: '강남치과의원' }))
 
+// ===== API: 이미지 업로드 (Base64 → D1) =====
+app.post('/api/upload', adminAuth, async (c) => {
+  try {
+    const formData = await c.req.formData()
+    const file = formData.get('file') as File
+    if (!file) return c.json({ success: false, error: '파일이 없습니다.' }, 400)
+
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
+    if (!allowedTypes.includes(file.type)) {
+      return c.json({ success: false, error: 'JPG, PNG, GIF, WebP만 업로드 가능합니다.' }, 400)
+    }
+    // 5MB 제한
+    if (file.size > 5 * 1024 * 1024) {
+      return c.json({ success: false, error: '5MB 이하 파일만 업로드 가능합니다.' }, 400)
+    }
+
+    const buffer = await file.arrayBuffer()
+    const base64 = btoa(String.fromCharCode(...new Uint8Array(buffer)))
+    const dataUrl = `data:${file.type};base64,${base64}`
+    const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`
+
+    await c.env.DB.prepare(
+      'INSERT INTO images (filename, content_type, data, size) VALUES (?, ?, ?, ?)'
+    ).bind(filename, file.type, dataUrl, file.size).run()
+
+    return c.json({ success: true, url: `/api/images/${filename}`, filename })
+  } catch (e: any) {
+    return c.json({ success: false, error: e.message || '업로드 실패' }, 500)
+  }
+})
+
+// 이미지 서빙
+app.get('/api/images/:filename', async (c) => {
+  try {
+    const filename = c.req.param('filename')
+    const img = await c.env.DB.prepare('SELECT content_type, data FROM images WHERE filename = ?').bind(filename).first() as any
+    if (!img) return c.notFound()
+
+    // data URL에서 Base64 부분만 추출
+    const base64Data = img.data.split(',')[1]
+    const bytes = Uint8Array.from(atob(base64Data), ch => ch.charCodeAt(0))
+    return new Response(bytes, {
+      headers: {
+        'Content-Type': img.content_type,
+        'Cache-Control': 'public, max-age=31536000, immutable'
+      }
+    })
+  } catch (e) {
+    return c.notFound()
+  }
+})
+
+// ===== API: 회원 관리 (관리자용) =====
+app.get('/api/admin/users', adminAuth, async (c) => {
+  try {
+    const result = await c.env.DB.prepare('SELECT id, email, phone, name, is_active, created_at FROM users ORDER BY created_at DESC LIMIT 200').all()
+    return c.json({ success: true, users: result.results, total: result.results.length })
+  } catch (e) {
+    return c.json({ success: false, error: '조회 실패' }, 500)
+  }
+})
+
+app.get('/api/admin/stats', adminAuth, async (c) => {
+  try {
+    const [inq, blog, ba, notices, users] = await Promise.all([
+      c.env.DB.prepare("SELECT COUNT(*) as cnt FROM inquiries WHERE status = 'new'").first(),
+      c.env.DB.prepare('SELECT COUNT(*) as cnt FROM blog_posts').first(),
+      c.env.DB.prepare('SELECT COUNT(*) as cnt FROM before_after_cases').first(),
+      c.env.DB.prepare('SELECT COUNT(*) as cnt FROM notices').first(),
+      c.env.DB.prepare('SELECT COUNT(*) as cnt FROM users').first(),
+    ])
+    return c.json({
+      success: true,
+      inquiries: (inq as any)?.cnt || 0,
+      blog: (blog as any)?.cnt || 0,
+      beforeAfter: (ba as any)?.cnt || 0,
+      notices: (notices as any)?.cnt || 0,
+      users: (users as any)?.cnt || 0,
+    })
+  } catch (e) {
+    return c.json({ success: false }, 500)
+  }
+})
+
 // ===== 404 커스텀 =====
 app.notFound((c) => {
   return c.html(layout(
