@@ -1,6 +1,6 @@
 interface AreaInfo { name:string; driveTime:string; driveKm:string; description:string; priority:number }
 const areaData: Record<string,AreaInfo> = {
-  '영주시':{ name:'영주시', driveTime:'시내', driveKm:'-', description:'영주시 중심부에 위치한 강남치과의원은 택지 리첼 사거리에서 쉽게 찾으실 수 있습니다.', priority:1 },
+  '영주시':{ name:'영주시', driveTime:'시내', driveKm:'-', description:'영주시 중심부에 위치한 강남치과의원은 택지 사거리 모모제인 건물 2층에서 쉽게 찾으실 수 있습니다.', priority:1 },
   '영주역':{ name:'영주역', driveTime:'약 10분', driveKm:'약 4km', description:'영주역에서 택시로 약 10분 거리입니다.', priority:1 },
   '풍기':{ name:'풍기', driveTime:'약 15분', driveKm:'약 12km', description:'풍기읍에서 자동차로 약 15분이면 도착합니다.', priority:1 },
   '봉화':{ name:'봉화', driveTime:'약 30분', driveKm:'약 25km', description:'봉화군에서 자동차로 약 30분 거리입니다.', priority:2 },
@@ -47,7 +47,7 @@ export function areaPage(region:string): { html:string; title:string; descriptio
           </div>
           <div class="card-premium p-10 text-center stagger-item group">
             <div class="w-14 h-14 mx-auto rounded-2xl royal-grad flex items-center justify-center mb-5 royal-glow group-hover:scale-110 transition-transform duration-500"><i class="fas fa-map-marker-alt text-white text-xl"></i></div>
-            <p class="text-xl font-black text-charcoal">택지 리첼 사거리</p>
+            <p class="text-xl font-black text-charcoal">택지 사거리 모모제인 건물 2층</p>
             <p class="text-gray-400 text-sm mt-2">위치</p>
           </div>
         </div>
@@ -86,7 +86,7 @@ export function areaPage(region:string): { html:string; title:string; descriptio
             <div class="flex items-start gap-3"><div class="w-8 h-8 rounded-lg royal-grad flex items-center justify-center flex-shrink-0"><i class="fas fa-map-marker-alt text-white text-[10px]"></i></div><span>경북 영주시 대학로 217, 2층</span></div>
             <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg royal-grad flex items-center justify-center flex-shrink-0"><i class="fas fa-phone text-white text-[10px]"></i></div><a href="tel:054-636-8222" class="hover:text-royal transition font-bold">054-636-8222</a></div>
             <div class="flex items-start gap-3"><div class="w-8 h-8 rounded-lg royal-grad flex items-center justify-center flex-shrink-0"><i class="fas fa-clock text-white text-[10px]"></i></div><span>평일 09:00–17:30 · 토일 휴무</span></div>
-            <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg royal-grad flex items-center justify-center flex-shrink-0"><i class="fas fa-car text-white text-[10px]"></i></div><span>건물 앞 주차 가능</span></div>
+            <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg royal-grad flex items-center justify-center flex-shrink-0"><i class="fas fa-car text-white text-[10px]"></i></div><span>건물 후면 지상·지하 주차장</span></div>
           </div>
         </div>
       </div>

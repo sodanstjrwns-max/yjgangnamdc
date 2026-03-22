@@ -66,7 +66,7 @@ function buildBaseSchema() {
     ],
     "specialOpeningHoursSpecification": {
       "@type": "OpeningHoursSpecification",
-      "description": "점심시간 13:00-14:00, 토·일·공휴일 휴무"
+      "description": "점심시간 13:00-14:00, 접수마감 17:00, 토·일·공휴일 휴무"
     },
     "founder": {
       "@type": "Person",
@@ -589,8 +589,8 @@ export function layout(content: string, opts: LayoutOptions): string {
   <div class="hidden md:block fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-b border-black/[0.04]" style="z-index:9970; pointer-events: auto;">
     <div class="max-w-[1440px] mx-auto px-8 lg:px-12 h-10 flex items-center justify-between">
       <div class="flex items-center gap-8 text-[11px] text-gray-400 tracking-wide">
-        <span class="flex items-center gap-2"><span class="relative flex h-1.5 w-1.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-400"></span></span><span class="text-emerald-500 font-medium">진료중</span> 평일 09:00-17:30</span>
-        <span class="hidden lg:inline text-gray-400">경상북도 영주시 대학로 217, 2층</span>
+        <span class="flex items-center gap-2"><span class="relative flex h-1.5 w-1.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-400"></span></span><span class="text-emerald-500 font-medium">진료중</span> 평일 09:00-17:30 (접수마감 17:00)</span>
+        <span class="hidden lg:inline text-gray-400">경상북도 영주시 대학로 217, 2층 · 모모제인 건물</span>
       </div>
       <div class="flex items-center gap-6 text-[11px] text-gray-400">
         <a href="tel:054-636-8222" class="hover:text-royal transition-colors flex items-center gap-1.5"><i class="fas fa-phone text-[9px]"></i>054-636-8222</a>
@@ -682,7 +682,7 @@ export function layout(content: string, opts: LayoutOptions): string {
         </a>
         <div class="mt-4 flex items-center justify-center gap-6 text-sm text-gray-400">
           <a href="tel:054-636-8222" class="hover:text-royal transition"><i class="fas fa-phone mr-1.5"></i>054-636-8222</a>
-          <span>평일 09:00-17:30</span>
+          <span>평일 09:00-17:30 · 접수마감 17:00</span>
         </div>
       </div>
     </div>
@@ -781,7 +781,7 @@ export function layout(content: string, opts: LayoutOptions): string {
               </div>
               <div>
                 <div class="text-gray-300 text-[10px] font-semibold tracking-wider uppercase mb-0.5">진료시간</div>
-                <div class="text-gray-500 leading-relaxed">평일 09:00-17:30<br><span class="text-gray-300">점심 13:00-14:00 · 주말·공휴일 휴무</span></div>
+                <div class="text-gray-500 leading-relaxed">평일 09:00-17:30 (접수마감 17:00)<br><span class="text-gray-300">점심 13:00-14:00 · 토·일·공휴일 휴무</span></div>
               </div>
             </div>
           </div>

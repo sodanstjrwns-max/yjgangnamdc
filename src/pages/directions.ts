@@ -7,7 +7,7 @@ export function directionsPage(): string {
     <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 pb-24 pt-48 w-full">
       <div class="section-label section-label-royal mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>DIRECTIONS</div>
       <h1 class="display-xl text-charcoal mb-6">오시는 <span class="royal-grad-text">길</span></h1>
-      <p class="text-gray-400 text-lg">경북 영주시 대학로 217, 2층 · 택지 리첼 사거리</p>
+      <p class="text-gray-400 text-lg">경북 영주시 대학로 217, 2층 · 택지 사거리 모모제인 건물</p>
     </div>
   </section>
 
@@ -33,10 +33,10 @@ export function directionsPage(): string {
         <!-- Info -->
         <div class="space-y-5 reveal-right">
           ${[
-            { icon:'fa-map-marker-alt', label:'주소', value:'경북 영주시 대학로 217, 2층<br><span class="text-gray-400 text-xs">택지 리첼 사거리</span>' },
+            { icon:'fa-map-marker-alt', label:'주소', value:'경북 영주시 대학로 217, 2층<br><span class="text-gray-400 text-xs">택지 사거리 모모제인 건물</span>' },
             { icon:'fa-phone', label:'전화', value:'<a href="tel:054-636-8222" class="royal-grad-text text-xl font-black hover:underline">054-636-8222</a>' },
-            { icon:'fa-clock', label:'진료시간', value:'평일 09:00–17:30<br><span class="text-gray-400 text-xs">점심 13:00–14:00 · 토일공휴일 휴무</span>' },
-            { icon:'fa-car', label:'주차', value:'건물 앞 주차 가능' }
+            { icon:'fa-clock', label:'진료시간', value:'평일 09:00–17:30 (접수마감 17:00)<br><span class="text-gray-400 text-xs">점심 13:00–14:00 · 토·일·공휴일 휴무</span>' },
+            { icon:'fa-car', label:'주차', value:'건물 후면 지상·지하 주차장 완비' }
           ].map(item => `
           <div class="card-premium p-6">
             <div class="flex items-start gap-4">
@@ -66,7 +66,7 @@ export function directionsPage(): string {
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 stagger-children">
         ${[
-          { icon:'fa-car', title:'자가용', desc:'택지 리첼 사거리 인근<br>건물 앞 주차 가능' },
+          { icon:'fa-car', title:'자가용', desc:'택지 사거리 모모제인 건물<br>후면 지상·지하 주차장' },
           { icon:'fa-bus', title:'버스', desc:'영주 시내버스 이용<br>인근 정류장 하차 후 도보' },
           { icon:'fa-train', title:'기차', desc:'영주역 하차 후<br>택시 약 10분' }
         ].map(item => `
@@ -85,6 +85,31 @@ export function directionsPage(): string {
   <!-- Nearby areas -->
   <section class="py-20 md:py-28 bg-white">
     <div class="max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
+      <!-- Facilities -->
+      <div class="mb-20 reveal">
+        <div class="text-center mb-10">
+          <div class="section-label section-label-royal mx-auto mb-6"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>FACILITIES</div>
+          <h2 class="display-md text-charcoal">편의시설</h2>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 stagger-children">
+          ${[
+            { icon:'fa-calendar-check', label:'예약 진료' },
+            { icon:'fa-restroom', label:'남녀 화장실 구분' },
+            { icon:'fa-couch', label:'대기공간' },
+            { icon:'fa-credit-card', label:'간편결제' },
+            { icon:'fa-square-parking', label:'주차 가능' }
+          ].map(f => `
+          <div class="card-premium p-6 text-center stagger-item">
+            <div class="w-12 h-12 mx-auto rounded-xl royal-grad flex items-center justify-center mb-3 royal-glow">
+              <i class="fas ${f.icon} text-white text-sm"></i>
+            </div>
+            <p class="font-bold text-charcoal text-sm">${f.label}</p>
+          </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <!-- Nearby areas heading -->
       <div class="text-center mb-14 reveal">
         <div class="section-label section-label-royal mx-auto mb-6"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>NEARBY</div>
         <h2 class="display-md text-charcoal">주변 지역에서 오시는 길</h2>

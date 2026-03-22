@@ -28,7 +28,7 @@ export function reservationPage(): string {
             <div class="relative z-10">
               <h3 class="font-extrabold text-charcoal text-lg group-hover:text-royal transition-colors duration-300">전화 예약</h3>
               <p class="royal-grad-text text-2xl font-black mt-1">054-636-8222</p>
-              <p class="text-gray-400 text-sm mt-1">평일 09:00–17:30 (점심 13:00–14:00)</p>
+              <p class="text-gray-400 text-sm mt-1">평일 09:00–17:30 (접수마감 17:00)</p>
             </div>
           </a>
 
@@ -63,6 +63,10 @@ export function reservationPage(): string {
               <div class="flex justify-between items-center pb-3.5 border-b border-gray-50">
                 <span class="text-gray-500 font-medium">월–금</span>
                 <span class="font-extrabold text-charcoal text-base">09:00 – 17:30</span>
+              </div>
+              <div class="flex justify-between items-center pb-3.5 border-b border-gray-50">
+                <span class="text-gray-500 font-medium">접수마감</span>
+                <span class="font-bold text-gray-400">17:00</span>
               </div>
               <div class="flex justify-between items-center pb-3.5 border-b border-gray-50">
                 <span class="text-gray-500 font-medium">점심시간</span>
