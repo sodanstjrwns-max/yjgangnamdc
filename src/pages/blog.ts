@@ -6,9 +6,19 @@ export function blogListPage(posts: any[]): string {
 
   const postsHtml = posts.length > 0 ? posts.map(post => `
     <a href="/blog/${post.slug}" class="card-premium group block stagger-item overflow-hidden">
+      ${post.thumbnail ? `
+      <div class="relative aspect-[16/10] overflow-hidden">
+        <img src="${post.thumbnail}" alt="${post.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy">
+        <div class="absolute top-3 left-3 px-3 py-1.5 rounded-full bg-royal/80 text-white text-[10px] font-bold backdrop-blur-sm">${post.category}</div>
+      </div>
+      ` : `
+      <div class="relative aspect-[16/10] overflow-hidden bg-gradient-to-br from-royal/5 to-royal/10 flex items-center justify-center">
+        <i class="fas fa-tooth text-royal/20 text-5xl"></i>
+        <div class="absolute top-3 left-3 px-3 py-1.5 rounded-full bg-royal/80 text-white text-[10px] font-bold backdrop-blur-sm">${post.category}</div>
+      </div>
+      `}
       <div class="p-7 md:p-8">
-        <div class="flex items-center gap-3 mb-5">
-          <span class="px-3 py-1.5 rounded-full bg-royal/[0.06] text-royal text-[10px] font-bold border border-royal/[0.08]">${post.category}</span>
+        <div class="flex items-center gap-3 mb-4">
           <span class="text-gray-300 text-[11px]">${formatDate(post.published_at)}</span>
           <span class="text-gray-300 text-[11px] flex items-center gap-1"><i class="fas fa-eye text-[8px]"></i>${post.views || 0}</span>
         </div>
