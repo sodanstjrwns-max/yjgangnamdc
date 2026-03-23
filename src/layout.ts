@@ -386,9 +386,7 @@ export function layout(content: string, opts: LayoutOptions): string {
   <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-  <!-- Favicon (duplicate removed, using first block above) -->
-
-  <!-- hreflang (Korean only - x-default unnecessary for single language) -->
+  <!-- hreflang (Korean only) -->
   <link rel="alternate" hreflang="ko" href="${fullUrl}">
 
   <!-- Fonts -->
@@ -463,8 +461,6 @@ export function layout(content: string, opts: LayoutOptions): string {
     .royal-accent-bg { background: rgba(16,175,178,0.06); border: 1px solid rgba(16,175,178,0.12); }
 
     /* ===== Glass Effects ===== */
-    .glass-white { background: rgba(255,255,255,0.85); backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%); }
-    .glass-lavender { background: rgba(248,245,251,0.9); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
     .glass-royal { background: rgba(16,175,178,0.04); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(16,175,178,0.1); }
 
     /* ===== Cards ===== */
@@ -562,12 +558,7 @@ export function layout(content: string, opts: LayoutOptions): string {
       font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
     }
     .section-label-royal { background: rgba(16,175,178,0.06); color: var(--royal); border: 1px solid rgba(16,175,178,0.12); }
-    .section-label-light { background: rgba(0,0,0,0.03); color: rgba(0,0,0,0.4); border: 1px solid rgba(0,0,0,0.05); }
-
     .divider-royal { width: 48px; height: 2px; background: linear-gradient(90deg, var(--royal), var(--royal-light)); border-radius: 2px; }
-
-    /* ===== Logo nav shadow ===== */
-    .royal-grad-shadow { box-shadow: 0 4px 20px rgba(16,175,178,0.2); }
 
     /* ===== Animations ===== */
     .reveal { opacity: 0; transform: translateY(50px); }
@@ -576,10 +567,6 @@ export function layout(content: string, opts: LayoutOptions): string {
     .reveal-scale { opacity: 0; transform: scale(0.92); }
 
     /* ===== Patterns ===== */
-    .dot-pattern {
-      background-image: radial-gradient(circle, rgba(16,175,178,0.05) 1px, transparent 1px);
-      background-size: 40px 40px;
-    }
     .grid-pattern {
       background-image:
         linear-gradient(rgba(16,175,178,0.02) 1px, transparent 1px),
@@ -613,18 +600,9 @@ export function layout(content: string, opts: LayoutOptions): string {
     /* ===== Orbs ===== */
     .orb { position: absolute; border-radius: 50%; filter: blur(100px); pointer-events: none; }
     .orb-royal { background: rgba(16,175,178,0.06); }
-    .orb-lavender { background: rgba(226,245,245,0.3); }
 
     /* ===== Counter ===== */
     .counter { font-variant-numeric: tabular-nums; }
-
-    /* ===== Image placeholder ===== */
-    .img-placeholder {
-      background: linear-gradient(135deg, #F3FBFB 0%, #E2F5F5 30%, #E8F7F7 50%, #E2F5F5 70%, #F3FBFB 100%);
-      background-size: 300% 300%;
-      animation: shimmer 4s ease infinite;
-    }
-    @keyframes shimmer { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
 
     /* ===== Page transition ===== */
     .page-transition { animation: pageIn 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -787,12 +765,6 @@ export function layout(content: string, opts: LayoutOptions): string {
     /* ===== Core Web Vitals: CLS Prevention ===== */
     img { max-width: 100%; height: auto; }
     img[loading="lazy"] { content-visibility: auto; }
-    /* Reserve space for common image aspect ratios */
-    .aspect-16-9 { aspect-ratio: 16/9; }
-    .aspect-4-3 { aspect-ratio: 4/3; }
-    .aspect-1-1 { aspect-ratio: 1/1; }
-    /* Font display swap for CLS */
-    @font-face { font-display: swap; }
     /* Reduce motion for accessibility + performance */
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
