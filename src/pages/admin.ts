@@ -326,7 +326,23 @@ export function adminPage(): string {
             </label>
           </div>
         </div>
-        <div class="mb-6"><label class="field-label">내용 (HTML) <span class="req">*</span></label><textarea class="admin-textarea" id="noticeContent" placeholder="<h2>제목</h2>&#10;<p>공지 내용을 입력하세요...</p>" required></textarea></div>
+
+        <!-- 본문 에디터 (블로그와 동일한 툴바) -->
+        <div class="mb-2 flex items-center justify-between">
+          <label class="field-label mb-0">내용 (HTML) <span class="req">*</span></label>
+          <div class="flex gap-1">
+            <button type="button" onclick="insertNoticeTag('h2')" class="admin-btn admin-btn-secondary !py-1 !px-2 !text-[10px]">H2</button>
+            <button type="button" onclick="insertNoticeTag('h3')" class="admin-btn admin-btn-secondary !py-1 !px-2 !text-[10px]">H3</button>
+            <button type="button" onclick="insertNoticeTag('p')" class="admin-btn admin-btn-secondary !py-1 !px-2 !text-[10px]">P</button>
+            <button type="button" onclick="insertNoticeTag('strong')" class="admin-btn admin-btn-secondary !py-1 !px-2 !text-[10px]">Bold</button>
+            <button type="button" onclick="insertNoticeTag('ul')" class="admin-btn admin-btn-secondary !py-1 !px-2 !text-[10px]">UL</button>
+            <button type="button" onclick="insertNoticeTag('blockquote')" class="admin-btn admin-btn-secondary !py-1 !px-2 !text-[10px]">Quote</button>
+            <button type="button" onclick="insertNoticeTag('table')" class="admin-btn admin-btn-secondary !py-1 !px-2 !text-[10px]">Table</button>
+            <button type="button" onclick="insertNoticeImage()" class="admin-btn admin-btn-primary !py-1 !px-2 !text-[10px]"><i class="fas fa-image"></i> 이미지</button>
+          </div>
+        </div>
+        <div class="mb-6"><textarea class="admin-textarea" id="noticeContent" placeholder="<h2>제목</h2>&#10;<p>공지 내용을 입력하세요...</p>&#10;&#10;💡 이미지 버튼으로 사진을 삽입할 수 있습니다." required style="min-height:300px;font-family:monospace;font-size:13px;"></textarea></div>
+
         <div class="flex gap-3">
           <button type="submit" class="admin-btn admin-btn-primary"><i class="fas fa-save text-xs"></i>저장</button>
           <button type="button" onclick="closeNoticeModal()" class="admin-btn admin-btn-secondary">취소</button>
@@ -337,6 +353,7 @@ export function adminPage(): string {
 
   <!-- 이미지 업로드용 숨김 input -->
   <input type="file" id="blogImageUploadHidden" accept="image/*" class="hidden">
+  <input type="file" id="noticeImageUploadHidden" accept="image/*" class="hidden">
 
   <!-- Toast -->
   <div class="toast toast-success" id="toastSuccess"><i class="fas fa-check-circle mr-2"></i><span id="toastSuccessMsg">저장되었습니다</span></div>
@@ -591,6 +608,43 @@ export function adminPage(): string {
     async function deleteBlog(slug) { if (!confirm('정말 삭제?')) return; const d = await api('DELETE', '/api/blog/' + slug); if (d.success) { showToast('success', '삭제 완료'); loadBlog(); loadStats(); } }
 
     // ===== 공지사항 =====
+    // 공지사항 태그 삽입 헬퍼
+    function insertNoticeTag(tag) {
+      const ta = document.getElementById('noticeContent');
+      const start = ta.selectionStart, end = ta.selectionEnd;
+      const sel = ta.value.substring(start, end) || '내용';
+      let insert = '';
+      if (tag === 'ul') insert = '<ul>\\n  <li>' + sel + '</li>\\n</ul>';
+      else if (tag === 'table') insert = '<table>\\n  <tr><th>항목</th><th>내용</th></tr>\\n  <tr><td>' + sel + '</td><td></td></tr>\\n</table>';
+      else insert = '<' + tag + '>' + sel + '</' + tag + '>';
+      ta.value = ta.value.substring(0, start) + insert + ta.value.substring(end);
+      ta.focus();
+    }
+
+    // 공지사항 본문 이미지 삽입
+    function insertNoticeImage() {
+      const inp = document.getElementById('noticeImageUploadHidden');
+      inp.onchange = async function() {
+        const file = this.files[0];
+        if (!file) return;
+        const formData = new FormData();
+        formData.append('file', file);
+        try {
+          const res = await fetch('/api/upload?key=' + ADMIN_KEY, { method: 'POST', body: formData });
+          const data = await res.json();
+          if (data.success) {
+            const ta = document.getElementById('noticeContent');
+            const imgTag = '<img src="' + data.url + '" alt="' + (file.name || '공지 이미지') + '">';
+            const pos = ta.selectionStart;
+            ta.value = ta.value.substring(0, pos) + '\\n' + imgTag + '\\n' + ta.value.substring(pos);
+            showToast('success', '이미지 삽입 완료');
+          } else { showToast('error', data.error); }
+        } catch { showToast('error', '이미지 업로드 오류'); }
+        this.value = '';
+      };
+      inp.click();
+    }
+
     async function loadNotices() {
       const data = await api('GET', '/api/admin/notices');
       if (!data.success) return;

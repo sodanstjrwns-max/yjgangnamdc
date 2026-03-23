@@ -19,6 +19,7 @@ import { layout } from './layout'
 
 type Bindings = {
   DB: D1Database;
+  ADMIN_KEY: string;
 }
 
 const app = new Hono<{ Bindings: Bindings }>()
@@ -43,7 +44,8 @@ app.use('/api/*', cors())
 // ===== Admin auth middleware =====
 const adminAuth = createMiddleware(async (c, next) => {
   const key = c.req.query('key')
-  if (key !== 'gangnam2017admin') return c.json({ error: 'Unauthorized' }, 401)
+  const adminKey = c.env.ADMIN_KEY || 'gangnam2017admin' // fallback for local dev
+  if (!key || key !== adminKey) return c.json({ error: 'Unauthorized' }, 401)
   await next()
 })
 
