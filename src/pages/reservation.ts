@@ -36,16 +36,17 @@ export function reservationPage(): string {
             </div>
           </a>
 
-          <div class="card-premium p-7 flex items-center gap-6 opacity-60">
-            <div class="w-16 h-16 rounded-2xl bg-[#03C75A] flex items-center justify-center flex-shrink-0">
-              <i class="fas fa-calendar-check text-white text-xl"></i>
+          <a href="https://naver.me/GDa2vwS0" target="_blank" rel="noopener noreferrer" class="card-premium p-7 flex items-center gap-6 group block relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-[#03C75A]/[0.03] rounded-full blur-[60px] group-hover:bg-[#03C75A]/[0.06] transition-all duration-700"></div>
+            <div class="w-16 h-16 rounded-2xl bg-[#03C75A] flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-500">
+              <svg class="w-8 h-8" viewBox="0 0 24 24" fill="white"><path d="M16.273 12.845 7.376 0H0v24h7.727V11.155L16.624 24H24V0h-7.727v12.845Z"/></svg>
             </div>
-            <div>
-              <h3 class="font-extrabold text-charcoal text-lg">네이버 예약</h3>
-              <p class="text-gray-400 text-sm mt-1">준비 중입니다</p>
+            <div class="relative z-10">
+              <h3 class="font-extrabold text-charcoal text-lg group-hover:text-[#03C75A] transition-colors duration-300">네이버 예약</h3>
+              <p class="text-[#03C75A] text-base font-bold mt-1">바로 예약하기 →</p>
+              <p class="text-gray-400 text-sm mt-1">네이버에서 간편하게 예약하세요</p>
             </div>
-            <span class="ml-auto px-3 py-1 rounded-full bg-gray-100 text-gray-400 text-[10px] font-bold">COMING SOON</span>
-          </div>
+          </a>
 
           <div class="card-premium p-7 flex items-center gap-6 opacity-60">
             <div class="w-16 h-16 rounded-2xl bg-[#FEE500] flex items-center justify-center flex-shrink-0">
