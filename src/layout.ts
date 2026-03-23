@@ -386,8 +386,10 @@ export function layout(content: string, opts: LayoutOptions): string {
   <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-  <!-- hreflang (Korean only) -->
+  <!-- hreflang -->
+  <link rel="alternate" hreflang="ko-KR" href="${fullUrl}">
   <link rel="alternate" hreflang="ko" href="${fullUrl}">
+  <link rel="alternate" hreflang="x-default" href="${fullUrl}">
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -814,33 +816,33 @@ export function layout(content: string, opts: LayoutOptions): string {
         </a>
 
         <!-- Desktop Menu -->
-        <div class="hidden lg:flex items-center gap-0.5">
-          <a href="/doctors" class="px-5 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative group font-medium">
+        <div class="hidden xl:flex items-center gap-0">
+          <a href="/doctors" class="px-3 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative group font-medium whitespace-nowrap">
             의료진
             <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-royal rounded-full group-hover:w-6 transition-all duration-300"></span>
           </a>
-          <a href="/treatments" class="px-5 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative group font-medium">
+          <a href="/treatments" class="px-3 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative group font-medium whitespace-nowrap">
             진료안내
             <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-royal rounded-full group-hover:w-6 transition-all duration-300"></span>
           </a>
-          <a href="/treatments/implant" class="px-5 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative group font-medium">
+          <a href="/treatments/implant" class="px-3 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative group font-medium whitespace-nowrap">
             임플란트
             <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-royal rounded-full group-hover:w-6 transition-all duration-300"></span>
           </a>
-          <a href="/treatments/invisalign" class="px-5 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative group font-medium">
+          <a href="/treatments/invisalign" class="px-3 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative group font-medium whitespace-nowrap">
             인비절라인
             <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-royal rounded-full group-hover:w-6 transition-all duration-300"></span>
           </a>
-          <a href="/before-after" class="px-5 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative group font-medium">
+          <a href="/before-after" class="px-3 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative group font-medium whitespace-nowrap">
             치료전후
             <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-royal rounded-full group-hover:w-6 transition-all duration-300"></span>
           </a>
-          <a href="/blog" class="px-5 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative group font-medium">
+          <a href="/blog" class="px-3 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative group font-medium whitespace-nowrap">
             블로그
             <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-royal rounded-full group-hover:w-6 transition-all duration-300"></span>
           </a>
           <div class="relative group/visit">
-            <button class="px-5 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative font-medium flex items-center gap-1">
+            <button class="px-3 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative font-medium flex items-center gap-1 whitespace-nowrap">
               내원안내
               <i class="fas fa-chevron-down text-[8px] ml-0.5 transition-transform group-hover/visit:rotate-180"></i>
               <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-royal rounded-full group-hover/visit:w-6 transition-all duration-300"></span>
@@ -860,8 +862,8 @@ export function layout(content: string, opts: LayoutOptions): string {
               </div>
             </div>
           </div>
-          <div class="w-px h-5 bg-gray-200 mx-3"></div>
-          <a href="/reservation" class="btn-primary !py-2.5 !px-7 !text-[12px] !gap-2 !font-bold">
+          <div class="w-px h-5 bg-gray-200 mx-2"></div>
+          <a href="/reservation" class="btn-primary !py-2.5 !px-5 !text-[12px] !gap-2 !font-bold whitespace-nowrap">
             <i class="fas fa-calendar-check text-[10px]"></i>상담예약
           </a>
           <!-- Auth Button (Desktop) -->
@@ -882,7 +884,7 @@ export function layout(content: string, opts: LayoutOptions): string {
         </div>
 
         <!-- Mobile -->
-        <div class="flex items-center gap-2 lg:hidden">
+        <div class="flex items-center gap-2 xl:hidden">
           <a href="tel:054-636-8222" class="w-10 h-10 rounded-xl bg-royal/5 border border-royal/10 flex items-center justify-center text-royal text-sm" aria-label="전화 상담 054-636-8222">
             <i class="fas fa-phone" aria-hidden="true"></i>
           </a>

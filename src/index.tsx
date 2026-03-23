@@ -41,6 +41,17 @@ app.use('*', secureHeaders({
 
 app.use('/api/*', cors())
 
+// ===== 정적 페이지 캐시 헤더 (SEO 성능 최적화) =====
+app.use('*', createMiddleware(async (c, next) => {
+  await next()
+  // HTML 페이지에 s-maxage 설정 (CDN 캐시, 브라우저 1분 + CDN 5분)
+  const ct = c.res.headers.get('Content-Type') || ''
+  if (ct.includes('text/html') && !c.req.path.startsWith('/api/') && !c.req.path.startsWith('/admin')) {
+    c.res.headers.set('Cache-Control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=600')
+    c.res.headers.set('X-Content-Type-Options', 'nosniff')
+  }
+}))
+
 // ===== Admin auth middleware =====
 const adminAuth = createMiddleware(async (c, next) => {
   const key = c.req.query('key')
