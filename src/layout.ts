@@ -839,10 +839,6 @@ export function layout(content: string, opts: LayoutOptions): string {
             블로그
             <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-royal rounded-full group-hover:w-6 transition-all duration-300"></span>
           </a>
-          <a href="/dictionary" class="px-5 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative group font-medium">
-            용어사전
-            <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-royal rounded-full group-hover:w-6 transition-all duration-300"></span>
-          </a>
           <div class="relative group/visit">
             <button class="px-5 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative font-medium flex items-center gap-1">
               내원안내
@@ -856,6 +852,10 @@ export function layout(content: string, opts: LayoutOptions): string {
                 </a>
                 <a href="/pricing" class="flex items-center gap-3 px-5 py-3 text-sm text-gray-600 hover:bg-royal/5 hover:text-royal transition-all">
                   <i class="fas fa-won-sign text-xs text-gray-300"></i>수가 안내
+                </a>
+                <div class="border-t border-gray-100"></div>
+                <a href="/dictionary" class="flex items-center gap-3 px-5 py-3 text-sm text-gray-600 hover:bg-royal/5 hover:text-royal transition-all">
+                  <i class="fas fa-book-medical text-xs text-gray-300"></i>치과 용어 사전
                 </a>
               </div>
             </div>
@@ -911,7 +911,6 @@ export function layout(content: string, opts: LayoutOptions): string {
           <a href="/treatments/invisalign" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">인비절라인</a>
           <a href="/before-after" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">치료 전후</a>
           <a href="/blog" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">블로그</a>
-          <a href="/dictionary" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">치과 용어 사전</a>
           <div class="border-b border-gray-100">
             <div class="py-4 text-2xl font-bold text-gray-400">내원 안내</div>
             <div class="pl-4 pb-3 space-y-1">
@@ -920,6 +919,9 @@ export function layout(content: string, opts: LayoutOptions): string {
               </a>
               <a href="/pricing" class="flex items-center gap-3 py-2.5 text-lg font-medium text-charcoal hover:text-royal transition-colors">
                 <i class="fas fa-won-sign text-sm text-royal/50 w-5 text-center"></i>수가 안내
+              </a>
+              <a href="/dictionary" class="flex items-center gap-3 py-2.5 text-lg font-medium text-charcoal hover:text-royal transition-colors">
+                <i class="fas fa-book-medical text-sm text-royal/50 w-5 text-center"></i>치과 용어 사전
               </a>
             </div>
           </div>
