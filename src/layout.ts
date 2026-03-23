@@ -19,8 +19,8 @@ interface LayoutOptions {
   articleModifiedTime?: string
 }
 
-const SITE_URL = 'https://gndentalclinic.com'
-const SITE_NAME = '강남치과의원'
+export const SITE_URL = 'https://gndentalclinic.com'
+export const SITE_NAME = '강남치과의원'
 const SITE_NAME_EN = 'Gangnam Dental Clinic'
 const PHONE = '+82-54-636-8222'
 const PHONE_DISPLAY = '054-636-8222'
@@ -839,6 +839,10 @@ export function layout(content: string, opts: LayoutOptions): string {
             블로그
             <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-royal rounded-full group-hover:w-6 transition-all duration-300"></span>
           </a>
+          <a href="/dictionary" class="px-5 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative group font-medium">
+            용어사전
+            <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-royal rounded-full group-hover:w-6 transition-all duration-300"></span>
+          </a>
           <div class="relative group/visit">
             <button class="px-5 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative font-medium flex items-center gap-1">
               내원안내
@@ -907,6 +911,7 @@ export function layout(content: string, opts: LayoutOptions): string {
           <a href="/treatments/invisalign" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">인비절라인</a>
           <a href="/before-after" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">치료 전후</a>
           <a href="/blog" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">블로그</a>
+          <a href="/dictionary" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">치과 용어 사전</a>
           <div class="border-b border-gray-100">
             <div class="py-4 text-2xl font-bold text-gray-400">내원 안내</div>
             <div class="pl-4 pb-3 space-y-1">
@@ -999,6 +1004,7 @@ export function layout(content: string, opts: LayoutOptions): string {
             <li><a href="/doctors" class="hover:text-royal transition-colors duration-300">의료진</a></li>
             <li><a href="/before-after" class="hover:text-royal transition-colors duration-300">치료전후</a></li>
             <li><a href="/blog" class="hover:text-royal transition-colors duration-300">블로그</a></li>
+            <li><a href="/dictionary" class="hover:text-royal transition-colors duration-300">용어사전</a></li>
             <li><a href="/pricing" class="hover:text-royal transition-colors duration-300">비용안내</a></li>
             <li><a href="/directions" class="hover:text-royal transition-colors duration-300">오시는길</a></li>
             <li><a href="/reservation" class="hover:text-royal transition-colors duration-300">상담예약</a></li>

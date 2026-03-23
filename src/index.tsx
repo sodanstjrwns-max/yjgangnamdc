@@ -14,6 +14,7 @@ import { beforeAfterListPage, beforeAfterDetailPage } from './pages/beforeafter'
 import { noticeListPage, noticeDetailPage } from './pages/notices'
 import { adminPage } from './pages/admin'
 import { registerPage, loginPage, loginRequiredPage } from './pages/auth'
+import { dictionaryListPage, dictionaryDetailPage } from './pages/dictionary'
 import { layout } from './layout'
 
 type Bindings = {
@@ -196,6 +197,7 @@ app.get('/sitemap.xml', async (c) => {
     { url: '/blog', priority: '0.8', changefreq: 'weekly' },
     { url: '/before-after', priority: '0.8', changefreq: 'weekly' },
     { url: '/notices', priority: '0.7', changefreq: 'weekly' },
+    { url: '/dictionary', priority: '0.8', changefreq: 'weekly' },
     { url: '/pricing', priority: '0.8', changefreq: 'monthly' },
     { url: '/directions', priority: '0.7', changefreq: 'yearly' },
     { url: '/reservation', priority: '0.8', changefreq: 'yearly' },
@@ -225,6 +227,13 @@ app.get('/sitemap.xml', async (c) => {
     const noticesList = await c.env.DB.prepare('SELECT slug FROM notices WHERE is_published = 1 ORDER BY published_at DESC').all()
     dynamicPages = dynamicPages.concat(noticesList.results.map((p: any) => ({
       url: `/notices/${p.slug}`,
+      priority: '0.5',
+      changefreq: 'monthly' as const
+    })))
+    // 치과 용어 사전 동적 URL
+    const dictTerms = await c.env.DB.prepare('SELECT slug FROM dictionary ORDER BY term_ko').all()
+    dynamicPages = dynamicPages.concat(dictTerms.results.map((p: any) => ({
+      url: `/dictionary/${p.slug}`,
       priority: '0.5',
       changefreq: 'monthly' as const
     })))
@@ -439,6 +448,90 @@ app.get('/treatments/:slug', (c) => {
     ogType: 'article',
     schemas: result.schemas || [],
     speakableSelectors: ['[data-speakable]', 'h1', 'h2', '.treatment-section']
+  }))
+})
+
+// ===== 치과 용어 사전 =====
+app.get('/dictionary', async (c) => {
+  const query = c.req.query('q')
+  const selectedCategory = c.req.query('category')
+  let terms: any[] = []
+  let categories: any[] = []
+  try {
+    // 카테고리별 수량
+    const catResult = await c.env.DB.prepare('SELECT category, COUNT(*) as cnt FROM dictionary GROUP BY category ORDER BY cnt DESC').all()
+    categories = catResult.results
+
+    // 용어 검색/필터
+    if (query) {
+      const result = await c.env.DB.prepare('SELECT * FROM dictionary WHERE term_ko LIKE ? OR term_en LIKE ? OR summary LIKE ? OR description LIKE ? ORDER BY is_featured DESC, term_ko').bind(`%${query}%`, `%${query}%`, `%${query}%`, `%${query}%`).all()
+      terms = result.results
+    } else if (selectedCategory) {
+      const result = await c.env.DB.prepare('SELECT * FROM dictionary WHERE category = ? ORDER BY is_featured DESC, term_ko').bind(selectedCategory).all()
+      terms = result.results
+    } else {
+      const result = await c.env.DB.prepare('SELECT * FROM dictionary ORDER BY is_featured DESC, term_ko').all()
+      terms = result.results
+    }
+  } catch (e) { /* DB not available */ }
+
+  const totalCount = categories.reduce((sum: number, c: any) => sum + c.cnt, 0)
+  const titleSuffix = selectedCategory ? ` – ${selectedCategory}` : query ? ` – "${query}" 검색결과` : ''
+
+  return c.html(layout(dictionaryListPage(terms, categories, query, selectedCategory), {
+    title: `치과 용어 사전${titleSuffix} | ${totalCount}개 치과 전문 용어 해설 – 강남치과의원`,
+    description: `치과에서 자주 사용하는 ${totalCount}개 전문 용어를 알기 쉽게 설명합니다. 임플란트, 교정, 보철, 잇몸, 사랑니 등 10개 카테고리의 치과 용어를 구강악안면외과 전문의가 감수했습니다.`,
+    url: '/dictionary',
+    keywords: '치과 용어, 임플란트 뜻, 크라운 뜻, 인레이, 온레이, 인비절라인, 스케일링, 신경치료, CEREC, 치과 전문 용어 사전',
+    speakableSelectors: ['[data-speakable]', 'h1', 'h2'],
+    schemas: [{
+      "@context": "https://schema.org",
+      "@type": "DefinedTermSet",
+      "@id": "https://gndentalclinic.com/dictionary#glossary",
+      "name": "강남치과의원 치과 용어 사전",
+      "description": `치과에서 자주 사용하는 ${totalCount}개 전문 용어를 알기 쉽게 설명합니다.`,
+      "url": "https://gndentalclinic.com/dictionary",
+      "publisher": { "@id": "https://gndentalclinic.com/#organization" },
+      "inLanguage": "ko",
+      "numberOfItems": totalCount,
+      "about": { "@type": "MedicalSpecialty", "name": "Dentistry" }
+    }]
+  }))
+})
+
+app.get('/dictionary/:slug', async (c) => {
+  const slug = c.req.param('slug')
+  let term: any = null
+  let relatedTerms: any[] = []
+  try {
+    term = await c.env.DB.prepare('SELECT * FROM dictionary WHERE slug = ?').bind(slug).first()
+    if (term && term.related_terms) {
+      const keywords = term.related_terms.split(',').map((t: string) => t.trim()).slice(0, 8)
+      if (keywords.length > 0) {
+        const placeholders = keywords.map(() => '?').join(',')
+        const result = await c.env.DB.prepare(`SELECT * FROM dictionary WHERE term_ko IN (${placeholders}) AND slug != ? ORDER BY is_featured DESC, term_ko LIMIT 8`).bind(...keywords, slug).all()
+        relatedTerms = result.results
+      }
+    }
+  } catch (e) { /* DB not available */ }
+
+  if (!term) {
+    return c.html(layout('<div class="min-h-[60vh] flex items-center justify-center"><div class="text-center"><h1 class="text-6xl font-black text-gray-200 mb-4">404</h1><p class="text-gray-400 text-lg mb-6">용어를 찾을 수 없습니다</p><a href="/dictionary" class="btn-primary px-6 py-3 rounded-xl text-sm font-bold">용어 사전으로</a></div></div>', {
+      title: '용어를 찾을 수 없습니다 | 강남치과의원',
+      description: '요청하신 치과 용어를 찾을 수 없습니다.',
+      url: `/dictionary/${slug}`
+    }), 404)
+  }
+
+  const page = dictionaryDetailPage(term, relatedTerms)
+  return c.html(layout(page.html, {
+    title: `${term.term_ko}${term.term_en ? ` (${term.term_en})` : ''} – 치과 용어 사전 | 강남치과의원`,
+    description: term.summary,
+    url: `/dictionary/${term.slug}`,
+    keywords: `${term.term_ko}, ${term.term_en || ''}, ${term.category}, 치과 용어, ${term.related_terms || ''}`,
+    ogType: 'article',
+    schemas: page.schemas,
+    speakableSelectors: ['[data-speakable]', 'h1', 'h2']
   }))
 })
 
