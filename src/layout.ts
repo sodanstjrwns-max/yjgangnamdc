@@ -306,6 +306,23 @@ export function layout(content: string, opts: LayoutOptions): string {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Google Tag Manager (GTM) -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-XXXXXXX');</script>
+  <!-- GA4 (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX', {
+      page_title: document.title,
+      custom_map: {
+        'dimension1': 'page_category',
+        'dimension2': 'treatment_type'
+      }
+    });
+  </script>
   <!-- Favicon (logo-based, v2) -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2">
   <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png?v=2">
@@ -362,6 +379,12 @@ export function layout(content: string, opts: LayoutOptions): string {
   <meta http-equiv="x-dns-prefetch-control" content="on">
   <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
   <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
+  <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+  <link rel="dns-prefetch" href="https://www.google-analytics.com">
+
+  <!-- Preconnect for critical third-party origins (Core Web Vitals) -->
+  <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
   <!-- Favicon (duplicate removed, using first block above) -->
 
@@ -395,12 +418,13 @@ export function layout(content: string, opts: LayoutOptions): string {
     }
   </script>
 
-  <!-- Font Awesome -->
-  <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" rel="stylesheet">
+  <!-- Font Awesome (deferred for CWV) -->
+  <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" rel="stylesheet"></noscript>
 
-  <!-- GSAP + ScrollTrigger -->
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <!-- GSAP + ScrollTrigger (deferred for CWV) -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>
 
   <!-- Three.js removed for performance - using CSS particles instead -->
   
@@ -760,9 +784,30 @@ export function layout(content: string, opts: LayoutOptions): string {
       outline-offset: 2px;
       border-radius: 4px;
     }
+
+    /* ===== Core Web Vitals: CLS Prevention ===== */
+    img { max-width: 100%; height: auto; }
+    img[loading="lazy"] { content-visibility: auto; }
+    /* Reserve space for common image aspect ratios */
+    .aspect-16-9 { aspect-ratio: 16/9; }
+    .aspect-4-3 { aspect-ratio: 4/3; }
+    .aspect-1-1 { aspect-ratio: 1/1; }
+    /* Font display swap for CLS */
+    @font-face { font-display: swap; }
+    /* Reduce motion for accessibility + performance */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
   </style>
 </head>
 <body class="font-pretendard page-transition">
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <!-- Skip Navigation (접근성) -->
   <a href="#main-content" class="skip-nav">본문 바로가기</a>
@@ -1158,11 +1203,137 @@ export function layout(content: string, opts: LayoutOptions): string {
       }
     }
 
+    // ===== GA4 Custom Event Tracking =====
+    function trackEvent(eventName, params = {}) {
+      if (typeof gtag === 'function') {
+        gtag('event', eventName, params);
+      }
+    }
+
+    // 전화 클릭 추적
+    document.querySelectorAll('a[href^="tel:"]').forEach(el => {
+      el.addEventListener('click', () => {
+        trackEvent('phone_call_click', {
+          event_category: 'engagement',
+          event_label: el.getAttribute('href'),
+          page_location: window.location.pathname
+        });
+      });
+    });
+
+    // 예약 버튼 클릭 추적
+    document.querySelectorAll('a[href="/reservation"], a[href*="reservation"]').forEach(el => {
+      el.addEventListener('click', () => {
+        trackEvent('reservation_click', {
+          event_category: 'conversion',
+          event_label: el.textContent.trim(),
+          page_location: window.location.pathname
+        });
+      });
+    });
+
+    // 외부 링크 클릭 추적 (네이버블로그, 지도 등)
+    document.querySelectorAll('a[target="_blank"]').forEach(el => {
+      el.addEventListener('click', () => {
+        trackEvent('outbound_click', {
+          event_category: 'engagement',
+          event_label: el.getAttribute('href'),
+          page_location: window.location.pathname
+        });
+      });
+    });
+
+    // 스크롤 깊이 추적 (25%, 50%, 75%, 100%)
+    const scrollThresholds = [25, 50, 75, 100];
+    const scrollFired = new Set();
+    window.addEventListener('scroll', () => {
+      const scrollPct = Math.round((window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100);
+      scrollThresholds.forEach(t => {
+        if (scrollPct >= t && !scrollFired.has(t)) {
+          scrollFired.add(t);
+          trackEvent('scroll_depth', {
+            event_category: 'engagement',
+            event_label: t + '%',
+            value: t,
+            page_location: window.location.pathname
+          });
+        }
+      });
+    }, { passive: true });
+
+    // 문의 폼 제출 추적
+    document.addEventListener('submit', (e) => {
+      const form = e.target;
+      if (form && form.closest && form.closest('[data-form-type]')) {
+        trackEvent('form_submit', {
+          event_category: 'conversion',
+          event_label: form.closest('[data-form-type]').dataset.formType || 'inquiry',
+          page_location: window.location.pathname
+        });
+      }
+    });
+
+    // 페이지 로드 성능 추적 (Core Web Vitals → GA4)
+    if ('PerformanceObserver' in window) {
+      // LCP (Largest Contentful Paint)
+      try {
+        new PerformanceObserver((list) => {
+          const entries = list.getEntries();
+          const lastEntry = entries[entries.length - 1];
+          trackEvent('web_vitals', {
+            event_category: 'performance',
+            event_label: 'LCP',
+            value: Math.round(lastEntry.startTime)
+          });
+        }).observe({ type: 'largest-contentful-paint', buffered: true });
+      } catch(e) {}
+
+      // FID (First Input Delay)
+      try {
+        new PerformanceObserver((list) => {
+          list.getEntries().forEach(entry => {
+            trackEvent('web_vitals', {
+              event_category: 'performance',
+              event_label: 'FID',
+              value: Math.round(entry.processingStart - entry.startTime)
+            });
+          });
+        }).observe({ type: 'first-input', buffered: true });
+      } catch(e) {}
+
+      // CLS (Cumulative Layout Shift)
+      try {
+        let clsValue = 0;
+        new PerformanceObserver((list) => {
+          list.getEntries().forEach(entry => {
+            if (!entry.hadRecentInput) clsValue += entry.value;
+          });
+        }).observe({ type: 'layout-shift', buffered: true });
+        // Send CLS on page hide
+        document.addEventListener('visibilitychange', () => {
+          if (document.visibilityState === 'hidden') {
+            trackEvent('web_vitals', {
+              event_category: 'performance',
+              event_label: 'CLS',
+              value: Math.round(clsValue * 1000)
+            });
+          }
+        });
+      } catch(e) {}
+    }
+
     // Init
     window.addEventListener('DOMContentLoaded', () => {
       initReveals();
       animateCounters();
       checkAuthStatus();
+
+      // GA4 page_view with custom dimensions
+      trackEvent('page_view_custom', {
+        page_category: document.querySelector('meta[name="classification"]')?.content || 'general',
+        treatment_type: window.location.pathname.includes('/treatments/') ? window.location.pathname.split('/treatments/')[1] : 'none',
+        page_location: window.location.pathname
+      });
     });
 
     // ===== Auth =====
