@@ -277,7 +277,7 @@ export function doctorsPage(): string {
         <meta itemprop="jobTitle" content="${doc.title}">
         <meta itemprop="medicalSpecialty" content="Oral and Maxillofacial Surgery">
         <meta itemprop="description" content="${doc.description}">
-        <link itemprop="url" href="https://gndentalclinic.com/doctors/${doc.slug}">
+        <link itemprop="url" href="https://kndent.kr/doctors/${doc.slug}">
         <div class="card-premium overflow-hidden">
           <div class="grid grid-cols-1 lg:grid-cols-5 gap-0">
             <!-- Photo -->

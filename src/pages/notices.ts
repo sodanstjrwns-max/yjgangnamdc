@@ -107,12 +107,12 @@ export function noticeDetailPage(notice: any): { html: string; title: string; de
     "author": {
       "@type": "Organization",
       "name": notice.author || '강남치과의원',
-      "@id": "https://gndentalclinic.com/#organization"
+      "@id": "https://kndent.kr/#organization"
     },
-    "publisher": { "@id": "https://gndentalclinic.com/#organization" },
+    "publisher": { "@id": "https://kndent.kr/#organization" },
     "datePublished": notice.published_at,
     "dateModified": notice.updated_at || notice.published_at,
-    "mainEntityOfPage": `https://gndentalclinic.com/notices/${notice.slug}`,
+    "mainEntityOfPage": `https://kndent.kr/notices/${notice.slug}`,
     "articleSection": notice.category,
     "inLanguage": "ko"
   };

@@ -40,7 +40,7 @@ export function mainPageSchemas(): object[] {
       { "@type": "HowToTool", "name": "SpeedFire 소성로" }
     ],
     "step": [
-      { "@type": "HowToStep", "position": 1, "name": "디지털 스캔", "text": "구강 스캐너(PrimeScan)로 치아를 3D 촬영합니다. 불편한 인상재(본뜨기)가 필요 없습니다.", "url": "https://gndentalclinic.com/treatments/cerec" },
+      { "@type": "HowToStep", "position": 1, "name": "디지털 스캔", "text": "구강 스캐너(PrimeScan)로 치아를 3D 촬영합니다. 불편한 인상재(본뜨기)가 필요 없습니다.", "url": "https://kndent.kr/treatments/cerec" },
       { "@type": "HowToStep", "position": 2, "name": "AI 보철 설계", "text": "컴퓨터가 환자의 치아에 딱 맞는 보철을 자동 설계합니다. 0.01mm 정밀도로 맞춤 제작됩니다." },
       { "@type": "HowToStep", "position": 3, "name": "밀링 제작", "text": "세라믹 블록을 CEREC MC X 밀링 머신이 깎아 보철을 만듭니다. 기공소 외주 없이 원내에서 완성합니다." },
       { "@type": "HowToStep", "position": 4, "name": "소성 및 장착", "text": "SpeedFire로 초고속 소성 후 바로 장착합니다. 자연치아와 구분이 어려운 색감을 구현합니다." }
@@ -51,15 +51,15 @@ export function mainPageSchemas(): object[] {
   const medicalServiceSchema = {
     "@context": "https://schema.org",
     "@type": "MedicalClinic",
-    "@id": "https://gndentalclinic.com/#medicalClinic",
+    "@id": "https://kndent.kr/#medicalClinic",
     "name": "강남치과의원",
     "alternateName": ["Gangnam Dental Clinic", "영주 강남치과"],
-    "url": "https://gndentalclinic.com",
-    "logo": "https://gndentalclinic.com/static/logo.png",
+    "url": "https://kndent.kr",
+    "logo": "https://kndent.kr/static/logo.png",
     "image": [
-      "https://gndentalclinic.com/static/photos/3gQUD6CP.jpg",
-      "https://gndentalclinic.com/static/photos/KLnijX5L.jpg",
-      "https://gndentalclinic.com/static/photos/p9YyzTaw.jpg"
+      "https://kndent.kr/static/photos/3gQUD6CP.jpg",
+      "https://kndent.kr/static/photos/KLnijX5L.jpg",
+      "https://kndent.kr/static/photos/p9YyzTaw.jpg"
     ],
     "telephone": "+82-54-636-8222",
     "email": "gndentalclinic@naver.com",
@@ -76,20 +76,20 @@ export function mainPageSchemas(): object[] {
         "name": "임플란트 전문센터",
         "description": "구강외과 전문의 2인이 직접 수술. 뼈이식·상악동 거상술 고난이도 수술 가능.",
         "medicalSpecialty": "Implantology",
-        "url": "https://gndentalclinic.com/treatments/implant"
+        "url": "https://kndent.kr/treatments/implant"
       },
       {
         "@type": "MedicalBusiness",
         "name": "CEREC 당일보철 센터",
         "description": "PrimeScan + CEREC MC X + SpeedFire 시스템으로 당일 보철 완성.",
-        "url": "https://gndentalclinic.com/treatments/cerec"
+        "url": "https://kndent.kr/treatments/cerec"
       },
       {
         "@type": "MedicalBusiness",
         "name": "인비절라인 교정센터",
         "description": "인비절라인 인증의 + iTero 디지털 스캐너 교정 시뮬레이션.",
         "medicalSpecialty": "Orthodontics",
-        "url": "https://gndentalclinic.com/treatments/invisalign"
+        "url": "https://kndent.kr/treatments/invisalign"
       },
       {
         "@type": "MedicalBusiness",
@@ -101,12 +101,12 @@ export function mainPageSchemas(): object[] {
     "employee": [
       {
         "@type": "Physician",
-        "@id": "https://gndentalclinic.com/doctors/lee-taehyung#physician",
+        "@id": "https://kndent.kr/doctors/lee-taehyung#physician",
         "name": "이태형",
         "jobTitle": "대표원장",
         "medicalSpecialty": "Oral and Maxillofacial Surgery",
-        "image": "https://gndentalclinic.com/static/doctors/lee-taehyung.jpg",
-        "url": "https://gndentalclinic.com/doctors/lee-taehyung",
+        "image": "https://kndent.kr/static/doctors/lee-taehyung.jpg",
+        "url": "https://kndent.kr/doctors/lee-taehyung",
         "hasCredential": { "@type": "EducationalOccupationalCredential", "name": "보건복지부 구강악안면외과 전문의" },
         "alumniOf": [
           { "@type": "CollegeOrUniversity", "name": "고려대학교 구강악안면외과 석사" },
@@ -115,11 +115,11 @@ export function mainPageSchemas(): object[] {
       },
       {
         "@type": "Physician",
-        "@id": "https://gndentalclinic.com/doctors/choi-minhye#physician",
+        "@id": "https://kndent.kr/doctors/choi-minhye#physician",
         "name": "최민혜",
         "jobTitle": "원장",
         "medicalSpecialty": "Oral and Maxillofacial Surgery",
-        "url": "https://gndentalclinic.com/doctors/choi-minhye",
+        "url": "https://kndent.kr/doctors/choi-minhye",
         "hasCredential": { "@type": "EducationalOccupationalCredential", "name": "보건복지부 구강악안면외과 전문의" },
         "alumniOf": [
           { "@type": "CollegeOrUniversity", "name": "고려대학교 구강악안면외과 석사" },
@@ -141,7 +141,7 @@ export function mainPageSchemas(): object[] {
         "preparation": "3D CT 촬영, 디지털 구강 스캔, 전문의 상담",
         "followup": "정기 경과 관찰, CEREC 당일 보철 장착 가능",
         "status": "EventScheduled",
-        "url": "https://gndentalclinic.com/treatments/implant",
+        "url": "https://kndent.kr/treatments/implant",
         "bodyLocation": "턱뼈 (상악/하악)",
         "possibleComplication": "일시적 부기, 출혈 (정상 치유 과정)",
         "expectedPrognosis": "10년 이상 장기 사용 가능, 정기 관리 시 반영구적"
@@ -153,7 +153,7 @@ export function mainPageSchemas(): object[] {
         "howPerformed": "PrimeScan 디지털 스캐너로 구강을 스캔한 후, CEREC 밀링 머신으로 세라믹 보철을 원내에서 당일 제작하여 장착합니다.",
         "preparation": "디지털 구강 스캔 (본뜨기 불필요)",
         "followup": "당일 보철 장착 완료, 추가 내원 불필요",
-        "url": "https://gndentalclinic.com/treatments/cerec",
+        "url": "https://kndent.kr/treatments/cerec",
         "expectedPrognosis": "10년 이상 사용 가능, 세라믹 소재 생체친화성 우수"
       },
       {
@@ -163,7 +163,7 @@ export function mainPageSchemas(): object[] {
         "howPerformed": "iTero 디지털 스캐너로 3D 시뮬레이션 후 맞춤형 투명 교정장치로 교정합니다.",
         "preparation": "iTero 디지털 스캔, 3D 시뮬레이션(클린체크), 교정 계획 수립",
         "followup": "4~8주마다 경과 체크, 유지장치 착용",
-        "url": "https://gndentalclinic.com/treatments/invisalign",
+        "url": "https://kndent.kr/treatments/invisalign",
         "expectedPrognosis": "6개월~2년 치료 기간, 교정 성공률 우수"
       },
       {
@@ -173,27 +173,27 @@ export function mainPageSchemas(): object[] {
         "howPerformed": "3D CT로 사랑니 위치·신경관 분석 후, 구강외과 전문의가 최소 절개로 발치합니다.",
         "preparation": "3D CT 촬영, 신경관 위치 분석",
         "followup": "7일 후 실밥 제거, 경과 확인",
-        "url": "https://gndentalclinic.com/treatments/wisdom-tooth"
+        "url": "https://kndent.kr/treatments/wisdom-tooth"
       },
       {
         "@type": "MedicalProcedure",
         "name": "뼈이식",
         "procedureType": "Surgical",
         "howPerformed": "부족한 턱뼈를 뼈이식재로 보충한 후 임플란트를 식립합니다.",
-        "url": "https://gndentalclinic.com/treatments/bone-graft"
+        "url": "https://kndent.kr/treatments/bone-graft"
       },
       {
         "@type": "MedicalProcedure",
         "name": "상악동 거상술",
         "procedureType": "Surgical",
         "howPerformed": "윗턱 뼈가 부족한 경우 상악동 점막을 거상하고 뼈이식 후 임플란트를 식립합니다.",
-        "url": "https://gndentalclinic.com/treatments/sinus-lift"
+        "url": "https://kndent.kr/treatments/sinus-lift"
       }
     ],
     "hasOfferCatalog": {
       "@type": "OfferCatalog",
       "name": "강남치과의원 진료비용",
-      "url": "https://gndentalclinic.com/pricing"
+      "url": "https://kndent.kr/pricing"
     },
     "isAcceptingNewPatients": true,
     "smokingAllowed": false,

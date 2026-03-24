@@ -117,12 +117,12 @@ export function blogDetailPage(post: any): { html: string; title: string; descri
     "author": {
       "@type": "Person",
       "name": post.author || '강남치과의원',
-      "worksFor": { "@id": "https://gndentalclinic.com/#organization" }
+      "worksFor": { "@id": "https://kndent.kr/#organization" }
     },
-    "publisher": { "@id": "https://gndentalclinic.com/#organization" },
+    "publisher": { "@id": "https://kndent.kr/#organization" },
     "datePublished": post.published_at,
     "dateModified": post.updated_at || post.published_at,
-    "mainEntityOfPage": `https://gndentalclinic.com/blog/${post.slug}`,
+    "mainEntityOfPage": `https://kndent.kr/blog/${post.slug}`,
     "articleSection": post.category,
     "keywords": post.tags || '',
     "inLanguage": "ko"

@@ -403,26 +403,26 @@ export function treatmentDetailPage(slug: string): { html: string; title: string
   const medicalProcedureSchema: any = {
     "@context": "https://schema.org",
     "@type": "MedicalProcedure",
-    "@id": `https://gndentalclinic.com/treatments/${t.slug}#procedure`,
+    "@id": `https://kndent.kr/treatments/${t.slug}#procedure`,
     "name": t.title,
     "alternateName": t.h1,
     "description": t.description,
     "procedureType": isSurgical ? "Surgical" : "Noninvasive",
     "howPerformed": meta.howPerformed || t.heroDesc,
-    "url": `https://gndentalclinic.com/treatments/${t.slug}`,
+    "url": `https://kndent.kr/treatments/${t.slug}`,
     "bodyLocation": meta.bodyLocation || "구강 내",
     "preparation": meta.preparation || "정밀 진단 및 전문의 상담",
     "followup": meta.followup || "정기 경과 관찰",
     "status": "https://schema.org/ActiveActionStatus",
     "mainEntityOfPage": {
       "@type": "MedicalWebPage",
-      "@id": `https://gndentalclinic.com/treatments/${t.slug}`,
+      "@id": `https://kndent.kr/treatments/${t.slug}`,
       "dateModified": new Date().toISOString().split('T')[0],
       "lastReviewed": new Date().toISOString().split('T')[0]
     },
     "performedBy": [
-      { "@type": "Physician", "@id": "https://gndentalclinic.com/doctors/lee-taehyung#physician", "name": "이태형", "jobTitle": "대표원장" },
-      { "@type": "Physician", "@id": "https://gndentalclinic.com/doctors/choi-minhye#physician", "name": "최민혜", "jobTitle": "원장" }
+      { "@type": "Physician", "@id": "https://kndent.kr/doctors/lee-taehyung#physician", "name": "이태형", "jobTitle": "대표원장" },
+      { "@type": "Physician", "@id": "https://kndent.kr/doctors/choi-minhye#physician", "name": "최민혜", "jobTitle": "원장" }
     ]
   }
   if (meta.risk) medicalProcedureSchema.possibleComplication = meta.risk
@@ -438,7 +438,7 @@ export function treatmentDetailPage(slug: string): { html: string; title: string
     "name": `${t.title} - 강남치과의원`,
     "description": t.description,
     "provider": {
-      "@id": "https://gndentalclinic.com/#organization"
+      "@id": "https://kndent.kr/#organization"
     },
     "areaServed": [
       { "@type": "City", "name": "영주시" },
@@ -448,10 +448,10 @@ export function treatmentDetailPage(slug: string): { html: string; title: string
     ],
     "serviceType": "Dental Service",
     "category": t.category,
-    "url": `https://gndentalclinic.com/treatments/${t.slug}`,
+    "url": `https://kndent.kr/treatments/${t.slug}`,
     "availableChannel": {
       "@type": "ServiceChannel",
-      "serviceUrl": "https://gndentalclinic.com/reservation",
+      "serviceUrl": "https://kndent.kr/reservation",
       "servicePhone": { "@type": "ContactPoint", "telephone": "+82-54-636-8222" }
     }
   }

@@ -141,13 +141,13 @@ Disallow: /login
 Disallow: /register
 
 # Sitemaps
-Sitemap: https://gndentalclinic.com/sitemap.xml
+Sitemap: https://kndent.kr/sitemap.xml
 `)
 })
 
 // ===== SEO: sitemap.xml (동적 생성 + Image Sitemap) =====
 app.get('/sitemap.xml', async (c) => {
-  const baseUrl = 'https://gndentalclinic.com'
+  const baseUrl = 'https://kndent.kr'
   const today = new Date().toISOString().split('T')[0]
 
   // 이미지 매핑 (페이지별 주요 이미지)
@@ -305,7 +305,7 @@ app.get('/doctors', (c) => c.html(layout(doctorsPage(), {
       "jobTitle": "대표원장",
       "medicalSpecialty": "Oral and Maxillofacial Surgery",
       "description": "구강악안면외과 전문의. 고려대학교 구강악안면외과 석사, 고려대학교 구로병원 레지던트 수료.",
-      "worksFor": { "@id": "https://gndentalclinic.com/#organization" },
+      "worksFor": { "@id": "https://kndent.kr/#organization" },
       "alumniOf": [
         { "@type": "EducationalOrganization", "name": "고려대학교 구강악안면외과" },
         { "@type": "Hospital", "name": "고려대학교 구로병원" }
@@ -318,7 +318,7 @@ app.get('/doctors', (c) => c.html(layout(doctorsPage(), {
       "jobTitle": "원장",
       "medicalSpecialty": "Oral and Maxillofacial Surgery",
       "description": "구강악안면외과 전문의. 인제대학교 백병원 구강악안면외과 레지던트 수료.",
-      "worksFor": { "@id": "https://gndentalclinic.com/#organization" },
+      "worksFor": { "@id": "https://kndent.kr/#organization" },
       "alumniOf": [
         { "@type": "EducationalOrganization", "name": "고려대학교 구강악안면외과" },
         { "@type": "Hospital", "name": "인제대학교 백병원" }
@@ -337,14 +337,14 @@ app.get('/doctors/:slug', (c) => {
     'lee-taehyung': [{
       "@context": "https://schema.org",
       "@type": "Physician",
-      "@id": "https://gndentalclinic.com/doctors/lee-taehyung#physician",
+      "@id": "https://kndent.kr/doctors/lee-taehyung#physician",
       "name": "이태형",
       "givenName": "태형",
       "familyName": "이",
       "jobTitle": "대표원장",
       "honorificPrefix": "Dr.",
-      "image": "https://gndentalclinic.com/static/doctors/lee-taehyung.jpg",
-      "url": "https://gndentalclinic.com/doctors/lee-taehyung",
+      "image": "https://kndent.kr/static/doctors/lee-taehyung.jpg",
+      "url": "https://kndent.kr/doctors/lee-taehyung",
       "telephone": "+82-54-636-8222",
       "medicalSpecialty": [
         { "@type": "MedicalSpecialty", "name": "Oral and Maxillofacial Surgery" },
@@ -352,7 +352,7 @@ app.get('/doctors/:slug', (c) => {
       ],
       "description": "구강악안면외과 전문의. 고려대학교 구강악안면외과 석사, 고려대학교 구로병원 레지던트 수료. 임플란트·뼈이식·상악동 거상술 전문.",
       "knowsAbout": ["임플란트", "뼈이식", "상악동 거상술", "사랑니 발치", "구강외과 수술"],
-      "worksFor": { "@id": "https://gndentalclinic.com/#organization" },
+      "worksFor": { "@id": "https://kndent.kr/#organization" },
       "memberOf": [
         { "@type": "MedicalOrganization", "name": "대한구강악안면성형재건외과학회" },
         { "@type": "MedicalOrganization", "name": "대한구강악안면외과학회" }
@@ -366,23 +366,23 @@ app.get('/doctors/:slug', (c) => {
         { "@type": "EducationalOccupationalCredential", "credentialCategory": "인정의", "name": "대한구강악안면성형재건외과학회 인정의" }
       ],
       "availableService": [
-        { "@type": "MedicalProcedure", "name": "임플란트", "url": "https://gndentalclinic.com/treatments/implant" },
-        { "@type": "MedicalProcedure", "name": "뼈이식", "url": "https://gndentalclinic.com/treatments/bone-graft" },
-        { "@type": "MedicalProcedure", "name": "사랑니 발치", "url": "https://gndentalclinic.com/treatments/wisdom-tooth" },
-        { "@type": "MedicalProcedure", "name": "상악동 거상술", "url": "https://gndentalclinic.com/treatments/sinus-lift" }
+        { "@type": "MedicalProcedure", "name": "임플란트", "url": "https://kndent.kr/treatments/implant" },
+        { "@type": "MedicalProcedure", "name": "뼈이식", "url": "https://kndent.kr/treatments/bone-graft" },
+        { "@type": "MedicalProcedure", "name": "사랑니 발치", "url": "https://kndent.kr/treatments/wisdom-tooth" },
+        { "@type": "MedicalProcedure", "name": "상악동 거상술", "url": "https://kndent.kr/treatments/sinus-lift" }
       ],
       "sameAs": ["https://blog.naver.com/gndentalclinic"]
     }],
     'choi-minhye': [{
       "@context": "https://schema.org",
       "@type": "Physician",
-      "@id": "https://gndentalclinic.com/doctors/choi-minhye#physician",
+      "@id": "https://kndent.kr/doctors/choi-minhye#physician",
       "name": "최민혜",
       "givenName": "민혜",
       "familyName": "최",
       "jobTitle": "원장",
       "honorificPrefix": "Dr.",
-      "url": "https://gndentalclinic.com/doctors/choi-minhye",
+      "url": "https://kndent.kr/doctors/choi-minhye",
       "telephone": "+82-54-636-8222",
       "medicalSpecialty": [
         { "@type": "MedicalSpecialty", "name": "Oral and Maxillofacial Surgery" },
@@ -390,7 +390,7 @@ app.get('/doctors/:slug', (c) => {
       ],
       "description": "구강악안면외과 전문의. 인제대학교 백병원 구강악안면외과 레지던트 수료. 임플란트·틀니·레이저 치료 전문.",
       "knowsAbout": ["임플란트", "틀니", "레이저 치료", "심미보철"],
-      "worksFor": { "@id": "https://gndentalclinic.com/#organization" },
+      "worksFor": { "@id": "https://kndent.kr/#organization" },
       "memberOf": [
         { "@type": "MedicalOrganization", "name": "대한레이저치학회" },
         { "@type": "MedicalOrganization", "name": "대한임플란트학회" },
@@ -405,8 +405,8 @@ app.get('/doctors/:slug', (c) => {
         { "@type": "EducationalOccupationalCredential", "credentialCategory": "인정의", "name": "대한구강악안면성형재건외과학회 인정의" }
       ],
       "availableService": [
-        { "@type": "MedicalProcedure", "name": "임플란트", "url": "https://gndentalclinic.com/treatments/implant" },
-        { "@type": "MedicalProcedure", "name": "틀니", "url": "https://gndentalclinic.com/treatments/denture" },
+        { "@type": "MedicalProcedure", "name": "임플란트", "url": "https://kndent.kr/treatments/implant" },
+        { "@type": "MedicalProcedure", "name": "틀니", "url": "https://kndent.kr/treatments/denture" },
         { "@type": "MedicalProcedure", "name": "레이저 치료" }
       ],
       "sameAs": ["https://blog.naver.com/gndentalclinic"]
@@ -435,7 +435,7 @@ app.get('/treatments', (c) => c.html(layout(treatmentsPage(), {
     "@type": "MedicalWebPage",
     "name": "강남치과의원 진료안내",
     "about": { "@type": "MedicalBusiness", "name": "강남치과의원" },
-    "url": "https://gndentalclinic.com/treatments",
+    "url": "https://kndent.kr/treatments",
     "mainContentOfPage": {
       "@type": "WebPageElement",
       "cssSelector": "#main-content"
@@ -500,11 +500,11 @@ app.get('/dictionary', async (c) => {
     schemas: [{
       "@context": "https://schema.org",
       "@type": "DefinedTermSet",
-      "@id": "https://gndentalclinic.com/dictionary#glossary",
+      "@id": "https://kndent.kr/dictionary#glossary",
       "name": "강남치과의원 치과 용어 사전",
       "description": `치과에서 자주 사용하는 ${totalCount}개 전문 용어를 알기 쉽게 설명합니다.`,
-      "url": "https://gndentalclinic.com/dictionary",
-      "publisher": { "@id": "https://gndentalclinic.com/#organization" },
+      "url": "https://kndent.kr/dictionary",
+      "publisher": { "@id": "https://kndent.kr/#organization" },
       "inLanguage": "ko",
       "numberOfItems": totalCount,
       "about": { "@type": "MedicalSpecialty", "name": "Dentistry" }
@@ -573,8 +573,8 @@ app.get('/blog', async (c) => {
       "@type": "Blog",
       "name": "강남치과의원 블로그",
       "description": "구강외과 전문의가 전하는 치과 건강정보",
-      "url": "https://gndentalclinic.com/blog",
-      "publisher": { "@id": "https://gndentalclinic.com/#organization" },
+      "url": "https://kndent.kr/blog",
+      "publisher": { "@id": "https://kndent.kr/#organization" },
       "inLanguage": "ko",
       "about": [
         { "@type": "MedicalSpecialty", "name": "Implantology" },
@@ -583,10 +583,10 @@ app.get('/blog', async (c) => {
         { "@type": "MedicalSpecialty", "name": "Orthodontics" }
       ],
       "author": [
-        { "@type": "Physician", "@id": "https://gndentalclinic.com/doctors/lee-taehyung#physician", "name": "이태형" },
-        { "@type": "Physician", "@id": "https://gndentalclinic.com/doctors/choi-minhye#physician", "name": "최민혜" }
+        { "@type": "Physician", "@id": "https://kndent.kr/doctors/lee-taehyung#physician", "name": "이태형" },
+        { "@type": "Physician", "@id": "https://kndent.kr/doctors/choi-minhye#physician", "name": "최민혜" }
       ],
-      "mainEntityOfPage": { "@type": "WebPage", "url": "https://gndentalclinic.com/blog" }
+      "mainEntityOfPage": { "@type": "WebPage", "url": "https://kndent.kr/blog" }
     }]
   }))
 })
@@ -763,9 +763,9 @@ app.get('/before-after', async (c) => {
       "@type": "CollectionPage",
       "name": "강남치과의원 치료 전후 사례",
       "description": "구강외과 전문의가 직접 시행한 치료 전후 사례 모음",
-      "url": "https://gndentalclinic.com/before-after",
-      "publisher": { "@id": "https://gndentalclinic.com/#organization" },
-      "about": { "@type": "Dentist", "@id": "https://gndentalclinic.com/#organization" },
+      "url": "https://kndent.kr/before-after",
+      "publisher": { "@id": "https://kndent.kr/#organization" },
+      "about": { "@type": "Dentist", "@id": "https://kndent.kr/#organization" },
       "specialty": ["Implantology", "Prosthodontics", "Oral and Maxillofacial Surgery"],
       "mainContentOfPage": { "@type": "WebPageElement", "cssSelector": "#main-content" }
     }]
@@ -816,11 +816,11 @@ app.get('/reservation', (c) => c.html(layout(reservationPage(), {
     "@type": "ReserveAction",
     "target": {
       "@type": "EntryPoint",
-      "urlTemplate": "https://gndentalclinic.com/reservation",
+      "urlTemplate": "https://kndent.kr/reservation",
       "actionPlatform": ["http://schema.org/DesktopWebPlatform", "http://schema.org/MobileWebPlatform"]
     },
     "result": { "@type": "Reservation", "name": "상담 예약" },
-    "provider": { "@id": "https://gndentalclinic.com/#organization" }
+    "provider": { "@id": "https://kndent.kr/#organization" }
   }]
 })))
 
@@ -835,20 +835,20 @@ app.get('/directions', (c) => c.html(layout(directionsPage(), {
     {
       "@context": "https://schema.org",
       "@type": ["Dentist", "MedicalBusiness", "LocalBusiness"],
-      "@id": "https://gndentalclinic.com/#place",
+      "@id": "https://kndent.kr/#place",
       "name": "강남치과의원",
       "alternateName": ["Gangnam Dental Clinic", "영주 강남치과"],
       "image": [
-        "https://gndentalclinic.com/static/photos/3gQUD6CP.jpg",
-        "https://gndentalclinic.com/static/photos/p9YyzTaw.jpg",
-        "https://gndentalclinic.com/static/photos/KLnijX5L.jpg",
-        "https://gndentalclinic.com/static/photos/sOkojKif.jpg"
+        "https://kndent.kr/static/photos/3gQUD6CP.jpg",
+        "https://kndent.kr/static/photos/p9YyzTaw.jpg",
+        "https://kndent.kr/static/photos/KLnijX5L.jpg",
+        "https://kndent.kr/static/photos/sOkojKif.jpg"
       ],
       "photo": [
-        { "@type": "ImageObject", "url": "https://gndentalclinic.com/static/photos/3gQUD6CP.jpg", "name": "강남치과의원 건물 외관", "description": "경북 영주시 대학로 217 모모제인 건물" },
-        { "@type": "ImageObject", "url": "https://gndentalclinic.com/static/photos/p9YyzTaw.jpg", "name": "강남치과의원 대기실", "description": "편안한 대기 공간" },
-        { "@type": "ImageObject", "url": "https://gndentalclinic.com/static/photos/KLnijX5L.jpg", "name": "강남치과의원 진료실", "description": "최신 장비가 갖춰진 진료 공간" },
-        { "@type": "ImageObject", "url": "https://gndentalclinic.com/static/photos/sOkojKif.jpg", "name": "강남치과의원 상담실", "description": "프라이빗 상담 공간" }
+        { "@type": "ImageObject", "url": "https://kndent.kr/static/photos/3gQUD6CP.jpg", "name": "강남치과의원 건물 외관", "description": "경북 영주시 대학로 217 모모제인 건물" },
+        { "@type": "ImageObject", "url": "https://kndent.kr/static/photos/p9YyzTaw.jpg", "name": "강남치과의원 대기실", "description": "편안한 대기 공간" },
+        { "@type": "ImageObject", "url": "https://kndent.kr/static/photos/KLnijX5L.jpg", "name": "강남치과의원 진료실", "description": "최신 장비가 갖춰진 진료 공간" },
+        { "@type": "ImageObject", "url": "https://kndent.kr/static/photos/sOkojKif.jpg", "name": "강남치과의원 상담실", "description": "프라이빗 상담 공간" }
       ],
       "address": {
         "@type": "PostalAddress",
@@ -863,7 +863,7 @@ app.get('/directions', (c) => c.html(layout(directionsPage(), {
         "latitude": 36.8057,
         "longitude": 128.7410
       },
-      "url": "https://gndentalclinic.com/directions",
+      "url": "https://kndent.kr/directions",
       "telephone": "+82-54-636-8222",
       "openingHoursSpecification": [
         { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"], "opens": "09:00", "closes": "17:30", "description": "점심시간 13:00-14:00" }
@@ -918,38 +918,38 @@ app.get('/pricing', (c) => c.html(layout(pricingPage(), {
       "@type": "OfferCatalog",
       "name": "강남치과의원 진료비용 안내",
       "description": "영주시 강남치과의원 진료 항목별 비용 안내. 건강보험 적용 항목 및 비급여 항목 안내.",
-      "url": "https://gndentalclinic.com/pricing",
-      "provider": { "@id": "https://gndentalclinic.com/#organization" },
+      "url": "https://kndent.kr/pricing",
+      "provider": { "@id": "https://kndent.kr/#organization" },
       "numberOfItems": 5,
       "itemListElement": [
         { "@type": "OfferCatalog", "name": "임플란트", "description": "구강외과 전문의 직접 수술", "numberOfItems": 4, "itemListElement": [
-          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "임플란트 (1개)", "procedureType": "Surgical", "url": "https://gndentalclinic.com/treatments/implant" }, "priceCurrency": "KRW", "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "상담 후 안내", "valueAddedTaxIncluded": true }, "eligibleRegion": { "@type": "GeoCircle", "geoMidpoint": { "@type": "GeoCoordinates", "latitude": 36.8057, "longitude": 128.7410 }, "geoRadius": "100000" }, "warranty": { "@type": "WarrantyPromise", "warrantyScope": "임플란트 픽스쳐 보증", "description": "정기 검진 유지 시 장기 보증" }, "seller": { "@id": "https://gndentalclinic.com/#organization" } },
-          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "뼈이식 (단순)", "procedureType": "Surgical", "url": "https://gndentalclinic.com/treatments/bone-graft" }, "priceCurrency": "KRW", "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "상담 후 안내" } },
-          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "상악동 거상술", "procedureType": "Surgical", "url": "https://gndentalclinic.com/treatments/sinus-lift" }, "priceCurrency": "KRW", "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "상담 후 안내" } },
+          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "임플란트 (1개)", "procedureType": "Surgical", "url": "https://kndent.kr/treatments/implant" }, "priceCurrency": "KRW", "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "상담 후 안내", "valueAddedTaxIncluded": true }, "eligibleRegion": { "@type": "GeoCircle", "geoMidpoint": { "@type": "GeoCoordinates", "latitude": 36.8057, "longitude": 128.7410 }, "geoRadius": "100000" }, "warranty": { "@type": "WarrantyPromise", "warrantyScope": "임플란트 픽스쳐 보증", "description": "정기 검진 유지 시 장기 보증" }, "seller": { "@id": "https://kndent.kr/#organization" } },
+          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "뼈이식 (단순)", "procedureType": "Surgical", "url": "https://kndent.kr/treatments/bone-graft" }, "priceCurrency": "KRW", "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "상담 후 안내" } },
+          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "상악동 거상술", "procedureType": "Surgical", "url": "https://kndent.kr/treatments/sinus-lift" }, "priceCurrency": "KRW", "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "상담 후 안내" } },
           { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "뼈이식 (광범위)" }, "priceCurrency": "KRW", "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "상담 후 안내" } }
         ]},
         { "@type": "OfferCatalog", "name": "교정", "description": "인비절라인 인증의 교정", "numberOfItems": 3, "itemListElement": [
-          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "인비절라인 (풀)", "procedureType": "Noninvasive", "url": "https://gndentalclinic.com/treatments/invisalign" }, "priceCurrency": "KRW", "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "상담 후 안내" } },
+          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "인비절라인 (풀)", "procedureType": "Noninvasive", "url": "https://kndent.kr/treatments/invisalign" }, "priceCurrency": "KRW", "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "상담 후 안내" } },
           { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "인비절라인 (부분)", "procedureType": "Noninvasive" }, "priceCurrency": "KRW", "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "상담 후 안내" } },
           { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "교정용 유지장치 (리테이너)" }, "priceCurrency": "KRW", "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "상담 후 안내" } }
         ]},
         { "@type": "OfferCatalog", "name": "보철 / 심미", "description": "CEREC 당일 디지털 보철", "numberOfItems": 5, "itemListElement": [
-          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "CEREC 크라운 (당일)", "procedureType": "Noninvasive", "url": "https://gndentalclinic.com/treatments/cerec" }, "priceCurrency": "KRW", "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "상담 후 안내" } },
+          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "CEREC 크라운 (당일)", "procedureType": "Noninvasive", "url": "https://kndent.kr/treatments/cerec" }, "priceCurrency": "KRW", "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "상담 후 안내" } },
           { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "지르코니아 크라운" }, "priceCurrency": "KRW", "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "상담 후 안내" } },
           { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "올세라믹 크라운" }, "priceCurrency": "KRW" },
-          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "라미네이트", "url": "https://gndentalclinic.com/treatments/cosmetic" }, "priceCurrency": "KRW" },
+          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "라미네이트", "url": "https://kndent.kr/treatments/cosmetic" }, "priceCurrency": "KRW" },
           { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "인레이 / 온레이" }, "priceCurrency": "KRW" }
         ]},
         { "@type": "OfferCatalog", "name": "일반 / 외과", "description": "건강보험 적용 항목 포함", "numberOfItems": 6, "itemListElement": [
-          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "스케일링", "url": "https://gndentalclinic.com/treatments/scaling" }, "priceCurrency": "KRW", "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "건강보험 적용 (연 1회, 만 19세 이상)" } },
-          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "사랑니 발치", "procedureType": "Surgical", "url": "https://gndentalclinic.com/treatments/wisdom-tooth" }, "priceCurrency": "KRW", "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "건강보험 적용" } },
-          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "신경치료", "url": "https://gndentalclinic.com/treatments/root-canal" }, "priceCurrency": "KRW", "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "건강보험 적용" } },
-          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "충치치료 (레진)", "url": "https://gndentalclinic.com/treatments/cavity" }, "priceCurrency": "KRW" },
-          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "잇몸치료", "url": "https://gndentalclinic.com/treatments/gum" }, "priceCurrency": "KRW", "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "건강보험 적용" } },
-          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "턱관절 치료", "url": "https://gndentalclinic.com/treatments/tmj" }, "priceCurrency": "KRW" }
+          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "스케일링", "url": "https://kndent.kr/treatments/scaling" }, "priceCurrency": "KRW", "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "건강보험 적용 (연 1회, 만 19세 이상)" } },
+          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "사랑니 발치", "procedureType": "Surgical", "url": "https://kndent.kr/treatments/wisdom-tooth" }, "priceCurrency": "KRW", "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "건강보험 적용" } },
+          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "신경치료", "url": "https://kndent.kr/treatments/root-canal" }, "priceCurrency": "KRW", "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "건강보험 적용" } },
+          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "충치치료 (레진)", "url": "https://kndent.kr/treatments/cavity" }, "priceCurrency": "KRW" },
+          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "잇몸치료", "url": "https://kndent.kr/treatments/gum" }, "priceCurrency": "KRW", "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "건강보험 적용" } },
+          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "턱관절 치료", "url": "https://kndent.kr/treatments/tmj" }, "priceCurrency": "KRW" }
         ]},
         { "@type": "OfferCatalog", "name": "틀니", "description": "만 65세 이상 건강보험 적용", "numberOfItems": 3, "itemListElement": [
-          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "전체 틀니", "url": "https://gndentalclinic.com/treatments/denture" }, "priceCurrency": "KRW", "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "건강보험 적용 (만 65세 이상, 7년 1회)" } },
+          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "전체 틀니", "url": "https://kndent.kr/treatments/denture" }, "priceCurrency": "KRW", "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "건강보험 적용 (만 65세 이상, 7년 1회)" } },
           { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "부분 틀니" }, "priceCurrency": "KRW", "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "건강보험 적용 (만 65세 이상, 7년 1회)" } },
           { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "임플란트 틀니 (오버덴쳐)" }, "priceCurrency": "KRW", "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "description": "상담 후 안내" } }
         ]}
@@ -988,10 +988,10 @@ app.get('/area/:region', (c) => {
         "@type": "MedicalWebPage",
         "name": `${decodedRegion}에서 강남치과의원`,
         "description": result.description,
-        "url": `https://gndentalclinic.com/area/${region}`,
+        "url": `https://kndent.kr/area/${region}`,
         "about": {
           "@type": "Dentist",
-          "@id": "https://gndentalclinic.com/#organization",
+          "@id": "https://kndent.kr/#organization",
           "name": "강남치과의원",
           "areaServed": {
             "@type": "GeoCircle",
@@ -1158,8 +1158,8 @@ app.get('/notices', async (c) => {
       "@type": "CollectionPage",
       "name": "강남치과의원 공지사항",
       "description": "강남치과의원의 진료 안내, 휴진 안내 등 공지사항 모음",
-      "url": "https://gndentalclinic.com/notices",
-      "publisher": { "@id": "https://gndentalclinic.com/#organization" }
+      "url": "https://kndent.kr/notices",
+      "publisher": { "@id": "https://kndent.kr/#organization" }
     }]
   }))
 })

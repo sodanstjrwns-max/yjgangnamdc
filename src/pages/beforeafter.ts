@@ -140,14 +140,14 @@ export function beforeAfterDetailPage(c: any): { html: string; title: string; de
       "procedureType": "Surgical",
       "howPerformed": c.treatment_desc
     },
-    "mainEntityOfPage": `https://gndentalclinic.com/before-after/${c.slug}`,
+    "mainEntityOfPage": `https://kndent.kr/before-after/${c.slug}`,
     "author": {
       "@type": "Physician",
       "name": c.doctor || '강남치과의원',
-      "worksFor": { "@id": "https://gndentalclinic.com/#organization" }
+      "worksFor": { "@id": "https://kndent.kr/#organization" }
     },
     "datePublished": c.published_at,
-    "publisher": { "@id": "https://gndentalclinic.com/#organization" }
+    "publisher": { "@id": "https://kndent.kr/#organization" }
   };
 
   const html = `

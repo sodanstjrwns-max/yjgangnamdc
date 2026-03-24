@@ -19,7 +19,7 @@ interface LayoutOptions {
   articleModifiedTime?: string
 }
 
-export const SITE_URL = 'https://gndentalclinic.com'
+export const SITE_URL = 'https://kndent.kr'
 export const SITE_NAME = '강남치과의원'
 const SITE_NAME_EN = 'Gangnam Dental Clinic'
 const PHONE = '+82-54-636-8222'
