@@ -280,10 +280,10 @@ ${urls}
 
 // ===== 메인 페이지 =====
 app.get('/', (c) => c.html(layout(mainPage(), {
-  title: '영주 치과 강남치과의원 | 구강외과 전문의 2인 · 임플란트 · CEREC 당일보철',
+  title: '영주 치과 강남치과의원 | 구강외과 전문의 · 임플란트 · 인비절라인 · 당일보철',
   description: '경북 영주시 강남치과의원. 구강악안면외과 전문의 2인이 직접 진료합니다. 임플란트, CEREC 당일보철, 인비절라인, 사랑니 발치, 심미보철. 대학병원급 장비 완비. 054-636-8222.',
   url: '/',
-  keywords: '영주 임플란트 잘하는곳, 영주 치과 추천, 영주 당일보철, 영주 사랑니발치, 구강외과 전문의 영주, 영주시 임플란트 가격',
+  keywords: '영주 인비절라인, 영주 투명교정, 영주 임플란트 잘하는곳, 영주 치과 추천, 영주 당일보철, 영주 사랑니발치, 구강외과 전문의 영주, 영주시 임플란트 가격',
   schemas: mainPageSchemas(),
   speakableSelectors: ['[data-speakable]', '#heroTitle', '#heroSub'],
   articleModifiedTime: new Date().toISOString().split('T')[0]
