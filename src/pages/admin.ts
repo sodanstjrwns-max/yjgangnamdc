@@ -190,8 +190,8 @@ export function adminPage(): string {
           <div>
             <label class="field-label">담당 원장 <span class="req">*</span></label>
             <select class="admin-select w-full" id="baDoctor">
-              <option value="김영주 원장">김영주 원장 (구강외과 전문의)</option>
-              <option value="박찬용 원장">박찬용 원장 (구강외과 전문의)</option>
+              <option value="이태형 대표원장">이태형 대표원장 (구강외과 전문의)</option>
+              <option value="최민혜 원장">최민혜 원장 (구강외과 전문의)</option>
             </select>
           </div>
         </div>
@@ -261,8 +261,8 @@ export function adminPage(): string {
           <div>
             <label class="field-label">작성자</label>
             <select class="admin-select w-full" id="blogAuthor">
-              <option value="김영주 원장">김영주 원장</option>
-              <option value="박찬용 원장">박찬용 원장</option>
+              <option value="이태형 대표원장">이태형 대표원장</option>
+              <option value="최민혜 원장">최민혜 원장</option>
               <option value="강남치과의원">강남치과의원</option>
             </select>
           </div>
@@ -522,7 +522,7 @@ export function adminPage(): string {
       document.getElementById('baSlug').value = data ? data.slug : ''; document.getElementById('baSlug').readOnly = !!data;
       document.getElementById('baTitle').value = data ? data.title : '';
       document.getElementById('baCategory').value = data ? data.category : '임플란트';
-      document.getElementById('baDoctor').value = data ? (data.doctor || '김영주 원장') : '김영주 원장';
+      document.getElementById('baDoctor').value = data ? (data.doctor || '이태형 대표원장') : '이태형 대표원장';
       document.getElementById('baPatient').value = data ? (data.patient_info || '') : '';
       document.getElementById('baDuration').value = data ? (data.duration || '') : '';
       document.getElementById('baBefore').value = data ? data.before_image : '';
@@ -580,7 +580,7 @@ export function adminPage(): string {
       document.getElementById('blogCategory').value = data ? data.category : '일반';
       document.getElementById('blogSummary').value = data ? (data.summary || '') : '';
       document.getElementById('blogTags').value = data ? (data.tags || '') : '';
-      document.getElementById('blogAuthor').value = data ? (data.author || '김영주 원장') : '김영주 원장';
+      document.getElementById('blogAuthor').value = data ? (data.author || '이태형 대표원장') : '이태형 대표원장';
       document.getElementById('blogThumbnail').value = data ? (data.thumbnail || '') : '';
       document.getElementById('blogContent').value = data ? data.content : '';
       if (data && data.thumbnail) {
