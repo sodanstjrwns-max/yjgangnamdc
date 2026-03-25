@@ -531,7 +531,7 @@ export function mainPage(): string {
   return `
 
   <!-- ========== HERO — WHITE + ROYAL PURPLE ========== -->
-  <section class="relative min-h-screen flex items-center overflow-hidden hero-white" id="hero" aria-label="강남치과의원 메인 히어로" itemscope itemtype="https://schema.org/WPHeader">
+  <section class="relative min-h-0 lg:min-h-[100svh] flex items-center overflow-hidden hero-white" id="hero" aria-label="강남치과의원 메인 히어로" itemscope itemtype="https://schema.org/WPHeader">
     <!-- CSS Particle Background (lightweight replacement for Three.js) -->
     <div class="absolute inset-0 z-[1]">
       <div class="css-particles">
@@ -555,11 +555,11 @@ export function mainPage(): string {
     <div class="absolute -bottom-32 -left-32 w-[500px] h-[500px] bg-royal-100/[0.15] rounded-full blur-[150px] z-[2]"></div>
 
     <!-- Content -->
-    <div class="relative max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 w-full py-36 md:py-0 z-overlay-10">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center min-h-screen">
+    <div class="relative max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12 w-full pt-24 pb-12 md:pt-28 md:pb-8 lg:py-0 z-overlay-10">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-center lg:min-h-screen">
 
         <!-- Left: Copy (7 cols) -->
-        <div class="lg:col-span-7 pt-20 md:pt-0">
+        <div class="lg:col-span-7 pt-4 md:pt-0">
           <div class="inline-flex items-center gap-3 px-5 py-2.5 rounded-full border border-royal/10 bg-white/80 backdrop-blur-xl mb-10 shadow-sm" id="heroTag">
             <span class="relative flex h-2 w-2">
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-royal-400 opacity-75"></span>
@@ -577,13 +577,13 @@ export function mainPage(): string {
             </span>
           </h1>
 
-          <p class="text-lg md:text-xl text-gray-400 leading-relaxed mb-12 max-w-xl" id="heroSub" data-speakable="true">
+          <p class="text-base md:text-xl text-gray-400 leading-relaxed mb-8 md:mb-12 max-w-xl" id="heroSub" data-speakable="true">
             <span>구강악안면외과 전문의 2인이 직접 수술합니다.</span><br>
             <span>영주 강남치과의원 — 임플란트, CEREC 당일보철, 인비절라인.</span>
-            <span><strong class="text-royal font-semibold">정확하게 진단하고, 빠르게 치료하고, 오래가는 결과를 만듭니다.</strong></span>
+            <span class="hidden md:inline"><strong class="text-royal font-semibold">정확하게 진단하고, 빠르게 치료하고, 오래가는 결과를 만듭니다.</strong></span>
           </p>
 
-          <div class="flex flex-wrap gap-4 mb-16" id="heroCTA">
+          <div class="flex flex-wrap gap-3 md:gap-4 mb-8 md:mb-16" id="heroCTA">
             <a href="/reservation" class="btn-primary !py-5 !px-12 !text-[15px] !font-extrabold group">
               <i class="fas fa-calendar-check"></i>
               편하게 상담하세요
@@ -594,23 +594,23 @@ export function mainPage(): string {
             </a>
           </div>
 
-          <div class="flex flex-wrap gap-3" id="heroStats">
-            <div class="flex items-center gap-3 px-5 py-3 rounded-2xl border border-royal/10 bg-white/80 shadow-sm">
-              <div class="w-10 h-10 rounded-xl royal-grad flex items-center justify-center pulse-royal-anim">
-                <i class="fas fa-user-doctor text-white text-sm" aria-hidden="true"></i>
+          <div class="flex flex-wrap gap-2 md:gap-3" id="heroStats">
+            <div class="flex items-center gap-2 md:gap-3 px-3 md:px-5 py-2 md:py-3 rounded-2xl border border-royal/10 bg-white/80 shadow-sm">
+              <div class="w-8 md:w-10 h-8 md:h-10 rounded-lg md:rounded-xl royal-grad flex items-center justify-center pulse-royal-anim">
+                <i class="fas fa-user-doctor text-white text-xs md:text-sm" aria-hidden="true"></i>
               </div>
               <div>
-                <div class="text-charcoal font-extrabold text-base leading-none">전문의 <span class="counter royal-grad-text text-lg" data-target="2">0</span>인</div>
-                <div class="text-gray-400 text-[10px] mt-0.5 tracking-wide">구강악안면외과</div>
+                <div class="text-charcoal font-extrabold text-sm md:text-base leading-none">전문의 <span class="counter royal-grad-text text-base md:text-lg" data-target="2">0</span>인</div>
+                <div class="text-gray-400 text-[9px] md:text-[10px] mt-0.5 tracking-wide">구강악안면외과</div>
               </div>
             </div>
-            <div class="flex items-center gap-3 px-5 py-3 rounded-2xl border border-royal/10 bg-white/80 shadow-sm">
-              <div class="w-10 h-10 rounded-xl royal-grad flex items-center justify-center pulse-royal-d1">
-                <i class="fas fa-bolt text-white text-sm" aria-hidden="true"></i>
+            <div class="flex items-center gap-2 md:gap-3 px-3 md:px-5 py-2 md:py-3 rounded-2xl border border-royal/10 bg-white/80 shadow-sm">
+              <div class="w-8 md:w-10 h-8 md:h-10 rounded-lg md:rounded-xl royal-grad flex items-center justify-center pulse-royal-d1">
+                <i class="fas fa-bolt text-white text-xs md:text-sm" aria-hidden="true"></i>
               </div>
               <div>
-                <div class="text-charcoal font-extrabold text-base leading-none">당일 완성</div>
-                <div class="text-gray-400 text-[10px] mt-0.5 tracking-wide">CEREC SYSTEM</div>
+                <div class="text-charcoal font-extrabold text-sm md:text-base leading-none">당일 완성</div>
+                <div class="text-gray-400 text-[9px] md:text-[10px] mt-0.5 tracking-wide">CEREC SYSTEM</div>
               </div>
             </div>
             <div class="hidden md:flex items-center gap-3 px-5 py-3 rounded-2xl border border-royal/10 bg-white/80 shadow-sm">
@@ -625,7 +625,51 @@ export function mainPage(): string {
           </div>
         </div>
 
-        <!-- Right: 3D Implant Model (Sketchfab) + 실사 사진 배경 -->
+        <!-- Right: 3D Implant Model (Desktop) / Mobile Visual -->
+        <!-- Mobile: 3D 임플란트 모델 (Sketchfab) -->
+        <div class="lg:hidden mt-6 mb-4" id="heroVisualMobile">
+          <div class="relative rounded-3xl overflow-hidden bg-gradient-to-br from-lavender via-white to-royal/[0.04] border border-royal/10">
+            <div class="absolute -top-10 -right-10 w-40 h-40 bg-royal/[0.06] rounded-full blur-[60px]"></div>
+            <!-- 3D Implant Viewer -->
+            <div class="relative w-full" style="aspect-ratio: 4/3.5;">
+              <iframe 
+                title="3D Dental Implant Mobile" 
+                frameborder="0" 
+                allowfullscreen 
+                mozallowfullscreen="true" 
+                webkitallowfullscreen="true" 
+                allow="autoplay; fullscreen; xr-spatial-tracking" 
+                src="https://sketchfab.com/models/dcfc91171cd34b6780a23a42effd29fc/embed?autospin=0.3&autostart=1&transparent=1&ui_animations=0&ui_infos=0&ui_stop=0&ui_inspector=0&ui_watermark_link=0&ui_watermark=0&ui_ar=0&ui_help=0&ui_settings=0&ui_vr=0&ui_fullscreen=0&ui_annotations=0&camera=0&preload=1&ui_hint=0&ui_controls=0"
+                style="width:100%; height:100%; border:none;"
+                loading="lazy"
+              ></iframe>
+              <!-- Overlay to hide Sketchfab branding -->
+              <div class="absolute top-0 left-0 right-0 h-14 pointer-events-none z-[5] sf-overlay-top" aria-hidden="true"></div>
+              <div class="absolute top-0 left-0 w-32 h-14 pointer-events-none z-[6] sf-overlay-corner" aria-hidden="true"></div>
+              <div class="absolute bottom-0 left-0 right-0 h-10 pointer-events-none z-[5] sf-overlay-bottom" aria-hidden="true"></div>
+            </div>
+            <!-- Info bar below 3D model -->
+            <div class="relative z-10 p-4 bg-white/80 backdrop-blur-md border-t border-royal/[0.06]">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-xl royal-grad flex items-center justify-center royal-glow">
+                    <i class="fas fa-tooth text-white text-lg"></i>
+                  </div>
+                  <div>
+                    <div class="text-charcoal font-extrabold text-sm leading-tight">3D 정밀 임플란트</div>
+                    <div class="text-gray-400 text-[11px]">360° 회전하여 구조를 살펴보세요</div>
+                  </div>
+                </div>
+                <div class="flex gap-1.5">
+                  <span class="px-2.5 py-1 rounded-full bg-royal/[0.06] border border-royal/10 text-royal text-[9px] font-bold">티타늄</span>
+                  <span class="px-2.5 py-1 rounded-full bg-royal/[0.06] border border-royal/10 text-royal text-[9px] font-bold">세라믹</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Desktop: 3D Implant Model (Sketchfab) + 실사 사진 배경 -->
         <div class="lg:col-span-5 hidden lg:flex items-center justify-center" id="heroVisual">
           <div class="relative">
             <!-- 실사 사진 배경 (진료실) -->
@@ -687,8 +731,8 @@ export function mainPage(): string {
       </div>
     </div>
 
-    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-overlay-10" aria-hidden="true">
-      <span class="text-[9px] tracking-[0.3em] text-gray-300 uppercase font-semibold">Scroll Down</span>
+    <div class="absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 md:gap-3 z-overlay-10" aria-hidden="true">
+      <span class="text-[9px] tracking-[0.3em] text-gray-300 uppercase font-semibold hidden md:block">Scroll Down</span>
       <div class="w-[22px] h-[36px] rounded-full border border-gray-300 flex items-start justify-center p-1.5">
         <div class="w-[3px] h-[8px] rounded-full bg-royal animate-bounce"></div>
       </div>
@@ -702,6 +746,7 @@ export function mainPage(): string {
         .from('#heroSub',{opacity:0,y:30,duration:0.8,ease:'power3.out'},'-=0.5')
         .from('#heroCTA',{opacity:0,y:20,duration:0.7,ease:'power3.out'},'-=0.4')
         .from('#heroStats',{opacity:0,y:20,duration:0.7,ease:'power3.out'},'-=0.3')
+        .from('#heroVisualMobile',{opacity:0,y:30,duration:0.8,ease:'power3.out'},'-=0.5')
         .from('#heroVisual',{opacity:0,x:80,scale:0.95,duration:1.2,ease:'power4.out'},'-=1');
     </script>
   </section>
