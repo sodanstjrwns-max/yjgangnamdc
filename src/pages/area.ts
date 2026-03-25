@@ -21,10 +21,10 @@ export function areaPage(region:string): { html:string; title:string; descriptio
     title, description,
     html: `
     <!-- Hero (White) -->
-    <section class="relative min-h-[60vh] flex items-end subpage-hero overflow-hidden">
+    <section class="relative min-h-[40vh] md:min-h-[60vh] flex items-end subpage-hero overflow-hidden">
       <div class="orb orb-royal w-[500px] h-[500px] -top-48 -right-48 opacity-20"></div>
       <div class="absolute inset-0 grid-pattern opacity-40"></div>
-      <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 pb-24 pt-44 w-full">
+      <div class="relative z-10 max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12 pb-16 pt-28 md:pb-24 md:pt-44 w-full">
         <a href="/directions" class="inline-flex items-center gap-2 text-gray-400 hover:text-royal transition-colors text-sm mb-8 font-medium"><i class="fas fa-arrow-left text-xs"></i>오시는 길</a>
         <h1 class="display-lg text-charcoal mb-6">${title}</h1>
         <p class="text-gray-400 text-lg">${area.description}</p>
@@ -33,7 +33,7 @@ export function areaPage(region:string): { html:string; title:string; descriptio
 
     <!-- Stats -->
     <section class="py-20 md:py-28 bg-white">
-      <div class="max-w-5xl mx-auto px-6 md:px-8 lg:px-12">
+      <div class="max-w-5xl mx-auto px-5 md:px-8 lg:px-12">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20 stagger-children">
           <div class="card-premium p-10 text-center stagger-item group">
             <div class="w-14 h-14 mx-auto rounded-2xl royal-grad flex items-center justify-center mb-5 royal-glow group-hover:scale-110 transition-transform duration-500"><i class="fas fa-car text-white text-xl"></i></div>
@@ -53,7 +53,7 @@ export function areaPage(region:string): { html:string; title:string; descriptio
         </div>
 
         <!-- Why choose us -->
-        <div class="mb-20 reveal">
+        <div class="mb-12 md:mb-20 reveal">
           <div class="text-center mb-14">
             <div class="section-label section-label-royal mx-auto mb-6"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>WHY US</div>
             <h2 class="display-md text-charcoal">${area.name} 분들이 선택하는 이유</h2>

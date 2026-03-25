@@ -445,10 +445,10 @@ export function layout(content: string, opts: LayoutOptions): string {
     body { color: #1C1C1E; background: #FFFFFF; overflow-x: hidden; }
 
     /* ===== Premium Typography ===== */
-    .display-hero { font-size: clamp(2rem, 4.2vw, 3.6rem); line-height: 1.12; letter-spacing: -0.04em; font-weight: 900; }
-    .display-xl { font-size: clamp(2.5rem, 6vw, 5rem); line-height: 1.06; letter-spacing: -0.035em; font-weight: 800; }
-    .display-lg { font-size: clamp(2rem, 4.5vw, 3.5rem); line-height: 1.1; letter-spacing: -0.025em; font-weight: 700; }
-    .display-md { font-size: clamp(1.5rem, 3vw, 2.25rem); line-height: 1.2; letter-spacing: -0.02em; font-weight: 700; }
+    .display-hero { font-size: clamp(1.75rem, 4.2vw, 3.6rem); line-height: 1.15; letter-spacing: -0.03em; font-weight: 900; }
+    .display-xl { font-size: clamp(1.85rem, 6vw, 5rem); line-height: 1.1; letter-spacing: -0.035em; font-weight: 800; }
+    .display-lg { font-size: clamp(1.6rem, 4.5vw, 3.5rem); line-height: 1.15; letter-spacing: -0.025em; font-weight: 700; }
+    .display-md { font-size: clamp(1.35rem, 3vw, 2.25rem); line-height: 1.2; letter-spacing: -0.02em; font-weight: 700; }
 
     /* ===== Royal Purple Gradients ===== */
     .royal-grad { background: linear-gradient(135deg, #4BC3C5, #10AFB2 40%, #0C8385); }
@@ -484,9 +484,16 @@ export function layout(content: string, opts: LayoutOptions): string {
       transition: opacity 0.6s;
     }
     .card-premium:hover {
-      transform: translateY(-8px) scale(1.005);
-      box-shadow: 0 30px 80px rgba(0,0,0,0.06), 0 8px 30px rgba(16,175,178,0.08);
+      transform: translateY(-4px) scale(1.002);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.04), 0 4px 15px rgba(16,175,178,0.06);
       border-color: rgba(16,175,178,0.15);
+    }
+    @media (min-width: 768px) {
+      .card-premium:hover { transform: translateY(-8px) scale(1.005); box-shadow: 0 30px 80px rgba(0,0,0,0.06), 0 8px 30px rgba(16,175,178,0.08); }
+    }
+    .card-premium { border-radius: 20px; }
+    @media (min-width: 768px) {
+      .card-premium { border-radius: 28px; }
     }
     .card-premium:hover::before { opacity: 1; }
 
@@ -513,15 +520,18 @@ export function layout(content: string, opts: LayoutOptions): string {
 
     /* ===== Buttons ===== */
     .btn-primary {
-      display: inline-flex; align-items: center; gap: 10px;
-      padding: 18px 40px;
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 28px;
       background: linear-gradient(135deg, #4BC3C5 0%, #10AFB2 40%, #0C8385 100%);
-      color: #fff; font-weight: 700; font-size: 15px;
+      color: #fff; font-weight: 700; font-size: 14px;
       border-radius: 100px; border: none; cursor: pointer;
       transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
       box-shadow: 0 6px 30px rgba(16,175,178,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
       position: relative; overflow: hidden;
       text-decoration: none;
+    }
+    @media (min-width: 768px) {
+      .btn-primary { padding: 18px 40px; font-size: 15px; gap: 10px; }
     }
     .btn-primary::before {
       content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
@@ -532,24 +542,30 @@ export function layout(content: string, opts: LayoutOptions): string {
     .btn-primary:hover::before { left: 100%; }
 
     .btn-outline {
-      display: inline-flex; align-items: center; gap: 10px;
-      padding: 18px 40px;
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 28px;
       border: 2px solid rgba(16,175,178,0.3);
-      color: var(--royal); font-weight: 700; font-size: 15px;
+      color: var(--royal); font-weight: 700; font-size: 14px;
       border-radius: 100px; cursor: pointer; background: transparent;
       transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
       text-decoration: none;
     }
+    @media (min-width: 768px) {
+      .btn-outline { padding: 18px 40px; font-size: 15px; gap: 10px; }
+    }
     .btn-outline:hover { background: var(--royal); color: #fff; border-color: var(--royal); box-shadow: 0 8px 40px rgba(16,175,178,0.25); transform: translateY(-2px); }
 
     .btn-subtle {
-      display: inline-flex; align-items: center; gap: 10px;
-      padding: 18px 40px;
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 28px;
       border: 1.5px solid rgba(0,0,0,0.08);
-      color: var(--charcoal); font-weight: 700; font-size: 15px;
+      color: var(--charcoal); font-weight: 700; font-size: 14px;
       border-radius: 100px; cursor: pointer; background: rgba(0,0,0,0.02);
       transition: all 0.5s;
       text-decoration: none;
+    }
+    @media (min-width: 768px) {
+      .btn-subtle { padding: 18px 40px; font-size: 15px; gap: 10px; }
     }
     .btn-subtle:hover { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.12); transform: translateY(-2px); }
 
@@ -584,15 +600,23 @@ export function layout(content: string, opts: LayoutOptions): string {
     /* ===== Mobile CTA ===== */
     .floating-cta {
       position: fixed; bottom: 0; left: 0; right: 0; z-index: 9960;
-      padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+      padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
       display: none;
-      background: rgba(255,255,255,0.95);
-      backdrop-filter: blur(24px);
+      background: rgba(255,255,255,0.97);
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
       border-top: 1px solid rgba(0,0,0,0.06);
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
     }
     @media (max-width: 768px) {
       .floating-cta { display: flex; gap: 10px; }
-      body { padding-bottom: 82px; }
+      body { padding-bottom: 76px; }
+    }
+
+    /* ===== Mobile-specific overrides ===== */
+    @media (max-width: 640px) {
+      .section-label { padding: 6px 14px; font-size: 10px; letter-spacing: 0.1em; }
+      .card-premium { border-radius: 16px; }
+      .card-white { border-radius: 16px; }
     }
 
     /* ===== Marquee ===== */
@@ -767,6 +791,26 @@ export function layout(content: string, opts: LayoutOptions): string {
     /* ===== Core Web Vitals: CLS Prevention ===== */
     img { max-width: 100%; height: auto; }
     img[loading="lazy"] { content-visibility: auto; }
+
+    /* ===== Mobile spacing helpers ===== */
+    @media (max-width: 640px) {
+      .py-32 { padding-top: 4rem !important; padding-bottom: 4rem !important; }
+      .py-36 { padding-top: 4.5rem !important; padding-bottom: 4.5rem !important; }
+      .py-48 { padding-top: 5rem !important; padding-bottom: 5rem !important; }
+      .mb-24 { margin-bottom: 3rem !important; }
+      .mb-20 { margin-bottom: 2.5rem !important; }
+      .mb-16 { margin-bottom: 2rem !important; }
+      .gap-16 { gap: 2.5rem !important; }
+      .gap-20 { gap: 3rem !important; }
+      .gap-24 { gap: 3rem !important; }
+      .pt-48 { padding-top: 7rem !important; }
+      .min-h-\\[480px\\] { min-height: 360px !important; }
+    }
+    @media (max-width: 768px) {
+      /* Prevent horizontal overflow */
+      html, body { overflow-x: hidden; }
+      main { overflow-x: hidden; }
+    }
     /* Reduce motion for accessibility + performance */
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
@@ -962,11 +1006,11 @@ export function layout(content: string, opts: LayoutOptions): string {
       </div>
     </div>
 
-    <div class="max-w-[1440px] mx-auto px-8 lg:px-12 pt-24 pb-16 relative">
+    <div class="max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12 pt-14 md:pt-24 pb-10 md:pb-16 relative">
       <div class="orb orb-royal w-[500px] h-[500px] -top-64 -right-64 opacity-10"></div>
 
       <!-- Main footer grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-20">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-20">
         <!-- Brand column -->
         <div class="lg:col-span-5">
           <div class="flex items-center gap-3 mb-8">
@@ -989,9 +1033,9 @@ export function layout(content: string, opts: LayoutOptions): string {
           </div>
         </div>
 
-        <!-- Links -->
+        <!-- Links (2-column on mobile) -->
         <div class="lg:col-span-2">
-          <h4 class="text-royal text-[10px] tracking-[0.2em] font-bold mb-8 uppercase">진료</h4>
+          <h4 class="text-royal text-[10px] tracking-[0.2em] font-bold mb-5 md:mb-8 uppercase">진료</h4>
           <ul class="space-y-3.5 text-sm text-gray-400">
             <li><a href="/treatments/implant" class="hover:text-royal transition-colors duration-300">임플란트</a></li>
             <li><a href="/treatments/invisalign" class="hover:text-royal transition-colors duration-300">인비절라인</a></li>

@@ -302,7 +302,7 @@ export function mainPage(): string {
     { slug: 'cosmetic', icon: 'fa-gem', label: 'COSMETIC', title: '심미보철', sub: '자연치아와 구분이 어렵습니다', worry: '"자연스러운 이를 갖고 싶어요…"', answer: 'CEREC으로 맞춤 제작, 자연치아와 구분이 어렵습니다.', tags: ['라미네이트', '올세라믹', '당일 제작', '맞춤 색상'] }
   ];
   const treatmentsHtml = treatments.map(item => `
-    <a href="/treatments/${item.slug}" class="card-white p-8 md:p-10 group block stagger-item">
+    <a href="/treatments/${item.slug}" class="card-white p-6 md:p-8 lg:p-10 group block stagger-item">
       <div class="relative z-10">
         <div class="flex items-start justify-between mb-8">
           <div class="w-16 h-16 rounded-2xl royal-grad flex items-center justify-center royal-glow group-hover:scale-110 transition-transform duration-500"><i class="fas ${item.icon} text-white text-2xl"></i></div>
@@ -329,7 +329,7 @@ export function mainPage(): string {
     { emoji: '😬', persona: '교정이 고민이신 분', age: '20~40대', worry: '"교정 티 나면 직장에서 어색할까봐…"<br>"철사 교정은 부담스러운데…"', solution: '인비절라인 투명교정으로 눈에 띄지 않게 교정합니다. iTero 스캐너로 교정 전후를 3D 시뮬레이션으로 미리 보실 수 있습니다.', tags: ['투명 교정', '3D 시뮬레이션', '탈착 가능'], link: '/treatments/invisalign' }
   ];
   const personasHtml = personas.map(p => `
-    <div class="card-premium p-8 md:p-10 stagger-item group hover:border-royal/20">
+    <div class="card-premium p-6 md:p-8 lg:p-10 stagger-item group hover:border-royal/20">
       <div class="text-5xl mb-6">${p.emoji}</div>
       <div class="flex items-center gap-3 mb-4">
         <h3 class="text-xl font-extrabold text-charcoal">${p.persona}</h3>
@@ -1011,10 +1011,10 @@ export function mainPage(): string {
   </section>
 
   <!-- ========== 첫 방문 가이드 (진료 흐름도) ========== -->
-  <section class="py-32 md:py-48 bg-white relative overflow-hidden" aria-label="첫 방문 가이드">
+  <section class="py-20 md:py-32 lg:py-48 bg-white relative overflow-hidden" aria-label="첫 방문 가이드">
     <div class="absolute top-0 left-0 w-[600px] h-[600px] bg-royal/[0.02] rounded-full blur-[200px] -translate-x-1/2"></div>
-    <div class="max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+    <div class="max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
         <div class="lg:col-span-4 lg:sticky lg:top-32 reveal">
           <div class="section-label section-label-royal mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>FIRST VISIT</div>
           <h2 class="display-lg text-charcoal mb-6">처음 오시나요?<br><span class="royal-grad-text">이렇게 진행됩니다</span></h2>
@@ -1038,11 +1038,11 @@ export function mainPage(): string {
   </section>
 
   <!-- ========== DOCTORS — 스토리형 소개 요약 ========== -->
-  <section class="py-32 md:py-48 section-lavender relative overflow-hidden" aria-label="의료진 소개">
+  <section class="py-20 md:py-32 lg:py-48 section-lavender relative overflow-hidden" aria-label="의료진 소개">
     <div class="absolute bottom-0 right-0 w-[600px] h-[600px] bg-royal/[0.02] rounded-full blur-[200px]"></div>
     <div class="absolute inset-0 grid-pattern opacity-20"></div>
-    <div class="max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 relative z-10">
-      <div class="text-center mb-24 reveal">
+    <div class="max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12 relative z-10">
+      <div class="text-center mb-14 md:mb-24 reveal">
         <div class="section-label section-label-royal mx-auto mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>DOCTORS</div>
         <h2 class="display-xl text-charcoal mb-6">수술이 전문인<br><span class="royal-grad-text">전문의가 합니다</span></h2>
         <p class="text-gray-400 text-lg">구강악안면외과 전문의가 직접 임플란트를 식립합니다</p>
@@ -1054,11 +1054,11 @@ export function mainPage(): string {
   </section>
 
   <!-- ========== NUMBERS ========== -->
-  <section class="py-28 md:py-36 bg-white relative overflow-hidden" aria-label="강남치과 핵심 수치">
+  <section class="py-16 md:py-28 lg:py-36 bg-white relative overflow-hidden" aria-label="강남치과 핵심 수치">
     <div class="orb orb-royal w-[500px] h-[500px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-15"></div>
     <div class="absolute inset-0 grid-pattern opacity-30"></div>
     <div class="royal-line-h absolute top-0 left-0 right-0"></div>
-    <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
+    <div class="relative z-10 max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12">
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 stagger-children">
         ${numbersHtml}
       </div>
@@ -1066,10 +1066,10 @@ export function mainPage(): string {
   </section>
 
   <!-- ========== 주변 지역 접근성 ========== -->
-  <section class="py-28 md:py-36 section-lavender relative overflow-hidden" aria-label="주변 지역 접근성">
+  <section class="py-16 md:py-28 lg:py-36 section-lavender relative overflow-hidden" aria-label="주변 지역 접근성">
     <div class="absolute inset-0 grid-pattern opacity-20"></div>
-    <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
-      <div class="text-center mb-16 reveal">
+    <div class="relative z-10 max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12">
+      <div class="text-center mb-10 md:mb-16 reveal">
         <div class="section-label section-label-royal mx-auto mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>ACCESS</div>
         <h2 class="display-lg text-charcoal mb-6">영주 근처라면<br><span class="royal-grad-text">가까운 전문의 치과입니다</span></h2>
         <p class="text-gray-400 text-lg">주변 지역에서 편하게 방문하실 수 있습니다</p>
@@ -1084,10 +1084,10 @@ export function mainPage(): string {
   </section>
 
   <!-- ========== REVIEWS (Placeholder) ========== -->
-  <section class="py-32 md:py-48 bg-white relative overflow-hidden" aria-label="환자 리뷰">
+  <section class="py-20 md:py-32 lg:py-48 bg-white relative overflow-hidden" aria-label="환자 리뷰">
     <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-royal/10 to-transparent"></div>
-    <div class="max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
-      <div class="text-center mb-20 reveal">
+    <div class="max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12">
+      <div class="text-center mb-12 md:mb-20 reveal">
         <div class="section-label section-label-royal mx-auto mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>REVIEWS</div>
         <h2 class="display-lg text-charcoal mb-4">환자 리뷰</h2>
         <p class="text-gray-400 text-lg">곧 환자분들의 소중한 후기를 만나보실 수 있습니다</p>
@@ -1104,10 +1104,10 @@ export function mainPage(): string {
   </section>
 
   <!-- ========== FAQ ========== -->
-  <section class="py-32 md:py-48 section-lavender relative overflow-hidden" id="faq" aria-label="자주 묻는 질문">
+  <section class="py-20 md:py-32 lg:py-48 section-lavender relative overflow-hidden" id="faq" aria-label="자주 묻는 질문">
     <div class="absolute top-0 left-0 w-[500px] h-[500px] bg-royal/[0.02] rounded-full blur-[200px] -translate-x-1/2 -translate-y-1/3"></div>
-    <div class="max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
+    <div class="max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-24">
         <div class="lg:col-span-4 lg:sticky lg:top-32 lg:self-start reveal">
           <div class="section-label section-label-royal mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>FAQ</div>
           <h2 class="display-lg text-charcoal mb-6">자주 묻는<br><span class="royal-grad-text">질문</span></h2>
@@ -1125,11 +1125,11 @@ export function mainPage(): string {
   </section>
 
   <!-- ========== FINAL CTA ========== -->
-  <section class="py-36 md:py-48 bg-white relative overflow-hidden" aria-label="상담 예약">
+  <section class="py-20 md:py-36 lg:py-48 bg-white relative overflow-hidden" aria-label="상담 예약">
     <div class="orb orb-royal w-[800px] h-[800px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-10"></div>
     <div class="absolute inset-0 grid-pattern opacity-20"></div>
     <div class="royal-line-h absolute top-0 left-0 right-0"></div>
-    <div class="relative z-10 max-w-3xl mx-auto px-6 text-center reveal">
+    <div class="relative z-10 max-w-3xl mx-auto px-5 text-center reveal">
       <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] border border-royal/[0.06] rounded-full"></div>
       <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] border border-royal/[0.03] rounded-full"></div>
       <div class="relative z-10">
@@ -1140,10 +1140,10 @@ export function mainPage(): string {
           <a href="/reservation" class="w-full sm:w-auto btn-primary !py-5 !px-14 !text-base !font-extrabold"><i class="fas fa-calendar-check"></i>온라인 상담 예약</a>
           <a href="tel:054-636-8222" class="w-full sm:w-auto btn-subtle justify-center"><i class="fas fa-phone text-sm text-royal"></i>054-636-8222</a>
         </div>
-        <div class="flex items-center justify-center gap-8 text-sm text-gray-400">
-          <span><i class="fas fa-clock text-royal/50 mr-2"></i>평일 09:00-17:30 (접수마감 17:00)</span>
-          <span class="w-1 h-1 rounded-full bg-gray-300"></span>
-          <span><i class="fas fa-map-marker-alt text-royal/50 mr-2"></i>영주시 대학로 217 모모제인 2층</span>
+        <div class="flex items-center justify-center gap-4 md:gap-8 text-xs md:text-sm text-gray-400 flex-wrap">
+          <span><i class="fas fa-clock text-royal/50 mr-1 md:mr-2"></i>평일 09:00-17:30</span>
+          <span class="w-1 h-1 rounded-full bg-gray-300 hidden sm:block"></span>
+          <span><i class="fas fa-map-marker-alt text-royal/50 mr-1 md:mr-2"></i>영주시 대학로 217</span>
         </div>
       </div>
     </div>

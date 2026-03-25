@@ -1,10 +1,10 @@
 export function pricingPage(): string {
   return `
   <!-- Hero (White) -->
-  <section class="relative min-h-[60vh] flex items-end subpage-hero overflow-hidden">
+  <section class="relative min-h-[40vh] md:min-h-[60vh] flex items-end subpage-hero overflow-hidden">
     <div class="orb orb-royal w-[500px] h-[500px] -top-48 -right-48 opacity-20"></div>
     <div class="absolute inset-0 grid-pattern opacity-40"></div>
-    <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 pb-24 pt-48 w-full">
+    <div class="relative z-10 max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12 pb-16 pt-28 md:pb-24 md:pt-48 w-full">
       <div class="section-label section-label-royal mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>PRICING</div>
       <h1 class="display-xl text-charcoal mb-6">진료비용 <span class="royal-grad-text">안내</span></h1>
       <p class="text-gray-400 text-lg">투명한 비용, 합리적인 진료를 약속합니다.</p>
@@ -12,11 +12,11 @@ export function pricingPage(): string {
   </section>
 
   <!-- Pricing -->
-  <section class="py-20 md:py-32 bg-white">
-    <div class="max-w-5xl mx-auto px-6 md:px-8 lg:px-12">
+  <section class="py-14 md:py-20 lg:py-32 bg-white">
+    <div class="max-w-5xl mx-auto px-5 md:px-8 lg:px-12">
 
       <!-- Notice -->
-      <div class="glass-royal rounded-3xl p-7 mb-20 reveal relative overflow-hidden">
+      <div class="glass-royal rounded-3xl p-7 mb-12 md:mb-20 reveal relative overflow-hidden">
         <div class="absolute -top-10 -right-10 w-32 h-32 bg-royal/[0.04] rounded-full blur-[60px]"></div>
         <div class="flex items-start gap-5 relative z-10">
           <div class="w-12 h-12 rounded-xl royal-grad flex items-center justify-center flex-shrink-0 royal-glow"><i class="fas fa-info text-white"></i></div>
@@ -80,7 +80,7 @@ export function pricingPage(): string {
   </section>
 
   <!-- CTA (White) -->
-  <section class="py-28 md:py-36 section-snow relative overflow-hidden">
+  <section class="py-16 md:py-28 lg:py-36 section-snow relative overflow-hidden">
     <div class="orb orb-royal w-[500px] h-[500px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-15"></div>
     <div class="absolute inset-0 grid-pattern opacity-20"></div>
     <div class="royal-line-h absolute top-0 left-0 right-0"></div>

@@ -1,14 +1,14 @@
 export function directionsPage(): string {
   return `
   <!-- Hero (White) -->
-  <section class="relative min-h-[60vh] flex items-end subpage-hero overflow-hidden">
+  <section class="relative min-h-[40vh] md:min-h-[60vh] flex items-end subpage-hero overflow-hidden">
     <div class="absolute inset-0 z-[1]">
       <img src="/static/photos/3gQUD6CP.jpg" alt="강남치과의원 접수대와 로고" class="w-full h-full object-cover">
       <div class="absolute inset-0 bg-gradient-to-b from-white/90 via-white/70 to-white"></div>
     </div>
     <div class="orb orb-royal w-[500px] h-[500px] -top-48 -right-48 opacity-20 z-[2]"></div>
     <div class="absolute inset-0 grid-pattern opacity-40 z-[2]"></div>
-    <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 pb-24 pt-48 w-full">
+    <div class="relative z-10 max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12 pb-16 pt-28 md:pb-24 md:pt-48 w-full">
       <div class="section-label section-label-royal mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>DIRECTIONS</div>
       <h1 class="display-xl text-charcoal mb-6">오시는 <span class="royal-grad-text">길</span></h1>
       <p class="text-gray-400 text-lg">경북 영주시 대학로 217, 2층 · 택지 사거리 모모제인 건물</p>
@@ -16,8 +16,8 @@ export function directionsPage(): string {
   </section>
 
   <!-- Map + Info -->
-  <section class="py-20 md:py-32 bg-white">
-    <div class="max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
+  <section class="py-14 md:py-20 lg:py-32 bg-white">
+    <div class="max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
         <!-- Map -->
         <div class="lg:col-span-2 reveal">
@@ -63,7 +63,7 @@ export function directionsPage(): string {
   <!-- Transportation -->
   <section class="py-20 md:py-28 section-snow relative">
     <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-royal/10 to-transparent"></div>
-    <div class="max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
+    <div class="max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12">
       <div class="text-center mb-14 reveal">
         <div class="section-label section-label-royal mx-auto mb-6"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>TRANSPORTATION</div>
         <h2 class="display-md text-charcoal">교통 안내</h2>
@@ -88,9 +88,9 @@ export function directionsPage(): string {
 
   <!-- Nearby areas -->
   <section class="py-20 md:py-28 bg-white">
-    <div class="max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
+    <div class="max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12">
       <!-- Internal photos -->
-      <div class="mb-20 reveal">
+      <div class="mb-12 md:mb-20 reveal">
         <div class="text-center mb-10">
           <div class="section-label section-label-royal mx-auto mb-6"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>INSIDE</div>
           <h2 class="display-md text-charcoal">병원 내부 미리보기</h2>
@@ -116,7 +116,7 @@ export function directionsPage(): string {
       </div>
 
       <!-- Facilities -->
-      <div class="mb-20 reveal">
+      <div class="mb-12 md:mb-20 reveal">
         <div class="text-center mb-10">
           <div class="section-label section-label-royal mx-auto mb-6"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>FACILITIES</div>
           <h2 class="display-md text-charcoal">편의시설</h2>

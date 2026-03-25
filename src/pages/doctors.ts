@@ -70,7 +70,7 @@ const doctors = [
 export function doctorsPage(): string {
   return `
   <!-- ========== CINEMATIC HERO — "헉 뭐지?" ========== -->
-  <section class="relative min-h-screen flex items-center justify-center overflow-hidden" id="doctorHero" aria-label="의료진 히어로">
+  <section class="relative min-h-0 md:min-h-screen flex items-center justify-center overflow-hidden" id="doctorHero" aria-label="의료진 히어로">
     <!-- Dark base -->
     <div class="absolute inset-0 bg-gradient-to-br from-[#0E0618] via-[#1A0D2E] to-[#0E0618]"></div>
     
@@ -105,7 +105,7 @@ export function doctorsPage(): string {
     </div>
 
     <!-- Main Content -->
-    <div class="relative max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 w-full py-32" style="z-index:10;">
+    <div class="relative max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12 w-full py-20 md:py-32" style="z-index:10;">
       <div class="flex flex-col items-center text-center">
 
         <!-- Tag -->
@@ -270,7 +270,7 @@ export function doctorsPage(): string {
   <section class="py-24 md:py-36 bg-white relative overflow-hidden" aria-label="의료진 상세 소개">
     <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-royal/[0.02] rounded-full blur-[200px]"></div>
 
-    <div class="max-w-6xl mx-auto px-6 md:px-8 lg:px-12 space-y-24">
+    <div class="max-w-6xl mx-auto px-5 md:px-8 lg:px-12 space-y-24">
       ${doctors.map((doc, i) => `
       <article class="reveal${i % 2 ? '-right' : '-left'}" itemscope itemtype="https://schema.org/Physician">
         <meta itemprop="name" content="${doc.name}">
@@ -358,7 +358,7 @@ export function doctorsPage(): string {
     <div class="absolute inset-0 grid-pattern opacity-30"></div>
     <div class="royal-line-h absolute top-0 left-0 right-0"></div>
 
-    <div class="relative z-10 max-w-5xl mx-auto px-6 md:px-8 lg:px-12 reveal">
+    <div class="relative z-10 max-w-5xl mx-auto px-5 md:px-8 lg:px-12 reveal">
       <div class="text-center mb-16">
         <div class="section-label section-label-royal mx-auto mb-6"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>OUR MISSION</div>
         <h2 class="display-lg text-charcoal mb-6" data-speakable="true">
@@ -406,9 +406,9 @@ export function doctorsPage(): string {
   </section>
 
   <!-- ========== 진료 환경 ========== -->
-  <section class="py-28 md:py-36 bg-white relative overflow-hidden" aria-label="진료 환경">
+  <section class="py-16 md:py-28 lg:py-36 bg-white relative overflow-hidden" aria-label="진료 환경">
     <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-royal/10 to-transparent"></div>
-    <div class="max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
+    <div class="max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12">
       <div class="text-center mb-16 reveal">
         <div class="section-label section-label-royal mx-auto mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>CLINIC ENVIRONMENT</div>
         <h2 class="display-lg text-charcoal mb-6">전문의가 진료하는<br><span class="royal-grad-text">대학병원급 환경</span></h2>
@@ -436,7 +436,7 @@ export function doctorsPage(): string {
   </section>
 
   <!-- CTA -->
-  <section class="py-28 md:py-36 section-lavender relative overflow-hidden">
+  <section class="py-16 md:py-28 lg:py-36 section-lavender relative overflow-hidden">
     <div class="orb orb-royal w-[500px] h-[500px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-15"></div>
     <div class="absolute inset-0 grid-pattern opacity-20"></div>
 
@@ -469,7 +469,7 @@ export function doctorProfilePage(slug: string): { html: string; title: string; 
     <section class="relative min-h-[55vh] flex items-end subpage-hero overflow-hidden">
       <div class="orb orb-royal w-[500px] h-[500px] -top-48 -right-48 opacity-20"></div>
       <div class="absolute inset-0 grid-pattern opacity-30"></div>
-      <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 pb-24 pt-44 w-full">
+      <div class="relative z-10 max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12 pb-16 pt-28 md:pb-24 md:pt-44 w-full">
         <a href="/doctors" class="inline-flex items-center gap-2 text-gray-400 hover:text-royal transition-colors text-sm mb-8 font-medium">
           <i class="fas fa-arrow-left text-xs"></i>의료진 소개로 돌아가기
         </a>
@@ -482,8 +482,8 @@ export function doctorProfilePage(slug: string): { html: string; title: string; 
     </section>
 
     <!-- Profile -->
-    <section class="py-20 md:py-32 bg-white">
-      <div class="max-w-5xl mx-auto px-6 md:px-8 lg:px-12">
+    <section class="py-14 md:py-20 lg:py-32 bg-white">
+      <div class="max-w-5xl mx-auto px-5 md:px-8 lg:px-12">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
           <div>
             <div class="aspect-[3/4] rounded-3xl flex items-center justify-center sticky top-28 royal-border-glow overflow-hidden relative bg-gradient-to-br from-lavender via-white to-royal/[0.03]">

@@ -47,7 +47,7 @@ export function noticeListPage(notices: any[]): string {
   <section class="relative min-h-[50vh] flex items-end subpage-hero overflow-hidden" aria-label="공지사항">
     <div class="orb orb-royal w-[500px] h-[500px] -top-48 -right-48 opacity-15"></div>
     <div class="absolute inset-0 grid-pattern opacity-40"></div>
-    <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 pb-20 pt-44 w-full">
+    <div class="relative z-10 max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12 pb-20 pt-44 w-full">
       <div class="section-label section-label-royal mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>NOTICE</div>
       <h1 class="display-xl text-charcoal mb-4" data-speakable="true"><span class="royal-grad-text">공지사항</span></h1>
       <p class="text-gray-400 text-lg" data-speakable="true">강남치과의원의 새로운 소식과 안내를 확인하세요</p>
@@ -56,7 +56,7 @@ export function noticeListPage(notices: any[]): string {
 
   <!-- Category Filter -->
   <section class="bg-white sticky top-16 md:top-[108px] z-30 border-b border-gray-100">
-    <div class="max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 py-4">
+    <div class="max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12 py-4">
       <div class="flex gap-2 overflow-x-auto scrollbar-hide" style="scrollbar-width:none;-ms-overflow-style:none;">
         ${categoriesHtml}
       </div>
@@ -65,7 +65,7 @@ export function noticeListPage(notices: any[]): string {
 
   <!-- Notices List -->
   <section class="py-16 md:py-24 bg-white" aria-label="공지사항 목록">
-    <div class="max-w-4xl mx-auto px-6 md:px-8 lg:px-12">
+    <div class="max-w-4xl mx-auto px-5 md:px-8 lg:px-12">
       <div class="space-y-4 stagger-children" id="noticeGrid">
         ${noticesHtml}
       </div>
@@ -122,7 +122,7 @@ export function noticeDetailPage(notice: any): { html: string; title: string; de
   <section class="relative min-h-[40vh] flex items-end subpage-hero overflow-hidden">
     <div class="orb orb-royal w-[500px] h-[500px] -top-48 -right-48 opacity-15"></div>
     <div class="absolute inset-0 grid-pattern opacity-40"></div>
-    <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 pb-16 pt-44 w-full">
+    <div class="relative z-10 max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12 pb-16 pt-44 w-full">
       <nav class="flex items-center gap-2 text-sm text-gray-400 mb-6" aria-label="breadcrumb">
         <a href="/" class="hover:text-royal transition-colors">홈</a>
         <i class="fas fa-chevron-right text-[8px] text-gray-300"></i>
@@ -142,7 +142,7 @@ export function noticeDetailPage(notice: any): { html: string; title: string; de
 
   <!-- Content -->
   <article class="py-16 md:py-24 bg-white" aria-label="공지사항 본문">
-    <div class="max-w-3xl mx-auto px-6 md:px-8">
+    <div class="max-w-3xl mx-auto px-5 md:px-8">
       <div class="flex items-center gap-4 mb-12 pb-8 border-b border-gray-100">
         <div class="w-12 h-12 rounded-xl ${getCategoryStyle(notice.category)} flex items-center justify-center">
           <i class="fas ${getCategoryIcon(notice.category)} text-sm"></i>

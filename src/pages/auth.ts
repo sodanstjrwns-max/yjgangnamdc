@@ -6,7 +6,7 @@ export function registerPage(): string {
   <section class="relative min-h-[40vh] flex items-end subpage-hero overflow-hidden" aria-label="회원가입">
     <div class="orb orb-royal w-[500px] h-[500px] -top-48 -right-48 opacity-15"></div>
     <div class="absolute inset-0 grid-pattern opacity-40"></div>
-    <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 pb-16 pt-44 w-full">
+    <div class="relative z-10 max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12 pb-16 pt-44 w-full">
       <div class="section-label section-label-royal mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>SIGN UP</div>
       <h1 class="display-xl text-charcoal mb-4" data-speakable="true">회원<span class="royal-grad-text">가입</span></h1>
       <p class="text-gray-400 text-lg" data-speakable="true">치료 전후 사례를 확인하시려면 회원가입이 필요합니다</p>
@@ -15,7 +15,7 @@ export function registerPage(): string {
 
   <!-- Register Form -->
   <section class="py-16 md:py-24 bg-white" aria-label="회원가입 폼">
-    <div class="max-w-lg mx-auto px-6 md:px-8">
+    <div class="max-w-lg mx-auto px-5 md:px-8">
       <div class="card-premium p-8 md:p-10">
         <div class="text-center mb-10">
           <div class="w-16 h-16 mx-auto rounded-2xl royal-grad flex items-center justify-center mb-4 royal-glow">
@@ -192,7 +192,7 @@ export function loginPage(redirect?: string): string {
   <section class="relative min-h-[40vh] flex items-end subpage-hero overflow-hidden" aria-label="로그인">
     <div class="orb orb-royal w-[500px] h-[500px] -top-48 -right-48 opacity-15"></div>
     <div class="absolute inset-0 grid-pattern opacity-40"></div>
-    <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 pb-16 pt-44 w-full">
+    <div class="relative z-10 max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12 pb-16 pt-44 w-full">
       <div class="section-label section-label-royal mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>LOGIN</div>
       <h1 class="display-xl text-charcoal mb-4" data-speakable="true"><span class="royal-grad-text">로그인</span></h1>
       <p class="text-gray-400 text-lg" data-speakable="true">치료 전후 사례를 확인하시려면 로그인해 주세요</p>
@@ -201,7 +201,7 @@ export function loginPage(redirect?: string): string {
 
   <!-- Login Form -->
   <section class="py-16 md:py-24 bg-white" aria-label="로그인 폼">
-    <div class="max-w-lg mx-auto px-6 md:px-8">
+    <div class="max-w-lg mx-auto px-5 md:px-8">
       <div class="card-premium p-8 md:p-10">
         <div class="text-center mb-10">
           <div class="w-16 h-16 mx-auto rounded-2xl royal-grad flex items-center justify-center mb-4 royal-glow">

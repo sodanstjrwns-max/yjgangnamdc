@@ -1,14 +1,14 @@
 export function reservationPage(): string {
   return `
   <!-- Hero (White) -->
-  <section class="relative min-h-[60vh] flex items-end subpage-hero overflow-hidden">
+  <section class="relative min-h-[40vh] md:min-h-[60vh] flex items-end subpage-hero overflow-hidden">
     <div class="absolute inset-0 z-[1]">
       <img src="/static/photos/CR9dgzgZ.jpg" alt="강남치과의원 대기실" class="w-full h-full object-cover">
       <div class="absolute inset-0 bg-gradient-to-b from-white/90 via-white/70 to-white"></div>
     </div>
     <div class="orb orb-royal w-[500px] h-[500px] -top-48 -right-48 opacity-20 z-[2]"></div>
     <div class="absolute inset-0 grid-pattern opacity-40 z-[2]"></div>
-    <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 pb-24 pt-48 w-full">
+    <div class="relative z-10 max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12 pb-16 pt-28 md:pb-24 md:pt-48 w-full">
       <div class="section-label section-label-royal mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>RESERVATION</div>
       <h1 class="display-xl text-charcoal mb-6">상담 <span class="royal-grad-text">예약하기</span></h1>
       <p class="text-gray-400 text-lg">편하신 방법으로 상담을 예약해 주세요.</p>
@@ -16,8 +16,8 @@ export function reservationPage(): string {
   </section>
 
   <!-- Content -->
-  <section class="py-20 md:py-32 bg-white">
-    <div class="max-w-6xl mx-auto px-6 md:px-8 lg:px-12">
+  <section class="py-14 md:py-20 lg:py-32 bg-white">
+    <div class="max-w-6xl mx-auto px-5 md:px-8 lg:px-12">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
         <!-- Left: Methods -->
         <div class="space-y-6 reveal">

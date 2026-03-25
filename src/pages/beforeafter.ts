@@ -59,7 +59,7 @@ export function beforeAfterListPage(cases: any[]): string {
   <section class="relative min-h-[50vh] flex items-end subpage-hero overflow-hidden" aria-label="치료 전후 사례">
     <div class="orb orb-royal w-[500px] h-[500px] -top-48 -right-48 opacity-15"></div>
     <div class="absolute inset-0 grid-pattern opacity-40"></div>
-    <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 pb-20 pt-44 w-full">
+    <div class="relative z-10 max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12 pb-20 pt-44 w-full">
       <div class="section-label section-label-royal mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>BEFORE & AFTER</div>
       <h1 class="display-xl text-charcoal mb-4" data-speakable="true">치료 전후 <span class="royal-grad-text">사례</span></h1>
       <p class="text-gray-400 text-lg" data-speakable="true">구강외과 전문의가 직접 시행한 치료 결과를 확인하세요</p>
@@ -68,7 +68,7 @@ export function beforeAfterListPage(cases: any[]): string {
 
   <!-- Notice -->
   <section class="bg-white border-b border-gray-100">
-    <div class="max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 py-5">
+    <div class="max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12 py-5">
       <div class="flex items-start gap-3 p-4 rounded-2xl bg-royal/[0.03] border border-royal/[0.06]">
         <i class="fas fa-info-circle text-royal text-sm mt-0.5"></i>
         <p class="text-gray-500 text-xs leading-relaxed">실제 환자분의 동의를 받아 게시하는 치료 사례입니다. 개인별 치료 결과는 구강 상태에 따라 다를 수 있습니다. 정확한 진단은 내원 상담을 통해 받아보세요.</p>
@@ -78,7 +78,7 @@ export function beforeAfterListPage(cases: any[]): string {
 
   <!-- Category Filter -->
   <section class="bg-white sticky top-16 md:top-[108px] z-30 border-b border-gray-100">
-    <div class="max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 py-4">
+    <div class="max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12 py-4">
       <div class="flex gap-2 overflow-x-auto scrollbar-hide" style="scrollbar-width:none;-ms-overflow-style:none;">
         ${categoriesHtml}
       </div>
@@ -87,7 +87,7 @@ export function beforeAfterListPage(cases: any[]): string {
 
   <!-- Cases Grid -->
   <section class="py-16 md:py-24 bg-white" aria-label="치료 전후 사례 목록" itemscope itemtype="https://schema.org/CollectionPage">
-    <div class="max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
+    <div class="max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 stagger-children" id="baGrid">
         ${casesHtml}
       </div>
@@ -155,7 +155,7 @@ export function beforeAfterDetailPage(c: any): { html: string; title: string; de
   <section class="relative min-h-[40vh] flex items-end subpage-hero overflow-hidden">
     <div class="orb orb-royal w-[500px] h-[500px] -top-48 -right-48 opacity-15"></div>
     <div class="absolute inset-0 grid-pattern opacity-40"></div>
-    <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 pb-16 pt-44 w-full">
+    <div class="relative z-10 max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12 pb-16 pt-44 w-full">
       <nav class="flex items-center gap-2 text-sm text-gray-400 mb-6" aria-label="breadcrumb">
         <a href="/" class="hover:text-royal transition-colors">홈</a>
         <i class="fas fa-chevron-right text-[8px] text-gray-300"></i>
@@ -173,7 +173,7 @@ export function beforeAfterDetailPage(c: any): { html: string; title: string; de
 
   <!-- Before/After Comparison -->
   <section class="py-12 md:py-20 bg-white" aria-label="치료 전후 비교">
-    <div class="max-w-5xl mx-auto px-6 md:px-8">
+    <div class="max-w-5xl mx-auto px-5 md:px-8">
       <!-- Slider comparison -->
       <div class="card-premium overflow-hidden mb-10 reveal">
         <div class="relative" id="baCompare" style="aspect-ratio:16/9;cursor:ew-resize;user-select:none;touch-action:none;">

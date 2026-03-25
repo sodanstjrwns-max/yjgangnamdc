@@ -165,7 +165,7 @@ export function treatmentsPage(): string {
   const catDescs: Record<string, string> = { '전문센터':'구강외과 전문의가 직접 진료하는 주력 진료', '일반':'기본적인 구강 건강을 위한 필수 진료', '잇몸/외과':'잇몸 건강과 외과적 치료', '특수':'전문적인 치과 치료 서비스' }
   return `
   <!-- Hero (White) -->
-  <section class="relative min-h-[65vh] flex items-end subpage-hero overflow-hidden" aria-label="전체 진료 안내 히어로">
+  <section class="relative min-h-[45vh] md:min-h-[65vh] flex items-end subpage-hero overflow-hidden" aria-label="전체 진료 안내 히어로">
     <div class="absolute inset-0 z-[1]">
       <img src="/static/photos/Wpp3wlfj.jpg" alt="강남치과의원 진료실" class="w-full h-full object-cover">
       <div class="absolute inset-0 bg-gradient-to-b from-white/92 via-white/75 to-white"></div>
@@ -173,7 +173,7 @@ export function treatmentsPage(): string {
     <div class="orb orb-royal w-[600px] h-[600px] -top-64 -right-64 opacity-30 z-[2]"></div>
     <div class="absolute inset-0 grid-pattern opacity-40 z-[2]"></div>
 
-    <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 pb-24 pt-48 w-full">
+    <div class="relative z-10 max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12 pb-16 pt-28 md:pb-24 md:pt-48 w-full">
       <div class="section-label section-label-royal mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>ALL TREATMENTS</div>
       <h1 class="display-xl text-charcoal mb-6" data-speakable="true">전체 <span class="royal-grad-text">진료 안내</span></h1>
       <p class="text-gray-400 text-lg max-w-lg" data-speakable="true">영주 강남치과의원 — 구강외과 전문의 2인이 직접 진료하는<br>프리미엄 치과진료 서비스</p>
@@ -181,12 +181,12 @@ export function treatmentsPage(): string {
   </section>
 
   <!-- Treatment categories -->
-  <section class="py-20 md:py-32 bg-white">
-    <div class="max-w-[1200px] mx-auto px-6 md:px-8 lg:px-12">
+  <section class="py-14 md:py-20 lg:py-32 bg-white">
+    <div class="max-w-[1200px] mx-auto px-5 md:px-8 lg:px-12">
       ${cats.map(cat => {
         const items = treatments.filter(t => t.category === cat)
         return `
-        <div class="mb-20 reveal">
+        <div class="mb-12 md:mb-20 reveal">
           <div class="flex items-center gap-4 mb-10">
             <div class="w-12 h-12 rounded-2xl ${cat === '전문센터' ? 'royal-grad royal-glow' : 'bg-snow-100 border border-gray-100'} flex items-center justify-center">
               <i class="fas ${catIcons[cat]} ${cat === '전문센터' ? 'text-white' : 'text-gray-400'} text-base"></i>
@@ -218,7 +218,7 @@ export function treatmentsPage(): string {
   </section>
 
   <!-- CTA (White) -->
-  <section class="py-28 md:py-36 section-snow relative overflow-hidden">
+  <section class="py-16 md:py-28 lg:py-36 section-snow relative overflow-hidden">
     <div class="orb orb-royal w-[500px] h-[500px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-15"></div>
     <div class="absolute inset-0 grid-pattern opacity-20"></div>
     <div class="royal-line-h absolute top-0 left-0 right-0"></div>
@@ -461,11 +461,11 @@ export function treatmentDetailPage(slug: string): { html: string; title: string
     schemas: [medicalProcedureSchema, serviceSchema, ...(faqSchema ? [faqSchema] : [])],
     html: `
     <!-- Hero (White) -->
-    <section class="relative min-h-[60vh] flex items-end subpage-hero overflow-hidden">
+    <section class="relative min-h-[40vh] md:min-h-[60vh] flex items-end subpage-hero overflow-hidden">
       <div class="orb orb-royal w-[500px] h-[500px] -top-48 -right-48 opacity-20"></div>
       <div class="absolute inset-0 grid-pattern opacity-30"></div>
 
-      <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 pb-24 pt-44 w-full">
+      <div class="relative z-10 max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12 pb-16 pt-28 md:pb-24 md:pt-44 w-full">
         <a href="/treatments" class="inline-flex items-center gap-2 text-gray-400 hover:text-royal transition-colors text-sm mb-8 font-medium">
           <i class="fas fa-arrow-left text-xs"></i>전체 진료 안내
         </a>
@@ -481,7 +481,7 @@ export function treatmentDetailPage(slug: string): { html: string; title: string
     ${t.worry ? `
     <!-- Promise bar -->
     <section class="py-10 bg-royal/[0.03] border-b border-royal/[0.08] relative">
-      <div class="max-w-5xl mx-auto px-6 md:px-8 lg:px-12 relative">
+      <div class="max-w-5xl mx-auto px-5 md:px-8 lg:px-12 relative">
         <div class="flex flex-col md:flex-row items-center gap-8">
           <div class="flex-1 text-center md:text-left">
             <p class="text-royal text-lg italic font-medium mb-2">${t.worry}</p>
@@ -494,7 +494,7 @@ export function treatmentDetailPage(slug: string): { html: string; title: string
 
     <!-- Features -->
     <section class="py-20 md:py-28 bg-white">
-      <div class="max-w-5xl mx-auto px-6 md:px-8 lg:px-12">
+      <div class="max-w-5xl mx-auto px-5 md:px-8 lg:px-12">
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-20 stagger-children">
           ${t.features.map(f => `
           <div class="text-center p-5 card-premium stagger-item">
@@ -523,7 +523,7 @@ export function treatmentDetailPage(slug: string): { html: string; title: string
     <!-- Doctors -->
     <section class="py-20 section-snow relative">
       <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-royal/10 to-transparent"></div>
-      <div class="max-w-5xl mx-auto px-6 md:px-8 lg:px-12 text-center reveal">
+      <div class="max-w-5xl mx-auto px-5 md:px-8 lg:px-12 text-center reveal">
         <div class="section-label section-label-royal mx-auto mb-6"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>담당 의료진</div>
         <h2 class="display-md text-charcoal mb-10">구강외과 전문의가<br><span class="royal-grad-text">직접 진료합니다</span></h2>
         <div class="flex flex-col sm:flex-row items-center justify-center gap-5">
