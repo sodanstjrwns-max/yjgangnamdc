@@ -1345,7 +1345,13 @@ app.post('/api/upload', adminAuth, async (c) => {
     }
 
     const buffer = await file.arrayBuffer()
-    const base64 = btoa(String.fromCharCode(...new Uint8Array(buffer)))
+    const bytes = new Uint8Array(buffer)
+    let binary = ''
+    const chunkSize = 8192
+    for (let i = 0; i < bytes.length; i += chunkSize) {
+      binary += String.fromCharCode(...bytes.subarray(i, Math.min(i + chunkSize, bytes.length)))
+    }
+    const base64 = btoa(binary)
     const dataUrl = `data:${file.type};base64,${base64}`
     const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`
 
@@ -1368,7 +1374,9 @@ app.get('/api/images/:filename', async (c) => {
 
     // data URL에서 Base64 부분만 추출
     const base64Data = img.data.split(',')[1]
-    const bytes = Uint8Array.from(atob(base64Data), ch => ch.charCodeAt(0))
+    const raw = atob(base64Data)
+    const bytes = new Uint8Array(raw.length)
+    for (let i = 0; i < raw.length; i++) bytes[i] = raw.charCodeAt(i)
     return new Response(bytes, {
       headers: {
         'Content-Type': img.content_type,
