@@ -1,5 +1,26 @@
 // ===== 블로그 게시판 페이지 =====
 
+// plain text → HTML 자동 변환 (HTML 태그가 없는 content 처리)
+function formatContent(content: string): string {
+  if (!content) return '';
+  // HTML 태그가 이미 있는 경우 그대로 반환
+  if (/<(?:p|h[1-6]|div|ul|ol|li|br|img|blockquote|table|section|article)[\/\s>]/i.test(content)) {
+    return content;
+  }
+  // plain text → 줄바꿈 기준으로 <p> 태그 감싸기
+  return content
+    .split(/\n\s*\n/) // 빈 줄 = 단락 구분
+    .map(para => {
+      const trimmed = para.trim();
+      if (!trimmed) return '';
+      // 단일 줄바꿈은 <br>로
+      const withBr = trimmed.replace(/\n/g, '<br>');
+      return `<p>${withBr}</p>`;
+    })
+    .filter(Boolean)
+    .join('\n');
+}
+
 // 블로그 목록 페이지
 export function blogListPage(posts: any[]): string {
   const categories = ['전체', '임플란트', 'CEREC', '교정', '구강외과', '일반'];
@@ -163,7 +184,7 @@ export function blogDetailPage(post: any): { html: string; title: string; descri
       </div>
 
       <div class="blog-content prose prose-lg" data-speakable="true">
-        ${post.content}
+        ${formatContent(post.content)}
       </div>
 
       ${tagsHtml ? `<div class="flex flex-wrap gap-2 mt-12 pt-8 border-t border-gray-100">${tagsHtml}</div>` : ''}

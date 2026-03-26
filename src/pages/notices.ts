@@ -1,5 +1,23 @@
 // ===== 공지사항 페이지 =====
 
+// plain text → HTML 자동 변환
+function formatContent(content: string): string {
+  if (!content) return '';
+  if (/<(?:p|h[1-6]|div|ul|ol|li|br|img|blockquote|table|section|article)[\/\s>]/i.test(content)) {
+    return content;
+  }
+  return content
+    .split(/\n\s*\n/)
+    .map(para => {
+      const trimmed = para.trim();
+      if (!trimmed) return '';
+      const withBr = trimmed.replace(/\n/g, '<br>');
+      return `<p>${withBr}</p>`;
+    })
+    .filter(Boolean)
+    .join('\n');
+}
+
 // 공지사항 목록 페이지
 export function noticeListPage(notices: any[]): string {
   const categories = ['전체', '공지', '휴진', '장비', '이벤트'];
@@ -154,7 +172,7 @@ export function noticeDetailPage(notice: any): { html: string; title: string; de
       </div>
 
       <div class="notice-content" data-speakable="true">
-        ${notice.content}
+        ${formatContent(notice.content)}
       </div>
 
       <!-- Navigation -->

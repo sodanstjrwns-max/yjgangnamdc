@@ -26,6 +26,14 @@ export function adminPage(): string {
     .admin-input:focus { border-color: #10AFB2; box-shadow: 0 0 0 3px rgba(16,175,178,0.1); }
     .admin-textarea { width: 100%; padding: 12px 16px; border: 1px solid #E5E7EB; border-radius: 12px; font-size: 14px; outline: none; min-height: 200px; transition: border-color 0.3s; resize: vertical; }
     .admin-textarea:focus { border-color: #10AFB2; box-shadow: 0 0 0 3px rgba(16,175,178,0.1); }
+    .blog-preview-content h2 { font-size: 1.4rem; font-weight: 800; color: #1C1C1E; margin: 1.5rem 0 0.8rem; }
+    .blog-preview-content h3 { font-size: 1.15rem; font-weight: 700; color: #1C1C1E; margin: 1.2rem 0 0.6rem; }
+    .blog-preview-content p { color: #6B7280; font-size: 0.95rem; line-height: 1.8; margin-bottom: 1rem; }
+    .blog-preview-content strong { color: #1C1C1E; font-weight: 700; }
+    .blog-preview-content ul, .blog-preview-content ol { color: #6B7280; padding-left: 1.5rem; margin-bottom: 1rem; }
+    .blog-preview-content li { margin-bottom: 0.3rem; line-height: 1.7; }
+    .blog-preview-content img { border-radius: 12px; margin: 1rem 0; max-width: 100%; }
+    .blog-preview-content blockquote { border-left: 3px solid #10AFB2; padding: 0.8rem 1rem; background: #F3FBFB; border-radius: 0 8px 8px 0; margin: 1rem 0; color: #10AFB2; font-style: italic; }
     .admin-select { padding: 10px 16px; border: 1px solid #E5E7EB; border-radius: 12px; font-size: 14px; outline: none; background: #fff; }
     .admin-btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 24px; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.3s; border: none; }
     .admin-btn-primary { background: linear-gradient(135deg, #4BC3C5, #10AFB2); color: #fff; }
@@ -277,9 +285,12 @@ export function adminPage(): string {
         </div>
 
         <!-- 본문 에디터 -->
-        <div class="mb-2 flex items-center justify-between">
-          <label class="field-label mb-0">본문 내용 (HTML) <span class="req">*</span></label>
-          <div class="flex gap-1">
+        <div class="mb-2 flex items-center justify-between flex-wrap gap-2">
+          <label class="field-label mb-0">본문 내용 <span class="req">*</span></label>
+          <div class="flex gap-1 flex-wrap">
+            <button type="button" onclick="autoFormatContent()" class="admin-btn admin-btn-primary !py-1 !px-2.5 !text-[10px]" title="일반 텍스트를 HTML로 자동 변환"><i class="fas fa-magic text-[9px]"></i> 자동서식</button>
+            <button type="button" onclick="togglePreview()" class="admin-btn admin-btn-secondary !py-1 !px-2.5 !text-[10px]" id="previewToggle" title="미리보기"><i class="fas fa-eye text-[9px]"></i> 미리보기</button>
+            <span class="text-gray-300 text-[10px] flex items-center">|</span>
             <button type="button" onclick="insertTag('h2')" class="admin-btn admin-btn-secondary !py-1 !px-2 !text-[10px]">H2</button>
             <button type="button" onclick="insertTag('h3')" class="admin-btn admin-btn-secondary !py-1 !px-2 !text-[10px]">H3</button>
             <button type="button" onclick="insertTag('p')" class="admin-btn admin-btn-secondary !py-1 !px-2 !text-[10px]">P</button>
@@ -289,7 +300,15 @@ export function adminPage(): string {
             <button type="button" onclick="insertBlogImage()" class="admin-btn admin-btn-primary !py-1 !px-2 !text-[10px]"><i class="fas fa-image"></i></button>
           </div>
         </div>
-        <div class="mb-6"><textarea class="admin-textarea" id="blogContent" placeholder="<h2>제목</h2>&#10;<p>내용을 입력하세요...</p>" required style="min-height:300px;font-family:monospace;font-size:13px;"></textarea></div>
+        <div class="mb-1 p-2 bg-royal/[0.03] rounded-lg border border-royal/[0.08]">
+          <p class="text-[11px] text-gray-400 leading-relaxed"><i class="fas fa-lightbulb text-royal/60 mr-1"></i><strong class="text-charcoal">Tip:</strong> 그냥 텍스트를 쓰고 <strong class="text-royal">[자동서식]</strong> 버튼을 누르면 자동으로 HTML이 됩니다. 또는 직접 &lt;h2&gt;, &lt;p&gt; 등 태그를 쓸 수도 있습니다.</p>
+        </div>
+        <div class="mb-6 relative">
+          <textarea class="admin-textarea" id="blogContent" placeholder="여기에 글을 자유롭게 쓰세요.&#10;&#10;줄바꿈 2번 = 새 단락&#10;줄바꿈 1번 = 같은 단락 내 줄바꿈&#10;&#10;[자동서식] 버튼을 누르면 HTML로 변환됩니다.&#10;또는 직접 HTML 태그를 쓸 수도 있습니다." required style="min-height:300px;font-family:monospace;font-size:13px;"></textarea>
+          <div id="blogPreview" class="hidden absolute inset-0 bg-white border border-royal/20 rounded-xl p-6 overflow-auto" style="min-height:300px;">
+            <div id="blogPreviewContent" class="blog-preview-content"></div>
+          </div>
+        </div>
 
         <div class="flex gap-3">
           <button type="submit" class="admin-btn admin-btn-primary"><i class="fas fa-save text-xs"></i>저장</button>
@@ -455,6 +474,83 @@ export function adminPage(): string {
       ta.focus();
     }
 
+    // ===== 자동 서식 변환 =====
+    function autoFormatContent() {
+      const ta = document.getElementById('blogContent');
+      const text = ta.value.trim();
+      if (!text) return showToast('error', '변환할 내용이 없습니다.');
+      // 이미 HTML 태그가 있는 경우 확인
+      if (/<(?:p|h[1-6]|div|ul|ol|li|blockquote|table|section|article)[\\/>\\s]/i.test(text)) {
+        if (!confirm('이미 HTML 태그가 포함되어 있습니다. 그래도 자동 서식을 적용할까요?')) return;
+      }
+      // 변환 로직
+      const lines = text.split('\\n');
+      let result = [];
+      let inList = false;
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) {
+          if (inList) { result.push('</ul>'); inList = false; }
+          continue;
+        }
+        // 이미지 태그는 그대로
+        if (line.startsWith('<img ')) { result.push(line); continue; }
+        // • 또는 - 로 시작하는 줄 → 리스트
+        if (/^[•\\-\\*]\\s/.test(line)) {
+          if (!inList) { result.push('<ul>'); inList = true; }
+          result.push('  <li>' + line.replace(/^[•\\-\\*]\\s*/, '') + '</li>');
+          continue;
+        }
+        if (inList) { result.push('</ul>'); inList = false; }
+        // 숫자. 으로 시작 → h3
+        if (/^\\d+[.)\\s]/.test(line) && line.length < 80) {
+          result.push('<h3>' + line + '</h3>');
+          continue;
+        }
+        // 짧은 줄 (제목스러운) → h2
+        if (line.length < 40 && !line.includes('.') && i > 0 && !lines[i-1].trim()) {
+          result.push('<h2>' + line + '</h2>');
+          continue;
+        }
+        // 나머지 → p
+        result.push('<p>' + line + '</p>');
+      }
+      if (inList) result.push('</ul>');
+      ta.value = result.join('\\n');
+      showToast('success', 'HTML 자동 서식 변환 완료!');
+    }
+
+    // ===== 미리보기 토글 =====
+    function togglePreview() {
+      const ta = document.getElementById('blogContent');
+      const preview = document.getElementById('blogPreview');
+      const previewContent = document.getElementById('blogPreviewContent');
+      const btn = document.getElementById('previewToggle');
+      if (preview.classList.contains('hidden')) {
+        // 미리보기 표시
+        let html = ta.value;
+        // HTML 태그가 없으면 자동 변환해서 보여줌
+        if (!/<(?:p|h[1-6]|div|ul|ol|li|br|img|blockquote|table)[\\/>\\s]/i.test(html)) {
+          html = html.split('\\n\\n').map(function(para) {
+            var t = para.trim();
+            if (!t) return '';
+            return '<p>' + t.replace(/\\n/g, '<br>') + '</p>';
+          }).filter(Boolean).join('');
+        }
+        previewContent.innerHTML = html;
+        preview.classList.remove('hidden');
+        btn.innerHTML = '<i class=\"fas fa-code text-[9px]\"></i> 편집';
+        btn.classList.remove('admin-btn-secondary');
+        btn.classList.add('admin-btn-primary');
+      } else {
+        // 에디터로 복귀
+        preview.classList.add('hidden');
+        btn.innerHTML = '<i class=\"fas fa-eye text-[9px]\"></i> 미리보기';
+        btn.classList.remove('admin-btn-primary');
+        btn.classList.add('admin-btn-secondary');
+      }
+    }
+
     // ===== Stats =====
     async function loadStats() {
       try {
@@ -596,10 +692,19 @@ export function adminPage(): string {
     async function saveBlog(e) {
       e.preventDefault();
       const editSlug = document.getElementById('blogEditSlug').value;
+      let contentVal = document.getElementById('blogContent').value;
+      // HTML 태그가 없으면 자동으로 변환
+      if (contentVal.trim() && !/<(?:p|h[1-6]|div|ul|ol|li|br|img|blockquote|table)[\\/>\\s]/i.test(contentVal)) {
+        contentVal = contentVal.split('\\n\\n').map(function(para) {
+          var t = para.trim();
+          if (!t) return '';
+          return '<p>' + t.replace(/\\n/g, '<br>') + '</p>';
+        }).filter(Boolean).join('\\n');
+      }
       const body = { slug: document.getElementById('blogSlug').value, title: document.getElementById('blogTitle').value, category: document.getElementById('blogCategory').value,
         summary: document.getElementById('blogSummary').value, tags: document.getElementById('blogTags').value,
         author: document.getElementById('blogAuthor').value, thumbnail: document.getElementById('blogThumbnail').value,
-        content: document.getElementById('blogContent').value, is_published: 1 };
+        content: contentVal, is_published: 1 };
       const data = editSlug ? await api('PUT', '/api/blog/' + editSlug, body) : await api('POST', '/api/blog', body);
       if (data.success) { showToast('success', editSlug ? '수정 완료' : '작성 완료'); closeBlogModal(); loadBlog(); loadStats(); }
       else { showToast('error', data.error || '저장 실패'); }
@@ -675,9 +780,18 @@ export function adminPage(): string {
     async function saveNotice(e) {
       e.preventDefault();
       const editSlug = document.getElementById('noticeEditSlug').value;
+      let noticeContentVal = document.getElementById('noticeContent').value;
+      // HTML 태그가 없으면 자동으로 변환
+      if (noticeContentVal.trim() && !/<(?:p|h[1-6]|div|ul|ol|li|br|img|blockquote|table)[\\/>\\s]/i.test(noticeContentVal)) {
+        noticeContentVal = noticeContentVal.split('\\n\\n').map(function(para) {
+          var t = para.trim();
+          if (!t) return '';
+          return '<p>' + t.replace(/\\n/g, '<br>') + '</p>';
+        }).filter(Boolean).join('\\n');
+      }
       const body = { slug: document.getElementById('noticeSlug').value, title: document.getElementById('noticeTitle').value, category: document.getElementById('noticeCategory').value,
         author: document.getElementById('noticeAuthor').value, is_pinned: document.getElementById('noticePinned').checked ? 1 : 0,
-        content: document.getElementById('noticeContent').value, is_published: 1 };
+        content: noticeContentVal, is_published: 1 };
       const data = editSlug ? await api('PUT', '/api/notices/' + editSlug, body) : await api('POST', '/api/notices', body);
       if (data.success) { showToast('success', editSlug ? '수정 완료' : '작성 완료'); closeNoticeModal(); loadNotices(); loadStats(); }
       else { showToast('error', data.error || '저장 실패'); }
