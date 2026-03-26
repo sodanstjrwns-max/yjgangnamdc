@@ -12,5 +12,11 @@
       "database_name": "gangnam-dental-db",
       "database_id": "f02667e4-610b-46af-82a5-557c4cfd7e10"
     }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "R2",
+      "bucket_name": "yjgangnamdc-images"
+    }
   ]
 }

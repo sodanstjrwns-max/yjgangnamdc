@@ -19,6 +19,7 @@ import { layout } from './layout'
 
 type Bindings = {
   DB: D1Database;
+  R2: R2Bucket;
   ADMIN_KEY: string;
 }
 
@@ -1339,40 +1340,50 @@ app.post('/api/upload', adminAuth, async (c) => {
     if (!allowedTypes.includes(file.type)) {
       return c.json({ success: false, error: 'JPG, PNG, GIF, WebP만 업로드 가능합니다.' }, 400)
     }
-    // 5MB 제한
-    if (file.size > 5 * 1024 * 1024) {
-      return c.json({ success: false, error: '5MB 이하 파일만 업로드 가능합니다.' }, 400)
+    // 10MB 제한 (R2는 대용량 OK)
+    if (file.size > 10 * 1024 * 1024) {
+      return c.json({ success: false, error: '10MB 이하 파일만 업로드 가능합니다.' }, 400)
     }
 
-    const buffer = await file.arrayBuffer()
-    const bytes = new Uint8Array(buffer)
-    let binary = ''
-    const chunkSize = 8192
-    for (let i = 0; i < bytes.length; i += chunkSize) {
-      binary += String.fromCharCode(...bytes.subarray(i, Math.min(i + chunkSize, bytes.length)))
-    }
-    const base64 = btoa(binary)
-    const dataUrl = `data:${file.type};base64,${base64}`
-    const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`
+    const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg'
+    const filename = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}.${ext}`
+    const key = `uploads/${filename}`
 
-    await c.env.DB.prepare(
-      'INSERT INTO images (filename, content_type, data, size) VALUES (?, ?, ?, ?)'
-    ).bind(filename, file.type, dataUrl, file.size).run()
+    // R2에 직접 저장 (바이너리)
+    await c.env.R2.put(key, await file.arrayBuffer(), {
+      httpMetadata: { contentType: file.type },
+      customMetadata: { originalName: file.name, size: String(file.size) }
+    })
 
-    return c.json({ success: true, url: `/api/images/${filename}`, filename })
+    const url = `/api/images/${filename}`
+    return c.json({ success: true, url, filename })
   } catch (e: any) {
     return c.json({ success: false, error: e.message || '업로드 실패' }, 500)
   }
 })
 
-// 이미지 서빙
+// 이미지 서빙 (R2 → 기존 DB 폴백)
 app.get('/api/images/:filename', async (c) => {
   try {
     const filename = c.req.param('filename')
+    const key = `uploads/${filename}`
+
+    // 1) R2에서 먼저 조회
+    const obj = await c.env.R2.get(key)
+    if (obj) {
+      return new Response(obj.body, {
+        headers: {
+          'Content-Type': obj.httpMetadata?.contentType || 'image/jpeg',
+          'Cache-Control': 'public, max-age=31536000, immutable',
+          'ETag': obj.etag
+        }
+      })
+    }
+
+    // 2) R2에 없으면 기존 DB 폴백 (마이그레이션 전 이미지)
     const img = await c.env.DB.prepare('SELECT content_type, data FROM images WHERE filename = ?').bind(filename).first() as any
     if (!img) return c.notFound()
 
-    // data URL에서 Base64 부분만 추출
     const base64Data = img.data.split(',')[1]
     const raw = atob(base64Data)
     const bytes = new Uint8Array(raw.length)
