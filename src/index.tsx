@@ -17,6 +17,57 @@ import { registerPage, loginPage, loginRequiredPage } from './pages/auth'
 import { dictionaryListPage, dictionaryDetailPage } from './pages/dictionary'
 import { layout } from './layout'
 
+// 서버 측 content 자동 변환: plain text → HTML (저장 전 적용)
+function formatContentForSave(content: string): string {
+  if (!content || !content.trim()) return content;
+  // 블록 레벨 HTML 태그(img, br 제외)가 이미 있으면 그대로
+  if (/<(?:p|h[1-6]|div|ul|ol|li|blockquote|table|section|article|thead|tbody|tr|td|th)[\/\s>]/i.test(content)) {
+    return content;
+  }
+  const allLines = content.split('\n');
+  const tabLineCount = allLines.filter(l => l.includes('\t')).length;
+
+  if (tabLineCount >= 3) {
+    const result: string[] = [];
+    const mergedTabRows: string[] = [];
+    let lastWasTab = false;
+    for (const line of allLines) {
+      const trimmed = line.trim();
+      if (/^<img\s[^>]*>$/i.test(trimmed)) { result.push(trimmed); lastWasTab = false; continue; }
+      if (!trimmed) { lastWasTab = false; continue; }
+      if (trimmed.includes('\t')) { mergedTabRows.push(trimmed); lastWasTab = true; }
+      else if (lastWasTab && mergedTabRows.length > 0) { mergedTabRows[mergedTabRows.length - 1] += ' ' + trimmed; }
+      else { result.push(`<p>${trimmed}</p>`); lastWasTab = false; }
+    }
+    if (mergedTabRows.length >= 2) {
+      const rows = mergedTabRows.map(row => row.split('\t').map(c => c.replace(/\s+/g, ' ').trim()).filter(Boolean));
+      let tableHtml = '<table><thead><tr>' + rows[0].map(c => `<th>${c}</th>`).join('') + '</tr></thead><tbody>';
+      for (let i = 1; i < rows.length; i++) tableHtml += '<tr>' + rows[i].map(c => `<td>${c}</td>`).join('') + '</tr>';
+      tableHtml += '</tbody></table>';
+      result.push(tableHtml);
+    }
+    return result.join('\n');
+  }
+
+  // 일반 모드: 빈 줄 = 단락 분리
+  const paragraphs = content.split(/\n\s*\n/);
+  return paragraphs.map(para => {
+    const trimmed = para.trim();
+    if (!trimmed) return '';
+    if (/^<img\s[^>]*>$/i.test(trimmed)) return trimmed;
+    const parts = trimmed.split(/(<img\s[^>]*>)/i);
+    if (parts.length > 1) {
+      return parts.map(part => {
+        if (/^<img\s/i.test(part)) return part;
+        const t = part.trim();
+        if (!t) return '';
+        return `<p>${t.replace(/\n/g, '<br>')}</p>`;
+      }).filter(Boolean).join('\n');
+    }
+    return `<p>${trimmed.replace(/\n/g, '<br>')}</p>`;
+  }).filter(Boolean).join('\n');
+}
+
 type Bindings = {
   DB: D1Database;
   R2: R2Bucket;
@@ -1105,9 +1156,10 @@ app.post('/api/blog', adminAuth, async (c) => {
   try {
     const { slug, title, category, summary, content, thumbnail, tags, author } = await c.req.json()
     if (!slug || !title || !content) return c.json({ error: 'slug, title, content 필수' }, 400)
+    const formattedContent = formatContentForSave(content)
     await c.env.DB.prepare(
       'INSERT INTO blog_posts (slug, title, category, summary, content, thumbnail, tags, author) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
-    ).bind(slug, title, category || '일반', summary || '', content, thumbnail || '', tags || '', author || '강남치과의원').run()
+    ).bind(slug, title, category || '일반', summary || '', formattedContent, thumbnail || '', tags || '', author || '강남치과의원').run()
     return c.json({ success: true, slug })
   } catch (e: any) {
     return c.json({ success: false, error: e.message }, 500)
@@ -1118,9 +1170,10 @@ app.put('/api/blog/:slug', adminAuth, async (c) => {
   try {
     const slug = c.req.param('slug')
     const { title, category, summary, content, thumbnail, tags, author, is_published } = await c.req.json()
+    const formattedContent = formatContentForSave(content)
     await c.env.DB.prepare(
       'UPDATE blog_posts SET title=?, category=?, summary=?, content=?, thumbnail=?, tags=?, author=?, is_published=?, updated_at=CURRENT_TIMESTAMP WHERE slug=?'
-    ).bind(title, category, summary, content, thumbnail || '', tags || '', author, is_published ?? 1, slug).run()
+    ).bind(title, category, summary, formattedContent, thumbnail || '', tags || '', author, is_published ?? 1, slug).run()
     return c.json({ success: true })
   } catch (e: any) {
     return c.json({ success: false, error: e.message }, 500)
@@ -1141,9 +1194,10 @@ app.post('/api/before-after', adminAuth, async (c) => {
   try {
     const { slug, title, category, patient_info, treatment_desc, before_image, after_image, duration, doctor, tags, sort_order } = await c.req.json()
     if (!slug || !title || !before_image || !after_image) return c.json({ error: 'slug, title, before_image, after_image 필수' }, 400)
+    const formattedDesc = formatContentForSave(treatment_desc || '')
     await c.env.DB.prepare(
       'INSERT INTO before_after_cases (slug, title, category, patient_info, treatment_desc, before_image, after_image, duration, doctor, tags, sort_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
-    ).bind(slug, title, category || '기타', patient_info || '', treatment_desc || '', before_image, after_image, duration || '', doctor || '', tags || '', sort_order || 0).run()
+    ).bind(slug, title, category || '기타', patient_info || '', formattedDesc, before_image, after_image, duration || '', doctor || '', tags || '', sort_order || 0).run()
     return c.json({ success: true, slug })
   } catch (e: any) {
     return c.json({ success: false, error: e.message }, 500)
@@ -1154,9 +1208,10 @@ app.put('/api/before-after/:slug', adminAuth, async (c) => {
   try {
     const slug = c.req.param('slug')
     const { title, category, patient_info, treatment_desc, before_image, after_image, duration, doctor, tags, sort_order, is_published } = await c.req.json()
+    const formattedDesc = formatContentForSave(treatment_desc || '')
     await c.env.DB.prepare(
       'UPDATE before_after_cases SET title=?, category=?, patient_info=?, treatment_desc=?, before_image=?, after_image=?, duration=?, doctor=?, tags=?, sort_order=?, is_published=?, updated_at=CURRENT_TIMESTAMP WHERE slug=?'
-    ).bind(title, category, patient_info, treatment_desc, before_image, after_image, duration, doctor, tags, sort_order || 0, is_published ?? 1, slug).run()
+    ).bind(title, category, patient_info, formattedDesc, before_image, after_image, duration, doctor, tags, sort_order || 0, is_published ?? 1, slug).run()
     return c.json({ success: true })
   } catch (e: any) {
     return c.json({ success: false, error: e.message }, 500)
@@ -1240,9 +1295,10 @@ app.post('/api/notices', adminAuth, async (c) => {
   try {
     const { slug, title, category, content, author, is_pinned } = await c.req.json()
     if (!slug || !title || !content) return c.json({ error: 'slug, title, content 필수' }, 400)
+    const formattedContent = formatContentForSave(content)
     await c.env.DB.prepare(
       'INSERT INTO notices (slug, title, category, content, author, is_pinned) VALUES (?, ?, ?, ?, ?, ?)'
-    ).bind(slug, title, category || '공지', content, author || '강남치과의원', is_pinned || 0).run()
+    ).bind(slug, title, category || '공지', formattedContent, author || '강남치과의원', is_pinned || 0).run()
     return c.json({ success: true, slug })
   } catch (e: any) {
     return c.json({ success: false, error: e.message }, 500)
@@ -1253,9 +1309,10 @@ app.put('/api/notices/:slug', adminAuth, async (c) => {
   try {
     const slug = c.req.param('slug')
     const { title, category, content, author, is_pinned, is_published } = await c.req.json()
+    const formattedContent = formatContentForSave(content)
     await c.env.DB.prepare(
       'UPDATE notices SET title=?, category=?, content=?, author=?, is_pinned=?, is_published=?, updated_at=CURRENT_TIMESTAMP WHERE slug=?'
-    ).bind(title, category, content, author, is_pinned || 0, is_published ?? 1, slug).run()
+    ).bind(title, category, formattedContent, author, is_pinned || 0, is_published ?? 1, slug).run()
     return c.json({ success: true })
   } catch (e: any) {
     return c.json({ success: false, error: e.message }, 500)

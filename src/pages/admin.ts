@@ -346,10 +346,13 @@ export function adminPage(): string {
           </div>
         </div>
 
-        <!-- 본문 에디터 (블로그와 동일한 툴바) -->
-        <div class="mb-2 flex items-center justify-between">
-          <label class="field-label mb-0">내용 (HTML) <span class="req">*</span></label>
-          <div class="flex gap-1">
+        <!-- 본문 에디터 (블로그와 동일한 툴바 + 자동서식/미리보기) -->
+        <div class="mb-2 flex items-center justify-between flex-wrap gap-2">
+          <label class="field-label mb-0">내용 <span class="req">*</span></label>
+          <div class="flex gap-1 flex-wrap">
+            <button type="button" onclick="autoFormatNotice()" class="admin-btn admin-btn-primary !py-1 !px-2.5 !text-[10px]" title="일반 텍스트를 HTML로 자동 변환"><i class="fas fa-magic text-[9px]"></i> 자동서식</button>
+            <button type="button" onclick="toggleNoticePreview()" class="admin-btn admin-btn-secondary !py-1 !px-2.5 !text-[10px]" id="noticePreviewToggle" title="미리보기"><i class="fas fa-eye text-[9px]"></i> 미리보기</button>
+            <span class="text-gray-300 text-[10px] flex items-center">|</span>
             <button type="button" onclick="insertNoticeTag('h2')" class="admin-btn admin-btn-secondary !py-1 !px-2 !text-[10px]">H2</button>
             <button type="button" onclick="insertNoticeTag('h3')" class="admin-btn admin-btn-secondary !py-1 !px-2 !text-[10px]">H3</button>
             <button type="button" onclick="insertNoticeTag('p')" class="admin-btn admin-btn-secondary !py-1 !px-2 !text-[10px]">P</button>
@@ -357,10 +360,18 @@ export function adminPage(): string {
             <button type="button" onclick="insertNoticeTag('ul')" class="admin-btn admin-btn-secondary !py-1 !px-2 !text-[10px]">UL</button>
             <button type="button" onclick="insertNoticeTag('blockquote')" class="admin-btn admin-btn-secondary !py-1 !px-2 !text-[10px]">Quote</button>
             <button type="button" onclick="insertNoticeTag('table')" class="admin-btn admin-btn-secondary !py-1 !px-2 !text-[10px]">Table</button>
-            <button type="button" onclick="insertNoticeImage()" class="admin-btn admin-btn-primary !py-1 !px-2 !text-[10px]"><i class="fas fa-image"></i> 이미지</button>
+            <button type="button" onclick="insertNoticeImage()" class="admin-btn admin-btn-primary !py-1 !px-2 !text-[10px]"><i class="fas fa-image"></i></button>
           </div>
         </div>
-        <div class="mb-6"><textarea class="admin-textarea" id="noticeContent" placeholder="<h2>제목</h2>&#10;<p>공지 내용을 입력하세요...</p>&#10;&#10;💡 이미지 버튼으로 사진을 삽입할 수 있습니다." required style="min-height:300px;font-family:monospace;font-size:13px;"></textarea></div>
+        <div class="mb-1 p-2 bg-royal/[0.03] rounded-lg border border-royal/[0.08]">
+          <p class="text-[11px] text-gray-400 leading-relaxed"><i class="fas fa-lightbulb text-royal/60 mr-1"></i><strong class="text-charcoal">Tip:</strong> 그냥 텍스트를 쓰고 <strong class="text-royal">[자동서식]</strong> 버튼을 누르면 자동으로 HTML이 됩니다. 저장 시에도 자동 변환됩니다.</p>
+        </div>
+        <div class="mb-6 relative">
+          <textarea class="admin-textarea" id="noticeContent" placeholder="여기에 공지 내용을 자유롭게 쓰세요.&#10;&#10;줄바꿈 2번 = 새 단락&#10;줄바꿈 1번 = 같은 단락 내 줄바꿈&#10;&#10;[자동서식] 버튼을 누르면 HTML로 변환됩니다." required style="min-height:300px;font-family:monospace;font-size:13px;"></textarea>
+          <div id="noticePreview" class="hidden absolute inset-0 bg-white border border-royal/20 rounded-xl p-6 overflow-auto" style="min-height:300px;">
+            <div id="noticePreviewContent" class="blog-preview-content"></div>
+          </div>
+        </div>
 
         <div class="flex gap-3">
           <button type="submit" class="admin-btn admin-btn-primary"><i class="fas fa-save text-xs"></i>저장</button>
@@ -689,18 +700,62 @@ export function adminPage(): string {
     }
     function closeBlogModal() { document.getElementById('blogModal').classList.remove('show'); }
     async function editBlog(slug) { const data = await api('GET', '/api/admin/blog/' + slug); if (data.success) openBlogModal(data.post); }
+    // === 저장 시 plain text → HTML 자동 변환 (서버 formatContent와 동일) ===
+    function autoConvertForSave(raw) {
+      if (!raw || !raw.trim()) return raw;
+      // 블록 레벨 태그(img, br 제외) 존재 시 → 이미 HTML
+      if (/<(?:p|h[1-6]|div|ul|ol|li|blockquote|table|section|article|thead|tbody|tr|td|th)[\\/>\\s]/i.test(raw)) {
+        return raw;
+      }
+      var allLines = raw.split('\\n');
+      var tabCount = allLines.filter(function(l) { return l.indexOf('\\t') >= 0; }).length;
+      if (tabCount >= 3) {
+        // 테이블 모드
+        var result = [];
+        var mergedTabRows = [];
+        var lastWasTab = false;
+        for (var i = 0; i < allLines.length; i++) {
+          var trimmed = allLines[i].trim();
+          if (/^<img\\s[^>]*>$/i.test(trimmed)) { result.push(trimmed); lastWasTab = false; continue; }
+          if (!trimmed) { lastWasTab = false; continue; }
+          if (trimmed.indexOf('\\t') >= 0) { mergedTabRows.push(trimmed); lastWasTab = true; }
+          else if (lastWasTab && mergedTabRows.length > 0) { mergedTabRows[mergedTabRows.length - 1] += ' ' + trimmed; }
+          else { result.push('<p>' + trimmed + '</p>'); lastWasTab = false; }
+        }
+        if (mergedTabRows.length >= 2) {
+          var rows = mergedTabRows.map(function(row) { return row.split('\\t').map(function(c) { return c.replace(/\\s+/g, ' ').trim(); }).filter(Boolean); });
+          var thtml = '<table><thead><tr>' + rows[0].map(function(c) { return '<th>' + c + '</th>'; }).join('') + '</tr></thead><tbody>';
+          for (var j = 1; j < rows.length; j++) { thtml += '<tr>' + rows[j].map(function(c) { return '<td>' + c + '</td>'; }).join('') + '</tr>'; }
+          thtml += '</tbody></table>';
+          result.push(thtml);
+        }
+        return result.join('\\n');
+      }
+      // 일반 모드: 빈 줄 = 단락 분리
+      var paragraphs = raw.split(/\\n\\s*\\n/);
+      return paragraphs.map(function(para) {
+        var t = para.trim();
+        if (!t) return '';
+        if (/^<img\\s[^>]*>$/i.test(t)) return t;
+        var parts = t.split(/(<img\\s[^>]*>)/i);
+        if (parts.length > 1) {
+          return parts.map(function(part) {
+            if (/^<img\\s/i.test(part)) return part;
+            var pt = part.trim();
+            if (!pt) return '';
+            return '<p>' + pt.replace(/\\n/g, '<br>') + '</p>';
+          }).filter(Boolean).join('\\n');
+        }
+        return '<p>' + t.replace(/\\n/g, '<br>') + '</p>';
+      }).filter(Boolean).join('\\n');
+    }
+
     async function saveBlog(e) {
       e.preventDefault();
       const editSlug = document.getElementById('blogEditSlug').value;
       let contentVal = document.getElementById('blogContent').value;
-      // HTML 태그가 없으면 자동으로 변환
-      if (contentVal.trim() && !/<(?:p|h[1-6]|div|ul|ol|li|br|img|blockquote|table)[\\/>\\s]/i.test(contentVal)) {
-        contentVal = contentVal.split('\\n\\n').map(function(para) {
-          var t = para.trim();
-          if (!t) return '';
-          return '<p>' + t.replace(/\\n/g, '<br>') + '</p>';
-        }).filter(Boolean).join('\\n');
-      }
+      // 저장 시 항상 자동 변환 적용
+      contentVal = autoConvertForSave(contentVal);
       const body = { slug: document.getElementById('blogSlug').value, title: document.getElementById('blogTitle').value, category: document.getElementById('blogCategory').value,
         summary: document.getElementById('blogSummary').value, tags: document.getElementById('blogTags').value,
         author: document.getElementById('blogAuthor').value, thumbnail: document.getElementById('blogThumbnail').value,
@@ -713,6 +768,62 @@ export function adminPage(): string {
     async function deleteBlog(slug) { if (!confirm('정말 삭제?')) return; const d = await api('DELETE', '/api/blog/' + slug); if (d.success) { showToast('success', '삭제 완료'); loadBlog(); loadStats(); } }
 
     // ===== 공지사항 =====
+    // 공지사항 자동서식 변환
+    function autoFormatNotice() {
+      const ta = document.getElementById('noticeContent');
+      const text = ta.value.trim();
+      if (!text) return showToast('error', '변환할 내용이 없습니다.');
+      if (/<(?:p|h[1-6]|div|ul|ol|li|blockquote|table|section|article)[\\/>\\s]/i.test(text)) {
+        if (!confirm('이미 HTML 태그가 포함되어 있습니다. 그래도 자동 서식을 적용할까요?')) return;
+      }
+      const lines = text.split('\\n');
+      let result = [];
+      let inList = false;
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) { if (inList) { result.push('</ul>'); inList = false; } continue; }
+        if (line.startsWith('<img ')) { result.push(line); continue; }
+        if (/^[•\\-\\*]\\s/.test(line)) {
+          if (!inList) { result.push('<ul>'); inList = true; }
+          result.push('  <li>' + line.replace(/^[•\\-\\*]\\s*/, '') + '</li>');
+          continue;
+        }
+        if (inList) { result.push('</ul>'); inList = false; }
+        if (/^\\d+[.)\\s]/.test(line) && line.length < 80) { result.push('<h3>' + line + '</h3>'); continue; }
+        if (line.length < 40 && !line.includes('.') && i > 0 && !lines[i-1].trim()) { result.push('<h2>' + line + '</h2>'); continue; }
+        result.push('<p>' + line + '</p>');
+      }
+      if (inList) result.push('</ul>');
+      ta.value = result.join('\\n');
+      showToast('success', 'HTML 자동 서식 변환 완료!');
+    }
+
+    // 공지사항 미리보기 토글
+    function toggleNoticePreview() {
+      const ta = document.getElementById('noticeContent');
+      const preview = document.getElementById('noticePreview');
+      const previewContent = document.getElementById('noticePreviewContent');
+      const btn = document.getElementById('noticePreviewToggle');
+      if (preview.classList.contains('hidden')) {
+        let html = ta.value;
+        if (!/<(?:p|h[1-6]|div|ul|ol|li|br|img|blockquote|table)[\\/>\\s]/i.test(html)) {
+          html = html.split('\\n\\n').map(function(para) {
+            var t = para.trim();
+            if (!t) return '';
+            return '<p>' + t.replace(/\\n/g, '<br>') + '</p>';
+          }).filter(Boolean).join('');
+        }
+        previewContent.innerHTML = html;
+        preview.classList.remove('hidden');
+        btn.innerHTML = '<i class=\"fas fa-code text-[9px]\"></i> 편집';
+        btn.classList.remove('admin-btn-secondary'); btn.classList.add('admin-btn-primary');
+      } else {
+        preview.classList.add('hidden');
+        btn.innerHTML = '<i class=\"fas fa-eye text-[9px]\"></i> 미리보기';
+        btn.classList.remove('admin-btn-primary'); btn.classList.add('admin-btn-secondary');
+      }
+    }
+
     // 공지사항 태그 삽입 헬퍼
     function insertNoticeTag(tag) {
       const ta = document.getElementById('noticeContent');
@@ -781,14 +892,8 @@ export function adminPage(): string {
       e.preventDefault();
       const editSlug = document.getElementById('noticeEditSlug').value;
       let noticeContentVal = document.getElementById('noticeContent').value;
-      // HTML 태그가 없으면 자동으로 변환
-      if (noticeContentVal.trim() && !/<(?:p|h[1-6]|div|ul|ol|li|br|img|blockquote|table)[\\/>\\s]/i.test(noticeContentVal)) {
-        noticeContentVal = noticeContentVal.split('\\n\\n').map(function(para) {
-          var t = para.trim();
-          if (!t) return '';
-          return '<p>' + t.replace(/\\n/g, '<br>') + '</p>';
-        }).filter(Boolean).join('\\n');
-      }
+      // 저장 시 항상 자동 변환 적용 (블로그와 동일 로직)
+      noticeContentVal = autoConvertForSave(noticeContentVal);
       const body = { slug: document.getElementById('noticeSlug').value, title: document.getElementById('noticeTitle').value, category: document.getElementById('noticeCategory').value,
         author: document.getElementById('noticeAuthor').value, is_pinned: document.getElementById('noticePinned').checked ? 1 : 0,
         content: noticeContentVal, is_published: 1 };
