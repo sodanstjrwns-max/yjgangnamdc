@@ -3,19 +3,52 @@
 // plain text → HTML 자동 변환
 function formatContent(content: string): string {
   if (!content) return '';
-  if (/<(?:p|h[1-6]|div|ul|ol|li|br|img|blockquote|table|section|article)[\/\s>]/i.test(content)) {
+  if (/<(?:p|h[1-6]|div|ul|ol|li|blockquote|table|section|article|thead|tbody|tr|td|th)[\/\s>]/i.test(content)) {
     return content;
   }
-  return content
-    .split(/\n\s*\n/)
-    .map(para => {
-      const trimmed = para.trim();
-      if (!trimmed) return '';
-      const withBr = trimmed.replace(/\n/g, '<br>');
-      return `<p>${withBr}</p>`;
-    })
-    .filter(Boolean)
-    .join('\n');
+
+  const allLines = content.split('\n');
+  const tabLineCount = allLines.filter(l => l.includes('\t')).length;
+
+  if (tabLineCount >= 3) {
+    const result: string[] = [];
+    const mergedTabRows: string[] = [];
+    let lastWasTab = false;
+    for (const line of allLines) {
+      const trimmed = line.trim();
+      if (/^<img\s[^>]*>$/i.test(trimmed)) { result.push(trimmed); lastWasTab = false; continue; }
+      if (!trimmed) { lastWasTab = false; continue; }
+      if (trimmed.includes('\t')) { mergedTabRows.push(trimmed); lastWasTab = true; }
+      else if (lastWasTab && mergedTabRows.length > 0) { mergedTabRows[mergedTabRows.length - 1] += ' ' + trimmed; }
+      else { lastWasTab = false; }
+    }
+    if (mergedTabRows.length >= 2) {
+      const rows = mergedTabRows.map(row => row.split('\t').map(c => c.replace(/\s+/g, ' ').trim()).filter(Boolean));
+      let tableHtml = '<table>';
+      tableHtml += '<thead><tr>' + rows[0].map(c => `<th>${c}</th>`).join('') + '</tr></thead><tbody>';
+      for (let i = 1; i < rows.length; i++) tableHtml += '<tr>' + rows[i].map(c => `<td>${c}</td>`).join('') + '</tr>';
+      tableHtml += '</tbody></table>';
+      result.push(tableHtml);
+    }
+    return result.join('\n');
+  }
+
+  const paragraphs = content.split(/\n\s*\n/);
+  return paragraphs.map(para => {
+    const trimmed = para.trim();
+    if (!trimmed) return '';
+    if (/^<img\s[^>]*>$/i.test(trimmed)) return trimmed;
+    const parts = trimmed.split(/(<img\s[^>]*>)/i);
+    if (parts.length > 1) {
+      return parts.map(part => {
+        if (/^<img\s/i.test(part)) return part;
+        const t = part.trim();
+        if (!t) return '';
+        return `<p>${t.replace(/\n/g, '<br>')}</p>`;
+      }).filter(Boolean).join('\n');
+    }
+    return `<p>${trimmed.replace(/\n/g, '<br>')}</p>`;
+  }).filter(Boolean).join('\n');
 }
 
 // 공지사항 목록 페이지

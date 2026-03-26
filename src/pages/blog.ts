@@ -3,22 +3,81 @@
 // plain text → HTML 자동 변환 (HTML 태그가 없는 content 처리)
 function formatContent(content: string): string {
   if (!content) return '';
-  // HTML 태그가 이미 있는 경우 그대로 반환
-  if (/<(?:p|h[1-6]|div|ul|ol|li|br|img|blockquote|table|section|article)[\/\s>]/i.test(content)) {
+  // 블록 레벨 HTML 태그가 이미 있는 경우 그대로 반환
+  if (/<(?:p|h[1-6]|div|ul|ol|li|blockquote|table|section|article|thead|tbody|tr|td|th)[\/\s>]/i.test(content)) {
     return content;
   }
-  // plain text → 줄바꿈 기준으로 <p> 태그 감싸기
-  return content
-    .split(/\n\s*\n/) // 빈 줄 = 단락 구분
-    .map(para => {
-      const trimmed = para.trim();
-      if (!trimmed) return '';
-      // 단일 줄바꿈은 <br>로
-      const withBr = trimmed.replace(/\n/g, '<br>');
-      return `<p>${withBr}</p>`;
-    })
-    .filter(Boolean)
-    .join('\n');
+
+  const allLines = content.split('\n');
+  const tabLineCount = allLines.filter(l => l.includes('\t')).length;
+
+  if (tabLineCount >= 3) {
+    // 테이블 포함 모드
+    // 1단계: <img> 분리하고, 탭 줄 + 탭 없는 연속 줄을 합침
+    const result: string[] = [];
+    const mergedTabRows: string[] = [];
+    let lastWasTab = false;
+
+    for (const line of allLines) {
+      const trimmed = line.trim();
+      if (/^<img\s[^>]*>$/i.test(trimmed)) {
+        result.push(trimmed);
+        lastWasTab = false;
+        continue;
+      }
+      if (!trimmed) {
+        lastWasTab = false;
+        continue;
+      }
+      if (trimmed.includes('\t')) {
+        mergedTabRows.push(trimmed);
+        lastWasTab = true;
+      } else if (lastWasTab && mergedTabRows.length > 0) {
+        // 탭 없는 줄이지만 이전이 탭 줄 → 이전 행의 연속 (설명 줄)
+        // 이전 행의 각 셀에 공백+내용 추가
+        mergedTabRows[mergedTabRows.length - 1] += ' ' + trimmed;
+      } else {
+        // 탭도 없고 이전도 탭이 아닌 일반 텍스트
+        lastWasTab = false;
+      }
+    }
+
+    // 2단계: 합쳐진 탭 행들 → 테이블 생성
+    if (mergedTabRows.length >= 2) {
+      const rows = mergedTabRows.map(row => {
+        return row.split('\t').map(c => c.replace(/\s+/g, ' ').trim()).filter(Boolean);
+      });
+      let tableHtml = '<table>';
+      tableHtml += '<thead><tr>' + rows[0].map(c => `<th>${c}</th>`).join('') + '</tr></thead>';
+      tableHtml += '<tbody>';
+      for (let i = 1; i < rows.length; i++) {
+        tableHtml += '<tr>' + rows[i].map(c => `<td>${c}</td>`).join('') + '</tr>';
+      }
+      tableHtml += '</tbody></table>';
+      result.push(tableHtml);
+    }
+
+    return result.join('\n');
+  }
+
+  // 탭 없는 일반 모드
+  const paragraphs = content.split(/\n\s*\n/);
+  return paragraphs.map(para => {
+    const trimmed = para.trim();
+    if (!trimmed) return '';
+    if (/^<img\s[^>]*>$/i.test(trimmed)) return trimmed;
+    const parts = trimmed.split(/(<img\s[^>]*>)/i);
+    if (parts.length > 1) {
+      return parts.map(part => {
+        if (/^<img\s/i.test(part)) return part;
+        const t = part.trim();
+        if (!t) return '';
+        return `<p>${t.replace(/\n/g, '<br>')}</p>`;
+      }).filter(Boolean).join('\n');
+    }
+    const withBr = trimmed.replace(/\n/g, '<br>');
+    return `<p>${withBr}</p>`;
+  }).filter(Boolean).join('\n');
 }
 
 // 블로그 목록 페이지
