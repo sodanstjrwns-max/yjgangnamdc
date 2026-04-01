@@ -212,7 +212,7 @@ app.get('/sitemap.xml', async (c) => {
       { loc: `${baseUrl}/static/photos/KLnijX5L.jpg`, title: '강남치과의원 진료실' },
       { loc: `${baseUrl}/static/photos/sOkojKif.jpg`, title: '강남치과의원 상담실' },
       { loc: `${baseUrl}/static/photos/ZaCoVLBk.jpg`, title: '강남치과의원 라운지' },
-      { loc: `${baseUrl}/static/photos/cihnca5u.jpg`, title: 'CEREC 당일 보철 시스템' },
+      { loc: `${baseUrl}/static/photos/cihnca5u.jpg`, title: '디지털 보철 시스템' },
       { loc: `${baseUrl}/static/photos/xfkmnFB6.jpg`, title: '3D CT 촬영 장비' },
     ],
     '/doctors': [
@@ -229,10 +229,10 @@ app.get('/sitemap.xml', async (c) => {
     ],
     '/treatments/implant': [
       { loc: `${baseUrl}/static/photos/xfkmnFB6.jpg`, title: '3D CT 임플란트 진단 장비' },
-      { loc: `${baseUrl}/static/photos/cihnca5u.jpg`, title: 'CEREC 보철 시스템' },
+      { loc: `${baseUrl}/static/photos/cihnca5u.jpg`, title: '디지털 보철 시스템' },
     ],
-    '/treatments/cerec': [
-      { loc: `${baseUrl}/static/photos/cihnca5u.jpg`, title: 'CEREC MC X 밀링 머신', caption: '당일 세라믹 보철 제작 장비' },
+    '/treatments/digital-prosthesis': [
+      { loc: `${baseUrl}/static/photos/cihnca5u.jpg`, title: 'CEREC MC X 밀링 머신', caption: '디지털 싱글 크라운 제작 장비' },
     ],
   }
 
@@ -243,7 +243,7 @@ app.get('/sitemap.xml', async (c) => {
     { url: '/doctors/choi-minhye', priority: '0.8', changefreq: 'monthly' },
     { url: '/treatments', priority: '0.9', changefreq: 'monthly' },
     { url: '/treatments/implant', priority: '0.9', changefreq: 'monthly' },
-    { url: '/treatments/cerec', priority: '0.9', changefreq: 'monthly' },
+    { url: '/treatments/digital-prosthesis', priority: '0.9', changefreq: 'monthly' },
     { url: '/treatments/invisalign', priority: '0.8', changefreq: 'monthly' },
     { url: '/treatments/cosmetic', priority: '0.7', changefreq: 'monthly' },
     { url: '/treatments/wisdom-tooth', priority: '0.7', changefreq: 'monthly' },
@@ -332,10 +332,10 @@ ${urls}
 
 // ===== 메인 페이지 =====
 app.get('/', (c) => c.html(layout(mainPage(), {
-  title: '영주 치과 강남치과의원 | 구강외과 전문의 · 임플란트 · 인비절라인 · 당일보철',
-  description: '경북 영주시 강남치과의원. 구강악안면외과 전문의 2인이 직접 진료합니다. 임플란트, CEREC 당일보철, 인비절라인, 사랑니 발치, 심미보철. 대학병원급 장비 완비. 054-636-8222.',
+  title: '영주 치과 강남치과의원 | 구강외과 전문의 · 임플란트 · 인비절라인 · 디지털보철',
+  description: '경북 영주시 강남치과의원. 구강악안면외과 전문의 2인이 직접 진료합니다. 임플란트, 디지털 보철(싱글 크라운), 인비절라인, 사랑니 발치, 심미보철. 대학병원급 장비 완비. 054-636-8222.',
   url: '/',
-  keywords: '영주 인비절라인, 영주 투명교정, 영주 임플란트 잘하는곳, 영주 치과 추천, 영주 당일보철, 영주 사랑니발치, 구강외과 전문의 영주, 영주시 임플란트 가격',
+  keywords: '영주 인비절라인, 영주 투명교정, 영주 임플란트 잘하는곳, 영주 치과 추천, 영주 디지털보철, 영주 사랑니발치, 구강외과 전문의 영주, 영주시 임플란트 가격',
   schemas: mainPageSchemas(),
   speakableSelectors: ['[data-speakable]', '#heroTitle', '#heroSub'],
   articleModifiedTime: new Date().toISOString().split('T')[0]
@@ -477,10 +477,10 @@ app.get('/doctors/:slug', (c) => {
 
 // ===== 진료 안내 =====
 app.get('/treatments', (c) => c.html(layout(treatmentsPage(), {
-  title: '강남치과의원 진료안내 | 임플란트·당일보철·인비절라인·심미보철·사랑니',
-  description: '강남치과의원 전체 진료 안내. 임플란트, CEREC 당일보철, 인비절라인 투명교정, 심미보철, 사랑니 발치, 충치치료, 신경치료 등. 각 분야 전문의가 직접 진료합니다.',
+  title: '강남치과의원 진료안내 | 임플란트·디지털보철·인비절라인·심미보철·사랑니',
+  description: '강남치과의원 전체 진료 안내. 임플란트, 디지털 보철(싱글 크라운), 인비절라인 투명교정, 심미보철, 사랑니 발치, 충치치료, 신경치료 등. 각 분야 전문의가 직접 진료합니다.',
   url: '/treatments',
-  keywords: '영주 임플란트, 영주 당일보철, 영주 인비절라인, 영주 심미보철, 영주 사랑니',
+  keywords: '영주 임플란트, 영주 디지털보철, 영주 인비절라인, 영주 심미보철, 영주 사랑니',
   speakableSelectors: ['[data-speakable]', 'h1', 'h2'],
   schemas: [{
     "@context": "https://schema.org",
@@ -547,7 +547,7 @@ app.get('/dictionary', async (c) => {
     title: `치과 용어 사전${titleSuffix} | ${totalCount}개 치과 전문 용어 해설 – 강남치과의원`,
     description: `치과에서 자주 사용하는 ${totalCount}개 전문 용어를 알기 쉽게 설명합니다. 임플란트, 교정, 보철, 잇몸, 사랑니 등 10개 카테고리의 치과 용어를 구강악안면외과 전문의가 감수했습니다.`,
     url: '/dictionary',
-    keywords: '치과 용어, 임플란트 뜻, 크라운 뜻, 인레이, 온레이, 인비절라인, 스케일링, 신경치료, CEREC, 치과 전문 용어 사전',
+    keywords: '치과 용어, 임플란트 뜻, 크라운 뜻, 인레이, 온레이, 인비절라인, 스케일링, 신경치료, 디지털보철, 치과 전문 용어 사전',
     speakableSelectors: ['[data-speakable]', 'h1', 'h2'],
     schemas: [{
       "@context": "https://schema.org",
@@ -615,10 +615,10 @@ app.get('/blog', async (c) => {
   } catch (e) { /* DB not available */ }
 
   return c.html(layout(blogListPage(posts), {
-    title: '강남치과의원 블로그 | 치과 건강정보 · 임플란트 · CEREC · 교정',
-    description: '구강악안면외과 전문의가 직접 전하는 치과 건강정보. 임플란트, CEREC 당일보철, 인비절라인, 사랑니 발치 등 치과 치료에 대한 정확한 정보를 제공합니다.',
+    title: '강남치과의원 블로그 | 치과 건강정보 · 임플란트 · 디지털보철 · 교정',
+    description: '구강악안면외과 전문의가 직접 전하는 치과 건강정보. 임플란트, 디지털 보철, 인비절라인, 사랑니 발치 등 치과 치료에 대한 정확한 정보를 제공합니다.',
     url: '/blog',
-    keywords: '영주 치과 블로그, 임플란트 정보, CEREC 당일보철, 인비절라인 후기, 사랑니 발치 정보, 치과 건강정보',
+    keywords: '영주 치과 블로그, 임플란트 정보, 디지털 보철, 인비절라인 후기, 사랑니 발치 정보, 치과 건강정보',
     speakableSelectors: ['[data-speakable]', 'h1', 'h2'],
     schemas: [{
       "@context": "https://schema.org",
@@ -806,10 +806,10 @@ app.get('/before-after', async (c) => {
   } catch (e) { /* DB not available */ }
 
   return c.html(layout(beforeAfterListPage(cases), {
-    title: '치료 전후 사례 | 강남치과의원 비포&애프터 · 임플란트 · CEREC · 교정',
-    description: '강남치과의원 실제 치료 전후 사례. 구강외과 전문의가 직접 시행한 임플란트, CEREC 당일보철, 인비절라인, 심미보철 치료 결과를 확인하세요.',
+    title: '치료 전후 사례 | 강남치과의원 비포&애프터 · 임플란트 · 디지털보철 · 교정',
+    description: '강남치과의원 실제 치료 전후 사례. 구강외과 전문의가 직접 시행한 임플란트, 디지털 보철, 인비절라인, 심미보철 치료 결과를 확인하세요.',
     url: '/before-after',
-    keywords: '영주 임플란트 전후, 치과 비포 애프터, CEREC 당일보철 사례, 인비절라인 전후, 영주 치과 치료 사례',
+    keywords: '영주 임플란트 전후, 치과 비포 애프터, 디지털 보철 사례, 인비절라인 전후, 영주 치과 치료 사례',
     schemas: [{
       "@context": "https://schema.org",
       "@type": "CollectionPage",
@@ -960,9 +960,9 @@ app.get('/directions', (c) => c.html(layout(directionsPage(), {
 // ===== 비용 안내 =====
 app.get('/pricing', (c) => c.html(layout(pricingPage(), {
   title: '강남치과의원 진료비용 안내 | 임플란트·보철·교정 가격',
-  description: '강남치과의원 임플란트, 인비절라인, CEREC 당일보철, 심미보철 등 진료비용을 안내합니다. 상담 후 정확한 견적을 받아보세요. 054-636-8222.',
+  description: '강남치과의원 임플란트, 인비절라인, 디지털 보철(싱글 크라운), 심미보철 등 진료비용을 안내합니다. 상담 후 정확한 견적을 받아보세요. 054-636-8222.',
   url: '/pricing',
-  keywords: '영주 임플란트 가격, 영주 치과 비용, 영주 인비절라인 가격, 영주 당일보철 비용',
+  keywords: '영주 임플란트 가격, 영주 치과 비용, 영주 인비절라인 가격, 영주 디지털보철 비용',
   speakableSelectors: ['[data-speakable]', 'h1', 'h2'],
   schemas: [
     {
@@ -987,7 +987,7 @@ app.get('/pricing', (c) => c.html(layout(pricingPage(), {
           { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "메탈 크라운" }, "priceCurrency": "KRW", "price": 300000, "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "price": 300000, "description": "300,000원" } },
           { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "A타입 골드 크라운", "url": "https://kndent.kr/treatments/crown" }, "priceCurrency": "KRW", "price": 1000000, "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "price": 1000000, "description": "1,000,000원" } },
           { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "PFM 크라운" }, "priceCurrency": "KRW", "price": 350000, "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "price": 350000, "description": "350,000원" } },
-          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "지르코니아 크라운", "url": "https://kndent.kr/treatments/cerec" }, "priceCurrency": "KRW", "price": 500000, "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "price": 500000, "description": "500,000원" } },
+          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "지르코니아 크라운", "url": "https://kndent.kr/treatments/digital-prosthesis" }, "priceCurrency": "KRW", "price": 500000, "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "price": 500000, "description": "500,000원" } },
           { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "임시치아" }, "priceCurrency": "KRW", "price": 15000, "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "price": 15000, "description": "15,000원" } }
         ]},
         { "@type": "OfferCatalog", "name": "틀니", "description": "부분틀니·전체틀니·수리", "numberOfItems": 8, "itemListElement": [

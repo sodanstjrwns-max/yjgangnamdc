@@ -104,7 +104,7 @@ export function reservationPage(): string {
                   <label class="block text-sm font-bold text-charcoal mb-2.5">상담 희망 진료</label>
                   <select class="w-full px-5 py-4 bg-snow-50 border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-royal/20 focus:border-royal/30 transition-all text-gray-500">
                     <option value="">선택해 주세요</option>
-                    <option>임플란트</option><option>인비절라인</option><option>당일 보철 (CEREC)</option>
+                    <option>임플란트</option><option>인비절라인</option><option>디지털 보철 (싱글 크라운)</option>
                     <option>심미보철</option><option>사랑니 발치</option><option>충치치료</option>
                     <option>신경치료</option><option>잇몸치료</option><option>틀니</option><option>미백</option><option>기타</option>
                   </select>

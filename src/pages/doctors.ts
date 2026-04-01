@@ -19,8 +19,8 @@ const doctors = [
 강남치과에는 저를 포함해 구강외과 전문의가 <strong class="text-charcoal">2명</strong> 있습니다.
 영주에서 <strong class="text-charcoal">대학병원급 외과 수술</strong>을 동네 치과의 편안함으로 받으실 수 있습니다.
 
-그리고 CEREC 당일 보철 시스템을 도입해서,
-<strong class="text-charcoal">본을 뜨고, 기다리고, 다시 오는 과정 없이 하루 만에 보철까지 완성</strong>합니다.
+그리고 디지털 보철 시스템을 도입해서,
+<strong class="text-charcoal">디지털 스캔으로 싱글 지르코니아·세라믹 크라운을 정밀하게 제작</strong>합니다.
 바쁜 분들, 여러 번 오시기 힘든 분들을 위한 치과를 만들고 싶었습니다.
 
 그래서 한 마디로 드리는 약속 —
@@ -385,7 +385,7 @@ export function doctorsPage(): string {
           </div>
           <h3 class="text-xl font-extrabold text-charcoal mb-3">빠른 치료</h3>
           <p class="text-gray-400 leading-relaxed">
-            CEREC 당일 보철로 <strong class="text-charcoal">내원 횟수를 최소화</strong>합니다.<br>
+            디지털 보철 시스템으로 <strong class="text-charcoal">내원 횟수를 최소화</strong>합니다.<br>
             본 뜨고 기다리고 다시 오는 과정 없이,<br>
             바쁜 일상으로 빠르게 복귀할 수 있습니다.
           </p>

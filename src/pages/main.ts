@@ -2,7 +2,7 @@
 export function mainPageSchemas(): object[] {
   const faqItems = [
     { q: '임플란트 비용은 얼마인가요?', a: '강남치과의원 임플란트 비용은 Neo/Osstem 임플란트 기준 1개당 130만원입니다(맞춤 어버트먼트 + 지르코니아 크라운 포함). 뼈이식이 필요한 경우 단순 50만원, 복합 80만원이 추가됩니다. 상악동 거상술은 치조정 80만원, 측방 150만원입니다. 정확한 비용은 CT 촬영 후 상담 시 안내드립니다.' },
-    { q: 'CEREC 당일 보철이란 무엇인가요?', a: 'CEREC은 디지털 스캐너로 치아를 촬영하고, 컴퓨터로 보철을 설계한 뒤, 밀링 머신이 세라믹 블록을 깎아 보철을 만드는 시스템입니다. 본 뜨고, 기공소 보내고, 기다리고, 다시 오는 과정 없이 하루 만에 보철까지 완성합니다.' },
+    { q: 'CEREC 디지털 보철이란 무엇인가요?', a: 'CEREC은 디지털 스캐너로 치아를 촬영하고, 컴퓨터로 보철을 설계한 뒤, 밀링 머신이 세라믹 블록을 깎아 보철을 만드는 시스템입니다. 디지털 스캔으로 본뜨기 불편함 없이 싱글 지르코니아·세라믹 크라운을 정밀하게 제작합니다.' },
     { q: '인비절라인은 얼마나 걸리나요?', a: '보통 6개월~2년으로, 치아 상태에 따라 다릅니다. 간단한 경우 6개월 이내에 완료되기도 합니다. 비용은 인비절라인 퍼스트(1차) 400만원, 단순 650만원, 복잡 700만원이며, 교정 검사비 20만원, 월비용 5만원이 별도입니다. 정밀 검사 후 예상 기간과 정확한 비용을 안내드립니다.' },
     { q: '사랑니를 꼭 빼야 하나요?', a: '모든 사랑니를 빼야 하는 것은 아닙니다. 매복되어 앞 치아를 밀고 있거나, 충치·염증이 반복되는 경우 발치를 권합니다. 구강악안면외과 전문의가 정확히 진단합니다.' },
     { q: '토요일에도 진료하나요?', a: '현재 평일(월~금) 09:00~17:30 진료하며, 접수마감은 17:00입니다. 점심시간은 13:00~14:00이고, 토·일·공휴일은 휴무입니다.' },
@@ -27,12 +27,12 @@ export function mainPageSchemas(): object[] {
     }))
   };
 
-  // HowTo Schema — CEREC 당일 보철 프로세스 (구글 HowTo 리치 스니펫)
+  // HowTo Schema — CEREC 디지털 보철 제작 프로세스 (구글 HowTo 리치 스니펫)
   const howToSchema = {
     "@context": "https://schema.org",
     "@type": "HowTo",
-    "name": "CEREC 당일 보철 완성 과정",
-    "description": "강남치과의원의 CEREC 시스템을 이용한 당일 보철 완성 과정입니다. 디지털 스캔부터 보철 장착까지 약 1~2시간이면 완료됩니다.",
+    "name": "CEREC 디지털 싱글 크라운 제작 과정",
+    "description": "강남치과의원의 CEREC 시스템을 이용한 싱글 크라운 제작 과정입니다. 디지털 스캔부터 보철 장착까지 정밀하게 제작됩니다.",
     "totalTime": "PT2H",
     "tool": [
       { "@type": "HowToTool", "name": "CEREC MC X 밀링 머신" },
@@ -40,7 +40,7 @@ export function mainPageSchemas(): object[] {
       { "@type": "HowToTool", "name": "SpeedFire 소성로" }
     ],
     "step": [
-      { "@type": "HowToStep", "position": 1, "name": "디지털 스캔", "text": "구강 스캐너(PrimeScan)로 치아를 3D 촬영합니다. 불편한 인상재(본뜨기)가 필요 없습니다.", "url": "https://kndent.kr/treatments/cerec" },
+      { "@type": "HowToStep", "position": 1, "name": "디지털 스캔", "text": "구강 스캐너(PrimeScan)로 치아를 3D 촬영합니다. 불편한 인상재(본뜨기)가 필요 없습니다.", "url": "https://kndent.kr/treatments/digital-prosthesis" },
       { "@type": "HowToStep", "position": 2, "name": "AI 보철 설계", "text": "컴퓨터가 환자의 치아에 딱 맞는 보철을 자동 설계합니다. 0.01mm 정밀도로 맞춤 제작됩니다." },
       { "@type": "HowToStep", "position": 3, "name": "밀링 제작", "text": "세라믹 블록을 CEREC MC X 밀링 머신이 깎아 보철을 만듭니다. 기공소 외주 없이 원내에서 완성합니다." },
       { "@type": "HowToStep", "position": 4, "name": "소성 및 장착", "text": "SpeedFire로 초고속 소성 후 바로 장착합니다. 자연치아와 구분이 어려운 색감을 구현합니다." }
@@ -80,9 +80,9 @@ export function mainPageSchemas(): object[] {
       },
       {
         "@type": "MedicalBusiness",
-        "name": "CEREC 당일보철 센터",
-        "description": "PrimeScan + CEREC MC X + SpeedFire 시스템으로 당일 보철 완성.",
-        "url": "https://kndent.kr/treatments/cerec"
+        "name": "디지털 보철 센터",
+        "description": "PrimeScan + CEREC MC X + SpeedFire 시스템으로 싱글 크라운 제작.",
+        "url": "https://kndent.kr/treatments/digital-prosthesis"
       },
       {
         "@type": "MedicalBusiness",
@@ -139,7 +139,7 @@ export function mainPageSchemas(): object[] {
         "procedureType": "Surgical",
         "howPerformed": "구강악안면외과 전문의가 3D CT 기반 정밀 진단 후 디지털 가이드를 이용하여 임플란트를 식립합니다.",
         "preparation": "3D CT 촬영, 디지털 구강 스캔, 전문의 상담",
-        "followup": "정기 경과 관찰, CEREC 당일 보철 장착 가능",
+        "followup": "정기 경과 관찰, 디지털 보철 장착 가능",
         "status": "EventScheduled",
         "url": "https://kndent.kr/treatments/implant",
         "bodyLocation": "턱뼈 (상악/하악)",
@@ -148,12 +148,12 @@ export function mainPageSchemas(): object[] {
       },
       {
         "@type": "MedicalProcedure",
-        "name": "CEREC 당일 보철",
+        "name": "디지털 보철(싱글 크라운)",
         "procedureType": "Noninvasive",
         "howPerformed": "PrimeScan 디지털 스캐너로 구강을 스캔한 후, CEREC 밀링 머신으로 세라믹 보철을 원내에서 당일 제작하여 장착합니다.",
         "preparation": "디지털 구강 스캔 (본뜨기 불필요)",
-        "followup": "당일 보철 장착 완료, 추가 내원 불필요",
-        "url": "https://kndent.kr/treatments/cerec",
+        "followup": "보철 장착 완료 후 정기 경과 관찰",
+        "url": "https://kndent.kr/treatments/digital-prosthesis",
         "expectedPrognosis": "10년 이상 사용 가능, 세라믹 소재 생체친화성 우수"
       },
       {
@@ -226,7 +226,7 @@ export function mainPage(): string {
   // ===== Pre-build all dynamic HTML sections =====
 
   // Marquee items
-  const marqueeItems = ['임플란트', '인비절라인', 'CEREC 당일보철', '심미보철', '사랑니발치'];
+  const marqueeItems = ['임플란트', '인비절라인', '디지털 보철', '심미보철', '사랑니발치'];
   const marqueeHtml = Array(10).fill(
     marqueeItems.map(m => `<span class="mx-10 text-sm tracking-[0.05em] text-royal/15 font-bold">${m}</span><span class="mx-3 text-royal/10">&diamondsuit;</span>`).join('')
   ).join('');
@@ -234,7 +234,7 @@ export function mainPage(): string {
   // Why Gangnam - equipment list
   const equipList = [
     { name: '3D CT', desc: '정밀 입체 진단' },
-    { name: 'CEREC', desc: '당일 보철 제작' },
+    { name: 'CEREC', desc: '싱글 크라운 제작' },
     { name: 'PrimeScan', desc: '디지털 구강 스캔' },
     { name: 'iTero', desc: '교정 시뮬레이션' },
     { name: 'SpeedFire', desc: '초고속 소성' }
@@ -308,9 +308,9 @@ export function mainPage(): string {
   // Treatments cards
   const treatments = [
     { slug: 'implant', icon: 'fa-tooth', label: 'IMPLANT', title: '임플란트', sub: '수술이 전문인 전문의가 합니다', worry: '"임플란트 하려고 대구까지 가시려고요?"', answer: '영주에서 외과 전문의가 직접 수술합니다. 대학병원급 장비도 갖추고 있습니다.', tags: ['CT 정밀진단', '뼈이식 가능', '상악동 수술', '디지털 가이드'] },
-    { slug: 'cerec', icon: 'fa-bolt', label: 'CEREC · SAME DAY', title: '당일 보철', sub: '오늘 깎고, 오늘 씌우고, 오늘 끝납니다', worry: '"치과 때문에 또 회사 빠져야 하나 고민이셨죠?"', answer: 'CEREC으로 당일 보철 완성. 한 번 방문으로 끝냅니다.', tags: ['당일 완성', '디지털 스캔', '세라믹 보철', 'SpeedFire'] },
+    { slug: 'digital-prosthesis', icon: 'fa-bolt', label: 'DIGITAL PROSTHESIS', title: '디지털 보철', sub: '디지털 스캔으로 싱글 크라운을 정밀 제작합니다', worry: '"자연스러운 크라운을 원해요"', answer: 'CEREC 시스템으로 싱글 지르코니아·세라믹 크라운을 정밀하게 제작합니다.', tags: ['싱글 크라운', '디지털 스캔', '세라믹 보철', 'SpeedFire'] },
     { slug: 'invisalign', icon: 'fa-teeth', label: 'INVISALIGN', title: '인비절라인', sub: '눈에 띄지 않게 교정합니다', worry: '"교정 티 나면 직장에서 눈치 보일까봐 망설이셨죠?"', answer: '투명교정 인비절라인으로, 눈에 띄지 않게 교정합니다.', tags: ['iTero 스캐너', '3D 시뮬레이션', '탈착 가능', '심미적'] },
-    { slug: 'cosmetic', icon: 'fa-gem', label: 'COSMETIC', title: '심미보철', sub: '자연치아와 구분이 어렵습니다', worry: '"자연스러운 이를 갖고 싶어요…"', answer: 'CEREC으로 맞춤 제작, 자연치아와 구분이 어렵습니다.', tags: ['라미네이트', '올세라믹', '당일 제작', '맞춤 색상'] }
+    { slug: 'cosmetic', icon: 'fa-gem', label: 'COSMETIC', title: '심미보철', sub: '자연치아와 구분이 어렵습니다', worry: '"자연스러운 이를 갖고 싶어요…"', answer: '디지털 기술로 맞춤 제작, 자연치아와 구분이 어렵습니다.', tags: ['라미네이트', '올세라믹', '싱글 크라운', '맞춤 색상'] }
   ];
   const treatmentsHtml = treatments.map(item => `
     <a href="/treatments/${item.slug}" class="card-white p-6 md:p-8 lg:p-10 group block stagger-item">
@@ -336,7 +336,7 @@ export function mainPage(): string {
   // Patient personas
   const personas = [
     { emoji: '😰', persona: '임플란트가 필요하신 분', age: '50~70대', worry: '"뼈가 약하다고 다른 치과에서 거절당했어요…"<br>"대구까지 가야 하나 고민이에요."', solution: '구강외과 전문의 2인이 직접 수술합니다. 뼈이식·상악동 거상술 등 고난이도 수술도 일상적으로 시행합니다. 대학병원급 수술을 영주에서.', tags: ['전문의 직접 수술', '뼈이식 가능', 'CT 정밀진단'], link: '/treatments/implant' },
-    { emoji: '⏰', persona: '시간이 없으신 분', age: '30~50대 직장인', worry: '"치과 때문에 하루 더 쉬어야 하나…"<br>"치료 여러 번 오는 거 정말 싫어요."', solution: 'CEREC 당일 보철 시스템으로 본뜨기·기공소 대기 없이 하루 만에 보철까지 완성합니다. 바쁜 분들을 위한 한 번 내원 솔루션.', tags: ['당일 보철 완성', '최소 내원', 'CEREC'], link: '/treatments/cerec' },
+    { emoji: '⏰', persona: '시간이 없으신 분', age: '30~50대 직장인', worry: '"치과 때문에 하루 더 쉬어야 하나…"<br>"치료 여러 번 오는 거 정말 싫어요."', solution: 'CEREC 디지털 시스템으로 싱글 지르코니아·세라믹 크라운을 정밀 제작합니다. 본뜨기 없이 디지털 스캔으로 편안하게 치료받으실 수 있습니다.', tags: ['싱글 크라운', '디지털 정밀 제작', 'CEREC'], link: '/treatments/digital-prosthesis' },
     { emoji: '😬', persona: '교정이 고민이신 분', age: '20~40대', worry: '"교정 티 나면 직장에서 어색할까봐…"<br>"철사 교정은 부담스러운데…"', solution: '인비절라인 투명교정으로 눈에 띄지 않게 교정합니다. iTero 스캐너로 교정 전후를 3D 시뮬레이션으로 미리 보실 수 있습니다.', tags: ['투명 교정', '3D 시뮬레이션', '탈착 가능'], link: '/treatments/invisalign' }
   ];
   const personasHtml = personas.map(p => `
@@ -478,7 +478,7 @@ export function mainPage(): string {
   const numbers = [
     { num: '2', suffix: '인', label: '구강외과 전문의', icon: 'fa-user-doctor', desc: '대학병원 수련 전문의' },
     { num: '2017', suffix: '년~', label: '영주 개원', icon: 'fa-calendar', desc: '8년 이상 지역진료' },
-    { num: '1', suffix: 'DAY', label: '당일 보철 완성', icon: 'fa-bolt', desc: 'CEREC 시스템' },
+    { num: '1', suffix: 'DAY', label: '디지털 보철', icon: 'fa-bolt', desc: 'CEREC 시스템' },
     { num: '5', suffix: '+', label: '디지털 장비', icon: 'fa-microchip', desc: '최첨단 진료 환경' }
   ];
   const numbersHtml = numbers.map(item => `
@@ -516,7 +516,7 @@ export function mainPage(): string {
   // FAQ items
   const faqItems = [
     { q: '임플란트 비용은 얼마인가요?', a: '강남치과의원 임플란트 비용은 Neo/Osstem 임플란트 기준 1개당 130만원입니다(맞춤 어버트먼트 + 지르코니아 크라운 포함). 뼈이식이 필요한 경우 단순 50만원, 복합 80만원이 추가됩니다. 상악동 거상술은 치조정 80만원, 측방 150만원입니다. 정확한 비용은 CT 촬영 후 상담 시 안내드립니다.' },
-    { q: 'CEREC 당일 보철이란 무엇인가요?', a: 'CEREC은 디지털 스캐너로 치아를 촬영하고, 컴퓨터로 보철을 설계한 뒤, 밀링 머신이 세라믹 블록을 깎아 보철을 만드는 시스템입니다. 본 뜨고, 기공소 보내고, 기다리고, 다시 오는 과정 없이 하루 만에 보철까지 완성합니다.' },
+    { q: 'CEREC 디지털 보철이란 무엇인가요?', a: 'CEREC은 디지털 스캐너로 치아를 촬영하고, 컴퓨터로 보철을 설계한 뒤, 밀링 머신이 세라믹 블록을 깎아 보철을 만드는 시스템입니다. 디지털 스캔으로 본뜨기 불편함 없이 싱글 지르코니아·세라믹 크라운을 정밀하게 제작합니다.' },
     { q: '인비절라인은 얼마나 걸리나요?', a: '보통 6개월~2년으로, 치아 상태에 따라 다릅니다. 간단한 경우 6개월 이내에 완료되기도 합니다. 비용은 인비절라인 퍼스트(1차) 400만원, 단순 650만원, 복잡 700만원이며, 교정 검사비 20만원, 월비용 5만원이 별도입니다. 정밀 검사 후 예상 기간과 정확한 비용을 안내드립니다.' },
     { q: '사랑니를 꼭 빼야 하나요?', a: '모든 사랑니를 빼야 하는 것은 아닙니다. 매복되어 앞 치아를 밀고 있거나, 충치·염증이 반복되는 경우 발치를 권합니다. 구강악안면외과 전문의가 정확히 진단합니다.' },
     { q: '토요일에도 진료하나요?', a: '현재 평일(월~금) 09:00~17:30 진료하며, 접수마감은 17:00입니다. 점심시간은 13:00~14:00이고, 토·일·공휴일은 휴무입니다.' },
@@ -590,7 +590,7 @@ export function mainPage(): string {
 
           <p class="text-base md:text-xl text-gray-400 leading-relaxed mb-8 md:mb-12 max-w-xl" id="heroSub" data-speakable="true">
             <span>구강악안면외과 전문의 2인이 직접 수술합니다.</span><br>
-            <span>영주 강남치과의원 — 임플란트, CEREC 당일보철, 인비절라인.</span>
+            <span>영주 강남치과의원 — 임플란트, 디지털 보철, 인비절라인.</span>
             <span class="hidden md:inline"><strong class="text-royal font-semibold">정확하게 진단하고, 빠르게 치료하고, 오래가는 결과를 만듭니다.</strong></span>
           </p>
 
@@ -828,7 +828,7 @@ export function mainPage(): string {
           <div class="w-14 h-14 rounded-2xl royal-grad flex items-center justify-center mb-6 royal-glow"><i class="fas fa-clock text-white text-xl"></i></div>
           <p class="text-royal text-sm italic font-medium mb-3">"시간 없는데, 빨리 끝나나?"</p>
           <h3 class="text-xl font-extrabold text-charcoal mb-3">불필요한 재내원을<br>최소화합니다</h3>
-          <p class="text-gray-400 text-sm leading-relaxed mb-6">당일 발수, 당일 근충, 당일 보철 완성.<br>바쁜 분들을 위한 치과입니다.</p>
+          <p class="text-gray-400 text-sm leading-relaxed mb-6">당일 발수, 당일 근충까지.<br>바쁜 분들을 위한 치과입니다.</p>
           <div class="relative py-6">
             <div class="absolute left-5 top-0 bottom-0 w-[2px] bg-gradient-to-b from-royal via-royal/50 to-royal/10"></div>
             <div class="space-y-6 pl-12 relative">
@@ -871,7 +871,7 @@ export function mainPage(): string {
       <div class="text-center mb-20 reveal">
         <div class="section-label section-label-royal mx-auto mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>PROCESS COMPARISON</div>
         <h2 class="display-xl text-charcoal mb-6" data-speakable="true">보철 제작 방식이<br><span class="royal-grad-text">이렇게 달라집니다</span></h2>
-        <p class="text-gray-400 text-lg" data-speakable="true">같은 보철이라도 제작 방식에 따라 내원 횟수와 기간이 달라집니다.<br>디지털 CEREC 시스템은 기공소 외주 없이 원내에서 당일 보철을 완성합니다.</p>
+        <p class="text-gray-400 text-lg" data-speakable="true">같은 보철이라도 제작 방식에 따라 내원 횟수와 기간이 달라집니다.<br>CEREC 디지털 시스템은 기공소 외주 없이 원내에서 크라운을 제작합니다.</p>
       </div>
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-5xl mx-auto stagger-children">
         <!-- 기존 아날로그 보철 과정 -->
@@ -896,7 +896,7 @@ export function mainPage(): string {
             ${gangnamStepsHtml}
           </div>
           <div class="mt-8 p-5 rounded-2xl bg-royal/[0.04] border border-royal/[0.1]">
-            <div class="flex items-center gap-3"><i class="fas fa-check-circle text-royal text-lg"></i><div><div class="text-charcoal font-bold">총 3~4회 내원 <span class="royal-grad-text">(내원 횟수 최대 50% 단축)</span></div><div class="text-gray-400 text-xs">CEREC 당일 보철로 기공소 대기 시간 제로</div></div></div>
+            <div class="flex items-center gap-3"><i class="fas fa-check-circle text-royal text-lg"></i><div><div class="text-charcoal font-bold">총 3~4회 내원 <span class="royal-grad-text">(내원 횟수 최대 50% 단축)</span></div><div class="text-gray-400 text-xs">CEREC 디지털 보철로 기공소 대기 시간 제로</div></div></div>
           </div>
         </div>
       </div>
@@ -904,12 +904,12 @@ export function mainPage(): string {
   </section>
 
   <!-- ========== CEREC 프로세스 인포그래픽 ========== -->
-  <section class="py-32 md:py-48 bg-white relative overflow-hidden" aria-label="CEREC 당일보철 프로세스">
+  <section class="py-32 md:py-48 bg-white relative overflow-hidden" aria-label="디지털 보철 프로세스">
     <div class="absolute bottom-0 right-0 w-[500px] h-[500px] bg-royal/[0.02] rounded-full blur-[200px]"></div>
     <div class="max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
       <div class="text-center mb-20 reveal">
         <div class="section-label section-label-royal mx-auto mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>CEREC PROCESS</div>
-        <h2 class="display-xl text-charcoal mb-6">본 뜨지 않습니다.<br><span class="royal-grad-text">당일 보철 완성 과정</span></h2>
+        <h2 class="display-xl text-charcoal mb-6">본 뜨지 않습니다.<br><span class="royal-grad-text">디지털 크라운 제작 과정</span></h2>
         <p class="text-gray-400 text-lg">CEREC 시스템은 이렇게 작동합니다</p>
       </div>
       <div class="relative max-w-5xl mx-auto">

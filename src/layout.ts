@@ -41,7 +41,7 @@ function buildBaseSchema() {
     "email": "gndentalclinic@naver.com",
     "logo": `${SITE_URL}/static/logo.png`,
     "image": `${SITE_URL}/static/logo.png`,
-    "description": "경북 영주시 강남치과의원. 구강악안면외과 전문의 2인이 직접 진료하는 프리미엄 치과. 임플란트, CEREC 당일보철, 인비절라인, 심미보철 전문.",
+    "description": "경북 영주시 강남치과의원. 구강악안면외과 전문의 2인이 직접 진료하는 프리미엄 치과. 임플란트, 디지털 보철(싱글 크라운), 인비절라인, 심미보철 전문.",
     "slogan": "일상으로의 빠른 복귀, 강남치과의 기쁨입니다",
     "foundingDate": "2017",
     "priceRange": "$$",
@@ -84,7 +84,7 @@ function buildBaseSchema() {
     ],
     "availableService": [
       { "@type": "MedicalProcedure", "name": "임플란트", "procedureType": "Surgical" },
-      { "@type": "MedicalProcedure", "name": "CEREC 당일보철", "procedureType": "Noninvasive" },
+      { "@type": "MedicalProcedure", "name": "디지털 보철(싱글 크라운)", "procedureType": "Noninvasive" },
       { "@type": "MedicalProcedure", "name": "인비절라인 투명교정", "procedureType": "Noninvasive" },
       { "@type": "MedicalProcedure", "name": "사랑니 발치", "procedureType": "Surgical" },
       { "@type": "MedicalProcedure", "name": "뼈이식", "procedureType": "Surgical" },
@@ -127,9 +127,9 @@ function buildBaseSchema() {
         "@type": "Review",
         "author": { "@type": "Person", "name": "박*수" },
         "datePublished": "2025-10-22",
-        "reviewBody": "CEREC 당일 보철로 하루 만에 크라운 완성됐습니다. 예전엔 본뜨고 2주 기다렸는데 세상 좋아졌네요. 바쁜 직장인에게 강추합니다.",
+        "reviewBody": "디지털 보철로 크라운 맞취습니다. 본뜨고 기다리는 불편함 없이 디지털 스캔으로 편안하게 치료받았습니다. 바쁜 직장인에게 강추합니다.",
         "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
-        "itemReviewed": { "@type": "MedicalProcedure", "name": "CEREC 당일보철" }
+        "itemReviewed": { "@type": "MedicalProcedure", "name": "디지털 보철(싱글 크라운)" }
       },
       {
         "@type": "Review",
@@ -210,7 +210,7 @@ function buildBreadcrumb(url: string, pageTitle: string) {
     'notices': '공지사항',
     'admin': '관리자',
     'implant': '임플란트',
-    'cerec': '당일보철 CEREC',
+    'digital-prosthesis': '디지털 보철',
     'invisalign': '인비절라인',
     'cosmetic': '심미보철',
     'wisdom-tooth': '사랑니 발치',
@@ -298,7 +298,7 @@ export function layout(content: string, opts: LayoutOptions): string {
   const schemasHtml = allSchemas.map(s => `<script type="application/ld+json">${JSON.stringify(s)}</script>`).join('\n  ')
 
   // 기본 키워드 (모든 페이지 공통)
-  const baseKeywords = '영주 치과, 영주 임플란트, 강남치과의원, 구강외과 전문의, CEREC 당일보철, 인비절라인, 영주시 치과'
+  const baseKeywords = '영주 치과, 영주 임플란트, 강남치과의원, 구강외과 전문의, 디지털 보철, 인비절라인, 영주시 치과'
   const finalKeywords = keywords ? `${keywords}, ${baseKeywords}` : baseKeywords
 
   return `<!DOCTYPE html>
@@ -1044,7 +1044,7 @@ export function layout(content: string, opts: LayoutOptions): string {
           <ul class="space-y-3.5 text-sm text-gray-400">
             <li><a href="/treatments/implant" class="hover:text-royal transition-colors duration-300">임플란트</a></li>
             <li><a href="/treatments/invisalign" class="hover:text-royal transition-colors duration-300">인비절라인</a></li>
-            <li><a href="/treatments/cerec" class="hover:text-royal transition-colors duration-300">당일보철 CEREC</a></li>
+            <li><a href="/treatments/digital-prosthesis" class="hover:text-royal transition-colors duration-300">디지털 보철</a></li>
             <li><a href="/treatments/cosmetic" class="hover:text-royal transition-colors duration-300">심미보철</a></li>
             <li><a href="/treatments/wisdom-tooth" class="hover:text-royal transition-colors duration-300">사랑니발치</a></li>
             <li><a href="/treatments" class="text-royal/60 hover:text-royal transition-colors duration-300 flex items-center gap-1">전체 보기<i class="fas fa-arrow-right text-[8px]"></i></a></li>

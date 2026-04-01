@@ -61,8 +61,8 @@ export function areaPage(region:string): { html:string; title:string; descriptio
           <div class="grid grid-cols-1 md:grid-cols-2 gap-5 stagger-children">
             ${[
               {icon:'fa-user-doctor',title:'구강외과 전문의 2인',desc:'수술 전문 외과 전문의 2인 상주. 임플란트, 뼈이식, 사랑니 전문.'},
-              {icon:'fa-bolt',title:'당일 보철 완성',desc:'CEREC 시스템으로 한 번 방문에 보철 완성. 먼 거리에서도 편리.'},
-              {icon:'fa-microchip',title:'대학병원급 장비',desc:'CT, CEREC, PrimeScan, iTero 등 최첨단 디지털 장비 완비.'},
+              {icon:'fa-bolt',title:'디지털 보철',desc:'CEREC 시스템으로 싱글 크라운 제작. 먼 거리에서도 편리.'},
+              {icon:'fa-microchip',title:'대학병원급 장비',desc:'CT, PrimeScan, iTero, CEREC 등 최첨단 디지털 장비 완비.'},
               {icon:'fa-clock',title:'빠른 치료 완료',desc:'재내원 최소화로 먼 거리에서 오시는 분도 편리합니다.'}
             ].map(item => `
             <div class="card-premium p-7 flex items-start gap-5 stagger-item group">
