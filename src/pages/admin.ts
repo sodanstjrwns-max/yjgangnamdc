@@ -393,6 +393,14 @@ export function adminPage(): string {
     const ADMIN_KEY = localStorage.getItem('admin_key') || '';
     if (!ADMIN_KEY) { promptLogin(); }
 
+    // UTC → KST 날짜 변환 헬퍼
+    function toKST(dateStr) {
+      if (!dateStr) return '';
+      var d = new Date(dateStr);
+      var kst = new Date(d.getTime() + 9 * 60 * 60 * 1000);
+      return kst.getUTCFullYear() + '-' + String(kst.getUTCMonth()+1).padStart(2,'0') + '-' + String(kst.getUTCDate()).padStart(2,'0');
+    }
+
     function promptLogin() {
       const key = prompt('관리자 인증키를 입력하세요:');
       if (key) { localStorage.setItem('admin_key', key); window.location.reload(); }
@@ -589,7 +597,7 @@ export function adminPage(): string {
           <td><span class="status-badge status-\${i.status}">\${i.status === 'new' ? '신규' : i.status === 'contacted' ? '연락완료' : '처리완료'}</span></td>
           <td class="font-bold">\${i.name}</td><td>\${i.phone}</td><td>\${i.treatment || '-'}</td>
           <td class="max-w-[200px] truncate">\${i.message || '-'}</td>
-          <td class="text-gray-400 text-xs">\${i.created_at?.split('T')[0] || ''}</td>
+          <td class="text-gray-400 text-xs">\${toKST(i.created_at)}</td>
           <td><select class="admin-select !py-1 !px-2 !text-xs" onchange="updateInquiry(\${i.id}, this.value)">
             <option value="new" \${i.status==='new'?'selected':''}>신규</option>
             <option value="contacted" \${i.status==='contacted'?'selected':''}>연락완료</option>
@@ -673,7 +681,7 @@ export function adminPage(): string {
           <td>\${p.thumbnail ? '<img src="'+p.thumbnail+'" style="width:48px;height:36px;object-fit:cover;border-radius:8px;">' : '<div style="width:48px;height:36px;background:#f3f4f6;border-radius:8px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-image text-gray-300 text-xs"></i></div>'}</td>
           <td class="font-bold max-w-[200px] truncate"><a href="/blog/\${p.slug}" target="_blank" class="hover:text-teal-600">\${p.title}</a></td>
           <td>\${p.category}</td><td>\${p.views}</td>
-          <td class="text-gray-400 text-xs">\${p.published_at?.split('T')[0] || ''}</td>
+          <td class="text-gray-400 text-xs">\${toKST(p.published_at)}</td>
           <td class="flex gap-1">
             <button onclick="editBlog('\${p.slug}')" class="admin-btn admin-btn-secondary !py-1 !px-3 !text-xs"><i class="fas fa-edit"></i></button>
             <button onclick="deleteBlog('\${p.slug}')" class="admin-btn admin-btn-danger !py-1 !px-3 !text-xs"><i class="fas fa-trash"></i></button>
@@ -916,7 +924,7 @@ export function adminPage(): string {
           <td>\${u.email}</td>
           <td>\${u.phone}</td>
           <td><span class="status-badge \${u.is_active ? 'status-completed' : 'status-new'}">\${u.is_active ? '활성' : '비활성'}</span></td>
-          <td class="text-gray-400 text-xs">\${u.created_at?.split('T')[0] || ''}</td>
+          <td class="text-gray-400 text-xs">\${toKST(u.created_at)}</td>
         </tr>\`).join('');
     }
 

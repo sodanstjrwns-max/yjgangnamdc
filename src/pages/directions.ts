@@ -23,7 +23,7 @@ export function directionsPage(): string {
         <div class="lg:col-span-2 reveal">
           <div class="card-premium overflow-hidden mb-6">
             <div class="aspect-[16/10] bg-gray-100 relative">
-              <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3200!2d128.7376!3d36.8056!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2z6rCV64Ko7LmY6rO87JuQ!5e0!3m2!1sko!2skr!4v1"
+              <iframe src="https://www.google.com/maps?q=%EA%B2%BD%EB%B6%81+%EC%98%81%EC%A3%BC%EC%8B%9C+%EB%8C%80%ED%95%99%EB%A1%9C+217&output=embed&z=17"
                 width="100%" height="100%" style="border:0;position:absolute;top:0;left:0;width:100%;height:100%;border-radius:27px;" allowfullscreen="" loading="lazy"></iframe>
             </div>
           </div>
