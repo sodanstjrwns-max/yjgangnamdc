@@ -251,14 +251,13 @@ export function mainPage(): string {
   const boneTags = ['뼈이식', '상악동 수술', '디지털 가이드', 'CT 정밀진단'];
   const boneTagsHtml = boneTags.map(t => `<span class="px-3.5 py-2 rounded-full bg-lavender text-charcoal text-[11px] font-bold border border-royal/[0.06]">${t}</span>`).join('');
 
-  // Comparison - traditional prosthetic process
+  // Comparison - traditional crown process
   const generalSteps = [
-    { step: '1회차', desc: '상담 + CT 촬영', time: '30분', icon: 'fa-comment-dots' },
-    { step: '2회차', desc: '임플란트 식립 수술', time: '1시간', icon: 'fa-syringe' },
-    { step: '3회차', desc: '실밥 제거 + 경과 체크', time: '15분', icon: 'fa-scissors' },
-    { step: '4회차', desc: '실리콘 인상채득 (본뜨기)', time: '30분', icon: 'fa-hand' },
-    { step: '5회차', desc: '기공소 외주 제작 대기', time: '7~14일 소요', icon: 'fa-hourglass-half' },
-    { step: '6회차', desc: '보철 장착', time: '30분', icon: 'fa-crown' }
+    { step: '1회차', desc: '상담 + 치아 삭제', time: '30분', icon: 'fa-comment-dots' },
+    { step: '2회차', desc: '실리콘 인상재로 본뜨기', time: '30분', icon: 'fa-hand' },
+    { step: '대기', desc: '기공소 외주 제작 대기', time: '7~14일 소요', icon: 'fa-hourglass-half' },
+    { step: '3회차', desc: '임시치아 제거 + 보철 시적', time: '30분', icon: 'fa-teeth' },
+    { step: '4회차', desc: '미세 조정 후 최종 장착', time: '30분', icon: 'fa-crown' }
   ];
   const generalStepsHtml = generalSteps.map(s => `
     <div class="flex items-center gap-4">
@@ -268,12 +267,12 @@ export function mainPage(): string {
     </div>
   `).join('');
 
-  // Comparison - digital (CEREC) prosthetic process
+  // Comparison - CEREC digital crown process
   const gangnamSteps = [
-    { step: '1회차', desc: 'CT 촬영 + 전문의 상담 + 디지털 스캔', time: '40분', icon: 'fa-laptop-medical', highlight: true },
-    { step: '2회차', desc: '전문의 직접 임플란트 식립', time: '1시간', icon: 'fa-user-doctor', highlight: true },
-    { step: '3회차', desc: '경과 체크 + CEREC 디지털 스캔', time: '20분', icon: 'fa-wave-square', highlight: false },
-    { step: '같은날', desc: 'CEREC으로 당일 보철 제작 + 장착', time: '2시간', icon: 'fa-bolt', highlight: true }
+    { step: '1단계', desc: '상담 + 치아 삭제', time: '30분', icon: 'fa-comment-dots', highlight: false },
+    { step: '2단계', desc: 'PrimeScan 디지털 스캔', time: '5분', icon: 'fa-laptop-medical', highlight: true },
+    { step: '3단계', desc: 'CEREC AI 보철 설계 + 밀링', time: '25분', icon: 'fa-cog', highlight: true },
+    { step: '4단계', desc: 'SpeedFire 소성 + 장착', time: '30분', icon: 'fa-bolt', highlight: true }
   ];
   const gangnamStepsHtml = gangnamSteps.map(s => `
     <div class="flex items-center gap-4 ${s.highlight ? 'p-3 -mx-3 rounded-2xl bg-royal/[0.03] border border-royal/[0.06]' : ''}">
