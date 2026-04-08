@@ -492,7 +492,7 @@ export function mainPage(): string {
 
   // Area access
   const areas = [
-    { area: '영주시내', time: '10분', km: '5km 이내' },
+    { area: '영주시', time: '10분', km: '5km 이내' },
     { area: '풍기', time: '15분', km: '12km' },
     { area: '봉화', time: '30분', km: '25km' },
     { area: '예천', time: '35분', km: '30km' },
@@ -1108,7 +1108,7 @@ export function mainPage(): string {
           <div class="flex justify-center gap-1.5 mb-8">${starsHtml}</div>
           <p class="text-2xl md:text-3xl font-extrabold text-charcoal mb-4">환자분들의 소중한 후기</p>
           <p class="text-gray-400 mb-10 leading-relaxed">네이버 · 구글 리뷰 수집 후 업데이트 예정입니다.</p>
-          <a href="https://blog.naver.com/gndentalclinic" target="_blank" class="inline-flex items-center gap-2.5 px-8 py-4 rounded-full bg-[#03C75A] text-white font-bold text-sm hover:bg-[#02b351] transition-colors shadow-lg shadow-[#03C75A]/20"><i class="fas fa-blog"></i>네이버 블로그 방문</a>
+          <a href="https://blog.naver.com/gndentalclinic" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2.5 px-8 py-4 rounded-full bg-[#03C75A] text-white font-bold text-sm hover:bg-[#02b351] transition-colors shadow-lg shadow-[#03C75A]/20"><i class="fas fa-blog"></i>네이버 블로그 방문</a>
         </div>
       </div>
     </div>

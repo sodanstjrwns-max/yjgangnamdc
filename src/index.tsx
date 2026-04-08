@@ -166,7 +166,7 @@ app.get('/navere1c4536d7726b0dba39de96d848b193c.html', (c) => {
 // ===== SEO: robots.txt =====
 app.get('/robots.txt', (c) => {
   c.header('Content-Type', 'text/plain')
-  c.header('Cache-Control', 'public, max-age=86400')
+  c.header('Cache-Control', 'public, max-age=3600, s-maxage=3600')
   return c.body(`# 강남치과의원 (Gangnam Dental Clinic) robots.txt
 # https://kndent.kr
 # Updated: 2026-04-08

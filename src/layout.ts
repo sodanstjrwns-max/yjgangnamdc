@@ -830,7 +830,7 @@ export function layout(content: string, opts: LayoutOptions): string {
       </div>
       <div class="flex items-center gap-6 text-[11px] text-gray-400">
         <a href="tel:054-636-8222" class="hover:text-royal transition-colors flex items-center gap-1.5"><i class="fas fa-phone text-[9px]"></i>054-636-8222</a>
-        <a href="https://blog.naver.com/gndentalclinic" target="_blank" class="hover:text-royal transition-colors flex items-center gap-1.5"><i class="fas fa-blog text-[9px]"></i>Blog</a>
+        <a href="https://blog.naver.com/gndentalclinic" target="_blank" rel="noopener noreferrer" class="hover:text-royal transition-colors flex items-center gap-1.5"><i class="fas fa-blog text-[9px]"></i>Blog</a>
       </div>
     </div>
   </div>
@@ -1027,7 +1027,7 @@ export function layout(content: string, opts: LayoutOptions): string {
             구강악안면외과 전문의 2인이 직접 진료하는<br>경북 영주시 프리미엄 치과의원.
           </p>
           <div class="flex items-center gap-3">
-            <a href="https://blog.naver.com/gndentalclinic" target="_blank" class="w-10 h-10 rounded-xl border border-royal/10 flex items-center justify-center text-gray-400 hover:border-royal hover:text-royal transition-all bg-white">
+            <a href="https://blog.naver.com/gndentalclinic" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-xl border border-royal/10 flex items-center justify-center text-gray-400 hover:border-royal hover:text-royal transition-all bg-white">
               <i class="fas fa-blog text-sm"></i>
             </a>
           </div>
