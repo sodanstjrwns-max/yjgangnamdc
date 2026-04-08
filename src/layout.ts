@@ -307,21 +307,13 @@ export function layout(content: string, opts: LayoutOptions): string {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Google Tag Manager (GTM) -->
-  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-XXXXXXX');</script>
-  <!-- GA4 (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <!-- Google tag (gtag.js) - GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-EE3V6FDE2M"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', 'G-XXXXXXXXXX', {
-      page_title: document.title,
-      custom_map: {
-        'dimension1': 'page_category',
-        'dimension2': 'treatment_type'
-      }
-    });
+    gtag('config', 'G-EE3V6FDE2M');
   </script>
   <!-- Favicon (logo-based, v2) -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2">
@@ -823,9 +815,6 @@ export function layout(content: string, opts: LayoutOptions): string {
   </style>
 </head>
 <body class="font-pretendard page-transition">
-  <!-- Google Tag Manager (noscript) -->
-  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-
   <!-- Skip Navigation (접근성) -->
   <a href="#main-content" class="skip-nav">본문 바로가기</a>
 
