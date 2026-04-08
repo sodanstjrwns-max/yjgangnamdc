@@ -158,6 +158,11 @@ async function getSessionUser(c: any): Promise<any | null> {
   } catch { return null }
 }
 
+// ===== 네이버 소유권 확인 HTML 파일 =====
+app.get('/navere1c4536d7726b0dba39de96d848b193c.html', (c) => {
+  return c.html('navere1c4536d7726b0dba39de96d848b193c')
+})
+
 // ===== SEO: robots.txt =====
 app.get('/robots.txt', (c) => {
   c.header('Content-Type', 'text/plain')

@@ -368,8 +368,8 @@ export function layout(content: string, opts: LayoutOptions): string {
   <meta name="twitter:image" content="${pageOgImage}">
 
   <!-- Naver / Google / Healthcare meta -->
-  <meta name="naver-site-verification" content="NAVER_VERIFICATION_CODE_HERE">
-  <meta name="google-site-verification" content="GOOGLE_VERIFICATION_CODE_HERE">
+  <meta name="naver-site-verification" content="b56c6202c4fd245ed343ab587cf89959897bcfcf">
+  <meta name="google-site-verification" content="SdTkpZ5-mkIKb24NvY13ajYmt--8y0LYVEdjON9iI5g">
   <meta name="subject" content="${description}">
   <meta name="classification" content="Healthcare, Dentistry">
   <meta name="coverage" content="경상북도 영주시">
