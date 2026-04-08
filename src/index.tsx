@@ -162,48 +162,224 @@ async function getSessionUser(c: any): Promise<any | null> {
 app.get('/robots.txt', (c) => {
   c.header('Content-Type', 'text/plain')
   c.header('Cache-Control', 'public, max-age=86400')
-  return c.body(`# 강남치과의원 robots.txt
-# Updated: 2026-03-22
+  return c.body(`# 강남치과의원 (Gangnam Dental Clinic) robots.txt
+# https://kndent.kr
+# Updated: 2026-04-08
 
-User-agent: *
-Allow: /
-Disallow: /api/
-Disallow: /admin/
-Disallow: /login
-Disallow: /register
+# ============================================================
+# 1. 주요 검색엔진 (제한 없이 전체 허용)
+# ============================================================
 
+# Google
 User-agent: Googlebot
 Allow: /
 Disallow: /api/
-Disallow: /admin/
+Disallow: /admin
 Disallow: /login
 Disallow: /register
 
+User-agent: Googlebot-Image
+Allow: /static/
+Allow: /favicon.svg
+Disallow: /api/
+
+# Naver
 User-agent: Yeti
 Allow: /
 Disallow: /api/
-Disallow: /admin/
+Disallow: /admin
 Disallow: /login
 Disallow: /register
 
+# Bing
 User-agent: Bingbot
 Allow: /
 Disallow: /api/
-Disallow: /admin/
+Disallow: /admin
 Disallow: /login
 Disallow: /register
 
-# Sitemaps
+# Daum / Kakao
+User-agent: Daum
+Allow: /
+Disallow: /api/
+Disallow: /admin
+Disallow: /login
+Disallow: /register
+
+# ============================================================
+# 2. AI 검색 / 답변 엔진 (AEO 대응 — 색인 허용)
+# ============================================================
+
+# ChatGPT (OpenAI)
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /api/
+Disallow: /admin
+Disallow: /login
+
+# GPTBot (OpenAI 학습용 — 색인만 허용, 학습 제한)
+User-agent: GPTBot
+Allow: /treatments/
+Allow: /faq
+Allow: /pricing
+Allow: /doctors
+Allow: /directions
+Allow: /area/
+Allow: /dictionary/
+Allow: /blog/
+Disallow: /api/
+Disallow: /admin
+Disallow: /login
+Disallow: /register
+Disallow: /reservation
+
+# Google AI (Gemini, SGE)
+User-agent: Google-Extended
+Allow: /treatments/
+Allow: /faq
+Allow: /pricing
+Allow: /doctors
+Allow: /directions
+Allow: /area/
+Allow: /dictionary/
+Allow: /blog/
+Disallow: /api/
+Disallow: /admin
+
+# Anthropic Claude
+User-agent: anthropic-ai
+Allow: /treatments/
+Allow: /faq
+Allow: /pricing
+Allow: /doctors
+Allow: /directions
+Disallow: /api/
+Disallow: /admin
+
+# Perplexity
+User-agent: PerplexityBot
+Allow: /
+Disallow: /api/
+Disallow: /admin
+Disallow: /login
+
+# Microsoft Copilot
+User-agent: CopilotBot
+Allow: /
+Disallow: /api/
+Disallow: /admin
+
+# ============================================================
+# 3. 기본 정책 (나머지 모든 봇)
+# ============================================================
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin
+Disallow: /login
+Disallow: /register
+Disallow: /*.json$
+Crawl-delay: 2
+
+# ============================================================
+# 4. 악성/불필요 크롤러 차단
+# ============================================================
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: BLEXBot
+Disallow: /
+
+User-agent: DataForSeoBot
+Disallow: /
+
+User-agent: PetalBot
+Disallow: /
+
+# ============================================================
+# 5. Sitemaps
+# ============================================================
 Sitemap: https://kndent.kr/sitemap.xml
+Sitemap: https://kndent.kr/sitemap-treatments.xml
+Sitemap: https://kndent.kr/sitemap-faq.xml
+Sitemap: https://kndent.kr/sitemap-area.xml
+Sitemap: https://kndent.kr/sitemap-blog.xml
+
+# Host
+Host: https://kndent.kr
 `)
 })
 
-// ===== SEO: sitemap.xml (동적 생성 + Image Sitemap) =====
-app.get('/sitemap.xml', async (c) => {
+// ===== Sitemap Helper Functions =====
+function sitemapXmlHeader() {
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">`
+}
+
+function sitemapUrl(baseUrl: string, p: { url: string; lastmod: string; changefreq: string; priority: string }, images?: { loc: string; title: string; caption?: string }[]) {
+  const imageXml = (images || []).map(img => `
+      <image:image>
+        <image:loc>${img.loc}</image:loc>
+        <image:title>${img.title}</image:title>${img.caption ? `
+        <image:caption>${img.caption}</image:caption>` : ''}
+      </image:image>`).join('')
+  return `  <url>
+    <loc>${baseUrl}${p.url}</loc>
+    <lastmod>${p.lastmod}</lastmod>
+    <changefreq>${p.changefreq}</changefreq>
+    <priority>${p.priority}</priority>${imageXml}
+  </url>`
+}
+
+// ===== SEO: Sitemap Index (분리형 사이트맵) =====
+app.get('/sitemap.xml', (c) => {
   const baseUrl = 'https://kndent.kr'
   const today = new Date().toISOString().split('T')[0]
 
-  // 이미지 매핑 (페이지별 주요 이미지)
+  c.header('Content-Type', 'application/xml')
+  c.header('Cache-Control', 'public, max-age=3600, s-maxage=7200')
+  return c.body(`<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap>
+    <loc>${baseUrl}/sitemap-main.xml</loc>
+    <lastmod>${today}</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>${baseUrl}/sitemap-treatments.xml</loc>
+    <lastmod>${today}</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>${baseUrl}/sitemap-faq.xml</loc>
+    <lastmod>${today}</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>${baseUrl}/sitemap-area.xml</loc>
+    <lastmod>${today}</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>${baseUrl}/sitemap-blog.xml</loc>
+    <lastmod>${today}</lastmod>
+  </sitemap>
+</sitemapindex>`)
+})
+
+// ===== Sitemap: 핵심 페이지 (메인, 의료진, 가격, 예약, 오시는길) =====
+app.get('/sitemap-main.xml', (c) => {
+  const baseUrl = 'https://kndent.kr'
+  const today = new Date().toISOString().split('T')[0]
+
   const pageImages: Record<string, { loc: string; title: string; caption?: string }[]> = {
     '/': [
       { loc: `${baseUrl}/static/logo.png`, title: '강남치과의원 로고' },
@@ -228,6 +404,30 @@ app.get('/sitemap.xml', async (c) => {
       { loc: `${baseUrl}/static/photos/KLnijX5L.jpg`, title: '진료실', caption: '최신 장비가 갖춰진 진료 공간' },
       { loc: `${baseUrl}/static/photos/sOkojKif.jpg`, title: '상담실', caption: '프라이빗 상담 공간' },
     ],
+  }
+
+  const pages = [
+    { url: '/', lastmod: today, priority: '1.0', changefreq: 'weekly' },
+    { url: '/doctors', lastmod: today, priority: '0.9', changefreq: 'monthly' },
+    { url: '/doctors/lee-taehyung', lastmod: today, priority: '0.8', changefreq: 'monthly' },
+    { url: '/doctors/choi-minhye', lastmod: today, priority: '0.8', changefreq: 'monthly' },
+    { url: '/pricing', lastmod: today, priority: '0.9', changefreq: 'monthly' },
+    { url: '/reservation', lastmod: today, priority: '0.8', changefreq: 'monthly' },
+    { url: '/directions', lastmod: today, priority: '0.8', changefreq: 'yearly' },
+  ]
+
+  const urls = pages.map(p => sitemapUrl(baseUrl, p, pageImages[p.url])).join('\n')
+  c.header('Content-Type', 'application/xml')
+  c.header('Cache-Control', 'public, max-age=86400, s-maxage=86400')
+  return c.body(`${sitemapXmlHeader()}\n${urls}\n</urlset>`)
+})
+
+// ===== Sitemap: 진료과목 (가장 중요 — 검색 유입의 핵심) =====
+app.get('/sitemap-treatments.xml', (c) => {
+  const baseUrl = 'https://kndent.kr'
+  const today = new Date().toISOString().split('T')[0]
+
+  const pageImages: Record<string, { loc: string; title: string; caption?: string }[]> = {
     '/treatments/implant': [
       { loc: `${baseUrl}/static/photos/xfkmnFB6.jpg`, title: '3D CT 임플란트 진단 장비' },
       { loc: `${baseUrl}/static/photos/cihnca5u.jpg`, title: '디지털 보철 시스템' },
@@ -237,102 +437,128 @@ app.get('/sitemap.xml', async (c) => {
     ],
   }
 
-  const staticPages = [
-    { url: '/', priority: '1.0', changefreq: 'weekly' },
-    { url: '/doctors', priority: '0.9', changefreq: 'monthly' },
-    { url: '/doctors/lee-taehyung', priority: '0.8', changefreq: 'monthly' },
-    { url: '/doctors/choi-minhye', priority: '0.8', changefreq: 'monthly' },
-    { url: '/treatments', priority: '0.9', changefreq: 'monthly' },
-    { url: '/treatments/implant', priority: '0.9', changefreq: 'monthly' },
-    { url: '/treatments/digital-prosthesis', priority: '0.9', changefreq: 'monthly' },
-    { url: '/treatments/invisalign', priority: '0.8', changefreq: 'monthly' },
-    { url: '/treatments/cosmetic', priority: '0.7', changefreq: 'monthly' },
-    { url: '/treatments/wisdom-tooth', priority: '0.7', changefreq: 'monthly' },
-    { url: '/treatments/cavity', priority: '0.6', changefreq: 'monthly' },
-    { url: '/treatments/root-canal', priority: '0.6', changefreq: 'monthly' },
-    { url: '/treatments/crown', priority: '0.6', changefreq: 'monthly' },
-    { url: '/treatments/resin', priority: '0.5', changefreq: 'monthly' },
-    { url: '/treatments/whitening', priority: '0.5', changefreq: 'monthly' },
-    { url: '/treatments/scaling', priority: '0.5', changefreq: 'monthly' },
-    { url: '/treatments/gum', priority: '0.5', changefreq: 'monthly' },
-    { url: '/treatments/tmj', priority: '0.5', changefreq: 'monthly' },
-    { url: '/treatments/denture', priority: '0.5', changefreq: 'monthly' },
-    { url: '/treatments/bone-graft', priority: '0.6', changefreq: 'monthly' },
-    { url: '/treatments/sinus-lift', priority: '0.6', changefreq: 'monthly' },
-    { url: '/treatments/prevention', priority: '0.5', changefreq: 'monthly' },
-    { url: '/blog', priority: '0.8', changefreq: 'weekly' },
-    { url: '/before-after', priority: '0.8', changefreq: 'weekly' },
-    { url: '/notices', priority: '0.7', changefreq: 'weekly' },
-    { url: '/dictionary', priority: '0.8', changefreq: 'weekly' },
-    { url: '/pricing', priority: '0.8', changefreq: 'monthly' },
-    { url: '/directions', priority: '0.7', changefreq: 'yearly' },
-    { url: '/reservation', priority: '0.8', changefreq: 'yearly' },
-    { url: '/faq', priority: '0.8', changefreq: 'monthly' },
-    { url: '/faq?category=implant', priority: '0.7', changefreq: 'monthly' },
-    { url: '/faq?category=digital-prosthesis', priority: '0.7', changefreq: 'monthly' },
-    { url: '/faq?category=invisalign', priority: '0.7', changefreq: 'monthly' },
-    { url: '/faq?category=wisdom-tooth', priority: '0.7', changefreq: 'monthly' },
-    { url: '/faq?category=cosmetic', priority: '0.6', changefreq: 'monthly' },
-    { url: '/faq?category=cavity', priority: '0.6', changefreq: 'monthly' },
-    { url: '/faq?category=gum', priority: '0.6', changefreq: 'monthly' },
-    { url: '/faq?category=general', priority: '0.6', changefreq: 'monthly' },
-    ...getAllAreaKeys().map(k => ({ url: `/area/${encodeURIComponent(k)}`, priority: k === '영주시' ? '0.7' : '0.6', changefreq: 'monthly' as const })),
+  const pages = [
+    { url: '/treatments', lastmod: today, priority: '0.9', changefreq: 'monthly' },
+    // 핵심 진료 (매출 기여도 높은 순)
+    { url: '/treatments/implant', lastmod: today, priority: '0.9', changefreq: 'weekly' },
+    { url: '/treatments/digital-prosthesis', lastmod: today, priority: '0.9', changefreq: 'weekly' },
+    { url: '/treatments/invisalign', lastmod: today, priority: '0.9', changefreq: 'weekly' },
+    // 주요 진료
+    { url: '/treatments/cosmetic', lastmod: today, priority: '0.8', changefreq: 'monthly' },
+    { url: '/treatments/wisdom-tooth', lastmod: today, priority: '0.8', changefreq: 'monthly' },
+    { url: '/treatments/bone-graft', lastmod: today, priority: '0.8', changefreq: 'monthly' },
+    { url: '/treatments/sinus-lift', lastmod: today, priority: '0.8', changefreq: 'monthly' },
+    // 일반 진료
+    { url: '/treatments/cavity', lastmod: today, priority: '0.7', changefreq: 'monthly' },
+    { url: '/treatments/root-canal', lastmod: today, priority: '0.7', changefreq: 'monthly' },
+    { url: '/treatments/crown', lastmod: today, priority: '0.7', changefreq: 'monthly' },
+    { url: '/treatments/scaling', lastmod: today, priority: '0.7', changefreq: 'monthly' },
+    { url: '/treatments/gum', lastmod: today, priority: '0.7', changefreq: 'monthly' },
+    { url: '/treatments/resin', lastmod: today, priority: '0.6', changefreq: 'monthly' },
+    { url: '/treatments/whitening', lastmod: today, priority: '0.6', changefreq: 'monthly' },
+    { url: '/treatments/tmj', lastmod: today, priority: '0.6', changefreq: 'monthly' },
+    { url: '/treatments/denture', lastmod: today, priority: '0.6', changefreq: 'monthly' },
+    { url: '/treatments/prevention', lastmod: today, priority: '0.6', changefreq: 'monthly' },
   ]
 
-  // 동적 블로그 URL 추가
+  const urls = pages.map(p => sitemapUrl(baseUrl, p, pageImages[p.url])).join('\n')
+  c.header('Content-Type', 'application/xml')
+  c.header('Cache-Control', 'public, max-age=86400, s-maxage=86400')
+  return c.body(`${sitemapXmlHeader()}\n${urls}\n</urlset>`)
+})
+
+// ===== Sitemap: FAQ (170개 — AI 검색 노출의 핵심) =====
+app.get('/sitemap-faq.xml', (c) => {
+  const baseUrl = 'https://kndent.kr'
+  const today = new Date().toISOString().split('T')[0]
+
+  const pages = [
+    { url: '/faq', lastmod: today, priority: '0.9', changefreq: 'weekly' },
+    { url: '/faq?category=implant', lastmod: today, priority: '0.8', changefreq: 'weekly' },
+    { url: '/faq?category=digital-prosthesis', lastmod: today, priority: '0.8', changefreq: 'weekly' },
+    { url: '/faq?category=invisalign', lastmod: today, priority: '0.8', changefreq: 'weekly' },
+    { url: '/faq?category=wisdom-tooth', lastmod: today, priority: '0.7', changefreq: 'monthly' },
+    { url: '/faq?category=cosmetic', lastmod: today, priority: '0.7', changefreq: 'monthly' },
+    { url: '/faq?category=cavity', lastmod: today, priority: '0.7', changefreq: 'monthly' },
+    { url: '/faq?category=gum', lastmod: today, priority: '0.7', changefreq: 'monthly' },
+    { url: '/faq?category=general', lastmod: today, priority: '0.7', changefreq: 'monthly' },
+  ]
+
+  const urls = pages.map(p => sitemapUrl(baseUrl, p)).join('\n')
+  c.header('Content-Type', 'application/xml')
+  c.header('Cache-Control', 'public, max-age=86400, s-maxage=86400')
+  return c.body(`${sitemapXmlHeader()}\n${urls}\n</urlset>`)
+})
+
+// ===== Sitemap: 지역 SEO =====
+app.get('/sitemap-area.xml', (c) => {
+  const baseUrl = 'https://kndent.kr'
+  const today = new Date().toISOString().split('T')[0]
+
+  const pages = getAllAreaKeys().map(k => ({
+    url: `/area/${encodeURIComponent(k)}`,
+    lastmod: today,
+    priority: k === '영주시' ? '0.8' : '0.7',
+    changefreq: 'monthly' as const
+  }))
+
+  const urls = pages.map(p => sitemapUrl(baseUrl, p)).join('\n')
+  c.header('Content-Type', 'application/xml')
+  c.header('Cache-Control', 'public, max-age=86400, s-maxage=86400')
+  return c.body(`${sitemapXmlHeader()}\n${urls}\n</urlset>`)
+})
+
+// ===== Sitemap: 블로그 + 증례 + 공지 + 용어사전 (동적 콘텐츠) =====
+app.get('/sitemap-blog.xml', async (c) => {
+  const baseUrl = 'https://kndent.kr'
+  const today = new Date().toISOString().split('T')[0]
+
+  // 목록 페이지
+  const staticPages = [
+    { url: '/blog', lastmod: today, priority: '0.8', changefreq: 'weekly' },
+    { url: '/before-after', lastmod: today, priority: '0.8', changefreq: 'weekly' },
+    { url: '/notices', lastmod: today, priority: '0.7', changefreq: 'weekly' },
+    { url: '/dictionary', lastmod: today, priority: '0.8', changefreq: 'weekly' },
+  ]
+
+  // DB에서 동적 URL 가져오기
   let dynamicPages: typeof staticPages = []
   try {
     const blogPosts = await c.env.DB.prepare('SELECT slug, updated_at FROM blog_posts WHERE is_published = 1 ORDER BY published_at DESC').all()
     dynamicPages = dynamicPages.concat(blogPosts.results.map((p: any) => ({
       url: `/blog/${p.slug}`,
-      priority: '0.6',
+      lastmod: p.updated_at ? p.updated_at.split('T')[0] : today,
+      priority: '0.7',
       changefreq: 'monthly' as const
     })))
     const baCases = await c.env.DB.prepare('SELECT slug, updated_at FROM before_after_cases WHERE is_published = 1 ORDER BY sort_order DESC').all()
     dynamicPages = dynamicPages.concat(baCases.results.map((p: any) => ({
       url: `/before-after/${p.slug}`,
-      priority: '0.6',
+      lastmod: p.updated_at ? p.updated_at.split('T')[0] : today,
+      priority: '0.7',
       changefreq: 'monthly' as const
     })))
-    const noticesList = await c.env.DB.prepare('SELECT slug FROM notices WHERE is_published = 1 ORDER BY published_at DESC').all()
+    const noticesList = await c.env.DB.prepare('SELECT slug, updated_at FROM notices WHERE is_published = 1 ORDER BY published_at DESC').all()
     dynamicPages = dynamicPages.concat(noticesList.results.map((p: any) => ({
       url: `/notices/${p.slug}`,
+      lastmod: p.updated_at ? p.updated_at.split('T')[0] : today,
       priority: '0.5',
       changefreq: 'monthly' as const
     })))
-    // 치과 용어 사전 동적 URL
     const dictTerms = await c.env.DB.prepare('SELECT slug FROM dictionary ORDER BY term_ko').all()
     dynamicPages = dynamicPages.concat(dictTerms.results.map((p: any) => ({
       url: `/dictionary/${p.slug}`,
-      priority: '0.5',
+      lastmod: today,
+      priority: '0.6',
       changefreq: 'monthly' as const
     })))
   } catch (e) { /* DB not available, skip dynamic pages */ }
 
   const allPages = [...staticPages, ...dynamicPages]
-  const urls = allPages.map(p => {
-    const images = pageImages[p.url] || []
-    const imageXml = images.map(img => `
-      <image:image>
-        <image:loc>${img.loc}</image:loc>
-        <image:title>${img.title}</image:title>${img.caption ? `
-        <image:caption>${img.caption}</image:caption>` : ''}
-      </image:image>`).join('')
-    return `  <url>
-    <loc>${baseUrl}${p.url}</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>${p.changefreq}</changefreq>
-    <priority>${p.priority}</priority>${imageXml}
-  </url>`
-  }).join('\n')
-
+  const urls = allPages.map(p => sitemapUrl(baseUrl, p)).join('\n')
   c.header('Content-Type', 'application/xml')
-  return c.body(`<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml"
-        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
-${urls}
-</urlset>`)
+  c.header('Cache-Control', 'public, max-age=3600, s-maxage=7200')
+  return c.body(`${sitemapXmlHeader()}\n${urls}\n</urlset>`)
 })
 
 // ===== 메인 페이지 =====
