@@ -8,7 +8,8 @@ import { treatmentsPage, treatmentDetailPage } from './pages/treatments'
 import { reservationPage } from './pages/reservation'
 import { directionsPage } from './pages/directions'
 import { pricingPage } from './pages/pricing'
-import { areaPage } from './pages/area'
+import { areaPage, getAllAreaKeys } from './pages/area'
+import { faqPage, allFAQs } from './pages/faq'
 import { blogListPage, blogDetailPage } from './pages/blog'
 import { beforeAfterListPage, beforeAfterDetailPage } from './pages/beforeafter'
 import { noticeListPage, noticeDetailPage } from './pages/notices'
@@ -266,12 +267,16 @@ app.get('/sitemap.xml', async (c) => {
     { url: '/pricing', priority: '0.8', changefreq: 'monthly' },
     { url: '/directions', priority: '0.7', changefreq: 'yearly' },
     { url: '/reservation', priority: '0.8', changefreq: 'yearly' },
-    { url: '/area/%EC%98%81%EC%A3%BC%EC%8B%9C', priority: '0.6', changefreq: 'yearly' },
-    { url: '/area/%ED%92%8D%EA%B8%B0', priority: '0.5', changefreq: 'yearly' },
-    { url: '/area/%EB%B4%89%ED%99%94', priority: '0.5', changefreq: 'yearly' },
-    { url: '/area/%EC%98%88%EC%B2%9C', priority: '0.5', changefreq: 'yearly' },
-    { url: '/area/%EC%95%88%EB%8F%99', priority: '0.5', changefreq: 'yearly' },
-    { url: '/area/%EB%8B%A8%EC%96%91', priority: '0.5', changefreq: 'yearly' },
+    { url: '/faq', priority: '0.8', changefreq: 'monthly' },
+    { url: '/faq?category=implant', priority: '0.7', changefreq: 'monthly' },
+    { url: '/faq?category=digital-prosthesis', priority: '0.7', changefreq: 'monthly' },
+    { url: '/faq?category=invisalign', priority: '0.7', changefreq: 'monthly' },
+    { url: '/faq?category=wisdom-tooth', priority: '0.7', changefreq: 'monthly' },
+    { url: '/faq?category=cosmetic', priority: '0.6', changefreq: 'monthly' },
+    { url: '/faq?category=cavity', priority: '0.6', changefreq: 'monthly' },
+    { url: '/faq?category=gum', priority: '0.6', changefreq: 'monthly' },
+    { url: '/faq?category=general', priority: '0.6', changefreq: 'monthly' },
+    ...getAllAreaKeys().map(k => ({ url: `/area/${encodeURIComponent(k)}`, priority: k === '영주시' ? '0.7' : '0.6', changefreq: 'monthly' as const })),
   ]
 
   // 동적 블로그 URL 추가
@@ -501,9 +506,9 @@ app.get('/treatments', (c) => c.html(layout(treatmentsPage(), {
   }]
 })))
 
-app.get('/treatments/:slug', (c) => {
+app.get('/treatments/:slug', async (c) => {
   const slug = c.req.param('slug')
-  const result = treatmentDetailPage(slug)
+  const result = await treatmentDetailPage(slug)
   if (!result) return c.notFound()
   return c.html(layout(result.html, {
     title: result.title,
@@ -1048,55 +1053,34 @@ app.get('/pricing', (c) => c.html(layout(pricingPage(), {
   ]
 })))
 
-// ===== 지역 SEO (Schema 강화) =====
+// ===== FAQ 페이지 (SEO + AEO 대폭 강화) =====
+app.get('/faq', (c) => {
+  const category = c.req.query('category')
+  const result = faqPage(category || undefined)
+  return c.html(layout(result.html, {
+    title: result.title,
+    description: result.description,
+    url: `/faq${category ? `?category=${category}` : ''}`,
+    keywords: '영주 치과 FAQ, 임플란트 질문, 인비절라인 질문, 치과 비용, 사랑니 발치, 디지털 보철, 영주 강남치과',
+    speakableSelectors: ['[data-speakable]', 'h1', '.faq-answer'],
+    schemas: result.schemas
+  }))
+})
+
+// ===== 지역 SEO (Schema 대폭 강화 — FAQPage + LocalBusiness + BreadcrumbList) =====
 app.get('/area/:region', (c) => {
   const region = c.req.param('region')
   const result = areaPage(region)
   if (!result) return c.notFound()
   const decodedRegion = decodeURIComponent(region)
 
-  // 지역별 좌표 데이터
-  const regionGeo: Record<string, { lat: number; lng: number }> = {
-    '영주시': { lat: 36.8057, lng: 128.7410 },
-    '풍기': { lat: 36.8762, lng: 128.7260 },
-    '봉화': { lat: 36.8930, lng: 128.7320 },
-    '예천': { lat: 36.6570, lng: 128.4530 },
-    '안동': { lat: 36.5684, lng: 128.7294 },
-    '단양': { lat: 36.9847, lng: 128.3654 },
-  }
-  const geo = regionGeo[decodedRegion]
-
   return c.html(layout(result.html, {
     title: result.title,
     description: result.description,
     url: `/area/${region}`,
-    keywords: `${decodedRegion} 치과, ${decodedRegion} 임플란트, ${decodedRegion} 근처 치과, ${decodedRegion} 구강외과`,
-    speakableSelectors: ['[data-speakable]', 'h1', 'h2'],
-    schemas: [
-      {
-        "@context": "https://schema.org",
-        "@type": "MedicalWebPage",
-        "name": `${decodedRegion}에서 강남치과의원`,
-        "description": result.description,
-        "url": `https://kndent.kr/area/${region}`,
-        "about": {
-          "@type": "Dentist",
-          "@id": "https://kndent.kr/#organization",
-          "name": "강남치과의원",
-          "areaServed": {
-            "@type": "GeoCircle",
-            "geoMidpoint": geo ? {
-              "@type": "GeoCoordinates",
-              "latitude": geo.lat,
-              "longitude": geo.lng
-            } : { "@type": "GeoCoordinates", "latitude": 36.8057, "longitude": 128.7410 },
-            "geoRadius": "50000"
-          }
-        },
-        "specialty": ["Implantology", "Oral and Maxillofacial Surgery"],
-        "mainContentOfPage": { "@type": "WebPageElement", "cssSelector": "#main-content" }
-      }
-    ]
+    keywords: `${decodedRegion} 치과, ${decodedRegion} 임플란트, ${decodedRegion} 치과 추천, ${decodedRegion} 구강외과, ${decodedRegion} 인비절라인, ${decodedRegion} 사랑니, ${decodedRegion} 디지털보철`,
+    speakableSelectors: ['[data-speakable]', 'h1', 'h2', '.faq-answer', '.area-summary'],
+    schemas: result.schemas
   }))
 })
 

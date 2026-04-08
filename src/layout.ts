@@ -907,6 +907,9 @@ export function layout(content: string, opts: LayoutOptions): string {
                 <a href="/dictionary" class="flex items-center gap-3 px-5 py-3 text-sm text-gray-600 hover:bg-royal/5 hover:text-royal transition-all">
                   <i class="fas fa-book-medical text-xs text-gray-300"></i>치과 용어 사전
                 </a>
+                <a href="/faq" class="flex items-center gap-3 px-5 py-3 text-sm text-gray-600 hover:bg-royal/5 hover:text-royal transition-all">
+                  <i class="fas fa-circle-question text-xs text-gray-300"></i>자주 묻는 질문
+                </a>
               </div>
             </div>
           </div>
@@ -973,6 +976,9 @@ export function layout(content: string, opts: LayoutOptions): string {
               </a>
               <a href="/dictionary" class="flex items-center gap-3 py-2.5 text-lg font-medium text-charcoal hover:text-royal transition-colors">
                 <i class="fas fa-book-medical text-sm text-royal/50 w-5 text-center"></i>치과 용어 사전
+              </a>
+              <a href="/faq" class="flex items-center gap-3 py-2.5 text-lg font-medium text-charcoal hover:text-royal transition-colors">
+                <i class="fas fa-circle-question text-sm text-royal/50 w-5 text-center"></i>자주 묻는 질문
               </a>
             </div>
           </div>
@@ -1059,6 +1065,7 @@ export function layout(content: string, opts: LayoutOptions): string {
             <li><a href="/blog" class="hover:text-royal transition-colors duration-300">블로그</a></li>
             <li><a href="/notices" class="hover:text-royal transition-colors duration-300">공지사항</a></li>
             <li><a href="/dictionary" class="hover:text-royal transition-colors duration-300">용어사전</a></li>
+            <li><a href="/faq" class="hover:text-royal transition-colors duration-300">자주묻는질문</a></li>
             <li><a href="/pricing" class="hover:text-royal transition-colors duration-300">비용안내</a></li>
             <li><a href="/directions" class="hover:text-royal transition-colors duration-300">오시는길</a></li>
             <li><a href="/reservation" class="hover:text-royal transition-colors duration-300">상담예약</a></li>

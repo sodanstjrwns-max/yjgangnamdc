@@ -238,7 +238,7 @@ export function treatmentsPage(): string {
   `
 }
 
-export function treatmentDetailPage(slug: string): { html: string; title: string; description: string; schemas: object[] } | null {
+export async function treatmentDetailPage(slug: string): Promise<{ html: string; title: string; description: string; schemas: object[] } | null> {
   const t = treatments.find(tr => tr.slug === slug)
   if (!t) return null
 
@@ -313,76 +313,43 @@ export function treatmentDetailPage(slug: string): { html: string; title: string
   }
   const meta = treatmentMeta[t.slug] || {}
 
-  // ======= 페이지별 FAQPage Schema (Google FAQ 리치 스니펫) =======
+  // ======= 페이지별 FAQPage Schema (Google FAQ 리치 스니펫) — faq.ts 연동 =======
+  // faq.ts에서 진료과목별 FAQ를 가져오며, faq.ts에 없는 slug는 fallback
+  const { getFAQsBySlug } = await import('./faq')
   const treatmentFAQs: Record<string, { q: string; a: string }[]> = {
-    'implant': [
-      { q: '임플란트 수술은 아프나요?', a: '국소마취 하에 진행되므로 수술 중 통증은 거의 없습니다. 수술 후 2~3일간 가벼운 부기와 통증이 있을 수 있으나 처방약으로 충분히 관리됩니다.' },
-      { q: '임플란트 수명은 얼마나 되나요?', a: '정기 관리 시 10년 이상 반영구적으로 사용 가능합니다. 강남치과의원 임플란트 성공률은 95% 이상입니다.' },
-      { q: '임플란트 비용은 얼마인가요?', a: '임플란트 종류, 뼈이식 필요 여부에 따라 달라집니다. 정확한 비용은 3D CT 정밀 진단 후 안내드립니다. 강남치과의원은 합리적 가격에 구강외과 전문의 시술을 제공합니다.' },
-      { q: '뼈가 부족해도 임플란트가 가능한가요?', a: '네, 뼈이식(골이식) 또는 상악동 거상술을 병행하면 충분히 가능합니다. 구강외과 전문의가 직접 시술하므로 안전합니다.' },
-      { q: '임플란트 시술 기간은 얼마나 걸리나요?', a: '식립 수술은 30분~1시간, 뼈 유착 기간 2~4개월, 이후 보철 장착까지 총 3~5개월이 일반적입니다.' },
-    ],
-    'digital-prosthesis': [
-      { q: 'CEREC으로 어떤 보철을 만들 수 있나요?', a: '현재 강남치과의원에서는 CEREC으로 싱글 지르코니아 크라운과 싱글 세라믹 크라운을 제작하고 있습니다.' },
-      { q: 'CEREC 보철은 내구성이 좋은가요?', a: '지르코니아·세라믹 소재로 10년 이상 사용 가능하며, 자연치아와 유사한 강도와 색감을 제공합니다.' },
-      { q: 'CEREC 디지털 방식의 장점은 무엇인가요?', a: '디지털 스캔으로 본뜨기 불편함이 없고, 컴퓨터 설계로 0.01mm 정밀도의 크라운을 제작합니다. 자연치아와 거의 구분할 수 없는 색감을 구현합니다.' },
-      { q: '기존 보철과 CEREC의 차이점은 무엇인가요?', a: '기존 방식은 실리콘으로 본을 뜨고 기공소에 외주 제작을 맡기지만, CEREC은 디지털 스캔으로 편안하게 정밀한 크라운을 제작합니다.' },
-    ],
-    'invisalign': [
-      { q: '인비절라인 교정 기간은 얼마나 걸리나요?', a: '개인차가 있으나 일반적으로 6개월~2년입니다. 3D 클린체크 시뮬레이션으로 사전에 예상 기간과 결과를 확인할 수 있습니다.' },
-      { q: '인비절라인은 아프나요?', a: '새 얼라이너 교체 후 1~2일간 가벼운 압박감이 있을 수 있으나, 금속 교정 대비 통증이 훨씬 적습니다.' },
-      { q: '인비절라인 교정 중 음식 제한이 있나요?', a: '장치를 빼고 식사하므로 음식 제한이 없습니다. 식후 양치 후 다시 착용하면 됩니다.' },
-      { q: '성인도 인비절라인 교정이 가능한가요?', a: '네, 인비절라인은 성인 교정에 특히 적합합니다. 투명 장치로 외관상 티가 나지 않아 직장인, 대학생에게 인기입니다.' },
-    ],
-    'cosmetic': [
-      { q: '라미네이트와 크라운의 차이점은 무엇인가요?', a: '라미네이트는 치아 앞면만 0.3~0.5mm 삭제하여 얇은 세라믹을 접착하는 방식이고, 크라운은 치아 전체를 감싸는 방식입니다. 치아 상태에 따라 적합한 방법이 다릅니다.' },
-      { q: '심미 보철은 얼마나 자연스러운가요?', a: '올세라믹/지르코니아 보철은 자연치아와 거의 구분할 수 없는 색감과 투명도를 재현합니다. 금속 없는 보철로 잇몸 변색도 없습니다.' },
-      { q: 'CEREC으로 어떤 심미보철이 가능한가요?', a: '현재 CEREC으로는 싱글 지르코니아·세라믹 크라운을 제작하며, 라미네이트 등 기타 심미보철은 기공소와 협력하여 정밀 제작합니다.' },
-    ],
-    'wisdom-tooth': [
-      { q: '사랑니 발치는 아프나요?', a: '국소마취 하에 진행되므로 시술 중 통증은 없습니다. 시술 후 2~3일간 부기와 통증이 있을 수 있으나 처방약으로 관리됩니다.' },
-      { q: '매복 사랑니도 안전하게 발치할 수 있나요?', a: '네, 강남치과의원은 구강외과 전문의가 3D CT로 신경관 위치를 정밀 분석 후 안전하게 발치합니다.' },
-      { q: '사랑니 발치 후 회복 기간은 얼마나 되나요?', a: '7일 후 실밥 제거, 2~4주면 완전 회복됩니다. 발치 후 주의사항을 안내드립니다.' },
-      { q: '사랑니를 꼭 빼야 하나요?', a: '반복 염증, 인접 치아 충치, 매복 사랑니인 경우 발치를 권장합니다. 무증상이더라도 전문의 진단을 받아보시는 것이 좋습니다.' },
-    ],
-    'cavity': [
-      { q: '충치 치료는 하루 만에 끝나나요?', a: '초기~중기 충치는 당일 레진 치료가 가능합니다. 크라운이 필요한 경우 CEREC으로 싱글 지르코니아·세라믹 크라운을 정밀 제작합니다.' },
-      { q: '충치가 심하면 어떤 치료를 받나요?', a: '충치가 신경까지 진행된 경우 신경치료(근관치료) 후 크라운으로 보호합니다. CEREC으로 싱글 크라운 제작이 가능합니다.' },
-      { q: '충치 치료 후 통증이 있나요?', a: '국소마취로 치료 중 통증은 없습니다. 치료 후 일시적 시린감이 있을 수 있으나 며칠 내 자연 소실됩니다.' },
-    ],
-    'root-canal': [
-      { q: '신경치료는 왜 여러 번 내원해야 하나요?', a: '감염된 신경조직 제거, 소독, 충전 과정을 정확히 진행하기 위해 2~3회 내원이 필요합니다. 정확한 치료가 재발 방지의 핵심입니다.' },
-      { q: '신경치료 후에는 어떤 치료가 필요한가요?', a: '신경치료 후 치아가 약해지므로 크라운을 씌워 보호합니다. CEREC으로 싱글 지르코니아·세라믹 크라운 제작이 가능합니다.' },
-      { q: '신경치료는 아프나요?', a: '국소마취로 치료 중 통증은 없습니다. 이미 통증이 심한 경우 신경치료를 통해 오히려 통증이 해소됩니다.' },
-    ],
-    'crown': [
-      { q: '크라운 치료는 얼마나 걸리나요?', a: 'CEREC 시스템으로 싱글 지르코니아·세라믹 크라운을 디지털로 정밀 제작합니다. 스캔 5분 → 설계 10분 → 밀링 15분 → 소성 15분 → 장착 10분의 과정을 거칩니다.' },
-      { q: '크라운 소재는 어떤 것이 좋은가요?', a: '올세라믹(e.max)은 앞니에, 지르코니아는 어금니에 적합합니다. 둘 다 금속 없이 자연스러운 색감을 재현합니다.' },
-      { q: '크라운 수명은 얼마나 되나요?', a: '올세라믹·지르코니아 크라운은 관리 잘 하면 10년 이상 사용 가능합니다.' },
-    ],
+    'implant': getFAQsBySlug('implant'),
+    'digital-prosthesis': getFAQsBySlug('digital-prosthesis'),
+    'invisalign': getFAQsBySlug('invisalign'),
+    'cosmetic': getFAQsBySlug('cosmetic'),
+    'wisdom-tooth': getFAQsBySlug('wisdom-tooth'),
+    'cavity': getFAQsBySlug('cavity'),
+    'root-canal': getFAQsBySlug('cavity').filter(f => f.q.includes('신경')),
+    'crown': getFAQsBySlug('digital-prosthesis').filter(f => f.q.includes('크라운') || f.q.includes('CEREC') || f.q.includes('보철')),
     'resin': [
-      { q: '레진 치료는 보험 적용이 되나요?', a: '12세 이하 어린이의 영구치 레진 치료는 건강보험이 적용됩니다. 성인은 비급여이나, 합리적 비용으로 치료 가능합니다.' },
+      { q: '레진 치료는 보험 적용이 되나요?', a: '12세 이하 어린이의 영구치 레진 치료는 건강보험이 적용됩니다. 성인은 비급여이나, 합리적 비용(8만원~)으로 치료 가능합니다.' },
       { q: '레진 치료는 얼마나 오래 유지되나요?', a: '일반적으로 3~7년 정도 유지되며, 관리 상태에 따라 더 오래 사용 가능합니다. 변색 시 교체가 간편합니다.' },
+      { q: '레진과 인레이 중 어떤 것이 좋은가요?', a: '충치 범위가 치아 면적의 1/3 이하이면 레진, 그 이상이면 인레이나 크라운을 권장합니다. 레진은 당일 완료 가능하고 비용이 저렴하며, 인레이는 넓은 충치에 더 강하고 오래갑니다.' },
     ],
     'whitening': [
-      { q: '치아 미백은 안전한가요?', a: '전문의가 관리하는 오피스 미백은 안전합니다. 일시적 시린감이 있을 수 있으나 자연 소실됩니다.' },
-      { q: '미백 효과는 얼마나 지속되나요?', a: '생활 습관에 따라 6개월~2년 유지됩니다. 커피, 흡연 등 착색 요인을 줄이면 더 오래 유지됩니다.' },
-      { q: '오피스 미백과 홈 미백의 차이는 무엇인가요?', a: '오피스 미백은 병원에서 고농도 약제+LED로 1시간 내 시술, 홈 미백은 맞춤 트레이로 집에서 2~4주간 진행합니다. 병행 시 효과가 극대화됩니다.' },
+      { q: '치아 미백은 안전한가요?', a: '전문의가 관리하는 오피스 미백은 안전합니다. 일시적 시린감이 있을 수 있으나 1~2일 내 자연 소실됩니다. 임산부, 수유 중, 14세 미만은 권장하지 않습니다.' },
+      { q: '미백 효과는 얼마나 지속되나요?', a: '생활 습관에 따라 6개월~2년 유지됩니다. 커피, 차, 와인, 흡연 등 착색 요인을 줄이면 더 오래 유지됩니다. 듀얼 미백(전문가+자가)이 가장 오래 지속됩니다.' },
+      { q: '오피스 미백과 홈 미백의 차이는 무엇인가요?', a: '오피스 미백은 병원에서 고농도 약제+LED로 1시간 내 시술하여 즉각적 효과. 홈 미백은 맞춤 트레이로 집에서 2~4주간 진행하며 점진적이나 오래 유지됩니다. 병행(듀얼 미백) 시 가장 효과적입니다.' },
+      { q: '미백 비용은 얼마인가요?', a: '강남치과의원 전체 미백(자가미백+전문미백 2회)은 60만원입니다. 오피스 미백(치아당)은 5만원입니다. 과세 항목입니다.' },
     ],
     'bone-graft': [
-      { q: '뼈이식은 꼭 필요한가요?', a: '치아 발치 후 뼈가 흡수되어 임플란트 식립에 충분한 뼈가 없는 경우 필수입니다. 뼈이식 없이 무리하게 식립하면 실패 위험이 높아집니다.' },
-      { q: '뼈이식 후 회복 기간은 얼마나 되나요?', a: '4~6개월간 뼈가 생착된 후 임플란트 식립이 가능합니다. 간단한 경우 임플란트와 동시 식립도 가능합니다.' },
-      { q: '뼈이식은 아프나요?', a: '국소마취로 시술 중 통증은 없습니다. 시술 후 부기와 통증은 처방약으로 관리되며 1~2주 내 호전됩니다.' },
+      { q: '뼈이식은 꼭 필요한가요?', a: '치아 발치 후 뼈가 흡수되어 임플란트 식립에 충분한 뼈가 없는 경우 필수입니다. 뼈이식 없이 무리하게 식립하면 임플란트 실패 위험이 크게 높아집니다. 구강외과 전문의가 CT 분석 후 필요 여부를 정확히 진단합니다.' },
+      { q: '뼈이식 후 회복 기간은 얼마나 되나요?', a: '4~6개월간 뼈가 생착(유착)된 후 임플란트 식립이 가능합니다. 뼈 부족이 경미한 경우 임플란트와 동시 식립(뼈이식 동시)도 가능하여 전체 기간을 단축할 수 있습니다.' },
+      { q: '뼈이식은 아프나요?', a: '국소마취로 시술 중 통증은 없습니다. 시술 후 1~2주간 부기와 통증이 있을 수 있으나 처방약으로 관리됩니다. 구강외과 전문의의 숙련된 기술로 조직 손상을 최소화합니다.' },
+      { q: '뼈이식 비용은 얼마인가요?', a: '강남치과의원 뼈이식 비용은 단순 50만원, 복합 80만원입니다. 상악동 거상술은 치조정 80만원, 측방 150만원입니다. 임플란트 비용(130만원)과 별도입니다.' },
     ],
     'sinus-lift': [
-      { q: '상악동 거상술이란 무엇인가요?', a: '윗턱 어금니 부위 뼈가 부족할 때 상악동(부비강) 점막을 들어 올리고 뼈 이식재를 충전하여 임플란트 식립 공간을 확보하는 수술입니다.' },
-      { q: '상악동 거상술 후 주의사항은 무엇인가요?', a: '2~3주간 코 풀기, 빨대 사용, 기침 억제를 주의해야 합니다. 상악동 내 압력 변화를 최소화하기 위함입니다.' },
-      { q: '상악동 거상술은 위험한가요?', a: '구강외과 전문의가 3D CT로 정밀 분석 후 시술하므로 안전합니다. 매우 드물게 상악동 점막 천공이 발생할 수 있으나 즉시 처치 가능합니다.' },
+      { q: '상악동 거상술이란 무엇인가요?', a: '윗턱 어금니 부위 뼈가 부족할 때 상악동(부비강) 점막을 들어 올리고 뼈 이식재를 충전하여 임플란트 식립 공간을 확보하는 수술입니다. 구강외과 전문의의 전문 영역입니다.' },
+      { q: '상악동 거상술 후 주의사항은 무엇인가요?', a: '2~3주간 코를 세게 풀지 마세요. 빨대 사용, 풍선 불기 등 압력이 가해지는 행위를 피하세요. 재채기는 입을 벌리고 하세요. 처방약을 정해진 대로 복용하세요.' },
+      { q: '상악동 거상술은 위험한가요?', a: '구강외과 전문의가 3D CT로 상악동 점막 상태를 정밀 분석 후 시술하므로 안전합니다. 매우 드물게 점막 천공이 발생할 수 있으나, 전문의가 즉시 처치 가능합니다.' },
+      { q: '상악동 거상술 비용은 얼마인가요?', a: '치조정접근법(뼈가 어느 정도 있는 경우) 80만원, 측방접근법(뼈가 많이 부족한 경우) 150만원입니다. 임플란트 비용(130만원)과 별도입니다.' },
     ],
-    'scaling': [
-      { q: '스케일링은 얼마나 자주 받아야 하나요?', a: '건강보험 기준 연 1회(만 19세 이상) 적용되며, 잇몸 상태에 따라 3~6개월마다 받으시는 것을 권장합니다.' },
-      { q: '스케일링 후 이가 시린 건 정상인가요?', a: '네, 치석 제거 후 노출된 치아면이 일시적으로 시릴 수 있습니다. 보통 1~2주 내 자연 소실됩니다.' },
-    ],
+    'scaling': getFAQsBySlug('gum'),
+    'gum': getFAQsBySlug('gum'),
   }
 
   const faqs = treatmentFAQs[t.slug] || []
@@ -519,6 +486,37 @@ export function treatmentDetailPage(slug: string): { html: string; title: string
         </div>
       </div>
     </section>
+
+    <!-- FAQ Section (SEO + AEO 강화) -->
+    ${faqs.length > 0 ? `
+    <section class="py-20 md:py-28 section-snow relative" id="faq">
+      <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-royal/10 to-transparent"></div>
+      <div class="max-w-4xl mx-auto px-5 md:px-8 lg:px-12">
+        <div class="text-center mb-14 reveal">
+          <div class="section-label section-label-royal mx-auto mb-6"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>FAQ</div>
+          <h2 class="display-md text-charcoal">${t.title}에 대해<br><span class="royal-grad-text">자주 묻는 질문</span></h2>
+        </div>
+        <div class="space-y-2.5 stagger-children">
+          ${faqs.map((f, i) => `
+          <details class="card-premium group stagger-item" ${i === 0 ? 'open' : ''}>
+            <summary class="flex items-center justify-between p-5 cursor-pointer select-none">
+              <div class="flex items-center gap-3 flex-1 min-w-0">
+                <span class="w-7 h-7 rounded-lg royal-grad flex items-center justify-center flex-shrink-0"><span class="text-white text-[10px] font-bold">Q</span></span>
+                <h3 class="font-bold text-charcoal text-sm">${f.q}</h3>
+              </div>
+              <i class="fas fa-chevron-down text-gray-300 group-open:rotate-180 transition-transform duration-300 flex-shrink-0 ml-3 text-xs"></i>
+            </summary>
+            <div class="px-5 pb-5 pt-0">
+              <div class="pl-10 text-gray-500 text-sm leading-relaxed faq-answer" data-speakable="true">${f.a}</div>
+            </div>
+          </details>
+          `).join('')}
+        </div>
+        <div class="text-center mt-8">
+          <a href="/faq?category=${t.slug}" class="inline-flex items-center gap-2 text-royal text-sm font-bold hover:underline"><i class="fas fa-arrow-right text-xs"></i>${t.title} FAQ 더 보기</a>
+        </div>
+      </div>
+    </section>` : ''}
 
     <!-- Doctors -->
     <section class="py-20 section-snow relative">
