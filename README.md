@@ -30,10 +30,18 @@
 - `/doctors/lee-taehyung` — 이태형 대표원장
 - `/doctors/choi-minhye` — 최민혜 원장
 
-### 레벨 4: 지역 SEO 랜딩
-- `/area/영주시`, `/area/영주역`, `/area/풍기` (1순위)
-- `/area/봉화`, `/area/예천`, `/area/안동` (2순위)
-- `/area/단양`, `/area/영덕`, `/area/울진` (3순위)
+### 레벨 4: 지역 SEO 랜딩 (14개 지역)
+- `/area/영주시`, `/area/영주역`, `/area/풍기`, `/area/영주혁신도시` (1순위 — 핵심)
+- `/area/봉화`, `/area/예천`, `/area/안동`, `/area/부석`, `/area/순흥` (2순위 — 주요)
+- `/area/단양`, `/area/영덕`, `/area/울진`, `/area/상주`, `/area/문경` (3순위 — 확장)
+
+**지역 SEO 특징:**
+- 14개 지역 × 평균 7개 롱테일 키워드 ≈ **100+ 지역+시술 조합 키워드**
+- 지역별 맞춤 FAQ (AEO 최적화 — AI 검색 답변용)
+- FAQPage + LocalBusiness + MedicalWebPage + BreadcrumbList JSON-LD 스키마
+- GeoCircle 기반 ServiceArea 스키마 (15km/50km/100km)
+- Speakable 마크업 (음성 검색 최적화)
+- 내부 링크 허브 (지역→진료 페이지 링크)
 
 ## 구현된 기능
 - Schema.org 구조화 데이터 (Dentist 스키마)
