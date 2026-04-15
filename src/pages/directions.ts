@@ -158,7 +158,9 @@ export function directionsPage(): string {
           { area:'영주혁신도시', time:'약 10분', desc:'시내' },
           { area:'부석', time:'약 25분', desc:'부석사 인근' },
           { area:'순흥', time:'약 20분', desc:'소수서원' },
-          { area:'영주시', time:'시내', desc:'택지 사거리' }
+          { area:'영주시', time:'시내', desc:'택지 사거리' },
+          { area:'상주', time:'약 50분', desc:'중앙고속도로' },
+          { area:'문경', time:'약 50분', desc:'중앙고속도로' }
         ].map(item => `
         <a href="/area/${encodeURIComponent(item.area)}" class="card-premium p-6 text-center group stagger-item block">
           <p class="font-extrabold text-charcoal group-hover:text-royal transition-colors duration-300 text-lg">${item.area}</p>
