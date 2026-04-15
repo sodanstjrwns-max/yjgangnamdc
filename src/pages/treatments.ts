@@ -588,8 +588,8 @@ export async function treatmentDetailPage(slug: string): Promise<{ html: string;
       }
 
       // Promise bar slide-in
-      const promiseBar = document.querySelector('.py-10.bg-royal\\/\\[0\\.03\\]');
-      if (promiseBar) {
+      const promiseBar = hero ? hero.nextElementSibling : null;
+      if (promiseBar && promiseBar.tagName === 'SECTION') {
         gsap.from(promiseBar, {
           opacity: 0, y: 20, duration: 0.8, ease: 'power3.out',
           scrollTrigger: { trigger: promiseBar, start: 'top 90%', once: true }
