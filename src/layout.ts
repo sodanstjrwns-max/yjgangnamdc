@@ -510,7 +510,7 @@ export function layout(content: string, opts: LayoutOptions): string {
       box-shadow: 0 25px 60px rgba(0,0,0,0.06), 0 4px 16px rgba(16,175,178,0.08);
     }
 
-    /* ===== Buttons ===== */
+    /* ===== Buttons with Ripple Effect ===== */
     .btn-primary {
       display: inline-flex; align-items: center; gap: 8px;
       padding: 14px 28px;
@@ -532,6 +532,7 @@ export function layout(content: string, opts: LayoutOptions): string {
     }
     .btn-primary:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 12px 50px rgba(16,175,178,0.4), inset 0 1px 0 rgba(255,255,255,0.2); }
     .btn-primary:hover::before { left: 100%; }
+    .btn-primary:active { transform: translateY(0) scale(0.97); transition-duration: 0.1s; }
 
     .btn-outline {
       display: inline-flex; align-items: center; gap: 8px;
@@ -540,12 +541,13 @@ export function layout(content: string, opts: LayoutOptions): string {
       color: var(--royal); font-weight: 700; font-size: 14px;
       border-radius: 100px; cursor: pointer; background: transparent;
       transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-      text-decoration: none;
+      text-decoration: none; position: relative; overflow: hidden;
     }
     @media (min-width: 768px) {
       .btn-outline { padding: 18px 40px; font-size: 15px; gap: 10px; }
     }
     .btn-outline:hover { background: var(--royal); color: #fff; border-color: var(--royal); box-shadow: 0 8px 40px rgba(16,175,178,0.25); transform: translateY(-2px); }
+    .btn-outline:active { transform: translateY(0) scale(0.97); transition-duration: 0.1s; }
 
     .btn-subtle {
       display: inline-flex; align-items: center; gap: 8px;
@@ -554,12 +556,20 @@ export function layout(content: string, opts: LayoutOptions): string {
       color: var(--charcoal); font-weight: 700; font-size: 14px;
       border-radius: 100px; cursor: pointer; background: rgba(0,0,0,0.02);
       transition: all 0.5s;
-      text-decoration: none;
+      text-decoration: none; position: relative; overflow: hidden;
     }
     @media (min-width: 768px) {
       .btn-subtle { padding: 18px 40px; font-size: 15px; gap: 10px; }
     }
     .btn-subtle:hover { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.12); transform: translateY(-2px); }
+    .btn-subtle:active { transform: translateY(0) scale(0.97); transition-duration: 0.1s; }
+
+    /* ===== Ripple effect ===== */
+    .ripple-effect {
+      position: absolute; border-radius: 50%; background: rgba(255,255,255,0.4);
+      transform: scale(0); animation: rippleAnim 0.6s ease-out forwards; pointer-events: none;
+    }
+    @keyframes rippleAnim { to { transform: scale(4); opacity: 0; } }
 
     /* ===== Section helpers ===== */
     .section-label {
@@ -575,6 +585,70 @@ export function layout(content: string, opts: LayoutOptions): string {
     .reveal-left { opacity: 0; transform: translateX(-50px); }
     .reveal-right { opacity: 0; transform: translateX(50px); }
     .reveal-scale { opacity: 0; transform: scale(0.92); }
+    .reveal-rotate { opacity: 0; transform: translateY(30px) rotate(2deg); }
+    .reveal-blur { opacity: 0; filter: blur(8px); transform: translateY(20px); }
+
+    /* ===== 3D Card tilt ===== */
+    .card-tilt, .card-premium {
+      transition: transform 0.5s cubic-bezier(0.03, 0.98, 0.52, 0.99), box-shadow 0.5s ease;
+      transform-style: preserve-3d; will-change: transform;
+    }
+    .card-tilt:hover { box-shadow: 0 30px 60px rgba(0,0,0,0.08), 0 4px 16px rgba(16,175,178,0.1); }
+
+    /* ===== Magnetic hover ===== */
+    .magnetic, .btn-primary, .btn-outline { transition: transform 0.3s cubic-bezier(0.03, 0.98, 0.52, 0.99); }
+
+    /* ===== Text gradient shimmer ===== */
+    .shimmer-text {
+      background-size: 200% auto;
+      animation: shimmerGrad 3s ease infinite;
+    }
+    @keyframes shimmerGrad {
+      0% { background-position: 0% center; }
+      50% { background-position: 100% center; }
+      100% { background-position: 0% center; }
+    }
+
+    /* ===== Parallax layers ===== */
+    .parallax-slow { will-change: transform; }
+    .parallax-fast { will-change: transform; }
+
+    /* ===== Smooth section divider ===== */
+    .section-wave {
+      position: relative;
+    }
+    .section-wave::after {
+      content: ''; position: absolute; bottom: -1px; left: 0; right: 0; height: 80px;
+      background: linear-gradient(to bottom, transparent, var(--bg-next, #fff));
+      pointer-events: none;
+    }
+
+    /* ===== Progress indicator (scroll) ===== */
+    .scroll-progress {
+      position: fixed; top: 0; left: 0; height: 3px; z-index: 99999;
+      background: linear-gradient(90deg, var(--royal), var(--royal-light));
+      transform-origin: left; transform: scaleX(0);
+      transition: transform 0.1s linear;
+    }
+
+    /* ===== Hover line underline ===== */
+    .hover-line { position: relative; }
+    .hover-line::after {
+      content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px;
+      background: var(--royal); transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .hover-line:hover::after { width: 100%; }
+
+    /* ===== Glow on scroll ===== */
+    .glow-border {
+      position: relative;
+    }
+    .glow-border::before {
+      content: ''; position: absolute; inset: -2px; border-radius: inherit;
+      background: linear-gradient(135deg, var(--royal), var(--royal-light), var(--royal));
+      opacity: 0; transition: opacity 0.5s; z-index: -1;
+    }
+    .glow-border.is-visible::before { opacity: 1; }
 
     /* ===== Patterns ===== */
     .grid-pattern {
@@ -625,6 +699,33 @@ export function layout(content: string, opts: LayoutOptions): string {
     /* ===== Page transition ===== */
     .page-transition { animation: pageIn 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
     @keyframes pageIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ===== Stagger cascade ===== */
+    .stagger-cascade > *:nth-child(1) { transition-delay: 0s; }
+    .stagger-cascade > *:nth-child(2) { transition-delay: 0.08s; }
+    .stagger-cascade > *:nth-child(3) { transition-delay: 0.16s; }
+    .stagger-cascade > *:nth-child(4) { transition-delay: 0.24s; }
+    .stagger-cascade > *:nth-child(5) { transition-delay: 0.32s; }
+    .stagger-cascade > *:nth-child(6) { transition-delay: 0.40s; }
+    .stagger-cascade > *:nth-child(7) { transition-delay: 0.48s; }
+    .stagger-cascade > *:nth-child(8) { transition-delay: 0.56s; }
+
+    /* ===== Elastic bounce ===== */
+    @keyframes elasticIn {
+      0% { transform: scale(0) rotate(-3deg); opacity: 0; }
+      60% { transform: scale(1.08) rotate(1deg); }
+      80% { transform: scale(0.97); }
+      100% { transform: scale(1) rotate(0); opacity: 1; }
+    }
+    .elastic-in { animation: elasticIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+
+    /* ===== Number highlight ===== */
+    .number-highlight {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--royal), var(--royal-light));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
 
     /* ===== FAQ ===== */
     details summary::-webkit-details-marker { display: none; }
@@ -815,6 +916,9 @@ export function layout(content: string, opts: LayoutOptions): string {
   </style>
 </head>
 <body class="font-pretendard page-transition">
+  <!-- Scroll progress bar -->
+  <div class="scroll-progress" aria-hidden="true"></div>
+
   <!-- Skip Navigation (접근성) -->
   <a href="#main-content" class="skip-nav">본문 바로가기</a>
 
@@ -1121,71 +1225,213 @@ export function layout(content: string, opts: LayoutOptions): string {
     // ===== Cursor glow =====
     const cg = document.getElementById('cursorGlow');
     if (cg && window.innerWidth > 768) {
+      let cgX = 0, cgY = 0, cgTargetX = 0, cgTargetY = 0;
       document.addEventListener('mousemove', e => {
-        cg.style.left = e.clientX + 'px';
-        cg.style.top = e.clientY + 'px';
+        cgTargetX = e.clientX; cgTargetY = e.clientY;
         cg.style.opacity = '1';
       });
       document.addEventListener('mouseleave', () => cg.style.opacity = '0');
+      (function cgLoop() {
+        cgX += (cgTargetX - cgX) * 0.08;
+        cgY += (cgTargetY - cgY) * 0.08;
+        cg.style.left = cgX + 'px';
+        cg.style.top = cgY + 'px';
+        requestAnimationFrame(cgLoop);
+      })();
     }
 
-    // ===== Card mouse tracking =====
+    // ===== Card mouse tracking + 3D Tilt =====
     document.querySelectorAll('.card-white').forEach(card => {
       card.addEventListener('mousemove', e => {
         const rect = card.getBoundingClientRect();
-        card.style.setProperty('--mx', ((e.clientX - rect.left) / rect.width * 100) + '%');
-        card.style.setProperty('--my', ((e.clientY - rect.top) / rect.height * 100) + '%');
+        const mx = (e.clientX - rect.left) / rect.width;
+        const my = (e.clientY - rect.top) / rect.height;
+        card.style.setProperty('--mx', (mx * 100) + '%');
+        card.style.setProperty('--my', (my * 100) + '%');
       });
     });
 
-    // ===== Reveal animations =====
-    function initReveals() {
-      gsap.utils.toArray('.reveal').forEach(el => {
-        gsap.to(el, { opacity: 1, y: 0, duration: 1.2, ease: 'power4.out', scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
-      });
-      gsap.utils.toArray('.reveal-left').forEach(el => {
-        gsap.to(el, { opacity: 1, x: 0, duration: 1.2, ease: 'power4.out', scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
-      });
-      gsap.utils.toArray('.reveal-right').forEach(el => {
-        gsap.to(el, { opacity: 1, x: 0, duration: 1.2, ease: 'power4.out', scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
-      });
-      gsap.utils.toArray('.reveal-scale').forEach(el => {
-        gsap.to(el, { opacity: 1, scale: 1, duration: 1, ease: 'power4.out', scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
-      });
-      gsap.utils.toArray('.stagger-children').forEach(parent => {
-        const children = parent.querySelectorAll('.stagger-item');
-        gsap.fromTo(children, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.8, stagger: 0.12, ease: 'power4.out', scrollTrigger: { trigger: parent, start: 'top 85%', once: true } });
+    // ===== 3D Card Tilt (desktop only) =====
+    if (window.innerWidth > 768) {
+      document.querySelectorAll('.card-tilt, .card-premium').forEach(card => {
+        card.addEventListener('mousemove', e => {
+          const rect = card.getBoundingClientRect();
+          const cx = (e.clientX - rect.left) / rect.width - 0.5;
+          const cy = (e.clientY - rect.top) / rect.height - 0.5;
+          const rotY = cx * 8;
+          const rotX = -cy * 6;
+          card.style.transform = 'perspective(800px) rotateX(' + rotX + 'deg) rotateY(' + rotY + 'deg) translateY(-4px) scale(1.005)';
+          card.style.boxShadow = '0 ' + (20 + Math.abs(cy)*20) + 'px ' + (60 + Math.abs(cx)*30) + 'px rgba(0,0,0,0.06), 0 4px 16px rgba(16,175,178,' + (0.05 + Math.abs(cx)*0.08) + ')';
+        });
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = '';
+          card.style.boxShadow = '';
+        });
       });
     }
 
-    // ===== Counter animation =====
+    // ===== Magnetic Buttons =====
+    if (window.innerWidth > 768) {
+      document.querySelectorAll('.btn-primary, .btn-outline, .magnetic').forEach(btn => {
+        btn.addEventListener('mousemove', e => {
+          const rect = btn.getBoundingClientRect();
+          const dx = e.clientX - (rect.left + rect.width/2);
+          const dy = e.clientY - (rect.top + rect.height/2);
+          btn.style.transform = 'translate(' + dx*0.15 + 'px,' + dy*0.15 + 'px) scale(1.02)';
+        });
+        btn.addEventListener('mouseleave', () => {
+          btn.style.transform = '';
+        });
+      });
+    }
+
+    // ===== Ripple on button click =====
+    document.querySelectorAll('.btn-primary, .btn-outline').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        const rect = this.getBoundingClientRect();
+        const rip = document.createElement('span');
+        const sz = Math.max(rect.width, rect.height) * 2;
+        rip.className = 'ripple-effect';
+        rip.style.width = rip.style.height = sz + 'px';
+        rip.style.left = (e.clientX - rect.left - sz/2) + 'px';
+        rip.style.top = (e.clientY - rect.top - sz/2) + 'px';
+        this.appendChild(rip);
+        setTimeout(() => rip.remove(), 700);
+      });
+    });
+
+    // ===== Scroll Progress Bar =====
+    const progressBar = document.querySelector('.scroll-progress');
+    if (progressBar) {
+      ScrollTrigger.create({
+        trigger: document.body,
+        start: 'top top',
+        end: 'bottom bottom',
+        onUpdate: self => {
+          progressBar.style.transform = 'scaleX(' + self.progress + ')';
+        }
+      });
+    }
+
+    // ===== Reveal animations (enhanced with directional stagger) =====
+    function initReveals() {
+      gsap.utils.toArray('.reveal').forEach(el => {
+        gsap.to(el, { opacity: 1, y: 0, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
+      });
+      gsap.utils.toArray('.reveal-left').forEach(el => {
+        gsap.to(el, { opacity: 1, x: 0, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
+      });
+      gsap.utils.toArray('.reveal-right').forEach(el => {
+        gsap.to(el, { opacity: 1, x: 0, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
+      });
+      gsap.utils.toArray('.reveal-scale').forEach(el => {
+        gsap.to(el, { opacity: 1, scale: 1, duration: 0.9, ease: 'back.out(1.4)', scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
+      });
+      gsap.utils.toArray('.reveal-blur').forEach(el => {
+        gsap.to(el, { opacity: 1, filter: 'blur(0px)', y: 0, duration: 1.2, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
+      });
+      gsap.utils.toArray('.reveal-rotate').forEach(el => {
+        gsap.to(el, { opacity: 1, y: 0, rotation: 0, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
+      });
+      gsap.utils.toArray('.stagger-children').forEach(parent => {
+        const children = parent.querySelectorAll('.stagger-item');
+        gsap.fromTo(children,
+          { opacity: 0, y: 50, scale: 0.97 },
+          { opacity: 1, y: 0, scale: 1, duration: 0.8, stagger: 0.1, ease: 'power3.out',
+            scrollTrigger: { trigger: parent, start: 'top 85%', once: true }
+          }
+        );
+      });
+    }
+
+    // ===== Counter animation (enhanced easing) =====
     function animateCounters() {
       gsap.utils.toArray('.counter').forEach(el => {
         const target = parseInt(el.dataset.target);
         const suffix = el.dataset.suffix || '';
         const prefix = el.dataset.prefix || '';
-        gsap.fromTo(el, { innerText: 0 }, {
-          innerText: target, duration: 2.5, ease: 'power2.out', snap: { innerText: 1 },
+        const obj = { val: 0 };
+        gsap.to(obj, {
+          val: target, duration: 2.2, ease: 'power2.out',
           scrollTrigger: { trigger: el, start: 'top 90%', once: true },
-          onUpdate: function() { el.innerText = prefix + Math.round(parseFloat(el.innerText)) + suffix; }
+          onUpdate: function() {
+            el.innerText = prefix + Math.round(obj.val) + suffix;
+            // Add a scale pulse on update
+            el.style.transform = 'scale(' + (1 + (1 - this.progress()) * 0.05) + ')';
+          },
+          onComplete: function() { el.style.transform = 'scale(1)'; }
         });
       });
     }
 
-    // ===== Nav scroll =====
+    // ===== Parallax layers =====
+    gsap.utils.toArray('.parallax-slow').forEach(el => {
+      gsap.to(el, {
+        yPercent: -15,
+        ease: 'none',
+        scrollTrigger: { trigger: el.parentElement || el, start: 'top bottom', end: 'bottom top', scrub: 1.5 }
+      });
+    });
+    gsap.utils.toArray('.parallax-fast').forEach(el => {
+      gsap.to(el, {
+        yPercent: -30,
+        ease: 'none',
+        scrollTrigger: { trigger: el.parentElement || el, start: 'top bottom', end: 'bottom top', scrub: 1 }
+      });
+    });
+
+    // ===== Glow border on scroll =====
+    gsap.utils.toArray('.glow-border').forEach(el => {
+      ScrollTrigger.create({
+        trigger: el,
+        start: 'top 80%',
+        onEnter: () => el.classList.add('is-visible'),
+        once: true
+      });
+    });
+
+    // ===== Section fade transitions =====
+    gsap.utils.toArray('section').forEach(sec => {
+      gsap.fromTo(sec, { '--section-opacity': 0 }, {
+        '--section-opacity': 1,
+        scrollTrigger: { trigger: sec, start: 'top 95%', end: 'top 60%', scrub: 1 }
+      });
+    });
+
+    // ===== Nav: hide on scroll down, show on scroll up + glass blur =====
     const navbar = document.getElementById('navbar');
     const navInner = document.getElementById('navInner');
-    window.addEventListener('scroll', () => {
+    let lastScrollY = 0;
+    let navHidden = false;
+    const topBar = navbar?.previousElementSibling; // topbar div
+
+    function updateNav() {
       const y = window.scrollY;
+      const delta = y - lastScrollY;
+
+      // Hide/show on scroll direction (mobile + desktop)
+      if (!menuOpen) {
+        if (delta > 8 && y > 200 && !navHidden) {
+          navHidden = true;
+          gsap.to(navbar, { y: -120, duration: 0.4, ease: 'power2.inOut' });
+          if (topBar) gsap.to(topBar, { y: -40, duration: 0.3, ease: 'power2.inOut' });
+        } else if (delta < -5 && navHidden) {
+          navHidden = false;
+          gsap.to(navbar, { y: 0, duration: 0.5, ease: 'power3.out' });
+          if (topBar) gsap.to(topBar, { y: 0, duration: 0.4, ease: 'power3.out' });
+        }
+      }
+
+      // Glass morphism intensity based on scroll position
       if (y > 100) {
         navbar.classList.add('md:top-3');
         navbar.classList.remove('md:top-10');
         if(navInner) {
-          navInner.style.background = 'rgba(255,255,255,0.95)';
-          navInner.style.backdropFilter = 'blur(24px) saturate(180%)';
-          navInner.style.webkitBackdropFilter = 'blur(24px) saturate(180%)';
-          navInner.style.border = '1px solid rgba(0,0,0,0.08)';
-          navInner.style.boxShadow = '0 8px 32px rgba(0,0,0,0.06)';
+          navInner.style.background = 'rgba(255,255,255,0.92)';
+          navInner.style.backdropFilter = 'blur(28px) saturate(200%)';
+          navInner.style.webkitBackdropFilter = 'blur(28px) saturate(200%)';
+          navInner.style.border = '1px solid rgba(16,175,178,0.08)';
+          navInner.style.boxShadow = '0 8px 40px rgba(0,0,0,0.06), 0 2px 8px rgba(16,175,178,0.04)';
         }
       } else {
         navbar.classList.remove('md:top-3');
@@ -1198,7 +1444,9 @@ export function layout(content: string, opts: LayoutOptions): string {
           navInner.style.boxShadow = '0 4px 16px rgba(0,0,0,0.03)';
         }
       }
-    });
+      lastScrollY = y;
+    }
+    window.addEventListener('scroll', updateNav, { passive: true });
 
     // ===== Mobile menu =====
     let menuOpen = false;
@@ -1210,6 +1458,8 @@ export function layout(content: string, opts: LayoutOptions): string {
       const b2 = document.getElementById('bar2');
       const b3 = document.getElementById('bar3');
       if (menuOpen) {
+        // Show nav if hidden
+        if (navHidden) { navHidden = false; gsap.to(navbar, { y: 0, duration: 0.3 }); }
         menu.style.display = 'block';
         requestAnimationFrame(() => { menu.style.opacity = '1'; });
         b1.style.transform = 'rotate(45deg) translate(2px, 5px)';
@@ -1218,6 +1468,8 @@ export function layout(content: string, opts: LayoutOptions): string {
         document.body.style.overflow = 'hidden';
         btn.setAttribute('aria-expanded', 'true');
         btn.setAttribute('aria-label', '메뉴 닫기');
+        // Animate menu links
+        gsap.fromTo(menu.querySelectorAll('a, div > div'), { opacity: 0, x: -20 }, { opacity: 1, x: 0, stagger: 0.04, duration: 0.4, ease: 'power3.out', delay: 0.15 });
       } else {
         menu.style.opacity = '0';
         setTimeout(() => { menu.style.display = 'none'; }, 400);
@@ -1228,6 +1480,14 @@ export function layout(content: string, opts: LayoutOptions): string {
         btn.setAttribute('aria-expanded', 'false');
         btn.setAttribute('aria-label', '메뉴 열기');
       }
+    }
+
+    // ===== Touch feedback (mobile) =====
+    if ('ontouchstart' in window) {
+      document.querySelectorAll('.card-premium, .card-white, .btn-primary, .btn-outline').forEach(el => {
+        el.addEventListener('touchstart', () => { el.style.transform = 'scale(0.97)'; el.style.transition = 'transform 0.15s'; }, { passive: true });
+        el.addEventListener('touchend', () => { el.style.transform = ''; }, { passive: true });
+      });
     }
 
     // ===== GA4 Custom Event Tracking =====

@@ -574,6 +574,58 @@ export async function treatmentDetailPage(slug: string): Promise<{ html: string;
         </div>
       </div>
     </section>
+
+    <!-- Treatment page: enhanced scroll animations -->
+    <script>
+    (function() {
+      // Hero entrance animation
+      const tl = gsap.timeline({ delay: 0.15 });
+      const hero = document.querySelector('.subpage-hero');
+      if (hero) {
+        tl.from(hero.querySelectorAll('a, span, h1, p'), {
+          opacity: 0, y: 30, stagger: 0.08, duration: 0.7, ease: 'power3.out'
+        });
+      }
+
+      // Promise bar slide-in
+      const promiseBar = document.querySelector('.py-10.bg-royal\\/\\[0\\.03\\]');
+      if (promiseBar) {
+        gsap.from(promiseBar, {
+          opacity: 0, y: 20, duration: 0.8, ease: 'power3.out',
+          scrollTrigger: { trigger: promiseBar, start: 'top 90%', once: true }
+        });
+      }
+
+      // Content sections: alternating slide-in
+      document.querySelectorAll('.space-y-16 > div').forEach((sec, i) => {
+        gsap.from(sec, {
+          opacity: 0, x: i % 2 === 0 ? -40 : 40, y: 20,
+          duration: 0.9, ease: 'power3.out',
+          scrollTrigger: { trigger: sec, start: 'top 85%', once: true }
+        });
+        // Animate the h2 accent bar
+        const bar = sec.querySelector('.royal-grad');
+        if (bar && bar.classList.contains('flex-shrink-0')) {
+          gsap.from(bar, {
+            scaleY: 0, duration: 0.6, ease: 'power3.out', transformOrigin: 'top',
+            scrollTrigger: { trigger: sec, start: 'top 85%', once: true }
+          });
+        }
+      });
+
+      // FAQ accordion smooth reveal
+      document.querySelectorAll('details.card-premium').forEach(det => {
+        det.addEventListener('toggle', function() {
+          if (this.open) {
+            const content = this.querySelector('.px-5.pb-5');
+            if (content) {
+              gsap.from(content, { height: 0, opacity: 0, duration: 0.3, ease: 'power2.out' });
+            }
+          }
+        });
+      });
+    })();
+    </script>
     `
   }
 }

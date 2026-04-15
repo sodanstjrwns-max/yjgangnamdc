@@ -750,15 +750,50 @@ export function mainPage(): string {
     </div>
 
     <script>
-      const heroTl = gsap.timeline({ delay: 0.3 });
-      heroTl.from('#heroTag',{opacity:0,y:30,duration:0.8,ease:'power4.out'})
-        .from('#heroLine1',{y:'110%',duration:1,ease:'power4.out'},'-=0.4')
-        .from('#heroLine2',{y:'110%',duration:1,ease:'power4.out'},'-=0.7')
-        .from('#heroSub',{opacity:0,y:30,duration:0.8,ease:'power3.out'},'-=0.5')
-        .from('#heroCTA',{opacity:0,y:20,duration:0.7,ease:'power3.out'},'-=0.4')
-        .from('#heroStats',{opacity:0,y:20,duration:0.7,ease:'power3.out'},'-=0.3')
-        .from('#heroVisualMobile',{opacity:0,y:30,duration:0.8,ease:'power3.out'},'-=0.5')
-        .from('#heroVisual',{opacity:0,x:80,scale:0.95,duration:1.2,ease:'power4.out'},'-=1');
+      // === HERO: Enhanced cinematic entrance ===
+      const heroTl = gsap.timeline({ delay: 0.2 });
+      heroTl
+        .from('#heroTag', { opacity: 0, y: 40, scale: 0.9, duration: 0.7, ease: 'back.out(1.7)' })
+        .from('#heroLine1', { y: '120%', duration: 1.1, ease: 'expo.out' }, '-=0.3')
+        .from('#heroLine2', { y: '120%', duration: 1.1, ease: 'expo.out' }, '-=0.7')
+        .from('#heroSub', { opacity: 0, y: 30, filter: 'blur(6px)', duration: 0.9, ease: 'power3.out' }, '-=0.5')
+        .from('#heroCTA', { opacity: 0, y: 25, duration: 0.7, ease: 'power3.out' }, '-=0.4')
+        .from('#heroStats > *', { opacity: 0, y: 20, scale: 0.95, stagger: 0.1, duration: 0.6, ease: 'power3.out' }, '-=0.3')
+        .from('#heroVisualMobile', { opacity: 0, y: 40, duration: 0.9, ease: 'power3.out' }, '-=0.5')
+        .from('#heroVisual', { opacity: 0, x: 100, scale: 0.92, rotationY: 8, duration: 1.4, ease: 'expo.out' }, '-=1.2');
+
+      // === HERO: Parallax on scroll ===
+      if (window.innerWidth > 768) {
+        gsap.to('#heroTitle', { yPercent: -20, ease: 'none', scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1.5 } });
+        gsap.to('#heroVisual', { yPercent: 15, ease: 'none', scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1 } });
+        gsap.to('#heroTag', { yPercent: -40, opacity: 0, ease: 'none', scrollTrigger: { trigger: '#hero', start: '20% top', end: '60% top', scrub: 1 } });
+      }
+
+      // === WHY section: Large text split reveal ===
+      gsap.utils.toArray('[data-speakable="true"]').forEach(el => {
+        if (el.closest('#hero')) return; // skip hero (already animated)
+        gsap.from(el, {
+          opacity: 0, y: 40, duration: 1, ease: 'power3.out',
+          scrollTrigger: { trigger: el, start: 'top 85%', once: true }
+        });
+      });
+
+      // === Floating labels: enhanced parallax ===
+      gsap.utils.toArray('.float-label').forEach((el, i) => {
+        gsap.to(el, {
+          y: -30 - i*10, x: i%2 === 0 ? 10 : -10,
+          ease: 'none',
+          scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 2 }
+        });
+      });
+
+      // === Section backgrounds: subtle depth ===
+      document.querySelectorAll('.section-lavender, .section-snow').forEach(sec => {
+        const orb = sec.querySelector('.orb');
+        if (orb) {
+          gsap.to(orb, { xPercent: 15, yPercent: -10, ease: 'none', scrollTrigger: { trigger: sec, start: 'top bottom', end: 'bottom top', scrub: 2 } });
+        }
+      });
     </script>
   </section>
 
