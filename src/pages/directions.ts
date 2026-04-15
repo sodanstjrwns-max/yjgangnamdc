@@ -143,15 +143,27 @@ export function directionsPage(): string {
       <div class="text-center mb-14 reveal">
         <div class="section-label section-label-royal mx-auto mb-6"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>NEARBY</div>
         <h2 class="display-md text-charcoal">주변 지역에서 오시는 길</h2>
+        <p class="text-gray-400 mt-4 text-sm max-w-2xl mx-auto">영주 근처 봉화, 예천, 안동, 단양, 풍기 등에서 오시는 분들을 위해 지역별 상세 안내를 제공합니다. 각 지역을 클릭하시면 경로, 소요시간, 지역 맞춤 진료 안내를 확인하실 수 있습니다.</p>
       </div>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4 stagger-children">
         ${[
-          { area:'풍기', time:'약 15분' },{ area:'봉화', time:'약 30분' },{ area:'예천', time:'약 40분' },{ area:'안동', time:'약 50분' },
-          { area:'단양', time:'약 40분' },{ area:'영덕', time:'약 1시간' },{ area:'울진', time:'약 1시간 20분' },{ area:'영주역', time:'약 10분' }
+          { area:'풍기', time:'약 15분', desc:'28번 국도' },
+          { area:'봉화', time:'약 30분', desc:'36번 국도' },
+          { area:'예천', time:'약 35분', desc:'28번 국도' },
+          { area:'안동', time:'약 40분', desc:'중앙고속도로' },
+          { area:'단양', time:'약 40분', desc:'죽령터널' },
+          { area:'영덕', time:'약 1시간', desc:'36번 국도' },
+          { area:'울진', time:'약 1시간 20분', desc:'36번 국도' },
+          { area:'영주역', time:'약 10분', desc:'KTX' },
+          { area:'영주혁신도시', time:'약 10분', desc:'시내' },
+          { area:'부석', time:'약 25분', desc:'부석사 인근' },
+          { area:'순흥', time:'약 20분', desc:'소수서원' },
+          { area:'영주시', time:'시내', desc:'택지 사거리' }
         ].map(item => `
         <a href="/area/${encodeURIComponent(item.area)}" class="card-premium p-6 text-center group stagger-item block">
           <p class="font-extrabold text-charcoal group-hover:text-royal transition-colors duration-300 text-lg">${item.area}</p>
           <p class="text-gray-400 text-sm mt-1.5"><i class="fas fa-car text-royal/50 mr-1.5"></i>${item.time}</p>
+          <p class="text-gray-300 text-xs mt-1">${item.desc}</p>
         </a>
         `).join('')}
       </div>

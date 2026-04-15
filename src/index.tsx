@@ -8,7 +8,7 @@ import { treatmentsPage, treatmentDetailPage } from './pages/treatments'
 import { reservationPage } from './pages/reservation'
 import { directionsPage } from './pages/directions'
 import { pricingPage } from './pages/pricing'
-import { areaPage, getAllAreaKeys } from './pages/area'
+import { areaPage, getAllAreaKeys, getAreaPriority } from './pages/area'
 import { faqPage, allFAQs } from './pages/faq'
 import { blogListPage, blogDetailPage } from './pages/blog'
 import { beforeAfterListPage, beforeAfterDetailPage } from './pages/beforeafter'
@@ -500,12 +500,15 @@ app.get('/sitemap-area.xml', (c) => {
   const baseUrl = 'https://kndent.kr'
   const today = new Date().toISOString().split('T')[0]
 
-  const pages = getAllAreaKeys().map(k => ({
-    url: `/area/${encodeURIComponent(k)}`,
-    lastmod: today,
-    priority: k === '영주시' ? '0.8' : '0.7',
-    changefreq: 'monthly' as const
-  }))
+  const pages = getAllAreaKeys().map(k => {
+    const p = getAreaPriority(k)
+    return {
+      url: `/area/${encodeURIComponent(k)}`,
+      lastmod: today,
+      priority: p === 1 ? '0.9' : p === 2 ? '0.8' : '0.7',
+      changefreq: p <= 2 ? 'weekly' as const : 'monthly' as const
+    }
+  })
 
   const urls = pages.map(p => sitemapUrl(baseUrl, p)).join('\n')
   c.header('Content-Type', 'application/xml')
@@ -568,10 +571,10 @@ app.get('/sitemap-blog.xml', async (c) => {
 
 // ===== 메인 페이지 =====
 app.get('/', (c) => c.html(layout(mainPage(), {
-  title: '영주 치과 강남치과의원 | 구강외과 전문의 · 임플란트 · 인비절라인 · 디지털보철',
-  description: '경북 영주시 강남치과의원. 구강악안면외과 전문의 2인이 직접 진료합니다. 임플란트, 디지털 보철(싱글 크라운), 인비절라인, 사랑니 발치, 심미보철. 대학병원급 장비 완비. 054-636-8222.',
+  title: '영주 치과 강남치과의원 | 구강외과 전문의 2인 · 임플란트 · 인비절라인 · 디지털보철',
+  description: '경북 영주시 강남치과의원. 구강악안면외과 전문의 2인이 직접 진료합니다. 임플란트, 디지털 보철(싱글 크라운), 인비절라인, 사랑니 발치, 심미보철. 대학병원급 장비 완비. 봉화·예천·안동·단양·풍기에서 접근 용이. 054-636-8222.',
   url: '/',
-  keywords: '영주 인비절라인, 영주 투명교정, 영주 임플란트 잘하는곳, 영주 치과 추천, 영주 디지털보철, 영주 사랑니발치, 구강외과 전문의 영주, 영주시 임플란트 가격',
+  keywords: '영주 치과, 영주 임플란트, 영주 치과 추천, 영주 임플란트 잘하는곳, 영주 인비절라인, 영주 투명교정, 영주 사랑니발치, 영주 디지털보철, 구강외과 전문의 영주, 영주시 임플란트 가격, 봉화 임플란트, 예천 치과, 안동 임플란트, 풍기 치과, 단양 치과, 경북 임플란트, 영주혁신도시 치과, 영주 구강외과',
   schemas: mainPageSchemas(),
   speakableSelectors: ['[data-speakable]', '#heroTitle', '#heroSub'],
   articleModifiedTime: new Date().toISOString().split('T')[0]
@@ -1115,9 +1118,9 @@ app.get('/reservation', (c) => c.html(layout(reservationPage(), {
 // ===== 오시는 길 =====
 app.get('/directions', (c) => c.html(layout(directionsPage(), {
   title: '강남치과의원 오시는 길 | 영주시 대학로 217 · 주차 가능 · 영주역 10분',
-  description: '경북 영주시 대학로 217, 2층 (택지 사거리 모모제인 건물). 건물 후면 지상·지하 주차장 완비. 영주역에서 택시 10분. 풍기, 봉화, 예천, 안동, 단양에서 접근 용이. 054-636-8222.',
+  description: '경북 영주시 대학로 217, 2층 (택지 사거리 모모제인 건물). 건물 후면 지상·지하 주차장 완비. 영주역에서 택시 10분. 풍기 15분, 봉화 30분, 예천 35분, 안동 40분, 단양 40분에서 접근 용이. 054-636-8222.',
   url: '/directions',
-  keywords: '영주 강남치과 위치, 강남치과 주소, 영주 치과 주차, 영주 대학로 치과, 영주 치과 오시는길',
+  keywords: '영주 강남치과 위치, 강남치과 주소, 영주 치과 주차, 영주 대학로 치과, 영주 치과 오시는길, 봉화에서 영주 치과, 예천에서 영주 치과, 안동에서 영주 치과, 풍기에서 영주 치과, 단양에서 영주 치과',
   speakableSelectors: ['[data-speakable]', 'h1', '.card-premium'],
   schemas: [
     {
@@ -1303,14 +1306,13 @@ app.get('/area/:region', (c) => {
   const region = c.req.param('region')
   const result = areaPage(region)
   if (!result) return c.notFound()
-  const decodedRegion = decodeURIComponent(region)
 
   return c.html(layout(result.html, {
     title: result.title,
     description: result.description,
     url: `/area/${region}`,
-    keywords: `${decodedRegion} 치과, ${decodedRegion} 임플란트, ${decodedRegion} 치과 추천, ${decodedRegion} 구강외과, ${decodedRegion} 인비절라인, ${decodedRegion} 사랑니, ${decodedRegion} 디지털보철`,
-    speakableSelectors: ['[data-speakable]', 'h1', 'h2', '.faq-answer', '.area-summary'],
+    keywords: result.keywords,
+    speakableSelectors: ['[data-speakable]', 'h1', 'h2', '.faq-answer', '.area-summary', '.area-long-desc'],
     schemas: result.schemas
   }))
 })
