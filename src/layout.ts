@@ -308,9 +308,10 @@ export function layout(content: string, opts: LayoutOptions): string {
   ]
   const schemasHtml = allSchemas.map(s => `<script type="application/ld+json">${JSON.stringify(s)}</script>`).join('\n  ')
 
-  // 기본 키워드 (모든 페이지 공통)
+  // 기본 키워드 (모든 페이지 공통) — 중복 자동 제거
   const baseKeywords = '영주 치과, 영주 임플란트, 강남치과의원, 구강외과 전문의, 디지털 보철, 인비절라인, 영주시 치과, 영주 치과 추천, 영주 임플란트 잘하는곳, 봉화 치과, 예천 임플란트, 안동 치과, 풍기 치과, 단양 치과, 영주혁신도시 치과, 경북 임플란트, 상주 임플란트, 문경 치과'
-  const finalKeywords = keywords ? `${keywords}, ${baseKeywords}` : baseKeywords
+  const mergedKeywords = keywords ? `${keywords}, ${baseKeywords}` : baseKeywords
+  const finalKeywords = [...new Set(mergedKeywords.split(',').map(k => k.trim()).filter(Boolean))].join(', ')
 
   return `<!DOCTYPE html>
 <html lang="ko" dir="ltr" prefix="og: https://ogp.me/ns#">

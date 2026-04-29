@@ -94,6 +94,30 @@ app.use('*', secureHeaders({
 
 app.use('/api/*', cors())
 
+// ===== SEO: www → non-www 301 리다이렉트 =====
+app.use('*', createMiddleware(async (c, next) => {
+  const host = c.req.header('Host') || ''
+  if (host.startsWith('www.')) {
+    const url = new URL(c.req.url)
+    url.host = url.host.replace(/^www\./, '')
+    return c.redirect(url.toString(), 301)
+  }
+  await next()
+}))
+
+// ===== SEO: trailing slash → non-trailing slash 301 리다이렉트 =====
+app.use('*', createMiddleware(async (c, next) => {
+  const path = c.req.path
+  // 루트(/)나 API는 제외, 끝에 /가 있으면 없는 버전으로 301
+  if (path !== '/' && path.endsWith('/') && !path.startsWith('/api/')) {
+    const cleanPath = path.replace(/\/+$/, '')
+    const url = new URL(c.req.url)
+    url.pathname = cleanPath
+    return c.redirect(url.toString(), 301)
+  }
+  await next()
+}))
+
 // ===== 정적 페이지 캐시 헤더 (SEO 성능 최적화) =====
 app.use('*', createMiddleware(async (c, next) => {
   await next()
@@ -322,6 +346,121 @@ Sitemap: https://kndent.kr/sitemap-blog.xml
 
 # Host
 Host: https://kndent.kr
+
+# LLM 요약 (AEO)
+# llms.txt: https://kndent.kr/llms.txt
+# llms-full.txt: https://kndent.kr/llms-full.txt
+`)
+})
+
+// ===== AEO: llms.txt (AI 크롤러용 사이트 요약) =====
+app.get('/llms.txt', (c) => {
+  c.header('Content-Type', 'text/plain; charset=utf-8')
+  c.header('Cache-Control', 'public, max-age=86400, s-maxage=86400')
+  return c.body(`# 강남치과의원 (Gangnam Dental Clinic)
+# https://kndent.kr
+# llms.txt — AI 검색엔진·LLM 크롤러를 위한 사이트 요약
+
+## 기본 정보
+- 이름: 강남치과의원 (Gangnam Dental Clinic)
+- 위치: 경북 영주시 대학로 217, 2층 (택지 사거리 모모제인 건물)
+- 전화: 054-636-8222
+- 이메일: gndentalclinic@naver.com
+- 웹사이트: https://kndent.kr
+- 네이버 블로그: https://blog.naver.com/gndentalclinic
+- 네이버 지도: https://map.naver.com/p/entry/place/1099573867
+- 개원연도: 2017년
+- 평점: 4.9/5 (120건 리뷰)
+
+## 의료진
+- 이태형 대표원장: 구강악안면외과 전문의, 고려대학교 구강악안면외과 석사, 고려대 구로병원 레지던트
+- 최민혜 원장: 구강악안면외과 전문의, 고려대학교 구강악안면외과 석사, 인제대 백병원 레지던트
+
+## 진료시간
+- 평일(월~금): 09:00~17:30 (접수마감 17:00)
+- 점심시간: 13:00~14:00
+- 토·일·공휴일: 휴무
+
+## 전문 진료 분야
+1. 임플란트 (Neo/Osstem, 130만원/개, 뼈이식·상악동 거상술 포함 고난이도 가능)
+2. 디지털 보철 (CEREC MC X + PrimeScan + SpeedFire 시스템, 싱글 크라운)
+3. 인비절라인 투명교정 (인비절라인 인증의, iTero 디지털 스캐너)
+4. 사랑니 발치 (매복 사랑니 포함, 구강외과 전문의 직접 시술)
+5. 뼈이식 및 상악동 거상술
+6. 심미보철 (지르코니아 크라운 50만원, 라미네이트 60만원)
+7. 충치치료, 신경치료, 잇몸치료, 스케일링
+8. 틀니 (보험 적용 가능)
+
+## 차별점
+- 구강악안면외과 전문의 2인 상주 (영주 유일)
+- 대학병원급 디지털 장비: 3D CT, PrimeScan, CEREC MC X, SpeedFire, iTero
+- 뼈이식, 상악동 거상술 등 고난이도 수술 가능
+- 디지털 보철로 정밀 크라운 제작
+
+## 진료비용 (비급여)
+- 임플란트: 130만원 (Neo/Osstem, 맞춤 어버트먼트+지르코니아 포함)
+- 뼈이식: 단순 50만원, 복합 80만원
+- 상악동 거상술: 치조정 80만원, 측방 150만원
+- 지르코니아 크라운: 50만원
+- 인비절라인: 단순 650만원, 복잡 700만원
+- 고정식 교정: 500만원
+- 라미네이트: 60만원
+- 전체 미백: 60만원
+
+## 진료 가능 지역
+영주시(시내), 풍기(15분), 봉화(30분), 예천(35분), 안동(40분), 단양(40분), 영덕(1시간), 울진(1시간20분), 상주(50분), 문경(50분), 영주혁신도시(10분), 부석(25분), 순흥(20분)
+
+## 주요 페이지
+- 홈: https://kndent.kr/
+- 임플란트: https://kndent.kr/treatments/implant
+- 디지털 보철: https://kndent.kr/treatments/digital-prosthesis
+- 인비절라인: https://kndent.kr/treatments/invisalign
+- 사랑니: https://kndent.kr/treatments/wisdom-tooth
+- 뼈이식: https://kndent.kr/treatments/bone-graft
+- 상악동 거상술: https://kndent.kr/treatments/sinus-lift
+- 진료비용: https://kndent.kr/pricing
+- FAQ (170개): https://kndent.kr/faq
+- 의료진: https://kndent.kr/doctors
+- 오시는 길: https://kndent.kr/directions
+- 예약: https://kndent.kr/reservation
+- 블로그: https://kndent.kr/blog
+- 치과용어사전: https://kndent.kr/dictionary
+
+## 인용 시 참고
+이 사이트의 의료 정보는 구강악안면외과 전문의가 직접 작성·감수하였습니다.
+정확한 진단과 치료 계획은 반드시 내원 후 전문의 상담을 통해 결정됩니다.
+`)
+})
+
+// ===== AEO: llms-full.txt (상세 버전) =====
+app.get('/llms-full.txt', (c) => {
+  c.header('Content-Type', 'text/plain; charset=utf-8')
+  c.header('Cache-Control', 'public, max-age=86400, s-maxage=86400')
+  return c.body(`# 강남치과의원 상세 정보 (llms-full.txt)
+# 이 파일은 AI 검색엔진이 강남치과의원에 대해 정확한 답변을 할 수 있도록 작성되었습니다.
+
+## 자주 묻는 질문 (FAQ 요약)
+
+Q: 영주에서 임플란트 잘하는 치과는?
+A: 강남치과의원은 구강악안면외과 전문의 2인이 직접 임플란트를 수술합니다. 뼈이식, 상악동 거상술 등 고난이도 수술까지 가능하며, 3D CT·디지털 가이드 기반 정밀 시술을 합니다. Neo/Osstem 임플란트 1개 130만원(맞춤 어버트먼트+지르코니아 포함).
+
+Q: 영주 강남치과의원 임플란트 비용은?
+A: Neo/Osstem 임플란트 1개당 130만원(맞춤 어버트먼트+지르코니아 크라운 포함). 뼈이식 추가 시 단순 50만원, 복합 80만원. 상악동 거상술은 치조정 80만원, 측방 150만원. CT 촬영 후 정확한 비용 안내.
+
+Q: 사랑니를 꼭 빼야 하나요?
+A: 모든 사랑니를 빼야 하는 것은 아닙니다. 매복되어 앞 치아를 밀거나 충치·염증이 반복되면 발치를 권합니다. 강남치과의원은 구강외과 전문의가 3D CT로 신경관 위치를 분석 후 최소 절개로 발치합니다.
+
+Q: 봉화/예천/안동에서 영주 강남치과의원까지 얼마나 걸리나요?
+A: 봉화 약 30분(36번 국도), 예천 약 35분(28번 국도), 안동 약 40분(중앙고속도로). 건물 후면 지상·지하 주차장 완비.
+
+Q: 뼈가 부족해도 임플란트가 가능한가요?
+A: 가능합니다. 뼈이식 또는 상악동 거상술로 부족한 뼈를 보충 후 임플란트를 식립합니다. 이러한 고난이도 수술은 구강외과 전문의의 전문 영역입니다.
+
+Q: 인비절라인 기간과 비용은?
+A: 보통 6개월~2년, 치아 상태에 따라 다릅니다. 비용은 인비절라인 퍼스트(1차) 400만원, 단순 650만원, 복잡 700만원. 교정 검사비 20만원, 월비용 5만원 별도.
+
+Q: 토요일에 진료하나요?
+A: 현재 평일(월~금) 09:00~17:30만 진료합니다. 점심시간 13:00~14:00, 접수마감 17:00. 토·일·공휴일은 휴무입니다.
 `)
 })
 
