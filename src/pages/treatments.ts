@@ -556,6 +556,27 @@ export async function treatmentDetailPage(slug: string): Promise<{ html: string;
       </div>
     </section>
 
+    <!-- 의료광고법 준수: 부작용 고지 (의료법 시행규칙 제46조) -->
+    <section class="py-12 bg-white">
+      <div class="max-w-4xl mx-auto px-5 md:px-8 lg:px-12 reveal">
+        <div class="glass-royal rounded-3xl p-6 md:p-7 relative overflow-hidden">
+          <div class="flex items-start gap-4 md:gap-5">
+            <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-amber-500 flex items-center justify-center flex-shrink-0 shadow-lg shadow-amber-500/20"><i class="fas fa-exclamation-triangle text-white text-sm"></i></div>
+            <div>
+              <h3 class="font-extrabold text-charcoal mb-2 text-sm md:text-base">시술·수술 관련 주의사항</h3>
+              <p class="text-xs md:text-sm text-gray-500 leading-relaxed">
+                ${isSurgical
+                  ? '본 시술은 출혈, 감염, 부종, 통증, 신경 손상 등의 부작용이 발생할 수 있으며, 개인에 따라 결과가 다를 수 있습니다. 전신질환(당뇨, 고혈압, 골다공증 등)이 있는 경우 사전에 반드시 알려주세요.'
+                  : '본 치료는 개인의 구강 상태에 따라 결과가 다를 수 있으며, 일시적인 시린 증상, 불편감 등이 발생할 수 있습니다.'}
+                모든 의료행위는 부작용이 있을 수 있으므로, 정확한 상담 후 치료를 결정하시길 권합니다.
+              </p>
+              <p class="text-[10px] md:text-xs text-gray-400 mt-2">※ 의료법 제56조 및 시행규칙 제46조에 의거하여 안내드립니다.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- CTA (White) -->
     <section class="py-28 bg-white relative overflow-hidden">
       <div class="orb orb-royal w-[500px] h-[500px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-10"></div>

@@ -371,9 +371,10 @@ export function layout(content: string, opts: LayoutOptions): string {
   <meta name="twitter:description" content="${description}">
   <meta name="twitter:image" content="${pageOgImage}">
 
-  <!-- Naver / Google / Healthcare meta -->
+  <!-- Naver / Google / Bing / Healthcare meta -->
   <meta name="naver-site-verification" content="b56c6202c4fd245ed343ab587cf89959897bcfcf">
   <meta name="google-site-verification" content="SdTkpZ5-mkIKb24NvY13ajYmt--8y0LYVEdjON9iI5g">
+  <meta name="msvalidate.01" content="BING_VERIFY_PLACEHOLDER">
   <meta name="subject" content="${description}">
   <meta name="classification" content="Healthcare, Dentistry">
   <meta name="coverage" content="경상북도 영주시">
@@ -385,6 +386,7 @@ export function layout(content: string, opts: LayoutOptions): string {
   <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
   <link rel="dns-prefetch" href="https://www.googletagmanager.com">
   <link rel="dns-prefetch" href="https://www.google-analytics.com">
+  <link rel="dns-prefetch" href="https://www.clarity.ms">
 
   <!-- Preconnect for critical third-party origins (Core Web Vitals) -->
   <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
@@ -428,6 +430,15 @@ export function layout(content: string, opts: LayoutOptions): string {
   <!-- GSAP + ScrollTrigger (must load synchronously before inline scripts) -->
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+  <!-- Microsoft Clarity (행동 분석) -->
+  <script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+      c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+      t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+      y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "CLARITY_PROJECT_ID_PLACEHOLDER");
+  </script>
 
   <!-- Three.js removed for performance - using CSS particles instead -->
   

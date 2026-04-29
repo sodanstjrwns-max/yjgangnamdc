@@ -137,6 +137,28 @@ export function pricingPage(): string {
         </div>
         `).join('')}
       </div>
+
+      <!-- 의료광고법 준수: 부작용 고지 (의료법 시행규칙 제46조) -->
+      <div class="mt-16 glass-royal rounded-3xl p-7 reveal relative overflow-hidden">
+        <div class="absolute -top-10 -left-10 w-32 h-32 bg-yellow-500/[0.04] rounded-full blur-[60px]"></div>
+        <div class="flex items-start gap-5 relative z-10">
+          <div class="w-12 h-12 rounded-xl bg-amber-500 flex items-center justify-center flex-shrink-0 shadow-lg shadow-amber-500/20"><i class="fas fa-exclamation-triangle text-white"></i></div>
+          <div>
+            <h3 class="font-extrabold text-charcoal mb-3">진료 관련 주의사항 (의료법 시행규칙 제46조)</h3>
+            <ul class="text-sm text-gray-500 space-y-2">
+              <li class="flex items-start gap-2"><span class="w-1 h-1 rounded-full bg-amber-500 mt-2 flex-shrink-0"></span><strong>임플란트</strong>: 출혈, 감염, 신경 손상, 상악동 천공 등의 부작용이 발생할 수 있으며, 개인에 따라 골유합 실패 가능성이 있습니다.</li>
+              <li class="flex items-start gap-2"><span class="w-1 h-1 rounded-full bg-amber-500 mt-2 flex-shrink-0"></span><strong>보철(크라운·라미네이트)</strong>: 치아 삭제가 필요하며, 시술 후 시린 증상, 보철물 탈락, 색상 변화 등이 발생할 수 있습니다.</li>
+              <li class="flex items-start gap-2"><span class="w-1 h-1 rounded-full bg-amber-500 mt-2 flex-shrink-0"></span><strong>교정(인비절라인·고정식)</strong>: 교정 중 치근 흡수, 잇몸 퇴축, 충치 발생 위험이 증가할 수 있으며, 치료 기간은 개인 차이가 있습니다.</li>
+              <li class="flex items-start gap-2"><span class="w-1 h-1 rounded-full bg-amber-500 mt-2 flex-shrink-0"></span><strong>미백</strong>: 일시적 시린 증상, 잇몸 자극이 발생할 수 있으며, 효과는 개인차가 있습니다.</li>
+              <li class="flex items-start gap-2"><span class="w-1 h-1 rounded-full bg-amber-500 mt-2 flex-shrink-0"></span><strong>발치·수술</strong>: 출혈, 감염, 부종, 통증, 신경 손상 등이 발생할 수 있습니다.</li>
+              <li class="flex items-start gap-2"><span class="w-1 h-1 rounded-full bg-amber-500 mt-2 flex-shrink-0"></span>모든 의료행위는 부작용이 있을 수 있으며, 정확한 상담 후 치료 결정을 권합니다.</li>
+              <li class="flex items-start gap-2"><span class="w-1 h-1 rounded-full bg-amber-500 mt-2 flex-shrink-0"></span>상기 비용은 부가세 별도(비급여 항목)이며, 건강보험 적용 항목은 본인부담금이 별도 적용됩니다.</li>
+            </ul>
+            <p class="text-xs text-gray-400 mt-4 border-t border-gray-100 pt-3">※ 본 안내는 의료광고법(의료법 제56조, 시행규칙 제46조)에 따라 작성되었습니다. 최종 수정일: 2026-04-29</p>
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
 
