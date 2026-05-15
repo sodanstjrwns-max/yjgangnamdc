@@ -145,12 +145,12 @@ app.use('*', createMiddleware(async (c, next) => {
     // Content-Security-Policy (보안 강화)
     c.res.headers.set('Content-Security-Policy', [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://www.googletagmanager.com https://www.google-analytics.com https://www.clarity.ms",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://www.googletagmanager.com https://www.google-analytics.com https://www.clarity.ms https://static.cloudflareinsights.com",
       "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://fonts.googleapis.com",
       "img-src 'self' data: blob: https: http:",
       "font-src 'self' https://cdn.jsdelivr.net https://fonts.gstatic.com",
       "connect-src 'self' https://www.google-analytics.com https://www.clarity.ms https://region1.google-analytics.com https://analytics.google.com",
-      "frame-src 'self' https://map.naver.com https://www.google.com https://maps.google.com",
+      "frame-src 'self' https://map.naver.com https://www.google.com https://maps.google.com https://sketchfab.com https://*.sketchfab.com",
       "media-src 'self'",
       "object-src 'none'",
       "base-uri 'self'",
