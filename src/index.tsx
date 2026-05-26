@@ -13,6 +13,9 @@ import { comboPage, getAllComboPaths, getAreaSlugs, getTreatmentSlugs, getAreaIn
 import { intentPage, getAllIntentPaths } from './pages/intent'
 import { comparePage, getAllComparePaths, getAllCompareSlugs } from './pages/compare'
 import { pillarPage, pillarIndexPage, getAllPillarSlugs } from './pages/pillar'
+import { symptomPage, symptomIndexPage, getAllSymptomSlugs, getAllSymptomPaths } from './pages/symptom'
+import { audiencePage, audienceIndexPage, getAllAudienceSlugs, getAllAudiencePaths } from './pages/audience'
+import { emergencyPage } from './pages/emergency'
 import { faqPage, allFAQs } from './pages/faq'
 import { blogListPage, blogDetailPage } from './pages/blog'
 import { beforeAfterListPage, beforeAfterDetailPage } from './pages/beforeafter'
@@ -433,6 +436,9 @@ Sitemap: https://kndent.kr/sitemap-combo.xml
 Sitemap: https://kndent.kr/sitemap-intent.xml
 Sitemap: https://kndent.kr/sitemap-compare.xml
 Sitemap: https://kndent.kr/sitemap-pillar.xml
+Sitemap: https://kndent.kr/sitemap-symptom.xml
+Sitemap: https://kndent.kr/sitemap-audience.xml
+Sitemap: https://kndent.kr/sitemap-emergency.xml
 Sitemap: https://kndent.kr/sitemap-blog.xml
 
 # RSS Feed (Google 색인 가속)
@@ -621,6 +627,18 @@ app.get('/sitemap.xml', (c) => {
   </sitemap>
   <sitemap>
     <loc>${baseUrl}/sitemap-pillar.xml</loc>
+    <lastmod>${today}</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>${baseUrl}/sitemap-symptom.xml</loc>
+    <lastmod>${today}</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>${baseUrl}/sitemap-audience.xml</loc>
+    <lastmod>${today}</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>${baseUrl}/sitemap-emergency.xml</loc>
     <lastmod>${today}</lastmod>
   </sitemap>
   <sitemap>
@@ -1698,6 +1716,94 @@ app.get('/sitemap-pillar.xml', (c) => {
   return c.body(`${sitemapXmlHeader()}\n${allUrls.join('\n')}\n</urlset>`)
 })
 
+// ===== 🚀 Sitemap: 증상(Symptom) 페이지 =====
+app.get('/sitemap-symptom.xml', (c) => {
+  const baseUrl = 'https://kndent.kr'
+  const today = new Date().toISOString().split('T')[0]
+
+  const paths = getAllSymptomPaths()
+  // 인덱스 추가
+  const indexUrl = `  <url>
+    <loc>${baseUrl}/symptom</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>`
+
+  const urls = paths.map(p => {
+    const priority = p.priority === 1 ? '0.85' : p.priority === 2 ? '0.75' : '0.65'
+    const changefreq = p.priority === 1 ? 'weekly' : 'monthly'
+    const url = p.regionSlug ? `${baseUrl}/symptom/${p.symptomSlug}/${p.regionSlug}` : `${baseUrl}/symptom/${p.symptomSlug}`
+    return `  <url>
+    <loc>${url}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>${changefreq}</changefreq>
+    <priority>${priority}</priority>
+  </url>`
+  }).join('\n')
+
+  c.header('Content-Type', 'application/xml')
+  c.header('Cache-Control', 'public, max-age=86400, s-maxage=86400')
+  return c.body(`${sitemapXmlHeader()}\n${indexUrl}\n${urls}\n</urlset>`)
+})
+
+// ===== 🚀 Sitemap: 대상자(Audience) 페이지 =====
+app.get('/sitemap-audience.xml', (c) => {
+  const baseUrl = 'https://kndent.kr'
+  const today = new Date().toISOString().split('T')[0]
+
+  const paths = getAllAudiencePaths()
+  const indexUrl = `  <url>
+    <loc>${baseUrl}/audience</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>`
+
+  const urls = paths.map(p => {
+    const priority = p.priority === 1 ? '0.85' : p.priority === 2 ? '0.75' : '0.65'
+    const url = p.regionSlug ? `${baseUrl}/audience/${p.audienceSlug}/${p.regionSlug}` : `${baseUrl}/audience/${p.audienceSlug}`
+    return `  <url>
+    <loc>${url}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>${priority}</priority>
+  </url>`
+  }).join('\n')
+
+  c.header('Content-Type', 'application/xml')
+  c.header('Cache-Control', 'public, max-age=86400, s-maxage=86400')
+  return c.body(`${sitemapXmlHeader()}\n${indexUrl}\n${urls}\n</urlset>`)
+})
+
+// ===== 🚀 Sitemap: 응급(Emergency) 페이지 =====
+app.get('/sitemap-emergency.xml', (c) => {
+  const baseUrl = 'https://kndent.kr'
+  const today = new Date().toISOString().split('T')[0]
+
+  const regions = ['yeongju', 'bonghwa', 'yecheon', 'andong', 'mungyeong', 'yeongyang', 'cheongsong', 'sangju']
+  const urls: string[] = [
+    `  <url>
+    <loc>${baseUrl}/emergency</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>`
+  ]
+  regions.forEach(r => {
+    urls.push(`  <url>
+    <loc>${baseUrl}/emergency/${r}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>${r === 'yeongju' ? '0.9' : '0.75'}</priority>
+  </url>`)
+  })
+
+  c.header('Content-Type', 'application/xml')
+  c.header('Cache-Control', 'public, max-age=86400, s-maxage=86400')
+  return c.body(`${sitemapXmlHeader()}\n${urls.join('\n')}\n</urlset>`)
+})
+
 // ===== 🚀 SEO 슈퍼업글 시즌 2: 의도(Intent) 키워드 페이지 =====
 // 14지역 × 8진료 × 4의도(price/cost/recommend/best) = 448개 상업의도 키워드 페이지
 // 예: '영주 임플란트 가격', '봉화 사랑니 추천', '안동 인비절라인 비용', '문경 미백 잘하는곳'
@@ -1768,6 +1874,131 @@ app.get('/guide/:treatment', (c) => {
     keywords: result.keywords,
     ogImage: `https://kndent.kr/og/${treatment}`,
     speakableSelectors: ['[data-speakable]', 'h1', 'h2', '.faq-answer', '.pillar-summary'],
+    schemas: result.schemas,
+    articleModifiedTime: new Date().toISOString().split('T')[0]
+  }))
+})
+
+// ===== 🚀 SEO 슈퍼업글 시즌 3: 증상(Symptom) 인덱스 =====
+app.get('/symptom', (c) => {
+  const result = symptomIndexPage()
+  return c.html(layout(result.html, {
+    title: result.title,
+    description: result.description,
+    url: '/symptom',
+    keywords: result.keywords,
+    speakableSelectors: ['[data-speakable]', 'h1', 'h2']
+  }))
+})
+
+// ===== 🚀 SEO 슈퍼업글 시즌 3: 증상(Symptom) 단독 페이지 =====
+app.get('/symptom/:slug', (c) => {
+  const slug = c.req.param('slug')
+  const result = symptomPage(slug)
+  if (!result) return c.notFound()
+
+  return c.html(layout(result.html, {
+    title: result.title,
+    description: result.description,
+    url: `/symptom/${slug}`,
+    keywords: result.keywords,
+    speakableSelectors: ['[data-speakable]', 'h1', 'h2', '.faq-answer', '.symptom-summary'],
+    schemas: result.schemas,
+    articleModifiedTime: new Date().toISOString().split('T')[0]
+  }))
+})
+
+// ===== 🚀 SEO 슈퍼업글 시즌 3: 증상(Symptom) × 지역 페이지 =====
+app.get('/symptom/:slug/:region', (c) => {
+  const slug = c.req.param('slug')
+  const region = c.req.param('region')
+  const result = symptomPage(slug, region)
+  if (!result) return c.notFound()
+
+  return c.html(layout(result.html, {
+    title: result.title,
+    description: result.description,
+    url: `/symptom/${slug}/${region}`,
+    keywords: result.keywords,
+    speakableSelectors: ['[data-speakable]', 'h1', 'h2', '.faq-answer', '.symptom-summary'],
+    schemas: result.schemas,
+    articleModifiedTime: new Date().toISOString().split('T')[0]
+  }))
+})
+
+// ===== 🚀 SEO 슈퍼업글 시즌 3: 대상자(Audience) 인덱스 =====
+app.get('/audience', (c) => {
+  const result = audienceIndexPage()
+  return c.html(layout(result.html, {
+    title: result.title,
+    description: result.description,
+    url: '/audience',
+    keywords: result.keywords,
+    speakableSelectors: ['[data-speakable]', 'h1', 'h2']
+  }))
+})
+
+// ===== 🚀 SEO 슈퍼업글 시즌 3: 대상자(Audience) 단독 =====
+app.get('/audience/:slug', (c) => {
+  const slug = c.req.param('slug')
+  const result = audiencePage(slug)
+  if (!result) return c.notFound()
+
+  return c.html(layout(result.html, {
+    title: result.title,
+    description: result.description,
+    url: `/audience/${slug}`,
+    keywords: result.keywords,
+    speakableSelectors: ['[data-speakable]', 'h1', 'h2', '.faq-answer', '.audience-summary'],
+    schemas: result.schemas,
+    articleModifiedTime: new Date().toISOString().split('T')[0]
+  }))
+})
+
+// ===== 🚀 SEO 슈퍼업글 시즌 3: 대상자(Audience) × 지역 =====
+app.get('/audience/:slug/:region', (c) => {
+  const slug = c.req.param('slug')
+  const region = c.req.param('region')
+  const result = audiencePage(slug, region)
+  if (!result) return c.notFound()
+
+  return c.html(layout(result.html, {
+    title: result.title,
+    description: result.description,
+    url: `/audience/${slug}/${region}`,
+    keywords: result.keywords,
+    speakableSelectors: ['[data-speakable]', 'h1', 'h2', '.faq-answer', '.audience-summary'],
+    schemas: result.schemas,
+    articleModifiedTime: new Date().toISOString().split('T')[0]
+  }))
+})
+
+// ===== 🚀 SEO 슈퍼업글 시즌 3: 응급(Emergency) 진료 =====
+app.get('/emergency', (c) => {
+  const result = emergencyPage()
+  return c.html(layout(result.html, {
+    title: result.title,
+    description: result.description,
+    url: '/emergency',
+    keywords: result.keywords,
+    speakableSelectors: ['[data-speakable]', 'h1', 'h2', '.faq-answer'],
+    schemas: result.schemas,
+    articleModifiedTime: new Date().toISOString().split('T')[0]
+  }))
+})
+
+app.get('/emergency/:region', (c) => {
+  const region = c.req.param('region')
+  const area = getAreaInfo(region)
+  if (!area) return c.notFound()
+
+  const result = emergencyPage(region)
+  return c.html(layout(result.html, {
+    title: result.title,
+    description: result.description,
+    url: `/emergency/${region}`,
+    keywords: result.keywords,
+    speakableSelectors: ['[data-speakable]', 'h1', 'h2', '.faq-answer'],
     schemas: result.schemas,
     articleModifiedTime: new Date().toISOString().split('T')[0]
   }))
