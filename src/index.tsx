@@ -9,7 +9,10 @@ import { reservationPage } from './pages/reservation'
 import { directionsPage } from './pages/directions'
 import { pricingPage } from './pages/pricing'
 import { areaPage, getAllAreaKeys, getAreaPriority } from './pages/area'
-import { comboPage, getAllComboPaths, getAreaSlugs, getTreatmentSlugs } from './pages/combo'
+import { comboPage, getAllComboPaths, getAreaSlugs, getTreatmentSlugs, getAreaInfo, getTreatmentInfo } from './pages/combo'
+import { intentPage, getAllIntentPaths } from './pages/intent'
+import { comparePage, getAllComparePaths, getAllCompareSlugs } from './pages/compare'
+import { pillarPage, pillarIndexPage, getAllPillarSlugs } from './pages/pillar'
 import { faqPage, allFAQs } from './pages/faq'
 import { blogListPage, blogDetailPage } from './pages/blog'
 import { beforeAfterListPage, beforeAfterDetailPage } from './pages/beforeafter'
@@ -427,7 +430,14 @@ Sitemap: https://kndent.kr/sitemap-treatments.xml
 Sitemap: https://kndent.kr/sitemap-faq.xml
 Sitemap: https://kndent.kr/sitemap-area.xml
 Sitemap: https://kndent.kr/sitemap-combo.xml
+Sitemap: https://kndent.kr/sitemap-intent.xml
+Sitemap: https://kndent.kr/sitemap-compare.xml
+Sitemap: https://kndent.kr/sitemap-pillar.xml
 Sitemap: https://kndent.kr/sitemap-blog.xml
+
+# RSS Feed (Google 색인 가속)
+# RSS: https://kndent.kr/feed.xml
+# HTML Sitemap: https://kndent.kr/all-pages
 
 # Host
 Host: https://kndent.kr
@@ -602,6 +612,18 @@ app.get('/sitemap.xml', (c) => {
     <lastmod>${today}</lastmod>
   </sitemap>
   <sitemap>
+    <loc>${baseUrl}/sitemap-intent.xml</loc>
+    <lastmod>${today}</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>${baseUrl}/sitemap-compare.xml</loc>
+    <lastmod>${today}</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>${baseUrl}/sitemap-pillar.xml</loc>
+    <lastmod>${today}</lastmod>
+  </sitemap>
+  <sitemap>
     <loc>${baseUrl}/sitemap-blog.xml</loc>
     <lastmod>${today}</lastmod>
   </sitemap>
@@ -758,6 +780,31 @@ app.get('/sitemap-combo.xml', (c) => {
     const changefreq = p.priority === 1 ? 'weekly' : 'monthly'
     return `  <url>
     <loc>${baseUrl}/area/${p.regionSlug}/${p.treatmentSlug}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>${changefreq}</changefreq>
+    <priority>${priority}</priority>
+  </url>`
+  }).join('\n')
+
+  c.header('Content-Type', 'application/xml')
+  c.header('Cache-Control', 'public, max-age=86400, s-maxage=86400')
+  return c.body(`${sitemapXmlHeader()}\n${urls}\n</urlset>`)
+})
+
+// ===== 🚀 Sitemap: 의도(Intent) 키워드 페이지 (448개 상업적 의도 키워드) =====
+// '영주 임플란트 가격', '봉화 사랑니 추천' 등 구매의도 키워드 1페이지 노출
+app.get('/sitemap-intent.xml', (c) => {
+  const baseUrl = 'https://kndent.kr'
+  const today = new Date().toISOString().split('T')[0]
+
+  const paths = getAllIntentPaths()
+  const urls = paths.map(p => {
+    // priority 1(핵심지역×핵심진료×price/cost) → 0.85
+    // priority 2 → 0.75 / priority 3 → 0.65
+    const priority = p.priority === 1 ? '0.85' : p.priority === 2 ? '0.75' : '0.65'
+    const changefreq = p.priority === 1 ? 'weekly' : 'monthly'
+    return `  <url>
+    <loc>${baseUrl}/intent/${p.regionSlug}/${p.treatmentSlug}/${p.intentSlug}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>${changefreq}</changefreq>
     <priority>${priority}</priority>
@@ -1598,6 +1645,337 @@ app.get('/area/:region/:treatment', (c) => {
     speakableSelectors: ['[data-speakable]', 'h1', 'h2', '.faq-answer', '.combo-summary'],
     schemas: result.schemas,
     articleModifiedTime: new Date().toISOString().split('T')[0]
+  }))
+})
+
+// ===== 🚀 Sitemap: 비교(Compare) 페이지 (64개 비교 키워드) =====
+app.get('/sitemap-compare.xml', (c) => {
+  const baseUrl = 'https://kndent.kr'
+  const today = new Date().toISOString().split('T')[0]
+
+  const paths = getAllComparePaths()
+  const urls = paths.map(p => {
+    const priority = p.priority === 1 ? '0.85' : p.priority === 2 ? '0.75' : '0.65'
+    const changefreq = p.priority === 1 ? 'weekly' : 'monthly'
+    return `  <url>
+    <loc>${baseUrl}/compare/${p.pairSlug}/${p.treatmentSlug}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>${changefreq}</changefreq>
+    <priority>${priority}</priority>
+  </url>`
+  }).join('\n')
+
+  c.header('Content-Type', 'application/xml')
+  c.header('Cache-Control', 'public, max-age=86400, s-maxage=86400')
+  return c.body(`${sitemapXmlHeader()}\n${urls}\n</urlset>`)
+})
+
+// ===== 🚀 Sitemap: PILLAR 가이드 페이지 (8개 진료 허브) =====
+app.get('/sitemap-pillar.xml', (c) => {
+  const baseUrl = 'https://kndent.kr'
+  const today = new Date().toISOString().split('T')[0]
+
+  const slugs = getAllPillarSlugs()
+  const allUrls: string[] = [
+    `  <url>
+    <loc>${baseUrl}/guide</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>`
+  ]
+  slugs.forEach(s => {
+    allUrls.push(`  <url>
+    <loc>${baseUrl}/guide/${s}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>`)
+  })
+
+  c.header('Content-Type', 'application/xml')
+  c.header('Cache-Control', 'public, max-age=86400, s-maxage=86400')
+  return c.body(`${sitemapXmlHeader()}\n${allUrls.join('\n')}\n</urlset>`)
+})
+
+// ===== 🚀 SEO 슈퍼업글 시즌 2: 의도(Intent) 키워드 페이지 =====
+// 14지역 × 8진료 × 4의도(price/cost/recommend/best) = 448개 상업의도 키워드 페이지
+// 예: '영주 임플란트 가격', '봉화 사랑니 추천', '안동 인비절라인 비용', '문경 미백 잘하는곳'
+app.get('/intent/:region/:treatment/:intent', (c) => {
+  const region = c.req.param('region')
+  const treatment = c.req.param('treatment')
+  const intent = c.req.param('intent')
+  const result = intentPage(region, treatment, intent)
+  if (!result) return c.notFound()
+
+  return c.html(layout(result.html, {
+    title: result.title,
+    description: result.description,
+    url: `/intent/${region}/${treatment}/${intent}`,
+    keywords: result.keywords,
+    ogImage: `https://kndent.kr/og/${treatment}`,
+    speakableSelectors: ['[data-speakable]', 'h1', 'h2', '.faq-answer', '.intent-summary', '.price-table'],
+    schemas: result.schemas,
+    articleModifiedTime: new Date().toISOString().split('T')[0]
+  }))
+})
+
+// ===== 🚀 SEO 슈퍼업글 시즌 2: 비교(Compare) 페이지 =====
+// "영주 vs 대구 임플란트", "영주 vs 안동 사랑니" 등 비교 키워드 잡기
+// 8지역쌍 × 8진료 = 64개 비교 페이지
+app.get('/compare/:pair/:treatment', (c) => {
+  const pair = c.req.param('pair')
+  const treatment = c.req.param('treatment')
+  const result = comparePage(pair, treatment)
+  if (!result) return c.notFound()
+
+  return c.html(layout(result.html, {
+    title: result.title,
+    description: result.description,
+    url: `/compare/${pair}/${treatment}`,
+    keywords: result.keywords,
+    ogImage: `https://kndent.kr/og/${treatment}`,
+    speakableSelectors: ['[data-speakable]', 'h1', 'h2', '.faq-answer', '.compare-summary'],
+    schemas: result.schemas,
+    articleModifiedTime: new Date().toISOString().split('T')[0]
+  }))
+})
+
+// ===== 🚀 SEO 슈퍼업글 시즌 2: PILLAR 가이드 인덱스 =====
+app.get('/guide', (c) => {
+  const result = pillarIndexPage()
+  return c.html(layout(result.html, {
+    title: result.title,
+    description: result.description,
+    url: '/guide',
+    keywords: result.keywords,
+    speakableSelectors: ['[data-speakable]', 'h1', 'h2'],
+    articleModifiedTime: new Date().toISOString().split('T')[0]
+  }))
+})
+
+// ===== 🚀 SEO 슈퍼업글 시즌 2: PILLAR 진료별 허브 페이지 =====
+// /guide/implant, /guide/invisalign, /guide/wisdom-tooth 등 8개
+app.get('/guide/:treatment', (c) => {
+  const treatment = c.req.param('treatment')
+  const result = pillarPage(treatment)
+  if (!result) return c.notFound()
+
+  return c.html(layout(result.html, {
+    title: result.title,
+    description: result.description,
+    url: `/guide/${treatment}`,
+    keywords: result.keywords,
+    ogImage: `https://kndent.kr/og/${treatment}`,
+    speakableSelectors: ['[data-speakable]', 'h1', 'h2', '.faq-answer', '.pillar-summary'],
+    schemas: result.schemas,
+    articleModifiedTime: new Date().toISOString().split('T')[0]
+  }))
+})
+
+// ===== 🚀 SEO 슈퍼업글 시즌 2: RSS 피드 (Google 색인 가속) =====
+app.get('/feed.xml', async (c) => {
+  const baseUrl = 'https://kndent.kr'
+  const today = new Date().toUTCString()
+
+  // 핵심 신규 페이지 RSS
+  const items: { title: string; link: string; description: string; pubDate: string }[] = []
+
+  // Pillar 가이드 8개
+  getAllPillarSlugs().forEach(s => {
+    const result = pillarPage(s)
+    if (result) {
+      items.push({
+        title: result.title,
+        link: `${baseUrl}/guide/${s}`,
+        description: result.description,
+        pubDate: today
+      })
+    }
+  })
+
+  // Compare 핵심 9개
+  const coreCompares = [
+    { pair: 'yeongju-vs-daegu', treatment: 'implant' },
+    { pair: 'yeongju-vs-daegu', treatment: 'invisalign' },
+    { pair: 'yeongju-vs-daegu', treatment: 'wisdom-tooth' },
+    { pair: 'yeongju-vs-andong', treatment: 'implant' },
+    { pair: 'yeongju-vs-andong', treatment: 'invisalign' },
+    { pair: 'yeongju-vs-andong', treatment: 'wisdom-tooth' },
+    { pair: 'yeongju-vs-seoul', treatment: 'implant' },
+    { pair: 'yeongju-vs-seoul', treatment: 'invisalign' },
+    { pair: 'yeongju-vs-seoul', treatment: 'wisdom-tooth' }
+  ]
+  coreCompares.forEach(({ pair, treatment }) => {
+    const result = comparePage(pair, treatment)
+    if (result) {
+      items.push({
+        title: result.title,
+        link: `${baseUrl}/compare/${pair}/${treatment}`,
+        description: result.description,
+        pubDate: today
+      })
+    }
+  })
+
+  // 핵심 Intent 6개
+  const coreIntents = [
+    { r: 'yeongju', t: 'implant', i: 'price' },
+    { r: 'yeongju', t: 'implant', i: 'recommend' },
+    { r: 'yeongju', t: 'invisalign', i: 'price' },
+    { r: 'yeongju', t: 'wisdom-tooth', i: 'recommend' },
+    { r: 'bonghwa', t: 'implant', i: 'recommend' },
+    { r: 'yecheon', t: 'implant', i: 'recommend' }
+  ]
+  coreIntents.forEach(({ r, t, i }) => {
+    const result = intentPage(r, t, i)
+    if (result) {
+      items.push({
+        title: result.title,
+        link: `${baseUrl}/intent/${r}/${t}/${i}`,
+        description: result.description,
+        pubDate: today
+      })
+    }
+  })
+
+  const xmlEscape = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;')
+
+  const itemsXml = items.map(item => `    <item>
+      <title>${xmlEscape(item.title)}</title>
+      <link>${item.link}</link>
+      <guid isPermaLink="true">${item.link}</guid>
+      <description>${xmlEscape(item.description)}</description>
+      <pubDate>${item.pubDate}</pubDate>
+    </item>`).join('\n')
+
+  const rss = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>영주 강남치과의원 - 진료 가이드 & 새 소식</title>
+    <link>${baseUrl}</link>
+    <atom:link href="${baseUrl}/feed.xml" rel="self" type="application/rss+xml" />
+    <description>경북북부 거점 치과 영주 강남치과의 진료 가이드, 비교 분석, 비용/추천 정보 최신 RSS 피드</description>
+    <language>ko-kr</language>
+    <copyright>© 2026 영주 강남치과의원</copyright>
+    <lastBuildDate>${today}</lastBuildDate>
+    <ttl>1440</ttl>
+${itemsXml}
+  </channel>
+</rss>`
+
+  c.header('Content-Type', 'application/rss+xml; charset=utf-8')
+  c.header('Cache-Control', 'public, max-age=3600, s-maxage=3600')
+  return c.body(rss)
+})
+
+// ===== 🚀 SEO 슈퍼업글 시즌 2: 메가 HTML 사이트맵 (/all-pages) =====
+// 사용자 + Google 모두 발견 용이한 전체 페이지 목록
+app.get('/all-pages', (c) => {
+  const treatmentSlugs = ['implant', 'invisalign', 'wisdom-tooth', 'digital-prosthesis', 'cosmetic', 'bone-graft', 'cavity', 'whitening']
+  const regionSlugs = getAreaSlugs()
+  const intents = ['price', 'cost', 'recommend', 'best']
+  const intentLabels: Record<string, string> = { 'price': '가격', 'cost': '비용', 'recommend': '추천', 'best': '잘하는곳' }
+  const compareSlugs = getAllCompareSlugs()
+
+  // 진료별
+  const treatmentLinks = treatmentSlugs.map(t => {
+    const ti = getTreatmentInfo(t)
+    return ti ? `<a href="/treatment/${t}" class="block py-1 text-emerald-700 hover:text-emerald-900 hover:underline">${ti.koSlug}</a>` : ''
+  }).join('')
+
+  // Pillar 가이드
+  const pillarLinks = getAllPillarSlugs().map(s => {
+    const ti = getTreatmentInfo(s)
+    return ti ? `<a href="/guide/${s}" class="block py-1 text-purple-700 hover:text-purple-900 hover:underline">📚 ${ti.koSlug} 완벽 가이드</a>` : ''
+  }).join('')
+
+  // 지역×진료 조합
+  const comboLinks = regionSlugs.map(r => {
+    const area = getAreaInfo(r)
+    if (!area) return ''
+    const trs = treatmentSlugs.map(t => {
+      const ti = getTreatmentInfo(t)
+      return ti ? `<a href="/area/${r}/${t}" class="inline-block px-2 py-1 m-0.5 text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded">${area.name} ${ti.koSlug}</a>` : ''
+    }).join('')
+    return `
+      <div class="mb-4 p-3 bg-white rounded-lg border border-emerald-100">
+        <h4 class="font-bold text-emerald-800 mb-2">📍 ${area.name}</h4>
+        <div>${trs}</div>
+      </div>
+    `
+  }).join('')
+
+  // 의도 키워드
+  const intentLinks = treatmentSlugs.map(t => {
+    const ti = getTreatmentInfo(t)
+    if (!ti) return ''
+    const is = intents.map(i => `<a href="/intent/yeongju/${t}/${i}" class="inline-block px-2 py-1 m-0.5 text-xs bg-purple-50 hover:bg-purple-100 text-purple-700 rounded">영주 ${ti.koSlug} ${intentLabels[i]}</a>`).join('')
+    return `
+      <div class="mb-4 p-3 bg-white rounded-lg border border-purple-100">
+        <h4 class="font-bold text-purple-800 mb-2">🔍 ${ti.koSlug}</h4>
+        <div>${is}</div>
+      </div>
+    `
+  }).join('')
+
+  // 비교 페이지
+  const compareLinks = compareSlugs.map(pairSlug => {
+    const name = pairSlug.replace('yeongju-vs-', '').replace(/(.)/, m => m.toUpperCase())
+    return treatmentSlugs.slice(0, 4).map(t => {
+      const ti = getTreatmentInfo(t)
+      return ti ? `<a href="/compare/${pairSlug}/${t}" class="inline-block px-2 py-1 m-0.5 text-xs bg-cyan-50 hover:bg-cyan-100 text-cyan-700 rounded">${pairSlug.replace('yeongju-vs-', '영주 vs ')} - ${ti.koSlug}</a>` : ''
+    }).join('')
+  }).join('')
+
+  const html = `
+    <article class="bg-gradient-to-br from-gray-50 to-emerald-50">
+      <section class="bg-gradient-to-r from-emerald-700 to-teal-700 text-white py-12">
+        <div class="max-w-6xl mx-auto px-4">
+          <h1 class="text-4xl font-bold mb-2">🗂️ 전체 페이지 목록</h1>
+          <p class="text-emerald-100">영주 강남치과의 모든 페이지를 한눈에 확인하세요. 총 ${treatmentSlugs.length * regionSlugs.length + intents.length * treatmentSlugs.length + compareSlugs.length * treatmentSlugs.length}+ 페이지</p>
+        </div>
+      </section>
+
+      <section class="max-w-6xl mx-auto px-4 py-8">
+        <div class="grid md:grid-cols-2 gap-8">
+          <div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">🩺 진료 안내</h2>
+            <div class="bg-white rounded-lg p-4 shadow">${treatmentLinks}</div>
+          </div>
+          <div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">📚 진료 완벽 가이드 (PILLAR)</h2>
+            <div class="bg-white rounded-lg p-4 shadow">${pillarLinks}</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="max-w-6xl mx-auto px-4 py-8">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">📍 지역별 진료 (조합 페이지 ${regionSlugs.length * treatmentSlugs.length}+개)</h2>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-3">${comboLinks}</div>
+      </section>
+
+      <section class="max-w-6xl mx-auto px-4 py-8">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">🔍 의도별 키워드 (가격/비용/추천/잘하는곳)</h2>
+        <div class="grid md:grid-cols-2 gap-3">${intentLinks}</div>
+      </section>
+
+      <section class="max-w-6xl mx-auto px-4 py-8">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">⚖️ 비교 가이드 (영주 vs 타지역)</h2>
+        <div class="bg-white rounded-lg p-4 shadow">${compareLinks}</div>
+      </section>
+
+      <section class="bg-emerald-700 text-white py-8 text-center">
+        <p class="text-lg">RSS 피드 구독: <a href="/feed.xml" class="underline font-bold">/feed.xml</a> · 사이트맵: <a href="/sitemap.xml" class="underline font-bold">/sitemap.xml</a></p>
+      </section>
+    </article>
+  `
+
+  return c.html(layout(html, {
+    title: '전체 페이지 목록 (HTML 사이트맵) | 영주 강남치과',
+    description: '영주 강남치과의 모든 진료 페이지, 지역별 가이드, 비교 분석, 의도 키워드 페이지를 한눈에 확인할 수 있는 HTML 사이트맵.',
+    url: '/all-pages',
+    keywords: '영주 강남치과 사이트맵, 전체 페이지, HTML 사이트맵, 진료 목록, 지역별 진료'
   }))
 })
 
