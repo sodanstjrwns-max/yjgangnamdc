@@ -1123,6 +1123,51 @@ export function mainPage(): string {
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 stagger-children">
         ${areasHtml}
       </div>
+
+      <!-- 🔥 SEO: 지역×진료 조합 키워드 클러스터 (롱테일 검색어 1페이지 노출 목표) -->
+      <div class="mt-16 pt-12 border-t border-royal/[0.06] reveal">
+        <h3 class="text-center text-charcoal font-extrabold text-lg md:text-xl mb-2">지역별 진료 안내</h3>
+        <p class="text-center text-gray-400 text-sm mb-8">지역과 진료를 함께 검색하시는 분을 위한 맞춤 안내 페이지</p>
+        ${(() => {
+          const regions = [
+            { name: '영주', slug: 'yeongju' },
+            { name: '풍기', slug: 'punggi' },
+            { name: '봉화', slug: 'bonghwa' },
+            { name: '예천', slug: 'yecheon' },
+            { name: '안동', slug: 'andong' },
+            { name: '단양', slug: 'danyang' },
+            { name: '영주혁신도시', slug: 'yeongju-innovation' },
+            { name: '상주', slug: 'sangju' },
+            { name: '문경', slug: 'mungyeong' },
+          ];
+          const treatments = [
+            { name: '임플란트', slug: 'implant' },
+            { name: '사랑니', slug: 'wisdom-tooth' },
+            { name: '인비절라인', slug: 'invisalign' },
+            { name: '디지털보철', slug: 'digital-prosthesis' },
+            { name: '심미보철', slug: 'cosmetic' },
+            { name: '뼈이식', slug: 'bone-graft' },
+            { name: '충치치료', slug: 'cavity' },
+            { name: '치아미백', slug: 'whitening' },
+          ];
+          return `<div class="space-y-3">
+            ${regions.map(r => `
+              <div class="card-premium p-4 md:p-5">
+                <div class="flex items-center gap-3 mb-3">
+                  <div class="w-8 h-8 rounded-lg royal-grad flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-map-marker-alt text-white text-xs"></i>
+                  </div>
+                  <h4 class="font-extrabold text-charcoal text-sm md:text-base">${r.name}에서 받는 진료</h4>
+                </div>
+                <div class="flex flex-wrap gap-2 pl-11">
+                  ${treatments.map(t => `<a href="/area/${r.slug}/${t.slug}" class="px-3 py-1.5 rounded-full bg-royal/[0.05] border border-royal/[0.1] text-xs text-royal font-medium hover:bg-royal/[0.12] hover:border-royal/[0.2] transition-all duration-300">${r.name} ${t.name}</a>`).join('')}
+                </div>
+              </div>
+            `).join('')}
+          </div>`;
+        })()}
+      </div>
+
       <div class="text-center mt-10 reveal">
         <a href="/directions" class="btn-subtle !py-4 !px-10 !text-sm"><i class="fas fa-map-marker-alt text-royal text-xs mr-1"></i>오시는 길 자세히 보기</a>
       </div>

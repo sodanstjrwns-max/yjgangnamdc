@@ -9,6 +9,7 @@ import { reservationPage } from './pages/reservation'
 import { directionsPage } from './pages/directions'
 import { pricingPage } from './pages/pricing'
 import { areaPage, getAllAreaKeys, getAreaPriority } from './pages/area'
+import { comboPage, getAllComboPaths, getAreaSlugs, getTreatmentSlugs } from './pages/combo'
 import { faqPage, allFAQs } from './pages/faq'
 import { blogListPage, blogDetailPage } from './pages/blog'
 import { beforeAfterListPage, beforeAfterDetailPage } from './pages/beforeafter'
@@ -425,6 +426,7 @@ Sitemap: https://kndent.kr/sitemap.xml
 Sitemap: https://kndent.kr/sitemap-treatments.xml
 Sitemap: https://kndent.kr/sitemap-faq.xml
 Sitemap: https://kndent.kr/sitemap-area.xml
+Sitemap: https://kndent.kr/sitemap-combo.xml
 Sitemap: https://kndent.kr/sitemap-blog.xml
 
 # Host
@@ -596,6 +598,10 @@ app.get('/sitemap.xml', (c) => {
     <lastmod>${today}</lastmod>
   </sitemap>
   <sitemap>
+    <loc>${baseUrl}/sitemap-combo.xml</loc>
+    <lastmod>${today}</lastmod>
+  </sitemap>
+  <sitemap>
     <loc>${baseUrl}/sitemap-blog.xml</loc>
     <lastmod>${today}</lastmod>
   </sitemap>
@@ -733,6 +739,31 @@ app.get('/sitemap-area.xml', (c) => {
   })
 
   const urls = pages.map(p => sitemapUrl(baseUrl, p)).join('\n')
+  c.header('Content-Type', 'application/xml')
+  c.header('Cache-Control', 'public, max-age=86400, s-maxage=86400')
+  return c.body(`${sitemapXmlHeader()}\n${urls}\n</urlset>`)
+})
+
+// ===== 🚀 Sitemap: 지역 × 진료 조합 SEO (112개 롱테일 페이지) =====
+app.get('/sitemap-combo.xml', (c) => {
+  const baseUrl = 'https://kndent.kr'
+  const today = new Date().toISOString().split('T')[0]
+
+  const paths = getAllComboPaths()
+  const urls = paths.map(p => {
+    // 우선순위 1(핵심지역×핵심진료) → 0.85
+    // 우선순위 2 → 0.75
+    // 우선순위 3 → 0.65
+    const priority = p.priority === 1 ? '0.85' : p.priority === 2 ? '0.75' : '0.65'
+    const changefreq = p.priority === 1 ? 'weekly' : 'monthly'
+    return `  <url>
+    <loc>${baseUrl}/area/${p.regionSlug}/${p.treatmentSlug}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>${changefreq}</changefreq>
+    <priority>${priority}</priority>
+  </url>`
+  }).join('\n')
+
   c.header('Content-Type', 'application/xml')
   c.header('Cache-Control', 'public, max-age=86400, s-maxage=86400')
   return c.body(`${sitemapXmlHeader()}\n${urls}\n</urlset>`)
@@ -1546,6 +1577,27 @@ app.get('/area/:region', (c) => {
     keywords: result.keywords,
     speakableSelectors: ['[data-speakable]', 'h1', 'h2', '.faq-answer', '.area-summary', '.area-long-desc'],
     schemas: result.schemas
+  }))
+})
+
+// ===== 🚀 SEO 슈퍼업글: 지역 × 진료 조합 페이지 (Programmatic SEO) =====
+// 13개 지역 × 8개 핵심진료 = 112개 고유 랜딩페이지
+// "영주 임플란트", "봉화 사랑니", "안동 인비절라인" 등 롱테일 조합 키워드 1페이지 노출
+app.get('/area/:region/:treatment', (c) => {
+  const region = c.req.param('region')
+  const treatment = c.req.param('treatment')
+  const result = comboPage(region, treatment)
+  if (!result) return c.notFound()
+
+  return c.html(layout(result.html, {
+    title: result.title,
+    description: result.description,
+    url: `/area/${region}/${treatment}`,
+    keywords: result.keywords,
+    ogImage: `https://kndent.kr/og/${treatment}`,
+    speakableSelectors: ['[data-speakable]', 'h1', 'h2', '.faq-answer', '.combo-summary'],
+    schemas: result.schemas,
+    articleModifiedTime: new Date().toISOString().split('T')[0]
   }))
 })
 

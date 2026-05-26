@@ -294,15 +294,18 @@ function getAreaFAQs(area: AreaInfo): { q: string; a: string }[] {
   return base
 }
 
-// 지역별 맞춤 진료 추천
+// 지역별 맞춤 진료 추천 — 지역×진료 조합 페이지로 링크 (SEO 강화)
 function getAreaTreatments(area: AreaInfo): { icon: string; title: string; desc: string; link: string }[] {
+  const s = area.slug
   return [
-    { icon: 'fa-tooth', title: '임플란트', desc: `구강외과 전문의 직접 수술. 뼈이식·상악동 수술까지 가능. ${area.name}에서 ${area.driveTime}.`, link: '/treatments/implant' },
-    { icon: 'fa-bolt', title: '디지털 보철 (CEREC)', desc: 'CEREC으로 싱글 크라운 정밀 제작. 디지털 스캔으로 편안하게.', link: '/treatments/digital-prosthesis' },
-    { icon: 'fa-teeth', title: '인비절라인 투명교정', desc: `인비절라인 인증의 직접 진료. ${area.priority >= 2 ? '4~8주 간격 내원으로 편리.' : '3D 시뮬레이션 제공.'}`, link: '/treatments/invisalign' },
-    { icon: 'fa-hand-holding-medical', title: '사랑니 발치', desc: '구강외과 전문의가 매복 사랑니도 안전하게. CT 기반 정밀 진단.', link: '/treatments/wisdom-tooth' },
-    { icon: 'fa-gem', title: '심미보철', desc: '라미네이트, 올세라믹, 지르코니아. 자연치아와 구분 불가.', link: '/treatments/cosmetic' },
-    { icon: 'fa-bone', title: '뼈이식 임플란트', desc: '뼈 부족 시 뼈이식 후 임플란트. 구강외과 전문 영역.', link: '/treatments/bone-graft' },
+    { icon: 'fa-tooth', title: `${area.name} 임플란트`, desc: `구강외과 전문의 직접 수술. 뼈이식·상악동 수술까지 가능. ${area.name}에서 ${area.driveTime}.`, link: `/area/${s}/implant` },
+    { icon: 'fa-bolt', title: `${area.name} 디지털 보철`, desc: 'CEREC으로 싱글 크라운 정밀 제작. 디지털 스캔으로 편안하게.', link: `/area/${s}/digital-prosthesis` },
+    { icon: 'fa-teeth', title: `${area.name} 인비절라인`, desc: `인비절라인 인증의 직접 진료. ${area.priority >= 2 ? '4~8주 간격 내원으로 편리.' : '3D 시뮬레이션 제공.'}`, link: `/area/${s}/invisalign` },
+    { icon: 'fa-hand-holding-medical', title: `${area.name} 사랑니`, desc: '구강외과 전문의가 매복 사랑니도 안전하게. CT 기반 정밀 진단.', link: `/area/${s}/wisdom-tooth` },
+    { icon: 'fa-gem', title: `${area.name} 심미보철`, desc: '라미네이트, 올세라믹, 지르코니아. 자연치아와 구분 불가.', link: `/area/${s}/cosmetic` },
+    { icon: 'fa-bone', title: `${area.name} 뼈이식`, desc: '뼈 부족 시 뼈이식 후 임플란트. 구강외과 전문 영역.', link: `/area/${s}/bone-graft` },
+    { icon: 'fa-tooth', title: `${area.name} 충치치료`, desc: '디지털 정밀 진단으로 미세 충치까지. 당일 레진 치료 가능.', link: `/area/${s}/cavity` },
+    { icon: 'fa-sun', title: `${area.name} 치아미백`, desc: '전문의 관리 미백. 전체 미백 60만원.', link: `/area/${s}/whitening` },
   ]
 }
 
