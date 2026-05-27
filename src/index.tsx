@@ -296,6 +296,7 @@ Disallow: /api/
 Disallow: /admin
 Disallow: /login
 Disallow: /register
+Disallow: /before-after
 
 User-agent: Googlebot-Image
 Allow: /static/
@@ -309,6 +310,7 @@ Disallow: /api/
 Disallow: /admin
 Disallow: /login
 Disallow: /register
+Disallow: /before-after
 
 # Bing
 User-agent: Bingbot
@@ -317,6 +319,7 @@ Disallow: /api/
 Disallow: /admin
 Disallow: /login
 Disallow: /register
+Disallow: /before-after
 
 # Daum / Kakao
 User-agent: Daum
@@ -325,6 +328,7 @@ Disallow: /api/
 Disallow: /admin
 Disallow: /login
 Disallow: /register
+Disallow: /before-after
 
 # ============================================================
 # 2. AI 검색 / 답변 엔진 (AEO 대응 — 색인 허용)
@@ -1039,9 +1043,10 @@ app.get('/sitemap-blog.xml', async (c) => {
   const today = new Date().toISOString().split('T')[0]
 
   // 목록 페이지
+  // ⚠️ /before-after 는 의료광고법상 로그인 보호된 noindex 영역이므로 사이트맵에서 제외
+  //    (Google Search Console 17건 오류 원인 — 2026-05-27 해결)
   const staticPages = [
     { url: '/blog', lastmod: today, priority: '0.8', changefreq: 'weekly' },
-    { url: '/before-after', lastmod: today, priority: '0.8', changefreq: 'weekly' },
     { url: '/notices', lastmod: today, priority: '0.7', changefreq: 'weekly' },
     { url: '/dictionary', lastmod: today, priority: '0.8', changefreq: 'weekly' },
   ]
@@ -1056,13 +1061,7 @@ app.get('/sitemap-blog.xml', async (c) => {
       priority: '0.7',
       changefreq: 'monthly' as const
     })))
-    const baCases = await c.env.DB.prepare('SELECT slug, updated_at FROM before_after_cases WHERE is_published = 1 ORDER BY sort_order DESC').all()
-    dynamicPages = dynamicPages.concat(baCases.results.map((p: any) => ({
-      url: `/before-after/${p.slug}`,
-      lastmod: p.updated_at ? p.updated_at.split('T')[0] : today,
-      priority: '0.7',
-      changefreq: 'monthly' as const
-    })))
+    // ⚠️ /before-after/:slug 도 noindex + canonical 부모 지향 → 사이트맵에서 제외 (Google 오류 해결)
     const noticesList = await c.env.DB.prepare('SELECT slug, updated_at FROM notices WHERE is_published = 1 ORDER BY published_at DESC').all()
     dynamicPages = dynamicPages.concat(noticesList.results.map((p: any) => ({
       url: `/notices/${p.slug}`,
