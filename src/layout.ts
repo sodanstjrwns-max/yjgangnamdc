@@ -39,9 +39,43 @@ function buildBaseSchema() {
     "url": SITE_URL,
     "telephone": PHONE,
     "email": "gndentalclinic@naver.com",
-    "logo": `${SITE_URL}/static/logo.png`,
-    "image": `${SITE_URL}/static/logo.png`,
+    "logo": {
+      "@type": "ImageObject",
+      "url": `${SITE_URL}/static/logo.png`,
+      "width": "512",
+      "height": "512"
+    },
+    "image": [
+      `${SITE_URL}/static/og-image.png`,
+      `${SITE_URL}/static/logo.png`,
+      `${SITE_URL}/static/clinic-exterior.jpg`,
+      `${SITE_URL}/static/clinic-interior.jpg`
+    ],
+    "photo": `${SITE_URL}/static/og-image.png`,
     "description": "경북 영주시 강남치과의원. 구강악안면외과 전문의 2인이 직접 진료하는 프리미엄 치과. 임플란트, 디지털 보철(싱글 크라운), 인비절라인, 심미보철 전문.",
+    "knowsAbout": [
+      "임플란트", "디지털 임플란트", "네비게이션 임플란트",
+      "디지털 보철", "원데이 크라운", "CEREC", "지르코니아 크라운",
+      "인비절라인", "투명교정", "iTero 스캐너",
+      "사랑니 발치", "매복 사랑니", "뼈이식", "상악동 거상술",
+      "구강악안면외과", "심미보철", "라미네이트",
+      "충치치료", "신경치료", "잇몸치료", "스케일링",
+      "틀니", "보험 틀니", "치아미백", "예방치료"
+    ],
+    "accessibilityFeature": [
+      "wheelchairAccessible",
+      "elevator",
+      "accessibleParking",
+      "readingGuide"
+    ],
+    "amenityFeature": [
+      { "@type": "LocationFeatureSpecification", "name": "주차장", "value": true },
+      { "@type": "LocationFeatureSpecification", "name": "엘리베이터", "value": true },
+      { "@type": "LocationFeatureSpecification", "name": "휠체어 접근 가능", "value": true },
+      { "@type": "LocationFeatureSpecification", "name": "와이파이", "value": true },
+      { "@type": "LocationFeatureSpecification", "name": "독립 진료실 (유리 파티션)", "value": true },
+      { "@type": "LocationFeatureSpecification", "name": "휴게 공간 (피아노)", "value": true }
+    ],
     "slogan": "일상으로의 빠른 복귀, 강남치과의 기쁨입니다",
     "foundingDate": "2017",
     "priceRange": "$$",
@@ -69,11 +103,51 @@ function buildBaseSchema() {
       "description": "점심시간 13:00-14:00, 접수마감 17:00, 토·일·공휴일 휴무"
     },
     "founder": {
-      "@type": "Person",
+      "@type": "Physician",
+      "@id": `${SITE_URL}/doctors#director`,
       "name": "이태형",
+      "givenName": "태형",
+      "familyName": "이",
       "jobTitle": "대표원장",
-      "description": "구강악안면외과 전문의"
+      "description": "구강악안면외과 전문의. 임플란트, 사랑니 발치, 뼈이식, 상악동 거상술 전문.",
+      "medicalSpecialty": "Oral and Maxillofacial Surgery",
+      "image": `${SITE_URL}/static/doctor-lee.jpg`,
+      "worksFor": { "@id": `${SITE_URL}/#organization` },
+      "hasCredential": [
+        {
+          "@type": "EducationalOccupationalCredential",
+          "credentialCategory": "Specialty Board Certification",
+          "name": "구강악안면외과 전문의",
+          "recognizedBy": { "@type": "Organization", "name": "대한치과의사협회" }
+        },
+        {
+          "@type": "EducationalOccupationalCredential",
+          "credentialCategory": "License",
+          "name": "치과의사 면허"
+        }
+      ],
+      "knowsAbout": ["임플란트", "사랑니 발치", "뼈이식", "상악동 거상술", "구강악안면외과", "디지털 보철"],
+      "memberOf": [
+        { "@type": "MedicalOrganization", "name": "대한치과의사협회" },
+        { "@type": "MedicalOrganization", "name": "대한구강악안면외과학회" },
+        { "@type": "MedicalOrganization", "name": "대한구강악안면임플란트학회" }
+      ],
+      "availableService": [
+        { "@type": "MedicalProcedure", "name": "임플란트" },
+        { "@type": "MedicalProcedure", "name": "사랑니 발치" },
+        { "@type": "MedicalProcedure", "name": "뼈이식" },
+        { "@type": "MedicalProcedure", "name": "상악동 거상술" }
+      ]
     },
+    "employee": [
+      {
+        "@type": "Physician",
+        "name": "구강악안면외과 전문의",
+        "jobTitle": "원장",
+        "medicalSpecialty": "Oral and Maxillofacial Surgery",
+        "worksFor": { "@id": `${SITE_URL}/#organization` }
+      }
+    ],
     "numberOfEmployees": { "@type": "QuantitativeValue", "value": 2, "unitText": "구강악안면외과 전문의" },
     "medicalSpecialty": [
       "Oral and Maxillofacial Surgery",
@@ -119,6 +193,104 @@ function buildBaseSchema() {
       "https://www.google.com/maps/search/강남치과의원+영주",
       "https://www.instagram.com/gndentalclinic/"
     ],
+    "hasCredential": [
+      {
+        "@type": "EducationalOccupationalCredential",
+        "credentialCategory": "Medical Institution License",
+        "name": "의료기관 개설 신고증",
+        "recognizedBy": { "@type": "GovernmentOrganization", "name": "영주시 보건소" }
+      },
+      {
+        "@type": "EducationalOccupationalCredential",
+        "credentialCategory": "Specialty Certification",
+        "name": "구강악안면외과 전문의 진료기관"
+      }
+    ],
+    "makesOffer": [
+      {
+        "@type": "Offer",
+        "itemOffered": { "@type": "MedicalProcedure", "name": "임플란트" },
+        "priceCurrency": "KRW",
+        "category": "수술 진료",
+        "url": `${SITE_URL}/treatments/implant`,
+        "availability": "https://schema.org/InStock",
+        "businessFunction": "https://schema.org/Sell"
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": { "@type": "MedicalProcedure", "name": "디지털 보철(싱글 크라운)" },
+        "priceCurrency": "KRW",
+        "category": "보철 진료",
+        "url": `${SITE_URL}/treatments/digital-prosthesis`,
+        "availability": "https://schema.org/InStock"
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": { "@type": "MedicalProcedure", "name": "인비절라인 투명교정" },
+        "priceCurrency": "KRW",
+        "category": "교정 진료",
+        "url": `${SITE_URL}/treatments/invisalign`,
+        "availability": "https://schema.org/InStock"
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": { "@type": "MedicalProcedure", "name": "사랑니 발치" },
+        "priceCurrency": "KRW",
+        "category": "수술 진료",
+        "url": `${SITE_URL}/treatments/wisdom-tooth`,
+        "availability": "https://schema.org/InStock"
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": { "@type": "MedicalProcedure", "name": "심미보철" },
+        "priceCurrency": "KRW",
+        "category": "심미 진료",
+        "url": `${SITE_URL}/treatments/cosmetic`,
+        "availability": "https://schema.org/InStock"
+      }
+    ],
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "강남치과의원 진료 카탈로그",
+      "itemListElement": [
+        {
+          "@type": "OfferCatalog",
+          "name": "수술 진료",
+          "itemListElement": [
+            { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "임플란트", "url": `${SITE_URL}/treatments/implant` } },
+            { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "뼈이식 임플란트", "url": `${SITE_URL}/treatments/bone-graft` } },
+            { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "상악동 거상술", "url": `${SITE_URL}/treatments/sinus-lift` } },
+            { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "사랑니 발치", "url": `${SITE_URL}/treatments/wisdom-tooth` } }
+          ]
+        },
+        {
+          "@type": "OfferCatalog",
+          "name": "보철 진료",
+          "itemListElement": [
+            { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "디지털 보철(싱글 크라운)", "url": `${SITE_URL}/treatments/digital-prosthesis` } },
+            { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "심미보철", "url": `${SITE_URL}/treatments/cosmetic` } },
+            { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "틀니", "url": `${SITE_URL}/treatments/denture` } }
+          ]
+        },
+        {
+          "@type": "OfferCatalog",
+          "name": "교정 진료",
+          "itemListElement": [
+            { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "인비절라인 투명교정", "url": `${SITE_URL}/treatments/invisalign` } }
+          ]
+        },
+        {
+          "@type": "OfferCatalog",
+          "name": "일반 진료",
+          "itemListElement": [
+            { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "충치치료", "url": `${SITE_URL}/treatments/cavity` } },
+            { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "신경치료", "url": `${SITE_URL}/treatments/root-canal` } },
+            { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "잇몸치료", "url": `${SITE_URL}/treatments/gum` } },
+            { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "스케일링", "url": `${SITE_URL}/treatments/scaling` } }
+          ]
+        }
+      ]
+    },
     "aggregateRating": {
       "@type": "AggregateRating",
       "ratingValue": "4.9",
@@ -256,6 +428,174 @@ function buildBreadcrumb(url: string, pageTitle: string) {
       "name": item.name,
       "item": `${SITE_URL}${item.url}`
     }))
+  }
+}
+
+// HowTo Schema 빌더 (치료 단계 Rich Results)
+export function buildHowToSchema(opts: {
+  name: string
+  description: string
+  totalTime?: string  // ISO 8601 duration e.g. "P3M" = 3 months
+  estimatedCost?: { currency: string, value: string }
+  steps: { name: string, text: string, image?: string, url?: string }[]
+  tool?: string[]
+  supply?: string[]
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": opts.name,
+    "description": opts.description,
+    ...(opts.totalTime && { "totalTime": opts.totalTime }),
+    ...(opts.estimatedCost && {
+      "estimatedCost": {
+        "@type": "MonetaryAmount",
+        "currency": opts.estimatedCost.currency,
+        "value": opts.estimatedCost.value
+      }
+    }),
+    ...(opts.tool && { "tool": opts.tool.map(t => ({ "@type": "HowToTool", "name": t })) }),
+    ...(opts.supply && { "supply": opts.supply.map(s => ({ "@type": "HowToSupply", "name": s })) }),
+    "step": opts.steps.map((s, idx) => ({
+      "@type": "HowToStep",
+      "position": idx + 1,
+      "name": s.name,
+      "text": s.text,
+      ...(s.image && { "image": s.image }),
+      ...(s.url && { "url": s.url })
+    }))
+  }
+}
+
+// MedicalScholarlyArticle / Article Schema 빌더 (블로그용)
+export function buildArticleSchema(opts: {
+  headline: string
+  description: string
+  url: string
+  image?: string
+  datePublished: string  // ISO 8601 e.g. "2026-05-27"
+  dateModified?: string
+  author?: string
+  about?: string  // 의료 주제 (예: "임플란트")
+  type?: 'Article' | 'MedicalScholarlyArticle' | 'NewsArticle' | 'BlogPosting'
+  keywords?: string[]
+  wordCount?: number
+  articleSection?: string
+}) {
+  const articleType = opts.type || 'MedicalScholarlyArticle'
+  return {
+    "@context": "https://schema.org",
+    "@type": articleType,
+    "headline": opts.headline,
+    "description": opts.description,
+    "url": `${SITE_URL}${opts.url}`,
+    "image": opts.image ? `${SITE_URL}${opts.image}` : DEFAULT_OG_IMAGE,
+    "datePublished": opts.datePublished,
+    "dateModified": opts.dateModified || opts.datePublished,
+    "author": {
+      "@type": "Person",
+      "name": opts.author || "이태형",
+      "jobTitle": "구강악안면외과 전문의",
+      "worksFor": { "@id": `${SITE_URL}/#organization` }
+    },
+    "publisher": { "@id": `${SITE_URL}/#organization` },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `${SITE_URL}${opts.url}`
+    },
+    "inLanguage": "ko-KR",
+    ...(opts.about && {
+      "about": {
+        "@type": "MedicalProcedure",
+        "name": opts.about
+      }
+    }),
+    ...(opts.keywords && { "keywords": opts.keywords.join(", ") }),
+    ...(opts.wordCount && { "wordCount": opts.wordCount }),
+    ...(opts.articleSection && { "articleSection": opts.articleSection }),
+    "isAccessibleForFree": true,
+    "specialty": {
+      "@type": "MedicalSpecialty",
+      "name": "Dentistry"
+    }
+  }
+}
+
+// Service Schema 빌더 (각 진료별 Service Rich Results)
+export function buildServiceSchema(opts: {
+  name: string
+  description: string
+  url: string
+  serviceType: string  // 예: "임플란트 시술"
+  areaServed?: string[]  // 예: ["영주시", "봉화군"]
+  offers?: { name: string, description?: string }[]
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": opts.name,
+    "description": opts.description,
+    "serviceType": opts.serviceType,
+    "url": `${SITE_URL}${opts.url}`,
+    "provider": { "@id": `${SITE_URL}/#organization` },
+    "areaServed": (opts.areaServed || ["영주시", "봉화군", "예천군", "안동시", "단양군"]).map(name => ({
+      "@type": "City",
+      "name": name
+    })),
+    ...(opts.offers && {
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": opts.name,
+        "itemListElement": opts.offers.map(o => ({
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "MedicalProcedure",
+            "name": o.name,
+            ...(o.description && { "description": o.description })
+          }
+        }))
+      }
+    })
+  }
+}
+
+// FAQ Schema 빌더 (재사용용)
+export function buildFAQSchema(faqs: { question: string, answer: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faqs.map(f => ({
+      "@type": "Question",
+      "name": f.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": f.answer
+      }
+    }))
+  }
+}
+
+// VideoObject Schema 빌더 (영상 콘텐츠용)
+export function buildVideoSchema(opts: {
+  name: string
+  description: string
+  thumbnailUrl: string
+  uploadDate: string
+  contentUrl?: string
+  embedUrl?: string
+  duration?: string  // ISO 8601 duration e.g. "PT2M30S"
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "VideoObject",
+    "name": opts.name,
+    "description": opts.description,
+    "thumbnailUrl": opts.thumbnailUrl,
+    "uploadDate": opts.uploadDate,
+    ...(opts.contentUrl && { "contentUrl": opts.contentUrl }),
+    ...(opts.embedUrl && { "embedUrl": opts.embedUrl }),
+    ...(opts.duration && { "duration": opts.duration }),
+    "publisher": { "@id": `${SITE_URL}/#organization` }
   }
 }
 

@@ -438,9 +438,146 @@ export async function treatmentDetailPage(slug: string): Promise<{ html: string;
     }
   }
 
+  // ========= HowTo Schema (단계별 치료 과정 Rich Results) =========
+  const howToStepsMap: Record<string, { name: string; description: string; totalTime: string; estimatedCost?: string; steps: { name: string; text: string }[] }> = {
+    'implant': {
+      name: "임플란트 치료 단계별 안내",
+      description: "영주 강남치과의원 구강악안면외과 전문의의 디지털 임플란트 시술 전체 과정",
+      totalTime: "P4M",
+      estimatedCost: "1300000",
+      steps: [
+        { name: "1단계: 정밀 진단", text: "3D CT 촬영 및 PrimeScan 디지털 구강 스캔을 통해 턱뼈 두께·신경 위치·치아 배열을 정밀 분석합니다. (약 30분)" },
+        { name: "2단계: 디지털 수술 가이드 설계", text: "분석 데이터를 바탕으로 컴퓨터 시뮬레이션으로 최적의 임플란트 식립 각도·깊이·위치를 결정하고 맞춤 가이드를 제작합니다." },
+        { name: "3단계: 임플란트 식립 수술", text: "구강악안면외과 전문의가 디지털 가이드를 사용하여 정확한 위치에 임플란트(티타늄 픽스쳐)를 식립합니다. (약 30~60분, 국소마취)" },
+        { name: "4단계: 골유착 대기", text: "3~4개월 동안 임플란트와 턱뼈가 단단히 결합되도록 기다립니다. 이 기간 동안 정기적으로 경과를 확인합니다." },
+        { name: "5단계: 디지털 보철 제작", text: "PrimeScan으로 스캔 후 CEREC 시스템으로 지르코니아/세라믹 보철을 1~2시간 내 당일 제작합니다." },
+        { name: "6단계: 보철 장착 및 정기 관리", text: "맞춤 보철을 임플란트에 장착하고 교합을 조정합니다. 이후 1주·1개월·3개월·6개월 정기 점검을 받습니다." }
+      ]
+    },
+    'wisdom-tooth': {
+      name: "사랑니 발치 단계별 안내",
+      description: "구강악안면외과 전문의의 안전한 매복 사랑니 발치 전체 과정",
+      totalTime: "PT1H",
+      steps: [
+        { name: "1단계: 3D CT 정밀 진단", text: "3D CT로 사랑니 위치, 하치조신경과의 거리, 매복 형태를 정확히 파악합니다." },
+        { name: "2단계: 발치 전략 수립", text: "구강외과 전문의가 최소 절개·최소 뼈 삭제 전략을 수립합니다. 환자에게 충분히 설명합니다." },
+        { name: "3단계: 국소마취 및 발치", text: "국소마취 후 사랑니를 분할 발치하여 신경 손상 위험을 최소화합니다. (15~30분)" },
+        { name: "4단계: 봉합 및 지혈", text: "발치 부위를 봉합하고 거즈로 지혈합니다. 주의사항과 처방전을 받습니다." },
+        { name: "5단계: 7일 후 실밥 제거", text: "1주일 후 실밥을 제거하고 회복 상태를 확인합니다." }
+      ]
+    },
+    'invisalign': {
+      name: "인비절라인 투명교정 단계별 안내",
+      description: "iTero 스캐너 기반 맞춤형 투명 교정 전체 과정",
+      totalTime: "P18M",
+      steps: [
+        { name: "1단계: iTero 디지털 스캔", text: "iTero 스캐너로 구강 내부를 3D 스캔합니다. 파노라마·두부계측 X-ray 촬영도 함께 진행합니다. (약 30분)" },
+        { name: "2단계: 클린체크 3D 시뮬레이션", text: "인비절라인 인증의가 3D 시뮬레이션으로 교정 전후 모습을 미리 보여드립니다." },
+        { name: "3단계: 맞춤 얼라이너 제작", text: "전체 치료 기간의 모든 얼라이너 세트를 한 번에 제작합니다. (약 4~6주 소요)" },
+        { name: "4단계: 얼라이너 교체", text: "1~2주마다 새 얼라이너로 교체하며 치아를 점진적으로 이동시킵니다. 하루 22시간 이상 착용." },
+        { name: "5단계: 4~8주 정기 체크", text: "정기적으로 내원하여 교정 진행 상황을 확인하고 다음 단계 얼라이너를 받습니다." },
+        { name: "6단계: 유지장치 착용", text: "교정 완료 후 유지장치(리테이너)를 착용하여 결과를 장기 유지합니다." }
+      ]
+    },
+    'bone-graft': {
+      name: "뼈이식 임플란트 단계별 안내",
+      description: "구강악안면외과 전문의의 뼈이식 후 임플란트 전체 과정",
+      totalTime: "P10M",
+      steps: [
+        { name: "1단계: 3D CT 뼈 상태 분석", text: "턱뼈 두께·높이·밀도를 정밀 측정하고 이식재를 선택합니다." },
+        { name: "2단계: 뼈이식 수술", text: "자가골·동종골·이종골·합성골 등 적합한 이식재로 부족한 뼈를 보충합니다. (1시간 내외)" },
+        { name: "3단계: 4~6개월 골유착 대기", text: "이식한 뼈가 자기 뼈처럼 자리잡도록 기다립니다. 경미한 경우 임플란트 동시 식립 가능." },
+        { name: "4단계: 임플란트 식립", text: "충분한 뼈가 형성되면 임플란트를 식립합니다." },
+        { name: "5단계: 보철 장착", text: "추가 3~4개월 골유착 후 디지털 보철을 장착합니다." }
+      ]
+    },
+    'sinus-lift': {
+      name: "상악동 거상술 단계별 안내",
+      description: "구강악안면외과 전문의의 안전한 상악동 거상 임플란트 과정",
+      totalTime: "P10M",
+      steps: [
+        { name: "1단계: 3D CT 상악동 분석", text: "상악동 점막 상태, 잔존 뼈 높이, 비염·축농증 여부를 확인합니다." },
+        { name: "2단계: 접근 방법 결정", text: "잔존 뼈가 5mm 이상이면 치조정접근법, 미만이면 측방접근법으로 결정합니다." },
+        { name: "3단계: 상악동 거상 수술", text: "상악동 점막을 손상 없이 거상하고 뼈 이식재를 충전합니다. 동시 임플란트 식립도 가능." },
+        { name: "4단계: 4~6개월 골유착", text: "뼈가 안정적으로 형성되도록 기다립니다. 코 풀기·빨대 사용 제한 (2~3주)." },
+        { name: "5단계: 임플란트 및 보철 완성", text: "골유착 완료 후 임플란트와 디지털 보철로 마무리합니다." }
+      ]
+    },
+    'digital-prosthesis': {
+      name: "디지털 보철(싱글 크라운) 당일 제작 과정",
+      description: "CEREC 시스템 기반 당일 크라운 제작 전체 과정",
+      totalTime: "PT2H",
+      steps: [
+        { name: "1단계: PrimeScan 디지털 스캔", text: "본뜨기 없이 PrimeScan으로 구강을 3D 스캔합니다. (약 5~10분)" },
+        { name: "2단계: AI 보철 설계", text: "스캔 데이터를 기반으로 컴퓨터 AI가 자연치아에 맞는 보철을 자동 설계합니다." },
+        { name: "3단계: CEREC MC X 밀링", text: "지르코니아/세라믹 블록을 밀링 머신으로 자동 가공합니다. (약 20~30분)" },
+        { name: "4단계: SpeedFire 소성", text: "1600℃ 고온에서 소성하여 보철의 강도와 색상을 완성합니다." },
+        { name: "5단계: 장착 및 교합 조정", text: "보철을 치아에 장착하고 교합을 정밀 조정합니다. 당일 완성." }
+      ]
+    }
+  }
+  const howToData = howToStepsMap[t.slug]
+  const howToSchema = howToData ? {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": howToData.name,
+    "description": howToData.description,
+    "totalTime": howToData.totalTime,
+    ...(howToData.estimatedCost && {
+      "estimatedCost": {
+        "@type": "MonetaryAmount",
+        "currency": "KRW",
+        "value": howToData.estimatedCost
+      }
+    }),
+    "performTime": howToData.totalTime,
+    "supply": [
+      { "@type": "HowToSupply", "name": "디지털 진단 장비" },
+      { "@type": "HowToSupply", "name": "치과 의료 재료" }
+    ],
+    "tool": [
+      { "@type": "HowToTool", "name": "3D CT" },
+      { "@type": "HowToTool", "name": "PrimeScan / iTero 디지털 스캐너" }
+    ],
+    "step": howToData.steps.map((s, idx) => ({
+      "@type": "HowToStep",
+      "position": idx + 1,
+      "name": s.name,
+      "text": s.text,
+      "url": `https://kndent.kr/treatments/${t.slug}#step-${idx + 1}`
+    }))
+  } : null
+
+  // MedicalWebPage Schema (의료 페이지 메타 강화)
+  const medicalWebPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "MedicalWebPage",
+    "@id": `https://kndent.kr/treatments/${t.slug}#webpage`,
+    "url": `https://kndent.kr/treatments/${t.slug}`,
+    "name": t.h1,
+    "description": t.description,
+    "inLanguage": "ko-KR",
+    "isPartOf": { "@id": "https://kndent.kr/#organization" },
+    "about": { "@id": `https://kndent.kr/treatments/${t.slug}#procedure` },
+    "primaryImageOfPage": {
+      "@type": "ImageObject",
+      "url": `https://kndent.kr/static/treatment-${t.slug}.jpg`
+    },
+    "lastReviewed": new Date().toISOString().split('T')[0],
+    "reviewedBy": {
+      "@type": "Physician",
+      "name": "이태형",
+      "jobTitle": "구강악안면외과 전문의"
+    },
+    "medicalAudience": [
+      { "@type": "MedicalAudience", "audienceType": "Patient" }
+    ],
+    "specialty": { "@type": "MedicalSpecialty", "name": "Dentistry" }
+  }
+
   return {
     title: t.h1, description: t.description,
-    schemas: [medicalProcedureSchema, serviceSchema, ...(faqSchema ? [faqSchema] : [])],
+    schemas: [medicalProcedureSchema, serviceSchema, medicalWebPageSchema, ...(howToSchema ? [howToSchema] : []), ...(faqSchema ? [faqSchema] : [])],
     html: `
     <!-- Hero (White) -->
     <section class="relative min-h-[40vh] md:min-h-[60vh] flex items-end subpage-hero overflow-hidden">
