@@ -1042,9 +1042,19 @@ app.get('/sitemap-blog.xml', async (c) => {
   const baseUrl = 'https://kndent.kr'
   const today = new Date().toISOString().split('T')[0]
 
+  // ✅ lastmod 정규화 헬퍼 — W3C ISO 8601 보장 (YYYY-MM-DD 형식)
+  // DB의 SQLite datetime("YYYY-MM-DD HH:MM:SS")을 안전하게 변환
+  // Google Search Console "날짜가 잘못되었습니다" 오류 17건 해결 (2026-05-27)
+  const normalizeLastmod = (raw: any): string => {
+    if (!raw || typeof raw !== 'string') return today
+    // 1) "YYYY-MM-DD HH:MM:SS" 또는 "YYYY-MM-DDTHH:MM:SS" → YYYY-MM-DD만 추출
+    const m = raw.match(/^(\d{4}-\d{2}-\d{2})/)
+    if (m) return m[1]
+    return today
+  }
+
   // 목록 페이지
   // ⚠️ /before-after 는 의료광고법상 로그인 보호된 noindex 영역이므로 사이트맵에서 제외
-  //    (Google Search Console 17건 오류 원인 — 2026-05-27 해결)
   const staticPages = [
     { url: '/blog', lastmod: today, priority: '0.8', changefreq: 'weekly' },
     { url: '/notices', lastmod: today, priority: '0.7', changefreq: 'weekly' },
@@ -1057,7 +1067,7 @@ app.get('/sitemap-blog.xml', async (c) => {
     const blogPosts = await c.env.DB.prepare('SELECT slug, updated_at FROM blog_posts WHERE is_published = 1 ORDER BY published_at DESC').all()
     dynamicPages = dynamicPages.concat(blogPosts.results.map((p: any) => ({
       url: `/blog/${p.slug}`,
-      lastmod: p.updated_at ? p.updated_at.split('T')[0] : today,
+      lastmod: normalizeLastmod(p.updated_at),
       priority: '0.7',
       changefreq: 'monthly' as const
     })))
@@ -1065,7 +1075,7 @@ app.get('/sitemap-blog.xml', async (c) => {
     const noticesList = await c.env.DB.prepare('SELECT slug, updated_at FROM notices WHERE is_published = 1 ORDER BY published_at DESC').all()
     dynamicPages = dynamicPages.concat(noticesList.results.map((p: any) => ({
       url: `/notices/${p.slug}`,
-      lastmod: p.updated_at ? p.updated_at.split('T')[0] : today,
+      lastmod: normalizeLastmod(p.updated_at),
       priority: '0.5',
       changefreq: 'monthly' as const
     })))
