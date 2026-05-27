@@ -16,6 +16,7 @@ import { pillarPage, pillarIndexPage, getAllPillarSlugs } from './pages/pillar'
 import { symptomPage, symptomIndexPage, getAllSymptomSlugs, getAllSymptomPaths } from './pages/symptom'
 import { audiencePage, audienceIndexPage, getAllAudienceSlugs, getAllAudiencePaths } from './pages/audience'
 import { emergencyPage } from './pages/emergency'
+import { localityPage, localityTreatmentPage, localityIndexPage, getAllLocalityPaths, getLocalitySlugs } from './pages/locality'
 import { faqPage, allFAQs } from './pages/faq'
 import { blogListPage, blogDetailPage } from './pages/blog'
 import { beforeAfterListPage, beforeAfterDetailPage } from './pages/beforeafter'
@@ -447,6 +448,7 @@ Sitemap: https://kndent.kr/sitemap-pillar.xml
 Sitemap: https://kndent.kr/sitemap-symptom.xml
 Sitemap: https://kndent.kr/sitemap-audience.xml
 Sitemap: https://kndent.kr/sitemap-emergency.xml
+Sitemap: https://kndent.kr/sitemap-locality.xml
 Sitemap: https://kndent.kr/sitemap-blog.xml
 
 # RSS Feed (Google 색인 가속 — Google이 RSS도 sitemap으로 인식)
@@ -631,6 +633,7 @@ app.get('/sitemap.xml', (c) => {
     'sitemap-symptom.xml',
     'sitemap-audience.xml',
     'sitemap-emergency.xml',
+    'sitemap-locality.xml',
     'sitemap-blog.xml',
   ]
 
@@ -666,6 +669,7 @@ app.get('/sitemap-stats', async (c) => {
     { name: 'sitemap-symptom.xml', desc: '증상 진입 (Season 3)', category: 'SEO' },
     { name: 'sitemap-audience.xml', desc: '대상자 페르소나 (Season 3)', category: 'SEO' },
     { name: 'sitemap-emergency.xml', desc: '응급치과 (Season 3)', category: 'SEO' },
+    { name: 'sitemap-locality.xml', desc: '세부 지역(동·읍·면) × 진료 (Season 4)', category: 'SEO' },
     { name: 'sitemap-blog.xml', desc: '블로그/증례/공지/용어', category: '동적' },
   ]
 
@@ -2010,6 +2014,86 @@ app.get('/sitemap-emergency.xml', (c) => {
   c.header('Content-Type', 'application/xml')
   c.header('Cache-Control', 'public, max-age=86400, s-maxage=86400')
   return c.body(`${sitemapXmlHeader()}\n${urls.join('\n')}\n</urlset>`)
+})
+
+// ===== 🚀 Sitemap: Locality (세부 지역 × 진료) — Season 4 =====
+app.get('/sitemap-locality.xml', (c) => {
+  const baseUrl = 'https://kndent.kr'
+  const today = new Date().toISOString().split('T')[0]
+
+  const paths = getAllLocalityPaths()
+  // 인덱스 URL
+  const indexUrl = `  <url>
+    <loc>${baseUrl}/local</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>`
+
+  const urls = paths.map(p => {
+    const priority = p.priority === 1 ? '0.85' : p.priority === 2 ? '0.75' : '0.65'
+    const changefreq = p.priority === 1 ? 'weekly' : 'monthly'
+    const url = p.treatmentSlug
+      ? `${baseUrl}/local/${p.localitySlug}/${p.treatmentSlug}`
+      : `${baseUrl}/local/${p.localitySlug}`
+    return `  <url>
+    <loc>${url}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>${changefreq}</changefreq>
+    <priority>${priority}</priority>
+  </url>`
+  }).join('\n')
+
+  c.header('Content-Type', 'application/xml')
+  c.header('Cache-Control', 'public, max-age=86400, s-maxage=86400')
+  return c.body(`${sitemapXmlHeader()}\n${indexUrl}\n${urls}\n</urlset>`)
+})
+
+// ===== 🚀 Locality 라우트: 세부 지역 × 진료 (시즌 4 — Hyper-Local SEO) =====
+// 32개 세부 지역 (영주 동, 봉화·예천·안동·단양·문경·상주·영양·청송·의성 읍·면)
+// URL: /local (인덱스) | /local/:slug (지역) | /local/:slug/:treatment (지역+진료)
+
+app.get('/local', (c) => {
+  const result = localityIndexPage()
+  return c.html(layout(result.html, {
+    title: result.title,
+    description: result.description,
+    keywords: result.keywords,
+    url: '/local',
+    ogImage: 'https://kndent.kr/og/local',
+    speakableSelectors: ['[data-speakable]']
+  }))
+})
+
+app.get('/local/:slug', (c) => {
+  const slug = c.req.param('slug')
+  const result = localityPage(slug)
+  if (!result) return c.notFound()
+  return c.html(layout(result.html, {
+    title: result.title,
+    description: result.description,
+    keywords: result.keywords,
+    url: `/local/${slug}`,
+    ogImage: `https://kndent.kr/og/local-${slug}`,
+    schemas: result.schemas,
+    speakableSelectors: ['[data-speakable]', '#locality-hero', '#locality-treatments']
+  }))
+})
+
+app.get('/local/:slug/:treatment', (c) => {
+  const slug = c.req.param('slug')
+  const treatment = c.req.param('treatment')
+  const result = localityTreatmentPage(slug, treatment)
+  if (!result) return c.notFound()
+  return c.html(layout(result.html, {
+    title: result.title,
+    description: result.description,
+    keywords: result.keywords,
+    url: `/local/${slug}/${treatment}`,
+    ogImage: `https://kndent.kr/og/local-${slug}-${treatment}`,
+    schemas: result.schemas,
+    speakableSelectors: ['[data-speakable]']
+  }))
 })
 
 // ===== 🚀 SEO 슈퍼업글 시즌 2: 의도(Intent) 키워드 페이지 =====
