@@ -426,9 +426,13 @@ User-agent: PetalBot
 Disallow: /
 
 # ============================================================
-# 5. Sitemaps
+# 5. Sitemaps (인덱스 + 개별 — 검색엔진별 호환성 최대화)
 # ============================================================
+# 메인 사이트맵 인덱스 (모든 sub-sitemap 포함) — 이거 하나만 제출해도 됨
 Sitemap: https://kndent.kr/sitemap.xml
+
+# 개별 sub-sitemaps (네이버/Bing 호환용 — Google은 인덱스만 봐도 됨)
+Sitemap: https://kndent.kr/sitemap-main.xml
 Sitemap: https://kndent.kr/sitemap-treatments.xml
 Sitemap: https://kndent.kr/sitemap-faq.xml
 Sitemap: https://kndent.kr/sitemap-area.xml
@@ -441,9 +445,12 @@ Sitemap: https://kndent.kr/sitemap-audience.xml
 Sitemap: https://kndent.kr/sitemap-emergency.xml
 Sitemap: https://kndent.kr/sitemap-blog.xml
 
-# RSS Feed (Google 색인 가속)
-# RSS: https://kndent.kr/feed.xml
-# HTML Sitemap: https://kndent.kr/all-pages
+# RSS Feed (Google 색인 가속 — Google이 RSS도 sitemap으로 인식)
+Sitemap: https://kndent.kr/feed.xml
+
+# 부가 자료
+# HTML Sitemap (사람용): https://kndent.kr/all-pages
+# Sitemap 통계 (진단용): https://kndent.kr/sitemap-stats
 
 # Host
 Host: https://kndent.kr
@@ -588,64 +595,255 @@ function sitemapUrl(baseUrl: string, p: { url: string; lastmod: string; changefr
   </url>`
 }
 
-// ===== SEO: Sitemap Index (분리형 사이트맵) =====
+// ===== SEO: Sitemap Index (12개 sub-sitemap 통합 인덱스) =====
+// 카테고리:
+//   - main(7) : 메인/의료진/가격/예약/오시는길
+//   - treatments(18) : 진료과목 허브 + 17개 진료
+//   - faq(9) : FAQ + 카테고리별
+//   - area(14) : 14개 지역 페이지
+//   - combo(112) : 지역×진료 조합 (Season 1)
+//   - intent(448) : 의도형 키워드 (Season 2)
+//   - compare(64) : 비교 페이지 (Season 2)
+//   - pillar(9) : 필러/가이드 (Season 2)
+//   - symptom(93) : 증상 진입 (Season 3)
+//   - audience(31) : 대상자 페르소나 (Season 3)
+//   - emergency(9) : 응급치과 (Season 3)
+//   - blog(269) : 블로그/증례/공지/용어
+// 총 ~1,083 URL
 app.get('/sitemap.xml', (c) => {
   const baseUrl = 'https://kndent.kr'
-  const today = new Date().toISOString().split('T')[0]
+  // ISO 8601 풀 타임스탬프 (Google 권장)
+  const now = new Date().toISOString()
 
-  c.header('Content-Type', 'application/xml')
+  const subSitemaps = [
+    'sitemap-main.xml',
+    'sitemap-treatments.xml',
+    'sitemap-faq.xml',
+    'sitemap-area.xml',
+    'sitemap-combo.xml',
+    'sitemap-intent.xml',
+    'sitemap-compare.xml',
+    'sitemap-pillar.xml',
+    'sitemap-symptom.xml',
+    'sitemap-audience.xml',
+    'sitemap-emergency.xml',
+    'sitemap-blog.xml',
+  ]
+
+  const entries = subSitemaps.map(s => `  <sitemap>
+    <loc>${baseUrl}/${s}</loc>
+    <lastmod>${now}</lastmod>
+  </sitemap>`).join('\n')
+
+  c.header('Content-Type', 'application/xml; charset=utf-8')
   c.header('Cache-Control', 'public, max-age=3600, s-maxage=7200')
+  c.header('X-Robots-Tag', 'noindex, follow')
   return c.body(`<?xml version="1.0" encoding="UTF-8"?>
+<!-- 강남치과의원 사이트맵 인덱스 | 12 sub-sitemaps | 총 ~1,083 URLs -->
+<!-- 생성일시: ${now} -->
+<!-- 제출처: Google Search Console / Naver Search Advisor / Bing Webmaster Tools -->
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <sitemap>
-    <loc>${baseUrl}/sitemap-main.xml</loc>
-    <lastmod>${today}</lastmod>
-  </sitemap>
-  <sitemap>
-    <loc>${baseUrl}/sitemap-treatments.xml</loc>
-    <lastmod>${today}</lastmod>
-  </sitemap>
-  <sitemap>
-    <loc>${baseUrl}/sitemap-faq.xml</loc>
-    <lastmod>${today}</lastmod>
-  </sitemap>
-  <sitemap>
-    <loc>${baseUrl}/sitemap-area.xml</loc>
-    <lastmod>${today}</lastmod>
-  </sitemap>
-  <sitemap>
-    <loc>${baseUrl}/sitemap-combo.xml</loc>
-    <lastmod>${today}</lastmod>
-  </sitemap>
-  <sitemap>
-    <loc>${baseUrl}/sitemap-intent.xml</loc>
-    <lastmod>${today}</lastmod>
-  </sitemap>
-  <sitemap>
-    <loc>${baseUrl}/sitemap-compare.xml</loc>
-    <lastmod>${today}</lastmod>
-  </sitemap>
-  <sitemap>
-    <loc>${baseUrl}/sitemap-pillar.xml</loc>
-    <lastmod>${today}</lastmod>
-  </sitemap>
-  <sitemap>
-    <loc>${baseUrl}/sitemap-symptom.xml</loc>
-    <lastmod>${today}</lastmod>
-  </sitemap>
-  <sitemap>
-    <loc>${baseUrl}/sitemap-audience.xml</loc>
-    <lastmod>${today}</lastmod>
-  </sitemap>
-  <sitemap>
-    <loc>${baseUrl}/sitemap-emergency.xml</loc>
-    <lastmod>${today}</lastmod>
-  </sitemap>
-  <sitemap>
-    <loc>${baseUrl}/sitemap-blog.xml</loc>
-    <lastmod>${today}</lastmod>
-  </sitemap>
+${entries}
 </sitemapindex>`)
+})
+
+// ===== Sitemap 진단 대시보드 (사람용 HTML, 검색엔진 제출 검증 도구) =====
+app.get('/sitemap-stats', async (c) => {
+  const baseUrl = 'https://kndent.kr'
+  const subSitemaps = [
+    { name: 'sitemap-main.xml', desc: '메인/의료진/가격/예약/오시는길', category: '핵심' },
+    { name: 'sitemap-treatments.xml', desc: '진료과목 허브 + 17개 진료', category: '핵심' },
+    { name: 'sitemap-faq.xml', desc: 'FAQ 카테고리', category: '핵심' },
+    { name: 'sitemap-area.xml', desc: '14개 지역 페이지', category: '지역' },
+    { name: 'sitemap-combo.xml', desc: '지역×진료 조합 (Season 1)', category: 'SEO' },
+    { name: 'sitemap-intent.xml', desc: '의도형 키워드 (Season 2)', category: 'SEO' },
+    { name: 'sitemap-compare.xml', desc: '비교 페이지 (Season 2)', category: 'SEO' },
+    { name: 'sitemap-pillar.xml', desc: '필러/가이드 (Season 2)', category: 'SEO' },
+    { name: 'sitemap-symptom.xml', desc: '증상 진입 (Season 3)', category: 'SEO' },
+    { name: 'sitemap-audience.xml', desc: '대상자 페르소나 (Season 3)', category: 'SEO' },
+    { name: 'sitemap-emergency.xml', desc: '응급치과 (Season 3)', category: 'SEO' },
+    { name: 'sitemap-blog.xml', desc: '블로그/증례/공지/용어', category: '동적' },
+  ]
+
+  const html = `
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex,follow">
+<title>Sitemap 통계 — 강남치과의원</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-slate-50 p-8">
+<div class="max-w-5xl mx-auto">
+  <h1 class="text-3xl font-bold text-slate-800 mb-2"><i class="fas fa-sitemap mr-2 text-blue-600"></i>Sitemap 통계 대시보드</h1>
+  <p class="text-slate-600 mb-6">검색엔진 제출 검증용 (noindex)</p>
+
+  <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6 rounded">
+    <p class="font-bold text-blue-900">📌 제출해야 할 메인 사이트맵</p>
+    <code class="block mt-2 bg-white p-2 rounded text-sm">${baseUrl}/sitemap.xml</code>
+    <p class="text-sm text-blue-800 mt-2">→ 이 인덱스 하나만 제출해도 12개 sub-sitemap 모두 자동 발견됩니다.</p>
+  </div>
+
+  <table class="w-full bg-white rounded-lg shadow overflow-hidden">
+    <thead class="bg-slate-800 text-white">
+      <tr>
+        <th class="p-3 text-left">#</th>
+        <th class="p-3 text-left">사이트맵</th>
+        <th class="p-3 text-left">설명</th>
+        <th class="p-3 text-left">카테고리</th>
+        <th class="p-3 text-left">URL 수</th>
+        <th class="p-3 text-left">상태</th>
+      </tr>
+    </thead>
+    <tbody id="sitemap-table">
+      ${subSitemaps.map((s, i) => `
+      <tr class="border-b hover:bg-slate-50">
+        <td class="p-3">${i + 1}</td>
+        <td class="p-3"><a href="/${s.name}" target="_blank" class="text-blue-600 hover:underline font-mono text-sm">${s.name}</a></td>
+        <td class="p-3 text-sm">${s.desc}</td>
+        <td class="p-3"><span class="px-2 py-1 text-xs rounded ${s.category === '핵심' ? 'bg-red-100 text-red-700' : s.category === 'SEO' ? 'bg-purple-100 text-purple-700' : s.category === '지역' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}">${s.category}</span></td>
+        <td class="p-3 text-sm" data-count="${s.name}">로딩...</td>
+        <td class="p-3 text-sm" data-status="${s.name}">⏳</td>
+      </tr>`).join('')}
+    </tbody>
+    <tfoot class="bg-slate-100 font-bold">
+      <tr>
+        <td colspan="4" class="p-3 text-right">총 합계 →</td>
+        <td class="p-3" id="total-count">계산중...</td>
+        <td class="p-3" id="total-status">⏳</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <div class="mt-8 bg-white p-6 rounded-lg shadow">
+    <h2 class="text-xl font-bold mb-4"><i class="fas fa-paper-plane mr-2 text-green-600"></i>검색엔진 제출 가이드</h2>
+    <div class="space-y-3 text-sm">
+      <div class="border rounded p-3">
+        <strong class="text-blue-700">🔵 Google Search Console</strong>
+        <p class="text-slate-600 mt-1">https://search.google.com/search-console → 사이트맵 → <code>sitemap.xml</code> 입력 → 제출</p>
+      </div>
+      <div class="border rounded p-3">
+        <strong class="text-green-700">🟢 Naver Search Advisor</strong>
+        <p class="text-slate-600 mt-1">https://searchadvisor.naver.com → 요청 → 사이트맵 제출 → <code>sitemap.xml</code> 입력</p>
+      </div>
+      <div class="border rounded p-3">
+        <strong class="text-orange-700">🟠 Bing Webmaster Tools</strong>
+        <p class="text-slate-600 mt-1">https://www.bing.com/webmasters → Sitemaps → URL 추가 → <code>https://kndent.kr/sitemap.xml</code></p>
+      </div>
+      <div class="border rounded p-3">
+        <strong class="text-purple-700">🟣 Daum 검색등록</strong>
+        <p class="text-slate-600 mt-1">https://register.search.daum.net → 사이트 등록 후 sitemap 자동 발견</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-6 bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded">
+    <p class="font-bold text-yellow-900">⚡ 즉시 핑 (Ping) 보내기</p>
+    <p class="text-sm text-yellow-800 mt-2">사이트맵을 업데이트한 후 검색엔진에게 즉시 알리는 도우미:</p>
+    <a href="/ping-search-engines" class="inline-block mt-3 bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded font-bold">
+      <i class="fas fa-bell mr-1"></i>핑 보내기
+    </a>
+  </div>
+</div>
+
+<script>
+(async () => {
+  const sitemaps = ${JSON.stringify(subSitemaps.map(s => s.name))};
+  let total = 0;
+  let allOk = true;
+  for (const s of sitemaps) {
+    try {
+      const r = await fetch('/' + s);
+      const t = await r.text();
+      const c = (t.match(/<loc>/g) || []).length;
+      total += c;
+      document.querySelector('[data-count="' + s + '"]').textContent = c.toLocaleString();
+      document.querySelector('[data-status="' + s + '"]').textContent = r.ok ? '✅' : '❌';
+      if (!r.ok) allOk = false;
+    } catch(e) {
+      document.querySelector('[data-status="' + s + '"]').textContent = '❌';
+      allOk = false;
+    }
+  }
+  document.getElementById('total-count').textContent = total.toLocaleString() + ' URLs';
+  document.getElementById('total-status').textContent = allOk ? '✅ 정상' : '⚠️';
+})();
+</script>
+</body>
+</html>`
+  return c.html(html)
+})
+
+// ===== Sitemap Ping: 검색엔진에 사이트맵 갱신 통보 =====
+// Google은 2023년 ping API 폐기, Bing은 IndexNow 권장 — 여기서는 안내만 제공
+app.get('/ping-search-engines', (c) => {
+  const baseUrl = 'https://kndent.kr'
+  const sitemapUrl = encodeURIComponent(`${baseUrl}/sitemap.xml`)
+
+  return c.html(`
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex,follow">
+<title>검색엔진 Ping — 강남치과의원</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-slate-50 p-8">
+<div class="max-w-3xl mx-auto">
+  <h1 class="text-3xl font-bold mb-6"><i class="fas fa-bell text-yellow-500 mr-2"></i>검색엔진 Ping 도우미</h1>
+
+  <div class="bg-white rounded-lg shadow p-6 mb-6">
+    <h2 class="text-xl font-bold mb-3">📍 사이트맵 URL</h2>
+    <code class="block bg-slate-100 p-3 rounded text-blue-700 font-mono">${baseUrl}/sitemap.xml</code>
+  </div>
+
+  <div class="space-y-4">
+    <div class="bg-white rounded-lg shadow p-5">
+      <h3 class="text-lg font-bold mb-2">🔵 Google Search Console (권장)</h3>
+      <p class="text-sm text-slate-600 mb-3">Google은 2023년 6월부로 ping API를 폐기했습니다. 대신 Search Console에서 직접 제출하세요.</p>
+      <a href="https://search.google.com/search-console/sitemaps?resource_id=https://kndent.kr/" target="_blank" class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-bold">
+        <i class="fas fa-external-link-alt mr-1"></i>Google Search Console 열기
+      </a>
+    </div>
+
+    <div class="bg-white rounded-lg shadow p-5">
+      <h3 class="text-lg font-bold mb-2">🟢 Naver Search Advisor</h3>
+      <p class="text-sm text-slate-600 mb-3">네이버는 Search Advisor에서 직접 사이트맵을 제출/재요청합니다.</p>
+      <a href="https://searchadvisor.naver.com/console/board" target="_blank" class="inline-block bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-bold">
+        <i class="fas fa-external-link-alt mr-1"></i>Naver Search Advisor 열기
+      </a>
+    </div>
+
+    <div class="bg-white rounded-lg shadow p-5">
+      <h3 class="text-lg font-bold mb-2">🟠 Bing Webmaster Tools</h3>
+      <p class="text-sm text-slate-600 mb-3">Bing은 ping API를 제공합니다 (자동 새로고침 가능):</p>
+      <a href="https://www.bing.com/ping?sitemap=${sitemapUrl}" target="_blank" class="inline-block bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded font-bold mr-2">
+        <i class="fas fa-paper-plane mr-1"></i>Bing 즉시 Ping
+      </a>
+      <a href="https://www.bing.com/webmasters/sitemaps" target="_blank" class="inline-block bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 rounded font-bold">
+        <i class="fas fa-external-link-alt mr-1"></i>Bing Webmaster 열기
+      </a>
+    </div>
+
+    <div class="bg-white rounded-lg shadow p-5">
+      <h3 class="text-lg font-bold mb-2">🟣 Daum 검색등록</h3>
+      <p class="text-sm text-slate-600 mb-3">Daum/Kakao는 별도 ping API가 없습니다. 사이트 등록만 하면 자동 발견됩니다.</p>
+      <a href="https://register.search.daum.net/index.daum" target="_blank" class="inline-block bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded font-bold">
+        <i class="fas fa-external-link-alt mr-1"></i>Daum 검색등록 열기
+      </a>
+    </div>
+  </div>
+
+  <div class="mt-8">
+    <a href="/sitemap-stats" class="text-blue-600 hover:underline">← Sitemap 통계로 돌아가기</a>
+  </div>
+</div>
+</body>
+</html>`)
 })
 
 // ===== Sitemap: 핵심 페이지 (메인, 의료진, 가격, 예약, 오시는길) =====
@@ -687,6 +885,7 @@ app.get('/sitemap-main.xml', (c) => {
     { url: '/pricing', lastmod: today, priority: '0.9', changefreq: 'monthly' },
     { url: '/reservation', lastmod: today, priority: '0.8', changefreq: 'monthly' },
     { url: '/directions', lastmod: today, priority: '0.8', changefreq: 'yearly' },
+    { url: '/all-pages', lastmod: today, priority: '0.7', changefreq: 'weekly' },
   ]
 
   const urls = pages.map(p => sitemapUrl(baseUrl, p, pageImages[p.url])).join('\n')
