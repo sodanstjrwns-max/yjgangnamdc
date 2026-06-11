@@ -136,6 +136,7 @@ const brokenUrlRedirects: Record<string, string> = {
   '/treatments/braces': '/treatments/invisalign',      // 교정 → 인비절라인
   '/treatments/teeth-whitening': '/treatments/whitening', // 미백 영문
   '/treatments/periodontal': '/treatments/gum',        // 치주 → 잇몸
+  '/treatments/cerec': '/treatments/digital-prosthesis', // 구 슬러그 → 디지털 보철
 }
 app.use('*', createMiddleware(async (c, next) => {
   const redirect = brokenUrlRedirects[c.req.path]
@@ -882,6 +883,25 @@ app.get('/sitemap-stats', async (c) => {
 // ============================================================
 // IndexNow: Bing/Naver/Yandex 즉시 색인 프로토콜 (실구현)
 // ============================================================
+
+// 자동 제출 헬퍼 — 콘텐츠 발행/수정 시 백그라운드로 검색엔진에 통보
+// (실패해도 본 요청에 영향 없음 — fire-and-forget)
+async function submitToIndexNow(urls: string[]): Promise<void> {
+  const baseUrl = 'https://kndent.kr'
+  const payload = {
+    host: 'kndent.kr',
+    key: INDEXNOW_KEY,
+    keyLocation: `${baseUrl}/${INDEXNOW_KEY}.txt`,
+    urlList: urls.map(u => u.startsWith('http') ? u : `${baseUrl}${u}`)
+  }
+  await Promise.allSettled(INDEXNOW_ENDPOINTS.map(endpoint =>
+    fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
+      body: JSON.stringify(payload)
+    })
+  ))
+}
 
 // 1) 키 검증 파일 — https://kndent.kr/{KEY}.txt
 app.get(`/${INDEXNOW_KEY}.txt`, (c) => {
@@ -2753,7 +2773,9 @@ app.post('/api/blog', adminAuth, async (c) => {
     await c.env.DB.prepare(
       'INSERT INTO blog_posts (slug, title, category, summary, content, thumbnail, tags, author) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
     ).bind(slug, title, category || '일반', summary || '', formattedContent, thumbnail || '', tags || '', author || '강남치과의원').run()
-    return c.json({ success: true, slug })
+    // ⚡ 자동 IndexNow: 새 글 발행 즉시 검색엔진에 통보 (백그라운드, 응답 지연 없음)
+    try { c.executionCtx.waitUntil(submitToIndexNow([`/blog/${slug}`, '/blog', '/feed.xml'])) } catch {}
+    return c.json({ success: true, slug, indexnow: 'submitted' })
   } catch (e: any) {
     return c.json({ success: false, error: e.message }, 500)
   }
@@ -2767,7 +2789,9 @@ app.put('/api/blog/:slug', adminAuth, async (c) => {
     await c.env.DB.prepare(
       'UPDATE blog_posts SET title=?, category=?, summary=?, content=?, thumbnail=?, tags=?, author=?, is_published=?, updated_at=CURRENT_TIMESTAMP WHERE slug=?'
     ).bind(title, category, summary, formattedContent, thumbnail || '', tags || '', author, is_published ?? 1, slug).run()
-    return c.json({ success: true })
+    // ⚡ 자동 IndexNow: 수정된 글 재색인 요청
+    try { c.executionCtx.waitUntil(submitToIndexNow([`/blog/${slug}`, '/blog'])) } catch {}
+    return c.json({ success: true, indexnow: 'submitted' })
   } catch (e: any) {
     return c.json({ success: false, error: e.message }, 500)
   }
@@ -2892,7 +2916,9 @@ app.post('/api/notices', adminAuth, async (c) => {
     await c.env.DB.prepare(
       'INSERT INTO notices (slug, title, category, content, author, is_pinned) VALUES (?, ?, ?, ?, ?, ?)'
     ).bind(slug, title, category || '공지', formattedContent, author || '강남치과의원', is_pinned || 0).run()
-    return c.json({ success: true, slug })
+    // ⚡ 자동 IndexNow
+    try { c.executionCtx.waitUntil(submitToIndexNow([`/notices/${slug}`, '/notices'])) } catch {}
+    return c.json({ success: true, slug, indexnow: 'submitted' })
   } catch (e: any) {
     return c.json({ success: false, error: e.message }, 500)
   }
@@ -2906,7 +2932,9 @@ app.put('/api/notices/:slug', adminAuth, async (c) => {
     await c.env.DB.prepare(
       'UPDATE notices SET title=?, category=?, content=?, author=?, is_pinned=?, is_published=?, updated_at=CURRENT_TIMESTAMP WHERE slug=?'
     ).bind(title, category, formattedContent, author, is_pinned || 0, is_published ?? 1, slug).run()
-    return c.json({ success: true })
+    // ⚡ 자동 IndexNow
+    try { c.executionCtx.waitUntil(submitToIndexNow([`/notices/${slug}`, '/notices'])) } catch {}
+    return c.json({ success: true, indexnow: 'submitted' })
   } catch (e: any) {
     return c.json({ success: false, error: e.message }, 500)
   }

@@ -49,7 +49,7 @@ export const INDEXNOW_DEFAULT_URLS = [
   '/treatments/implant',
   '/treatments/wisdom-tooth',
   '/treatments/invisalign',
-  '/treatments/cerec',
+  '/treatments/digital-prosthesis',
   '/pricing',
   '/faq',
   '/doctors',
