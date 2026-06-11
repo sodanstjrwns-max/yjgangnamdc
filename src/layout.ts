@@ -613,7 +613,8 @@ function buildWebSiteSchema() {
       "@type": "SearchAction",
       "target": {
         "@type": "EntryPoint",
-        "urlTemplate": `${SITE_URL}/treatments/{search_term_string}`
+        // ✅ 실제 동작하는 사이트 검색 URL (Sitelinks Search Box 자격 요건)
+        "urlTemplate": `${SITE_URL}/search?q={search_term_string}`
       },
       "query-input": "required name=search_term_string"
     }

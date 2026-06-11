@@ -24,6 +24,7 @@ import { noticeListPage, noticeDetailPage } from './pages/notices'
 import { adminPage } from './pages/admin'
 import { registerPage, loginPage, loginRequiredPage } from './pages/auth'
 import { dictionaryListPage, dictionaryDetailPage } from './pages/dictionary'
+import { searchPage, searchStatic } from './pages/search'
 import { layout } from './layout'
 import { CONTENT_LASTMOD, MEDICAL_LAST_REVIEWED, SITEMAP_INDEX_LASTMOD, INDEXNOW_KEY, INDEXNOW_ENDPOINTS, INDEXNOW_DEFAULT_URLS } from './seo'
 
@@ -635,6 +636,7 @@ app.get('/llms.txt', (c) => {
 - 예약: https://kndent.kr/reservation
 - 블로그: https://kndent.kr/blog
 - 치과용어사전: https://kndent.kr/dictionary
+- 사이트 검색: https://kndent.kr/search
 
 ## 인용 시 참고
 이 사이트의 의료 정보는 구강악안면외과 전문의가 직접 작성·감수하였습니다.
@@ -1105,6 +1107,7 @@ app.get('/sitemap-main.xml', (c) => {
     { url: '/reservation', lastmod: today, priority: '0.8', changefreq: 'monthly' },
     { url: '/directions', lastmod: today, priority: '0.8', changefreq: 'yearly' },
     { url: '/all-pages', lastmod: today, priority: '0.7', changefreq: 'weekly' },
+    { url: '/search', lastmod: today, priority: '0.5', changefreq: 'monthly' },
   ]
 
   const urls = pages.map(p => sitemapUrl(baseUrl, p, pageImages[p.url])).join('\n')
@@ -1308,6 +1311,40 @@ app.get('/sitemap-blog.xml', async (c) => {
   c.header('Content-Type', 'application/xml')
   c.header('Cache-Control', 'public, max-age=3600, s-maxage=7200')
   return c.body(`${sitemapXmlHeader()}\n${urls}\n</urlset>`)
+})
+
+// ===== 사이트 통합 검색 (WebSite SearchAction 타깃 — Sitelinks Search Box) =====
+app.get('/search', async (c) => {
+  const query = (c.req.query('q') || '').trim().slice(0, 100)
+  const staticResults = query ? searchStatic(query) : []
+
+  // D1 검색: 블로그 + 용어사전 (LIKE 기반, 상위 10건)
+  let dbResults: { url: string; title: string; desc: string; category: string }[] = []
+  if (query) {
+    try {
+      const like = `%${query.replace(/[%_]/g, '')}%`
+      const blog = await c.env.DB.prepare(
+        "SELECT slug, title, summary FROM blog_posts WHERE is_published = 1 AND (title LIKE ?1 OR summary LIKE ?1 OR tags LIKE ?1) LIMIT 5"
+      ).bind(like).all()
+      dbResults = dbResults.concat((blog.results || []).map((p: any) => ({
+        url: `/blog/${p.slug}`, title: p.title, desc: p.summary || '블로그 글', category: '콘텐츠'
+      })))
+      const dict = await c.env.DB.prepare(
+        "SELECT slug, term_ko, definition FROM dictionary WHERE term_ko LIKE ?1 OR term_en LIKE ?1 OR definition LIKE ?1 LIMIT 5"
+      ).bind(like).all()
+      dbResults = dbResults.concat((dict.results || []).map((t: any) => ({
+        url: `/dictionary/${t.slug}`, title: `${t.term_ko} (용어사전)`, desc: (t.definition || '').slice(0, 80), category: '콘텐츠'
+      })))
+    } catch {}
+  }
+
+  return c.html(layout(searchPage(query, staticResults, dbResults), {
+    title: query ? `"${query}" 검색 결과 | 강남치과의원` : '사이트 검색 | 강남치과의원',
+    description: query ? `강남치과의원에서 "${query}" 검색 결과를 확인하세요.` : '진료, 증상, 비용 등 원하는 정보를 검색하세요.',
+    url: query ? `/search?q=${encodeURIComponent(query)}` : '/search',
+    // 검색 결과 페이지는 색인 제외 (중복/저품질 콘텐츠 방지 — Google 권장)
+    robots: query ? 'noindex, follow' : 'index, follow'
+  }))
 })
 
 // ===== 메인 페이지 =====
@@ -1638,7 +1675,23 @@ app.get('/blog/:slug', async (c) => {
   } catch (e) { /* DB not available */ }
 
   if (!post) return c.notFound()
-  const page = blogDetailPage(post)
+
+  // 관련 글: 같은 카테고리 우선, 부족하면 최신 글로 채움 (최대 4개)
+  let relatedPosts: any[] = []
+  try {
+    const sameCat = await c.env.DB.prepare(
+      'SELECT slug, title, summary, category FROM blog_posts WHERE is_published = 1 AND slug != ?1 AND category = ?2 ORDER BY published_at DESC LIMIT 4'
+    ).bind(slug, post.category).all()
+    relatedPosts = sameCat.results || []
+    if (relatedPosts.length < 4) {
+      const recent = await c.env.DB.prepare(
+        'SELECT slug, title, summary, category FROM blog_posts WHERE is_published = 1 AND slug != ?1 AND category != ?2 ORDER BY published_at DESC LIMIT ?3'
+      ).bind(slug, post.category, 4 - relatedPosts.length).all()
+      relatedPosts = relatedPosts.concat(recent.results || [])
+    }
+  } catch {}
+
+  const page = blogDetailPage(post, relatedPosts)
   return c.html(layout(page.html, {
     title: page.title,
     description: page.description,

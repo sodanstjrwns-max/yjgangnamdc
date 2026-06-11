@@ -183,21 +183,70 @@ export function blogListPage(posts: any[]): string {
   `;
 }
 
+// 콘텐츠 키워드 → 관련 진료 페이지 매핑 (내부링크 자동 생성)
+const TREATMENT_LINK_MAP: { keywords: string[]; url: string; label: string }[] = [
+  { keywords: ['임플란트'], url: '/treatments/implant', label: '임플란트' },
+  { keywords: ['사랑니'], url: '/treatments/wisdom-tooth', label: '사랑니 발치' },
+  { keywords: ['교정', '인비절라인', '투명교정'], url: '/treatments/invisalign', label: '인비절라인 투명교정' },
+  { keywords: ['충치'], url: '/treatments/cavity', label: '충치치료' },
+  { keywords: ['신경치료', '근관'], url: '/treatments/root-canal', label: '신경치료' },
+  { keywords: ['크라운', '보철', '세렉', 'cerec'], url: '/treatments/digital-prosthesis', label: 'CEREC 디지털 보철' },
+  { keywords: ['미백', '화이트닝'], url: '/treatments/whitening', label: '치아미백' },
+  { keywords: ['잇뱀', '치주', '치은'], url: '/treatments/gum', label: '잇뱀치료' },
+  { keywords: ['스케일링', '치석'], url: '/treatments/scaling', label: '스케일링' },
+  { keywords: ['틀니', '의치'], url: '/treatments/denture', label: '틀니' },
+  { keywords: ['너이식', '골이식'], url: '/treatments/bone-graft', label: '너이식' },
+  { keywords: ['상악동'], url: '/treatments/sinus-lift', label: '상악동 거상술' },
+  { keywords: ['턱관절', 'tmj'], url: '/treatments/tmj', label: '턱관절 치료' },
+  { keywords: ['라미네이트', '심미'], url: '/treatments/cosmetic', label: '심미보철' },
+]
+
+function findRelatedTreatments(post: any): { url: string; label: string }[] {
+  const haystack = `${post.title} ${post.summary || ''} ${post.tags || ''} ${(post.content || '').slice(0, 2000)}`.toLowerCase()
+  const found: { url: string; label: string }[] = []
+  for (const m of TREATMENT_LINK_MAP) {
+    if (m.keywords.some(k => haystack.includes(k))) found.push({ url: m.url, label: m.label })
+    if (found.length >= 4) break
+  }
+  return found
+}
+
 // 블로그 상세 페이지
-export function blogDetailPage(post: any): { html: string; title: string; description: string; schemas: object[] } {
+export function blogDetailPage(post: any, relatedPosts: any[] = []): { html: string; title: string; description: string; schemas: object[] } {
+  const relatedTreatments = findRelatedTreatments(post)
   const tagsHtml = post.tags ? post.tags.split(',').map((t: string) => 
     `<span class="px-3.5 py-1.5 rounded-full bg-royal/[0.04] text-royal text-[11px] font-bold border border-royal/[0.08]">#${t.trim()}</span>`
   ).join('') : '';
+
+  // E-E-A-T: author를 실제 의사 프로필 페이지와 연결 (Person + url + jobTitle)
+  const authorName = post.author || '이태형'
+  const isLee = authorName.includes('이태형') || authorName === '강남치과의원'
+  const isChoi = authorName.includes('최민혜')
+  const authorSchema = (isLee || isChoi) ? {
+    "@type": "Person",
+    "name": isChoi ? '최민혜' : '이태형',
+    "url": isChoi ? 'https://kndent.kr/doctors/choi-minhye' : 'https://kndent.kr/doctors/lee-taehyung',
+    "jobTitle": isChoi ? '원장 (구강악안면외과 전문의)' : '대표원장 (구강악안면외과 전문의)',
+    "worksFor": { "@id": "https://kndent.kr/#organization" },
+    "knowsAbout": ["임플란트", "사랑니 발치", "너이식", "구강악안면외과"]
+  } : {
+    "@type": "Person",
+    "name": authorName,
+    "worksFor": { "@id": "https://kndent.kr/#organization" }
+  }
 
   const articleSchema = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     "headline": post.title,
     "description": post.summary || post.title,
-    "author": {
+    "author": authorSchema,
+    // E-E-A-T: 의료 콘텐츠 전문의 감수 명시
+    "reviewedBy": {
       "@type": "Person",
-      "name": post.author || '강남치과의원',
-      "worksFor": { "@id": "https://kndent.kr/#organization" }
+      "name": "이태형",
+      "url": "https://kndent.kr/doctors/lee-taehyung",
+      "jobTitle": "구강악안면외과 전문의"
     },
     "publisher": { "@id": "https://kndent.kr/#organization" },
     "datePublished": post.published_at,
@@ -248,6 +297,26 @@ export function blogDetailPage(post: any): { html: string; title: string; descri
 
       ${tagsHtml ? `<div class="flex flex-wrap gap-2 mt-12 pt-8 border-t border-gray-100">${tagsHtml}</div>` : ''}
 
+      <!-- E-E-A-T: 전문의 감수 배지 -->
+      <aside class="mt-10 bg-royal/[0.03] border border-royal/10 rounded-2xl p-6" aria-label="의학 정보 감수 안내">
+        <div class="flex items-start gap-4">
+          <div class="w-12 h-12 rounded-xl royal-grad flex items-center justify-center flex-shrink-0"><i class="fas fa-user-md text-white"></i></div>
+          <div>
+            <p class="text-charcoal font-bold text-sm mb-1"><i class="fas fa-check-circle text-royal mr-1"></i>이 글은 구강악안면외과 전문의가 직접 작성·감수했습니다</p>
+            <p class="text-gray-400 text-xs leading-relaxed">감수: <a href="/doctors/lee-taehyung" class="text-royal font-bold hover:underline">이태형 대표원장</a> (구강악안면외과 전문의, 고려대 구로병원 수련) · 정확한 진단은 반드시 내원 후 상담을 통해 결정됩니다.</p>
+          </div>
+        </div>
+      </aside>
+
+      ${relatedTreatments.length > 0 ? `
+      <!-- 관련 진료 내부링크 (SEO: 토픽 클러스터 연결) -->
+      <nav class="mt-8" aria-label="관련 진료 안내">
+        <p class="text-gray-400 text-xs font-bold mb-3">이 글과 관련된 진료</p>
+        <div class="flex flex-wrap gap-2">
+          ${relatedTreatments.map(t => `<a href="${t.url}" class="px-4 py-2.5 rounded-xl bg-white border border-gray-200 text-charcoal text-sm font-bold hover:border-royal hover:text-royal transition-colors"><i class="fas fa-tooth text-royal/40 mr-1.5 text-xs"></i>${t.label}</a>`).join('')}
+        </div>
+      </nav>` : ''}
+
       <!-- Share / Nav -->
       <div class="mt-12 pt-8 border-t border-gray-100">
         <div class="flex items-center justify-between">
@@ -255,6 +324,20 @@ export function blogDetailPage(post: any): { html: string; title: string; descri
           <a href="/reservation" class="btn-primary !py-3 !px-8 !text-sm"><i class="fas fa-calendar-check text-xs"></i>상담 예약</a>
         </div>
       </div>
+
+      ${relatedPosts.length > 0 ? `
+      <!-- 관련 글 (SEO: 체류시간 + 크롤 경로 강화) -->
+      <section class="mt-12 pt-10 border-t border-gray-100" aria-label="관련 글">
+        <h2 class="text-charcoal font-bold text-xl mb-6">함께 읽으면 좋은 글</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          ${relatedPosts.map((rp: any) => `
+          <a href="/blog/${rp.slug}" class="block bg-snow-50 rounded-2xl p-5 border border-gray-100 hover:border-royal/30 hover:shadow-md transition-all group">
+            <span class="text-royal text-[10px] font-bold">${rp.category || '치과상식'}</span>
+            <h3 class="text-charcoal font-bold mt-1 group-hover:text-royal transition-colors line-clamp-2">${rp.title}</h3>
+            ${rp.summary ? `<p class="text-gray-400 text-xs mt-2 line-clamp-2">${rp.summary}</p>` : ''}
+          </a>`).join('')}
+        </div>
+      </section>` : ''}
     </div>
   </article>
 
