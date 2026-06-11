@@ -1,3 +1,4 @@
+import { MEDICAL_LAST_REVIEWED } from '../seo'
 /**
  * 🚀 SEO 슈퍼업글 시즌 2: 비교(Compare) 페이지
  * "영주 vs 대구 치과", "영주 임플란트 vs 안동" 같은 비교 키워드 잡기
@@ -358,7 +359,7 @@ export function comparePage(pairSlug: string, treatmentSlug: string): { html: st
       "headline": title,
       "description": description,
       "datePublished": "2026-01-01",
-      "dateModified": new Date().toISOString().split('T')[0],
+      "dateModified": MEDICAL_LAST_REVIEWED,
       "author": {
         "@type": "Organization",
         "name": "영주 강남치과의원",

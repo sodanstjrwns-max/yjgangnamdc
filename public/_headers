@@ -1,0 +1,13 @@
+# Cloudflare Pages 정적 자산 헤더 (SEO/성능/보안)
+
+# 정적 자산 — 1년 캐싱 (Core Web Vitals 개선)
+/static/*
+  Cache-Control: public, max-age=31536000, immutable
+  X-Content-Type-Options: nosniff
+
+/favicon.svg
+  Cache-Control: public, max-age=604800
+/favicon.ico
+  Cache-Control: public, max-age=604800
+/og-image.png
+  Cache-Control: public, max-age=86400

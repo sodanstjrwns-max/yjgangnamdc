@@ -1,3 +1,4 @@
+import { MEDICAL_LAST_REVIEWED } from '../seo'
 interface Treatment {
   slug: string; category: string; title: string; h1: string; description: string;
   icon: string; heroDesc: string; worry: string; promise: string;
@@ -399,8 +400,8 @@ export async function treatmentDetailPage(slug: string): Promise<{ html: string;
     "mainEntityOfPage": {
       "@type": "MedicalWebPage",
       "@id": `https://kndent.kr/treatments/${t.slug}`,
-      "dateModified": new Date().toISOString().split('T')[0],
-      "lastReviewed": new Date().toISOString().split('T')[0]
+      "dateModified": MEDICAL_LAST_REVIEWED,
+      "lastReviewed": MEDICAL_LAST_REVIEWED
     },
     "performedBy": [
       { "@type": "Physician", "@id": "https://kndent.kr/doctors/lee-taehyung#physician", "name": "이태형", "jobTitle": "대표원장" },
@@ -563,7 +564,7 @@ export async function treatmentDetailPage(slug: string): Promise<{ html: string;
       "@type": "ImageObject",
       "url": `https://kndent.kr/static/treatment-${t.slug}.jpg`
     },
-    "lastReviewed": new Date().toISOString().split('T')[0],
+    "lastReviewed": MEDICAL_LAST_REVIEWED,
     "reviewedBy": {
       "@type": "Physician",
       "name": "이태형",

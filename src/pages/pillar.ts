@@ -1,3 +1,4 @@
+import { MEDICAL_LAST_REVIEWED } from '../seo'
 /**
  * 🚀 SEO 슈퍼업글 시즌 2: Pillar 콘텐츠 허브 페이지
  * 각 핵심 진료의 "거대 가이드 페이지" 생성 — 모든 관련 페이지를 묶는 토픽 클러스터 중심
@@ -342,7 +343,7 @@ export function pillarPage(treatmentSlug: string): { html: string; title: string
       "description": description,
       "image": `https://kndent.kr/og/${treatmentSlug}`,
       "datePublished": "2026-01-01",
-      "dateModified": new Date().toISOString().split('T')[0],
+      "dateModified": MEDICAL_LAST_REVIEWED,
       "author": {
         "@type": "Organization",
         "name": "영주 강남치과의원"

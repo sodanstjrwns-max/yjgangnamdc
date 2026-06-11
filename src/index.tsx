@@ -25,6 +25,7 @@ import { adminPage } from './pages/admin'
 import { registerPage, loginPage, loginRequiredPage } from './pages/auth'
 import { dictionaryListPage, dictionaryDetailPage } from './pages/dictionary'
 import { layout } from './layout'
+import { CONTENT_LASTMOD, MEDICAL_LAST_REVIEWED, SITEMAP_INDEX_LASTMOD, INDEXNOW_KEY, INDEXNOW_ENDPOINTS, INDEXNOW_DEFAULT_URLS } from './seo'
 
 // 서버 측 content 자동 변환: plain text → HTML (저장 전 적용)
 function formatContentForSave(content: string): string {
@@ -335,12 +336,20 @@ Disallow: /before-after
 # 2. AI 검색 / 답변 엔진 (AEO 대응 — 색인 허용)
 # ============================================================
 
-# ChatGPT (OpenAI)
+# ChatGPT 사용자 요청 (실시간 브라우징)
 User-agent: ChatGPT-User
 Allow: /
 Disallow: /api/
 Disallow: /admin
 Disallow: /login
+
+# OpenAI 검색 인덱싱 (ChatGPT Search 노출의 핵심 — 전체 허용)
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /api/
+Disallow: /admin
+Disallow: /login
+Disallow: /before-after
 
 # GPTBot (OpenAI 학습용 — 색인만 허용, 학습 제한)
 User-agent: GPTBot
@@ -371,7 +380,7 @@ Allow: /blog/
 Disallow: /api/
 Disallow: /admin
 
-# Anthropic Claude
+# Anthropic Claude (학습용 — 주요 정보 페이지만 허용)
 User-agent: anthropic-ai
 Allow: /treatments/
 Allow: /faq
@@ -381,15 +390,94 @@ Allow: /directions
 Disallow: /api/
 Disallow: /admin
 
-# Perplexity
+# Anthropic ClaudeBot (웹 크롤러 — 전체 허용, AI 답변 노출용)
+User-agent: ClaudeBot
+Allow: /
+Disallow: /api/
+Disallow: /admin
+Disallow: /login
+Disallow: /before-after
+
+# Claude 사용자 실시간 요청
+User-agent: Claude-User
+Allow: /
+Disallow: /api/
+Disallow: /admin
+
+# Claude 검색 인덱싱
+User-agent: Claude-SearchBot
+Allow: /
+Disallow: /api/
+Disallow: /admin
+
+# Perplexity (인덱싱)
 User-agent: PerplexityBot
 Allow: /
 Disallow: /api/
 Disallow: /admin
 Disallow: /login
 
+# Perplexity 사용자 실시간 요청
+User-agent: Perplexity-User
+Allow: /
+Disallow: /api/
+Disallow: /admin
+
 # Microsoft Copilot
 User-agent: CopilotBot
+Allow: /
+Disallow: /api/
+Disallow: /admin
+
+# Apple Intelligence / Siri (Applebot 인덱싱 허용)
+User-agent: Applebot
+Allow: /
+Disallow: /api/
+Disallow: /admin
+
+# Apple AI 학습용 (정보 페이지만 허용)
+User-agent: Applebot-Extended
+Allow: /treatments/
+Allow: /faq
+Allow: /pricing
+Allow: /doctors
+Allow: /directions
+Allow: /area/
+Disallow: /api/
+Disallow: /admin
+
+# Meta AI (정보 페이지만 허용)
+User-agent: Meta-ExternalAgent
+Allow: /treatments/
+Allow: /faq
+Allow: /pricing
+Allow: /doctors
+Allow: /directions
+Disallow: /api/
+Disallow: /admin
+
+# Amazon Alexa / Rufus
+User-agent: Amazonbot
+Allow: /
+Disallow: /api/
+Disallow: /admin
+
+# Cohere
+User-agent: cohere-ai
+Allow: /treatments/
+Allow: /faq
+Allow: /pricing
+Disallow: /api/
+Disallow: /admin
+
+# xAI Grok
+User-agent: GrokBot
+Allow: /
+Disallow: /api/
+Disallow: /admin
+
+# DuckDuckGo AI (DuckAssist)
+User-agent: DuckAssistBot
 Allow: /
 Disallow: /api/
 Disallow: /admin
@@ -428,6 +516,13 @@ User-agent: DataForSeoBot
 Disallow: /
 
 User-agent: PetalBot
+Disallow: /
+
+# ByteDance 크롤러 (과도한 트래픽 유발로 악명)
+User-agent: Bytespider
+Disallow: /
+
+User-agent: ImagesiftBot
 Disallow: /
 
 # ============================================================
@@ -618,8 +713,8 @@ function sitemapUrl(baseUrl: string, p: { url: string; lastmod: string; changefr
 // 총 ~1,083 URL
 app.get('/sitemap.xml', (c) => {
   const baseUrl = 'https://kndent.kr'
-  // ISO 8601 풀 타임스탬프 (Google 권장)
-  const now = new Date().toISOString()
+  // ✅ 가장 최근 콘텐츠 수정일 (항상 현재시각이면 Google이 lastmod를 무시함)
+  const now = SITEMAP_INDEX_LASTMOD
 
   const subSitemaps = [
     'sitemap-main.xml',
@@ -784,6 +879,74 @@ app.get('/sitemap-stats', async (c) => {
   return c.html(html)
 })
 
+// ============================================================
+// IndexNow: Bing/Naver/Yandex 즉시 색인 프로토콜 (실구현)
+// ============================================================
+
+// 1) 키 검증 파일 — https://kndent.kr/{KEY}.txt
+app.get(`/${INDEXNOW_KEY}.txt`, (c) => {
+  c.header('Content-Type', 'text/plain')
+  c.header('Cache-Control', 'public, max-age=86400')
+  return c.body(INDEXNOW_KEY)
+})
+
+// 2) 제출 API — POST /api/indexnow  body: { urls?: string[] }
+//    urls 미지정 시 핵심 페이지 10개 자동 제출
+app.post('/api/indexnow', async (c) => {
+  const baseUrl = 'https://kndent.kr'
+  let urls: string[] = INDEXNOW_DEFAULT_URLS
+  try {
+    const body = await c.req.json().catch(() => null)
+    if (body?.urls && Array.isArray(body.urls) && body.urls.length > 0) {
+      urls = body.urls.slice(0, 10000) // IndexNow 최대 10,000개
+    }
+  } catch {}
+
+  const urlList = urls.map(u => u.startsWith('http') ? u : `${baseUrl}${u}`)
+  const payload = {
+    host: 'kndent.kr',
+    key: INDEXNOW_KEY,
+    keyLocation: `${baseUrl}/${INDEXNOW_KEY}.txt`,
+    urlList
+  }
+
+  const results: { endpoint: string; status: number | string }[] = []
+  for (const endpoint of INDEXNOW_ENDPOINTS) {
+    try {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json; charset=utf-8' },
+        body: JSON.stringify(payload)
+      })
+      results.push({ endpoint, status: res.status })
+    } catch (e: any) {
+      results.push({ endpoint, status: `error: ${e?.message || 'unknown'}` })
+    }
+  }
+
+  return c.json({
+    success: results.some(r => r.status === 200 || r.status === 202),
+    submitted: urlList.length,
+    results,
+    note: 'HTTP 200/202 = 접수 성공. 색인은 검색엔진 정책에 따라 수분~수일 소요.'
+  })
+})
+
+// 3) GET 단일 URL 제출 (간편 버전) — /api/indexnow/submit?url=/treatments/implant
+app.get('/api/indexnow/submit', async (c) => {
+  const url = c.req.query('url')
+  if (!url) return c.json({ error: 'url 쿼리 파라미터 필요 (예: ?url=/treatments/implant)' }, 400)
+  const baseUrl = 'https://kndent.kr'
+  const fullUrl = url.startsWith('http') ? url : `${baseUrl}${url}`
+  const endpoint = `https://api.indexnow.org/indexnow?url=${encodeURIComponent(fullUrl)}&key=${INDEXNOW_KEY}&keyLocation=${encodeURIComponent(`${baseUrl}/${INDEXNOW_KEY}.txt`)}`
+  try {
+    const res = await fetch(endpoint)
+    return c.json({ success: res.status === 200 || res.status === 202, status: res.status, url: fullUrl })
+  } catch (e: any) {
+    return c.json({ success: false, error: e?.message }, 502)
+  }
+})
+
 // ===== Sitemap Ping: 검색엔진에 사이트맵 갱신 통보 =====
 // Google은 2023년 ping API 폐기, Bing은 IndexNow 권장 — 여기서는 안내만 제공
 app.get('/ping-search-engines', (c) => {
@@ -808,6 +971,33 @@ app.get('/ping-search-engines', (c) => {
     <h2 class="text-xl font-bold mb-3">📍 사이트맵 URL</h2>
     <code class="block bg-slate-100 p-3 rounded text-blue-700 font-mono">${baseUrl}/sitemap.xml</code>
   </div>
+
+  <div class="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-lg shadow-lg p-6 mb-6 text-white">
+    <h2 class="text-xl font-bold mb-2">⚡ IndexNow 원클릭 제출 (Bing + Naver + Yandex 동시)</h2>
+    <p class="text-sm text-emerald-50 mb-4">핵심 페이지 10개를 IndexNow 프로토콜로 즉시 제출합니다. 별도 로그인 불필요.</p>
+    <button id="indexnow-btn" class="bg-white text-emerald-700 hover:bg-emerald-50 px-6 py-3 rounded-lg font-bold transition">
+      <i class="fas fa-rocket mr-2"></i>지금 제출하기
+    </button>
+    <pre id="indexnow-result" class="hidden mt-4 bg-black/20 rounded p-3 text-xs overflow-x-auto"></pre>
+  </div>
+  <script>
+    document.getElementById('indexnow-btn').addEventListener('click', async () => {
+      const btn = document.getElementById('indexnow-btn');
+      const out = document.getElementById('indexnow-result');
+      btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>제출 중...';
+      try {
+        const res = await fetch('/api/indexnow', { method: 'POST', headers: {'Content-Type':'application/json'}, body: '{}' });
+        const data = await res.json();
+        out.classList.remove('hidden');
+        out.textContent = JSON.stringify(data, null, 2);
+        btn.innerHTML = data.success ? '<i class="fas fa-check mr-2"></i>제출 완료!' : '<i class="fas fa-exclamation-triangle mr-2"></i>일부 실패 — 결과 확인';
+      } catch (e) {
+        out.classList.remove('hidden'); out.textContent = '오류: ' + e.message;
+        btn.innerHTML = '<i class="fas fa-redo mr-2"></i>다시 시도';
+      }
+      btn.disabled = false;
+    });
+  </script>
 
   <div class="space-y-4">
     <div class="bg-white rounded-lg shadow p-5">
@@ -857,7 +1047,8 @@ app.get('/ping-search-engines', (c) => {
 // ===== Sitemap: 핵심 페이지 (메인, 의료진, 가격, 예약, 오시는길) =====
 app.get('/sitemap-main.xml', (c) => {
   const baseUrl = 'https://kndent.kr'
-  const today = new Date().toISOString().split('T')[0]
+  // ✅ 실제 콘텐츠 수정일 사용 (Google: 항상 현재시각이면 lastmod 무시됨)
+  const today = CONTENT_LASTMOD.main
 
   const pageImages: Record<string, { loc: string; title: string; caption?: string }[]> = {
     '/': [
@@ -905,7 +1096,7 @@ app.get('/sitemap-main.xml', (c) => {
 // ===== Sitemap: 진료과목 (가장 중요 — 검색 유입의 핵심) =====
 app.get('/sitemap-treatments.xml', (c) => {
   const baseUrl = 'https://kndent.kr'
-  const today = new Date().toISOString().split('T')[0]
+  const today = CONTENT_LASTMOD.treatments
 
   const pageImages: Record<string, { loc: string; title: string; caption?: string }[]> = {
     '/treatments/implant': [
@@ -950,7 +1141,7 @@ app.get('/sitemap-treatments.xml', (c) => {
 // ===== Sitemap: FAQ (170개 — AI 검색 노출의 핵심) =====
 app.get('/sitemap-faq.xml', (c) => {
   const baseUrl = 'https://kndent.kr'
-  const today = new Date().toISOString().split('T')[0]
+  const today = CONTENT_LASTMOD.faq
 
   const pages = [
     { url: '/faq', lastmod: today, priority: '0.9', changefreq: 'weekly' },
@@ -973,7 +1164,7 @@ app.get('/sitemap-faq.xml', (c) => {
 // ===== Sitemap: 지역 SEO =====
 app.get('/sitemap-area.xml', (c) => {
   const baseUrl = 'https://kndent.kr'
-  const today = new Date().toISOString().split('T')[0]
+  const today = CONTENT_LASTMOD.area
 
   const pages = getAllAreaKeys().map(k => {
     const p = getAreaPriority(k)
@@ -994,7 +1185,7 @@ app.get('/sitemap-area.xml', (c) => {
 // ===== 🚀 Sitemap: 지역 × 진료 조합 SEO (112개 롱테일 페이지) =====
 app.get('/sitemap-combo.xml', (c) => {
   const baseUrl = 'https://kndent.kr'
-  const today = new Date().toISOString().split('T')[0]
+  const today = CONTENT_LASTMOD.combo
 
   const paths = getAllComboPaths()
   const urls = paths.map(p => {
@@ -1020,7 +1211,7 @@ app.get('/sitemap-combo.xml', (c) => {
 // '영주 임플란트 가격', '봉화 사랑니 추천' 등 구매의도 키워드 1페이지 노출
 app.get('/sitemap-intent.xml', (c) => {
   const baseUrl = 'https://kndent.kr'
-  const today = new Date().toISOString().split('T')[0]
+  const today = CONTENT_LASTMOD.intent
 
   const paths = getAllIntentPaths()
   const urls = paths.map(p => {
@@ -1044,7 +1235,7 @@ app.get('/sitemap-intent.xml', (c) => {
 // ===== Sitemap: 블로그 + 증례 + 공지 + 용어사전 (동적 콘텐츠) =====
 app.get('/sitemap-blog.xml', async (c) => {
   const baseUrl = 'https://kndent.kr'
-  const today = new Date().toISOString().split('T')[0]
+  const today = CONTENT_LASTMOD.dictionary > CONTENT_LASTMOD.main ? CONTENT_LASTMOD.dictionary : CONTENT_LASTMOD.main
 
   // ✅ lastmod 정규화 헬퍼 — W3C ISO 8601 보장 (YYYY-MM-DD 형식)
   // DB의 SQLite datetime("YYYY-MM-DD HH:MM:SS")을 안전하게 변환
@@ -1086,7 +1277,7 @@ app.get('/sitemap-blog.xml', async (c) => {
     const dictTerms = await c.env.DB.prepare('SELECT slug FROM dictionary ORDER BY term_ko').all()
     dynamicPages = dynamicPages.concat(dictTerms.results.map((p: any) => ({
       url: `/dictionary/${p.slug}`,
-      lastmod: today,
+      lastmod: CONTENT_LASTMOD.dictionary,
       priority: '0.6',
       changefreq: 'monthly' as const
     })))
@@ -1108,7 +1299,7 @@ app.get('/', (c) => c.html(layout(mainPage(), {
   keywords: '영주 치과, 영주 임플란트, 영주 치과 추천, 영주 임플란트 잘하는곳, 영주 인비절라인, 영주 투명교정, 영주 사랑니발치, 영주 디지털보철, 구강외과 전문의 영주, 영주시 임플란트 가격, 봉화 임플란트, 예천 치과, 안동 임플란트, 풍기 치과, 단양 치과, 경북 임플란트, 영주혁신도시 치과, 영주 구강외과, 상주 임플란트, 문경 치과',
   schemas: mainPageSchemas(),
   speakableSelectors: ['[data-speakable]', '#heroTitle', '#heroSub'],
-  articleModifiedTime: new Date().toISOString().split('T')[0]
+  articleModifiedTime: MEDICAL_LAST_REVIEWED
 })))
 
 // ===== 의료진 =====
@@ -1874,14 +2065,14 @@ app.get('/area/:region/:treatment', (c) => {
     ogImage: `https://kndent.kr/og/${treatment}`,
     speakableSelectors: ['[data-speakable]', 'h1', 'h2', '.faq-answer', '.combo-summary'],
     schemas: result.schemas,
-    articleModifiedTime: new Date().toISOString().split('T')[0]
+    articleModifiedTime: MEDICAL_LAST_REVIEWED
   }))
 })
 
 // ===== 🚀 Sitemap: 비교(Compare) 페이지 (64개 비교 키워드) =====
 app.get('/sitemap-compare.xml', (c) => {
   const baseUrl = 'https://kndent.kr'
-  const today = new Date().toISOString().split('T')[0]
+  const today = CONTENT_LASTMOD.compare
 
   const paths = getAllComparePaths()
   const urls = paths.map(p => {
@@ -1903,7 +2094,7 @@ app.get('/sitemap-compare.xml', (c) => {
 // ===== 🚀 Sitemap: PILLAR 가이드 페이지 (8개 진료 허브) =====
 app.get('/sitemap-pillar.xml', (c) => {
   const baseUrl = 'https://kndent.kr'
-  const today = new Date().toISOString().split('T')[0]
+  const today = CONTENT_LASTMOD.pillar
 
   const slugs = getAllPillarSlugs()
   const allUrls: string[] = [
@@ -1931,7 +2122,7 @@ app.get('/sitemap-pillar.xml', (c) => {
 // ===== 🚀 Sitemap: 증상(Symptom) 페이지 =====
 app.get('/sitemap-symptom.xml', (c) => {
   const baseUrl = 'https://kndent.kr'
-  const today = new Date().toISOString().split('T')[0]
+  const today = CONTENT_LASTMOD.symptom
 
   const paths = getAllSymptomPaths()
   // 인덱스 추가
@@ -1962,7 +2153,7 @@ app.get('/sitemap-symptom.xml', (c) => {
 // ===== 🚀 Sitemap: 대상자(Audience) 페이지 =====
 app.get('/sitemap-audience.xml', (c) => {
   const baseUrl = 'https://kndent.kr'
-  const today = new Date().toISOString().split('T')[0]
+  const today = CONTENT_LASTMOD.audience
 
   const paths = getAllAudiencePaths()
   const indexUrl = `  <url>
@@ -1991,7 +2182,7 @@ app.get('/sitemap-audience.xml', (c) => {
 // ===== 🚀 Sitemap: 응급(Emergency) 페이지 =====
 app.get('/sitemap-emergency.xml', (c) => {
   const baseUrl = 'https://kndent.kr'
-  const today = new Date().toISOString().split('T')[0]
+  const today = CONTENT_LASTMOD.emergency
 
   const regions = ['yeongju', 'bonghwa', 'yecheon', 'andong', 'mungyeong', 'yeongyang', 'cheongsong', 'sangju']
   const urls: string[] = [
@@ -2019,7 +2210,7 @@ app.get('/sitemap-emergency.xml', (c) => {
 // ===== 🚀 Sitemap: Locality (세부 지역 × 진료) — Season 4 =====
 app.get('/sitemap-locality.xml', (c) => {
   const baseUrl = 'https://kndent.kr'
-  const today = new Date().toISOString().split('T')[0]
+  const today = CONTENT_LASTMOD.locality
 
   const paths = getAllLocalityPaths()
   // 인덱스 URL
@@ -2114,7 +2305,7 @@ app.get('/intent/:region/:treatment/:intent', (c) => {
     ogImage: `https://kndent.kr/og/${treatment}`,
     speakableSelectors: ['[data-speakable]', 'h1', 'h2', '.faq-answer', '.intent-summary', '.price-table'],
     schemas: result.schemas,
-    articleModifiedTime: new Date().toISOString().split('T')[0]
+    articleModifiedTime: MEDICAL_LAST_REVIEWED
   }))
 })
 
@@ -2135,7 +2326,7 @@ app.get('/compare/:pair/:treatment', (c) => {
     ogImage: `https://kndent.kr/og/${treatment}`,
     speakableSelectors: ['[data-speakable]', 'h1', 'h2', '.faq-answer', '.compare-summary'],
     schemas: result.schemas,
-    articleModifiedTime: new Date().toISOString().split('T')[0]
+    articleModifiedTime: MEDICAL_LAST_REVIEWED
   }))
 })
 
@@ -2148,7 +2339,7 @@ app.get('/guide', (c) => {
     url: '/guide',
     keywords: result.keywords,
     speakableSelectors: ['[data-speakable]', 'h1', 'h2'],
-    articleModifiedTime: new Date().toISOString().split('T')[0]
+    articleModifiedTime: MEDICAL_LAST_REVIEWED
   }))
 })
 
@@ -2167,7 +2358,7 @@ app.get('/guide/:treatment', (c) => {
     ogImage: `https://kndent.kr/og/${treatment}`,
     speakableSelectors: ['[data-speakable]', 'h1', 'h2', '.faq-answer', '.pillar-summary'],
     schemas: result.schemas,
-    articleModifiedTime: new Date().toISOString().split('T')[0]
+    articleModifiedTime: MEDICAL_LAST_REVIEWED
   }))
 })
 
@@ -2196,7 +2387,7 @@ app.get('/symptom/:slug', (c) => {
     keywords: result.keywords,
     speakableSelectors: ['[data-speakable]', 'h1', 'h2', '.faq-answer', '.symptom-summary'],
     schemas: result.schemas,
-    articleModifiedTime: new Date().toISOString().split('T')[0]
+    articleModifiedTime: MEDICAL_LAST_REVIEWED
   }))
 })
 
@@ -2214,7 +2405,7 @@ app.get('/symptom/:slug/:region', (c) => {
     keywords: result.keywords,
     speakableSelectors: ['[data-speakable]', 'h1', 'h2', '.faq-answer', '.symptom-summary'],
     schemas: result.schemas,
-    articleModifiedTime: new Date().toISOString().split('T')[0]
+    articleModifiedTime: MEDICAL_LAST_REVIEWED
   }))
 })
 
@@ -2243,7 +2434,7 @@ app.get('/audience/:slug', (c) => {
     keywords: result.keywords,
     speakableSelectors: ['[data-speakable]', 'h1', 'h2', '.faq-answer', '.audience-summary'],
     schemas: result.schemas,
-    articleModifiedTime: new Date().toISOString().split('T')[0]
+    articleModifiedTime: MEDICAL_LAST_REVIEWED
   }))
 })
 
@@ -2261,7 +2452,7 @@ app.get('/audience/:slug/:region', (c) => {
     keywords: result.keywords,
     speakableSelectors: ['[data-speakable]', 'h1', 'h2', '.faq-answer', '.audience-summary'],
     schemas: result.schemas,
-    articleModifiedTime: new Date().toISOString().split('T')[0]
+    articleModifiedTime: MEDICAL_LAST_REVIEWED
   }))
 })
 
@@ -2275,7 +2466,7 @@ app.get('/emergency', (c) => {
     keywords: result.keywords,
     speakableSelectors: ['[data-speakable]', 'h1', 'h2', '.faq-answer'],
     schemas: result.schemas,
-    articleModifiedTime: new Date().toISOString().split('T')[0]
+    articleModifiedTime: MEDICAL_LAST_REVIEWED
   }))
 })
 
@@ -2292,7 +2483,7 @@ app.get('/emergency/:region', (c) => {
     keywords: result.keywords,
     speakableSelectors: ['[data-speakable]', 'h1', 'h2', '.faq-answer'],
     schemas: result.schemas,
-    articleModifiedTime: new Date().toISOString().split('T')[0]
+    articleModifiedTime: MEDICAL_LAST_REVIEWED
   }))
 })
 

@@ -1,3 +1,4 @@
+import { MEDICAL_LAST_REVIEWED } from '../seo'
 // ===== 전체 FAQ 페이지 (SEO + AEO 대폭 강화) =====
 // 진료과목별 FAQ를 하나의 통합 페이지에서 보여주며,
 // 각 FAQ가 구조화된 데이터(FAQPage Schema)로 출력됩니다.
@@ -248,7 +249,7 @@ export function faqPage(selectedCategory?: string): { html: string; title: strin
       "description": description,
       "url": `https://kndent.kr/faq${selectedCategory ? `?category=${selectedCategory}` : ''}`,
       "inLanguage": "ko-KR",
-      "dateModified": new Date().toISOString().split('T')[0],
+      "dateModified": MEDICAL_LAST_REVIEWED,
       "mainEntity": filteredFAQs.map(f => ({
         "@type": "Question",
         "name": f.q,
@@ -269,7 +270,7 @@ export function faqPage(selectedCategory?: string): { html: string; title: strin
         "cssSelector": ["[data-speakable]", "h1", ".faq-answer"]
       },
       "about": { "@type": "Dentist", "@id": "https://kndent.kr/#organization" },
-      "lastReviewed": new Date().toISOString().split('T')[0],
+      "lastReviewed": MEDICAL_LAST_REVIEWED,
       "reviewedBy": {
         "@type": "Physician",
         "name": "이태형",
