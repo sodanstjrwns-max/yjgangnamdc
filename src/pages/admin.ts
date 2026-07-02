@@ -175,6 +175,50 @@ export function adminPage(): string {
     </div>
   </section>
 
+  <!-- ===== 상담문의 상세 Modal ===== -->
+  <div class="admin-modal-overlay" id="inqModal">
+    <div class="admin-modal" style="max-width:560px">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-extrabold text-charcoal">상담 문의 상세</h3>
+        <button onclick="closeInqModal()" class="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition"><i class="fas fa-times text-gray-400"></i></button>
+      </div>
+      <div class="space-y-4">
+        <div class="grid grid-cols-2 gap-4">
+          <div class="bg-gray-50 rounded-xl p-4">
+            <p class="text-gray-400 text-xs font-bold mb-1">성함</p>
+            <p class="text-charcoal font-extrabold text-lg" id="inqDetailName">-</p>
+          </div>
+          <div class="bg-gray-50 rounded-xl p-4">
+            <p class="text-gray-400 text-xs font-bold mb-1">연락처</p>
+            <a id="inqDetailPhone" href="#" class="text-royal font-extrabold text-lg hover:underline">-</a>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="bg-gray-50 rounded-xl p-4">
+            <p class="text-gray-400 text-xs font-bold mb-1">희망 진료</p>
+            <p class="text-charcoal font-bold" id="inqDetailTreatment">-</p>
+          </div>
+          <div class="bg-gray-50 rounded-xl p-4">
+            <p class="text-gray-400 text-xs font-bold mb-1">접수일시</p>
+            <p class="text-charcoal font-bold" id="inqDetailDate">-</p>
+          </div>
+        </div>
+        <div class="bg-royal/[0.04] border border-royal/10 rounded-xl p-5">
+          <p class="text-gray-400 text-xs font-bold mb-2"><i class="fas fa-comment-dots text-royal mr-1"></i>문의 내용 (전체)</p>
+          <p class="text-charcoal leading-relaxed whitespace-pre-wrap" id="inqDetailMessage" style="word-break:break-all">-</p>
+        </div>
+        <div class="flex items-center gap-3 pt-2">
+          <a id="inqDetailCallBtn" href="#" class="admin-btn admin-btn-primary flex-1 justify-center !py-3"><i class="fas fa-phone"></i>바로 전화걸기</a>
+          <select class="admin-select !py-3" id="inqDetailStatus" onchange="updateInquiryFromModal(this.value)">
+            <option value="new">신규</option>
+            <option value="contacted">연락완료</option>
+            <option value="completed">처리완료</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ===== 전후사례 Modal ===== -->
   <div class="admin-modal-overlay" id="baModal">
     <div class="admin-modal">
@@ -591,18 +635,42 @@ export function adminPage(): string {
       const newCount = data.inquiries.filter(i => i.status === 'new').length;
       const badge = document.getElementById('newInqBadge');
       if (newCount > 0) { badge.style.display = ''; badge.textContent = newCount; } else { badge.style.display = 'none'; }
+      window._inquiries = data.inquiries; // 상세 모달용 캠시
       document.getElementById('inqTableBody').innerHTML = data.inquiries.length === 0
         ? '<tr><td colspan="7" class="text-center text-gray-400 py-8">문의가 없습니다</td></tr>'
-        : data.inquiries.map(i => \`<tr>
+        : data.inquiries.map(i => \`<tr class="cursor-pointer hover:bg-royal/[0.03] transition-colors" onclick="openInqModal(\${i.id})" title="클릭하면 전체 내용을 볼 수 있습니다">
           <td><span class="status-badge status-\${i.status}">\${i.status === 'new' ? '신규' : i.status === 'contacted' ? '연락완료' : '처리완료'}</span></td>
           <td class="font-bold">\${i.name}</td><td>\${i.phone}</td><td>\${i.treatment || '-'}</td>
-          <td class="max-w-[200px] truncate">\${i.message || '-'}</td>
+          <td class="max-w-[200px] truncate text-royal"><i class="fas fa-search-plus text-[10px] mr-1 opacity-50"></i>\${i.message || '-'}</td>
           <td class="text-gray-400 text-xs">\${toKST(i.created_at)}</td>
-          <td><select class="admin-select !py-1 !px-2 !text-xs" onchange="updateInquiry(\${i.id}, this.value)">
+          <td onclick="event.stopPropagation()"><select class="admin-select !py-1 !px-2 !text-xs" onchange="updateInquiry(\${i.id}, this.value)">
             <option value="new" \${i.status==='new'?'selected':''}>신규</option>
             <option value="contacted" \${i.status==='contacted'?'selected':''}>연락완료</option>
             <option value="completed" \${i.status==='completed'?'selected':''}>처리완료</option>
           </select></td></tr>\`).join('');
+    }
+    // 상담문의 상세 모달
+    let _currentInqId = null;
+    function openInqModal(id) {
+      const i = (window._inquiries || []).find(x => x.id === id);
+      if (!i) return;
+      _currentInqId = id;
+      document.getElementById('inqDetailName').textContent = i.name;
+      const phoneEl = document.getElementById('inqDetailPhone');
+      phoneEl.textContent = i.phone;
+      phoneEl.href = 'tel:' + i.phone.replace(/[^0-9]/g, '');
+      document.getElementById('inqDetailTreatment').textContent = i.treatment || '-';
+      document.getElementById('inqDetailDate').textContent = toKST(i.created_at);
+      document.getElementById('inqDetailMessage').textContent = i.message || '(내용 없음)';
+      document.getElementById('inqDetailCallBtn').href = 'tel:' + i.phone.replace(/[^0-9]/g, '');
+      document.getElementById('inqDetailStatus').value = i.status;
+      document.getElementById('inqModal').classList.add('show');
+    }
+    function closeInqModal() { document.getElementById('inqModal').classList.remove('show'); _currentInqId = null; }
+    async function updateInquiryFromModal(status) {
+      if (!_currentInqId) return;
+      const data = await api('PATCH', '/api/inquiries/' + _currentInqId, { status });
+      if (data.success) { showToast('success', '상태 변경 완료'); loadInquiries(document.getElementById('inqStatusFilter').value); loadStats(); }
     }
     async function updateInquiry(id, status) {
       const data = await api('PATCH', '/api/inquiries/' + id, { status });
