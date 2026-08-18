@@ -6,8 +6,8 @@ export function pricingPage(): string {
     <div class="absolute inset-0 grid-pattern opacity-40"></div>
     <div class="relative z-10 max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12 pb-16 pt-28 md:pb-24 md:pt-48 w-full">
       <div class="section-label section-label-royal mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>PRICING</div>
-      <h1 class="display-xl text-charcoal mb-6">진료비용 <span class="royal-grad-text">안내</span></h1>
-      <p class="text-gray-400 text-lg">투명한 비용, 합리적인 진료를 약속합니다.</p>
+      <h1 class="display-xl text-charcoal mb-6">비급여 진료비 <span class="royal-grad-text">수가표 전체 공개</span></h1>
+      <p class="text-gray-400 text-lg">원내 수납 기준 전 항목을 그대로 공개합니다. 숨긴 비용이 없습니다.</p>
     </div>
   </section>
 
@@ -39,8 +39,8 @@ export function pricingPage(): string {
             {name:'Osstem 임플란트',desc:'맞춤 어버트먼트 + 지르코니아',price:'1,300,000원'},
             {name:'뼈이식 (단순)',price:'500,000원'},
             {name:'뼈이식 (복합)',price:'800,000원'},
-            {name:'상악동 거상술 (치조정)',price:'800,000원'},
-            {name:'상악동 거상술 (측방)',price:'1,500,000원'},
+            {name:'상악동(위턱 공간) 거상술 (치조정)',price:'800,000원'},
+            {name:'상악동(위턱 공간) 거상술 (측방)',price:'1,500,000원'},
             {name:'보철 추가 (폰틱/리메이크)',price:'500,000원'}
           ]},
           { icon:'fa-gem', title:'보철', items:[
@@ -68,7 +68,11 @@ export function pricingPage(): string {
             {name:'테세라 인레이',price:'300,000원'},
             {name:'골드 인레이 (1면)',price:'800,000원'},
             {name:'골드 인레이 (2면)',price:'1,000,000원'},
-            {name:'라미네이트',price:'600,000원'}
+            {name:'앞니 벌어짐 레진 (부위당)',price:'300,000원'},
+            {name:'라미네이트',price:'600,000원'},
+            {name:'레진 코어',desc:'신경치료 후 치아 보강',price:'100,000원'},
+            {name:'파이버 포스트 & 코어',desc:'충치로 치아 손실이 큰 경우',price:'150,000원'},
+            {name:'치경부마모증 (이부모양 패임)',price:'50,000원'}
           ]},
           { icon:'fa-child', title:'소아 치료', items:[
             {name:'유치 레진',price:'80,000원'},
@@ -97,6 +101,11 @@ export function pricingPage(): string {
             {name:'스케일링',price:'보험진료',ins:true},
             {name:'치주치료',price:'보험진료',ins:true},
             {name:'사랑니 발치 (단순/매복)',price:'보험진료',ins:true},
+            {name:'치아 홈메우기 (만 18세 이하)',price:'보험진료',ins:true},
+            {name:'임플란트 (만 65세↑ 평생 2개)',price:'보험진료',ins:true},
+            {name:'금속상 완전틀니 (만 65세↑ 7년 1회)',price:'보험진료',ins:true},
+            {name:'부분틀니 (만 65세↑ 7년 1회)',price:'보험진료',ins:true},
+            {name:'임시틀니 (보험)',price:'보험진료',ins:true},
             {name:'X-ray / 파노라마',price:'보험진료',ins:true}
           ]},
           { icon:'fa-wand-magic-sparkles', title:'기타 / 미용 (과세)', items:[
@@ -154,7 +163,7 @@ export function pricingPage(): string {
               <li class="flex items-start gap-2"><span class="w-1 h-1 rounded-full bg-amber-500 mt-2 flex-shrink-0"></span>모든 의료행위는 부작용이 있을 수 있으며, 정확한 상담 후 치료 결정을 권합니다.</li>
               <li class="flex items-start gap-2"><span class="w-1 h-1 rounded-full bg-amber-500 mt-2 flex-shrink-0"></span>상기 비용은 부가세 별도(비급여 항목)이며, 건강보험 적용 항목은 본인부담금이 별도 적용됩니다.</li>
             </ul>
-            <p class="text-xs text-gray-400 mt-4 border-t border-gray-100 pt-3">※ 본 안내는 의료광고법(의료법 제56조, 시행규칙 제46조)에 따라 작성되었습니다. 최종 수정일: 2026-04-29</p>
+            <p class="text-xs text-gray-400 mt-4 border-t border-gray-100 pt-3">※ 본 수가표는 원내 수납 기준 전 항목을 공개한 것으로, 의료광고법(의료법 제56조, 시행규칙 제46조) 및 비급여 진료비용 고지 지침을 준수합니다. 최종 수정일: 2026-08-18</p>
           </div>
         </div>
       </div>

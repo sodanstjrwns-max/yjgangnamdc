@@ -57,7 +57,7 @@ function buildBaseSchema() {
       "임플란트", "디지털 임플란트", "네비게이션 임플란트",
       "디지털 보철", "원데이 크라운", "CEREC", "지르코니아 크라운",
       "인비절라인", "투명교정", "iTero 스캐너",
-      "사랑니 발치", "매복 사랑니", "뼈이식", "상악동 거상술",
+      "사랑니 발치", "매복 사랑니", "뼈이식", "상악동(위턱 공간) 거상술",
       "구강악안면외과", "심미보철", "라미네이트",
       "충치치료", "신경치료", "잇몸치료", "스케일링",
       "틀니", "보험 틀니", "치아미백", "예방치료"
@@ -109,7 +109,7 @@ function buildBaseSchema() {
       "givenName": "태형",
       "familyName": "이",
       "jobTitle": "대표원장",
-      "description": "구강악안면외과 전문의. 임플란트, 사랑니 발치, 뼈이식, 상악동 거상술 전문.",
+      "description": "구강악안면외과 전문의. 임플란트, 사랑니 발치, 뼈이식, 상악동(위턱 공간) 거상술 전문.",
       "medicalSpecialty": "Oral and Maxillofacial Surgery",
       "image": `${SITE_URL}/static/doctor-lee.jpg`,
       "worksFor": { "@id": `${SITE_URL}/#organization` },
@@ -126,7 +126,7 @@ function buildBaseSchema() {
           "name": "치과의사 면허"
         }
       ],
-      "knowsAbout": ["임플란트", "사랑니 발치", "뼈이식", "상악동 거상술", "구강악안면외과", "디지털 보철"],
+      "knowsAbout": ["임플란트", "사랑니 발치", "뼈이식", "상악동(위턱 공간) 거상술", "구강악안면외과", "디지털 보철"],
       "memberOf": [
         { "@type": "MedicalOrganization", "name": "대한치과의사협회" },
         { "@type": "MedicalOrganization", "name": "대한구강악안면외과학회" },
@@ -136,7 +136,7 @@ function buildBaseSchema() {
         { "@type": "MedicalProcedure", "name": "임플란트" },
         { "@type": "MedicalProcedure", "name": "사랑니 발치" },
         { "@type": "MedicalProcedure", "name": "뼈이식" },
-        { "@type": "MedicalProcedure", "name": "상악동 거상술" }
+        { "@type": "MedicalProcedure", "name": "상악동(위턱 공간) 거상술" }
       ]
     },
     "employee": [
@@ -162,7 +162,7 @@ function buildBaseSchema() {
       { "@type": "MedicalProcedure", "name": "인비절라인 투명교정", "procedureType": "Noninvasive" },
       { "@type": "MedicalProcedure", "name": "사랑니 발치", "procedureType": "Surgical" },
       { "@type": "MedicalProcedure", "name": "뼈이식", "procedureType": "Surgical" },
-      { "@type": "MedicalProcedure", "name": "상악동 거상술", "procedureType": "Surgical" },
+      { "@type": "MedicalProcedure", "name": "상악동(위턱 공간) 거상술", "procedureType": "Surgical" },
       { "@type": "MedicalProcedure", "name": "심미보철", "procedureType": "Noninvasive" },
       { "@type": "MedicalProcedure", "name": "충치치료", "procedureType": "Noninvasive" },
       { "@type": "MedicalProcedure", "name": "신경치료", "procedureType": "Noninvasive" }
@@ -259,7 +259,7 @@ function buildBaseSchema() {
           "itemListElement": [
             { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "임플란트", "url": `${SITE_URL}/treatments/implant` } },
             { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "뼈이식 임플란트", "url": `${SITE_URL}/treatments/bone-graft` } },
-            { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "상악동 거상술", "url": `${SITE_URL}/treatments/sinus-lift` } },
+            { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "상악동(위턱 공간) 거상술", "url": `${SITE_URL}/treatments/sinus-lift` } },
             { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "사랑니 발치", "url": `${SITE_URL}/treatments/wisdom-tooth` } }
           ]
         },
@@ -358,9 +358,9 @@ function buildBaseSchema() {
         "@type": "Review",
         "author": { "@type": "Person", "name": "윤*경" },
         "datePublished": "2026-02-20",
-        "reviewBody": "뼈가 부족하다고 다른 치과에서 임플란트 못한다고 했는데, 여기서 상악동 거상술 후 임플란트 성공적으로 했습니다. 전문의 2분이 계셔서 든든합니다.",
+        "reviewBody": "뼈가 부족하다고 다른 치과에서 임플란트 못한다고 했는데, 여기서 상악동(위턱 공간) 거상술 후 임플란트 성공적으로 했습니다. 전문의 2분이 계셔서 든든합니다.",
         "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
-        "itemReviewed": { "@type": "MedicalProcedure", "name": "상악동 거상술" }
+        "itemReviewed": { "@type": "MedicalProcedure", "name": "상악동(위턱 공간) 거상술" }
       }
     ],
     "knowsLanguage": ["ko", "en"],
@@ -1544,6 +1544,7 @@ export function layout(content: string, opts: LayoutOptions): string {
               <div>
                 <div class="text-gray-300 text-[10px] font-semibold tracking-wider uppercase mb-0.5">전화</div>
                 <div class="text-charcoal font-bold group-hover:text-royal transition-colors">054-636-8222</div>
+                <div class="text-gray-300 text-[11px] mt-0.5">온라인 문의는 진료시간 내 3시간 이내 회신</div>
               </div>
             </a>
             <div class="flex items-start gap-4">

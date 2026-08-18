@@ -36,7 +36,7 @@ export const STATIC_SEARCH_INDEX: SearchEntry[] = [
   { url: '/treatments/gum', title: '잇몸치료', desc: '치주염·치은염 치료', category: '진료', keywords: '잇몸 치주 치은염 치주염 피' },
   { url: '/treatments/tmj', title: '턱관절 치료', desc: '턱관절 장애 진단·치료', category: '진료', keywords: '턱관절 tmj 턱 통증 딱딱' },
   { url: '/treatments/bone-graft', title: '뼈이식', desc: '임플란트 위한 골이식술', category: '진료', keywords: '뼈이식 골이식 골재생' },
-  { url: '/treatments/sinus-lift', title: '상악동 거상술', desc: '상악 임플란트 고난이도 수술', category: '진료', keywords: '상악동 거상술 사이너스' },
+  { url: '/treatments/sinus-lift', title: '상악동(위턱 공간) 거상술', desc: '상악 임플란트 고난이도 수술', category: '진료', keywords: '상악동(위턱 공간) 거상술 사이너스' },
   { url: '/treatments/denture', title: '틀니', desc: '부분·전체 틀니, 보험 적용', category: '진료', keywords: '틀니 의치 덴쳐' },
   { url: '/treatments/prevention', title: '예방치료', desc: '불소도포·실란트', category: '진료', keywords: '예방 불소 실란트 검진' },
   // 지역

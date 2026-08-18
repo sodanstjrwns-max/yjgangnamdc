@@ -10,8 +10,8 @@
 
 // 섹션별 콘텐츠 최종 수정일 (실제 콘텐츠 변경 시에만 갱신)
 export const CONTENT_LASTMOD = {
-  main: '2026-06-11',        // 메인/의료진/가격/예약/오시는길
-  treatments: '2026-05-27',  // 진료과목 17개
+  main: '2026-08-18',        // 메인/의료진/가격/예약/오시는길
+  treatments: '2026-08-18',  // 진료과목 17개
   faq: '2026-05-15',         // FAQ 170개
   area: '2026-05-15',        // 지역 페이지 14개
   combo: '2026-04-08',       // 지역×진료 조합 112개
@@ -26,7 +26,7 @@ export const CONTENT_LASTMOD = {
 } as const
 
 // 의료 콘텐츠 최종 감수일 (전문의 감수 시점 — Schema.org lastReviewed용)
-export const MEDICAL_LAST_REVIEWED = '2026-05-27'
+export const MEDICAL_LAST_REVIEWED = '2026-08-18'
 
 // 사이트맵 인덱스 lastmod = 가장 최근 섹션 수정일
 export const SITEMAP_INDEX_LASTMOD = Object.values(CONTENT_LASTMOD).sort().reverse()[0]

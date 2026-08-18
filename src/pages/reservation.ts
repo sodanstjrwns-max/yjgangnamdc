@@ -3,7 +3,7 @@ export function reservationPage(): string {
   <!-- Hero (White) -->
   <section class="relative min-h-[40vh] md:min-h-[60vh] flex items-end subpage-hero overflow-hidden">
     <div class="absolute inset-0 z-[1]">
-      <img src="/static/photos/CR9dgzgZ.jpg" alt="강남치과의원 대기실" class="w-full h-full object-cover">
+      <img src="/static/photos/CR9dgzgZ.webp" alt="넓고 쾌적한 대기실 전경" class="w-full h-full object-cover">
       <div class="absolute inset-0 bg-gradient-to-b from-white/90 via-white/70 to-white"></div>
     </div>
     <div class="orb orb-royal w-[500px] h-[500px] -top-48 -right-48 opacity-20 z-[2]"></div>
@@ -33,6 +33,7 @@ export function reservationPage(): string {
               <h3 class="font-extrabold text-charcoal text-lg group-hover:text-royal transition-colors duration-300">전화 예약</h3>
               <p class="royal-grad-text text-2xl font-black mt-1">054-636-8222</p>
               <p class="text-gray-400 text-sm mt-1">평일 09:00–17:30 (접수마감 17:00)</p>
+              <p class="text-royal text-xs font-bold mt-1.5"><i class="fas fa-bolt mr-1"></i>진료시간 내 바로 연결됩니다</p>
             </div>
           </a>
 
@@ -45,6 +46,7 @@ export function reservationPage(): string {
               <h3 class="font-extrabold text-charcoal text-lg group-hover:text-[#03C75A] transition-colors duration-300">네이버 예약</h3>
               <p class="text-[#03C75A] text-base font-bold mt-1">바로 예약하기 →</p>
               <p class="text-gray-400 text-sm mt-1">네이버에서 간편하게 예약하세요</p>
+              <p class="text-[#03C75A] text-xs font-bold mt-1.5"><i class="fas fa-check mr-1"></i>예약 신청 즉시 확정 알림</p>
             </div>
           </a>
 
@@ -117,12 +119,16 @@ export function reservationPage(): string {
                   <input type="checkbox" required id="privacy" class="mt-1 accent-[#C9A962] w-4 h-4">
                   <label for="privacy" class="text-xs text-gray-400 leading-relaxed">개인정보 수집 및 이용에 동의합니다. (상담 목적으로만 사용되며, 상담 완료 후 파기됩니다.)</label>
                 </div>
+                <div class="flex items-center gap-3 px-5 py-3.5 rounded-2xl bg-royal/[0.04] border border-royal/10" id="response-promise">
+                  <i class="fas fa-clock text-royal"></i>
+                  <p class="text-sm text-charcoal font-bold">진료시간 내 접수 시 <span class="text-royal">3시간 이내</span>, 그 외에는 <span class="text-royal">다음 진료일 오전 중</span> 전화드립니다</p>
+                </div>
                 <button type="submit" class="w-full btn-primary justify-center !py-5 !text-base !font-extrabold">
                   <i class="fas fa-paper-plane text-sm"></i>상담 문의하기
                 </button>
               </div>
             </form>
-            <p class="text-xs text-gray-400 mt-5 text-center">* 문의 접수 후 영업일 기준 1일 이내 연락드립니다.</p>
+            <p class="text-xs text-gray-400 mt-5 text-center">* 진료시간(평일 09:00–17:30) 내 접수 시 3시간 이내, 이후 접수는 다음 진료일 오전 중 연락드립니다.</p>
           </div>
         </div>
       </div>

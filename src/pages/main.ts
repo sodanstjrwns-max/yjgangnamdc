@@ -1,15 +1,15 @@
 // ===== AEO: FAQ Schema.org 구조화 데이터 =====
 export function mainPageSchemas(): object[] {
   const faqItems = [
-    { q: '임플란트 비용은 얼마인가요?', a: '강남치과의원 임플란트 비용은 Neo/Osstem 임플란트 기준 1개당 130만원입니다(맞춤 어버트먼트 + 지르코니아 크라운 포함). 뼈이식이 필요한 경우 단순 50만원, 복합 80만원이 추가됩니다. 상악동 거상술은 치조정 80만원, 측방 150만원입니다. 정확한 비용은 CT 촬영 후 상담 시 안내드립니다.' },
+    { q: '임플란트 비용은 얼마인가요?', a: '강남치과의원 임플란트 비용은 Neo/Osstem 임플란트 기준 1개당 130만원입니다(맞춤 어버트먼트 + 지르코니아 크라운 포함). 뼈이식이 필요한 경우 단순 50만원, 복합 80만원이 추가됩니다. 상악동(위턱 공간) 거상술은 치조정 80만원, 측방 150만원입니다. 정확한 비용은 CT 촬영 후 상담 시 안내드립니다.' },
     { q: 'CEREC 디지털 보철이란 무엇인가요?', a: 'CEREC은 디지털 스캐너로 치아를 촬영하고, 컴퓨터로 보철을 설계한 뒤, 밀링 머신이 세라믹 블록을 깎아 보철을 만드는 시스템입니다. 디지털 스캔으로 본뜨기 불편함 없이 싱글 지르코니아·세라믹 크라운을 정밀하게 제작합니다.' },
     { q: '인비절라인은 얼마나 걸리나요?', a: '보통 6개월~2년으로, 치아 상태에 따라 다릅니다. 간단한 경우 6개월 이내에 완료되기도 합니다. 비용은 인비절라인 퍼스트(1차) 400만원, 단순 650만원, 복잡 700만원이며, 교정 검사비 20만원, 월비용 5만원이 별도입니다. 정밀 검사 후 예상 기간과 정확한 비용을 안내드립니다.' },
     { q: '사랑니를 꼭 빼야 하나요?', a: '모든 사랑니를 빼야 하는 것은 아닙니다. 매복되어 앞 치아를 밀고 있거나, 충치·염증이 반복되는 경우 발치를 권합니다. 구강악안면외과 전문의가 정확히 진단합니다.' },
     { q: '토요일에도 진료하나요?', a: '현재 평일(월~금) 09:00~17:30 진료하며, 접수마감은 17:00입니다. 점심시간은 13:00~14:00이고, 토·일·공휴일은 휴무입니다.' },
     { q: '주차가 가능한가요?', a: '네, 건물 후면에 지상 및 지하 주차장이 완비되어 있습니다. 편하게 방문해 주세요.' },
     { q: '처음 방문하면 당일 치료도 가능한가요?', a: '네, 간단한 치료(충치, 스케일링 등)는 당일 바로 시작할 수 있습니다. 임플란트 등 큰 치료는 CT 촬영 후 상담을 거쳐 최적의 치료 계획을 세운 뒤 진행합니다.' },
-    { q: '뼈가 부족해도 임플란트가 가능한가요?', a: '가능합니다. 뼈이식, 상악동 거상술 등의 시술로 부족한 뼈를 보충한 후 임플란트를 식립합니다. 이러한 고난이도 수술은 구강외과 전문의의 전문 영역입니다.' },
-    { q: '영주에서 임플란트 잘하는 치과가 어디인가요?', a: '강남치과의원은 구강악안면외과 전문의 2인이 직접 임플란트를 수술합니다. 뼈이식, 상악동 거상술 등 고난이도 수술까지 가능하며, 대학병원급 디지털 장비(3D CT, CEREC, PrimeScan)를 갖추고 있습니다.' },
+    { q: '뼈가 부족해도 임플란트가 가능한가요?', a: '가능합니다. 뼈이식, 상악동(위턱 공간) 거상술 등의 시술로 부족한 뼈를 보충한 후 임플란트를 식립합니다. 이러한 고난이도 수술은 구강외과 전문의의 전문 영역입니다.' },
+    { q: '영주에서 임플란트 잘하는 치과가 어디인가요?', a: '강남치과의원은 구강악안면외과 전문의 2인이 직접 임플란트를 수술합니다. 뼈이식, 상악동(위턱 공간) 거상술 등 고난이도 수술까지 가능하며, 대학병원급 디지털 장비(3D CT, CEREC, PrimeScan)를 갖추고 있습니다.' },
     { q: '구강외과 전문의와 일반 치과의사는 어떻게 다른가요?', a: '구강악안면외과 전문의는 치과대학 졸업 후 대학병원에서 4년간 구강·악안면 수술 전문 수련을 받은 전문의입니다. 뼈를 보는 눈, 신경을 피하는 기술, 봉합의 정밀함이 일반 치과의사와 다릅니다. 임플란트, 사랑니 발치, 뼈이식 등 외과적 술기가 필요한 치료에 특히 전문성이 높습니다.' }
   ];
 
@@ -74,7 +74,7 @@ export function mainPageSchemas(): object[] {
       {
         "@type": "MedicalBusiness",
         "name": "임플란트 전문센터",
-        "description": "구강외과 전문의 2인이 직접 수술. 뼈이식·상악동 거상술 고난이도 수술 가능.",
+        "description": "구강외과 전문의 2인이 직접 수술. 뼈이식·상악동(위턱 공간) 거상술 고난이도 수술 가능.",
         "medicalSpecialty": "Implantology",
         "url": "https://kndent.kr/treatments/implant"
       },
@@ -94,7 +94,7 @@ export function mainPageSchemas(): object[] {
       {
         "@type": "MedicalBusiness",
         "name": "구강외과 수술센터",
-        "description": "사랑니 발치, 뼈이식, 상악동 거상술 등 고난이도 외과 수술.",
+        "description": "사랑니 발치, 뼈이식, 상악동(위턱 공간) 거상술 등 고난이도 외과 수술.",
         "medicalSpecialty": "Oral and Maxillofacial Surgery"
       }
     ],
@@ -184,7 +184,7 @@ export function mainPageSchemas(): object[] {
       },
       {
         "@type": "MedicalProcedure",
-        "name": "상악동 거상술",
+        "name": "상악동(위턱 공간) 거상술",
         "procedureType": "Surgical",
         "howPerformed": "윗턱 뼈가 부족한 경우 상악동 점막을 거상하고 뼈이식 후 임플란트를 식립합니다.",
         "url": "https://kndent.kr/treatments/sinus-lift"
@@ -335,7 +335,7 @@ export function mainPage(): string {
 
   // Patient personas
   const personas = [
-    { emoji: '😰', persona: '임플란트가 필요하신 분', age: '50~70대', worry: '"뼈가 약하다고 다른 치과에서 거절당했어요…"<br>"대구까지 가야 하나 고민이에요."', solution: '구강외과 전문의 2인이 직접 수술합니다. 뼈이식·상악동 거상술 등 고난이도 수술도 일상적으로 시행합니다. 대학병원급 수술을 영주에서.', tags: ['전문의 직접 수술', '뼈이식 가능', 'CT 정밀진단'], link: '/treatments/implant' },
+    { emoji: '😰', persona: '임플란트가 필요하신 분', age: '50~70대', worry: '"뼈가 약하다고 다른 치과에서 거절당했어요…"<br>"대구까지 가야 하나 고민이에요."', solution: '구강외과 전문의 2인이 직접 수술합니다. 뼈이식·상악동(위턱 공간) 거상술 등 고난이도 수술도 일상적으로 시행합니다. 대학병원급 수술을 영주에서.', tags: ['전문의 직접 수술', '뼈이식 가능', 'CT 정밀진단'], link: '/treatments/implant' },
     { emoji: '⏰', persona: '시간이 없으신 분', age: '30~50대 직장인', worry: '"치과 때문에 하루 더 쉬어야 하나…"<br>"치료 여러 번 오는 거 정말 싫어요."', solution: 'CEREC 디지털 시스템으로 싱글 지르코니아·세라믹 크라운을 정밀 제작합니다. 본뜨기 없이 디지털 스캔으로 편안하게 치료받으실 수 있습니다.', tags: ['싱글 크라운', '디지털 정밀 제작', 'CEREC'], link: '/treatments/digital-prosthesis' },
     { emoji: '😬', persona: '교정이 고민이신 분', age: '20~40대', worry: '"교정 티 나면 직장에서 어색할까봐…"<br>"철사 교정은 부담스러운데…"', solution: '인비절라인 투명교정으로 눈에 띄지 않게 교정합니다. iTero 스캐너로 교정 전후를 3D 시뮬레이션으로 미리 보실 수 있습니다.', tags: ['투명 교정', '3D 시뮬레이션', '탈착 가능'], link: '/treatments/invisalign' }
   ];
@@ -361,27 +361,27 @@ export function mainPage(): string {
       <div class="flex flex-wrap gap-1.5 mb-6">
         ${p.tags.map(t => `<span class="px-3 py-1.5 rounded-full bg-royal/[0.04] text-royal text-[10px] font-bold border border-royal/[0.08]">${t}</span>`).join('')}
       </div>
-      <a href="${p.link}" class="flex items-center gap-2 text-royal text-sm font-bold group-hover:gap-4 transition-all duration-500">맞춤 진료 보기 <i class="fas fa-arrow-right text-xs"></i></a>
+      <a href="${p.link}" class="flex items-center gap-2 text-royal text-sm font-bold group-hover:gap-4 transition-all duration-500">자세히 알아보기 <i class="fas fa-arrow-right text-xs"></i></a>
     </div>
   `).join('');
 
   // Clinic photos (실사 사진)
   const clinicPhotos = [
-    { url: '/static/photos/p9YyzTaw.jpg', alt: '강남치과의원 대기실 전경 - 프리미엄 소파와 와이드 디스플레이', label: '대기실', desc: '프리미엄 라운지형 대기 공간' },
-    { url: '/static/photos/KLnijX5L.jpg', alt: '강남치과의원 진료실 - 유리 파티션 개별 진료 공간', label: '진료실', desc: '유리 파티션 개별 진료 공간' },
-    { url: '/static/photos/sOkojKif.jpg', alt: '강남치과의원 상담실 - 전문의 인증서와 상담 공간', label: '상담실', desc: '전문의 자격증 · 1:1 상담' },
-    { url: '/static/photos/XLqoXGPt.jpg', alt: '강남치과의원 X-RAY실과 진료 복도', label: 'X-RAY · 복도', desc: 'X-RAY실 · 디지털 진료 시스템' },
-    { url: '/static/photos/xfkmnFB6.jpg', alt: '강남치과의원 진료 장비 클로즈업 - 최신 치과 유닛', label: '진료 장비', desc: '최신 치과 유닛 체어 시스템' },
-    { url: '/static/photos/ZaCoVLBk.jpg', alt: '강남치과의원 휴게실 - 그랜드 피아노와 서재', label: '휴게실', desc: '그랜드 피아노 · 서재 공간' },
-    { url: '/static/photos/4fco8xUr.jpg', alt: '강남치과의원 대기실 - 무인 키오스크와 소파', label: '접수 · 대기', desc: '무인 키오스크 · 넓은 대기 공간' },
-    { url: '/static/photos/cihnca5u.jpg', alt: '강남치과의원 메이크업실', label: '메이크업실', desc: '진료 후 편의 시설' },
-    { url: '/static/photos/3gQUD6CP.jpg', alt: '강남치과의원 접수대와 복도 - 강남치과 로고', label: '접수대', desc: '깔끔한 접수대 · 로고 사이니지' },
-    { url: '/static/photos/qBEkv4ph.jpg', alt: '강남치과의원 수술실 복도 - 밝고 청결한 환경', label: '수술실 복도', desc: '감염관리 · 청결한 동선' },
+    { url: '/static/photos/p9YyzTaw.webp', alt: '프리미엄 소파와 와이드 디스플레이가 있는 대기실 전경', label: '대기실', desc: '프리미엄 라운지형 대기 공간' },
+    { url: '/static/photos/KLnijX5L.webp', alt: '유리 파티션으로 분리된 개별 진료 공간', label: '진료실', desc: '유리 파티션 개별 진료 공간' },
+    { url: '/static/photos/sOkojKif.webp', alt: '전문의 인증서가 걸린 1:1 상담실', label: '상담실', desc: '전문의 자격증 · 1:1 상담' },
+    { url: '/static/photos/XLqoXGPt.webp', alt: 'X-RAY 촬영실과 디지털 진료 복도', label: 'X-RAY · 복도', desc: 'X-RAY실 · 디지털 진료 시스템' },
+    { url: '/static/photos/xfkmnFB6.webp', alt: '치과 유닛 체어 진료 장비 클로즈업', label: '진료 장비', desc: '최신 치과 유닛 체어 시스템' },
+    { url: '/static/photos/ZaCoVLBk.webp', alt: '그랜드 피아노와 서재가 있는 환자 휴게실', label: '휴게실', desc: '그랜드 피아노 · 서재 공간' },
+    { url: '/static/photos/4fco8xUr.webp', alt: '무인 접수 키오스크와 소파가 있는 대기 공간', label: '접수 · 대기', desc: '무인 키오스크 · 넓은 대기 공간' },
+    { url: '/static/photos/cihnca5u.webp', alt: '진료 후 이용하는 메이크업실 내부', label: '메이크업실', desc: '진료 후 편의 시설' },
+    { url: '/static/photos/3gQUD6CP.webp', alt: '접수대와 복도, 로고 사이니지', label: '접수대', desc: '깔끔한 접수대 · 로고 사이니지' },
+    { url: '/static/photos/qBEkv4ph.webp', alt: '밝고 청결하게 관리되는 수술실 복도', label: '수술실 복도', desc: '감염관리 · 청결한 동선' },
   ];
   const clinicPhotosHtml = clinicPhotos.map(p => `
     <div class="flex-shrink-0 w-[340px] md:w-[420px] snap-start group cursor-pointer" onclick="openPhotoModal('${p.url}','${p.alt}')">
       <div class="relative rounded-3xl overflow-hidden aspect-[4/3] mb-4">
-        <img src="${p.url}" alt="${p.alt}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy">
+        <img src="${p.url}" srcset="${p.url.replace('.webp', '-480.webp')} 480w, ${p.url} 1024w" sizes="(max-width: 768px) 85vw, 400px" alt="${p.alt}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy">
         <div class="absolute inset-0 bg-gradient-to-t from-charcoal/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
         <div class="absolute bottom-4 left-4 right-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
           <span class="px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-md text-charcoal text-xs font-bold">${p.label}</span>
@@ -515,14 +515,14 @@ export function mainPage(): string {
 
   // FAQ items
   const faqItems = [
-    { q: '임플란트 비용은 얼마인가요?', a: '강남치과의원 임플란트 비용은 Neo/Osstem 임플란트 기준 1개당 130만원입니다(맞춤 어버트먼트 + 지르코니아 크라운 포함). 뼈이식이 필요한 경우 단순 50만원, 복합 80만원이 추가됩니다. 상악동 거상술은 치조정 80만원, 측방 150만원입니다. 정확한 비용은 CT 촬영 후 상담 시 안내드립니다.' },
+    { q: '임플란트 비용은 얼마인가요?', a: '강남치과의원 임플란트 비용은 Neo/Osstem 임플란트 기준 1개당 130만원입니다(맞춤 어버트먼트 + 지르코니아 크라운 포함). 뼈이식이 필요한 경우 단순 50만원, 복합 80만원이 추가됩니다. 상악동(위턱 공간) 거상술은 치조정 80만원, 측방 150만원입니다. 정확한 비용은 CT 촬영 후 상담 시 안내드립니다.' },
     { q: 'CEREC 디지털 보철이란 무엇인가요?', a: 'CEREC은 디지털 스캐너로 치아를 촬영하고, 컴퓨터로 보철을 설계한 뒤, 밀링 머신이 세라믹 블록을 깎아 보철을 만드는 시스템입니다. 디지털 스캔으로 본뜨기 불편함 없이 싱글 지르코니아·세라믹 크라운을 정밀하게 제작합니다.' },
     { q: '인비절라인은 얼마나 걸리나요?', a: '보통 6개월~2년으로, 치아 상태에 따라 다릅니다. 간단한 경우 6개월 이내에 완료되기도 합니다. 비용은 인비절라인 퍼스트(1차) 400만원, 단순 650만원, 복잡 700만원이며, 교정 검사비 20만원, 월비용 5만원이 별도입니다. 정밀 검사 후 예상 기간과 정확한 비용을 안내드립니다.' },
     { q: '사랑니를 꼭 빼야 하나요?', a: '모든 사랑니를 빼야 하는 것은 아닙니다. 매복되어 앞 치아를 밀고 있거나, 충치·염증이 반복되는 경우 발치를 권합니다. 구강악안면외과 전문의가 정확히 진단합니다.' },
     { q: '토요일에도 진료하나요?', a: '현재 평일(월~금) 09:00~17:30 진료하며, 접수마감은 17:00입니다. 점심시간은 13:00~14:00이고, 토·일·공휴일은 휴무입니다.' },
     { q: '주차가 가능한가요?', a: '네, 건물 후면에 지상 및 지하 주차장이 완비되어 있습니다. 편하게 방문해 주세요.' },
     { q: '처음 방문하면 당일 치료도 가능한가요?', a: '네, 간단한 치료(충치, 스케일링 등)는 당일 바로 시작할 수 있습니다. 임플란트 등 큰 치료는 CT 촬영 후 상담을 거쳐 최적의 치료 계획을 세운 뒤 진행합니다.' },
-    { q: '뼈가 부족해도 임플란트가 가능한가요?', a: '가능합니다. 뼈이식, 상악동 거상술 등의 시술로 부족한 뼈를 보충한 후 임플란트를 식립합니다. 이러한 고난이도 수술은 구강외과 전문의의 전문 영역입니다.' }
+    { q: '뼈가 부족해도 임플란트가 가능한가요?', a: '가능합니다. 뼈이식, 상악동(위턱 공간) 거상술 등의 시술로 부족한 뼈를 보충한 후 임플란트를 식립합니다. 이러한 고난이도 수술은 구강외과 전문의의 전문 영역입니다.' }
   ];
   const faqHtml = faqItems.map(item => `
     <details class="group card-premium stagger-item">
@@ -630,7 +630,7 @@ export function mainPage(): string {
               </div>
               <div>
                 <div class="text-charcoal font-extrabold text-base leading-none">디지털 <span class="counter royal-grad-text text-lg" data-target="5" data-suffix="+">0</span></div>
-                <div class="text-gray-400 text-[10px] mt-0.5 tracking-wide">최첨단 장비</div>
+                <div class="text-gray-400 text-[10px] mt-0.5 tracking-wide">CT · CEREC · 구강스캐너</div>
               </div>
             </div>
           </div>
@@ -685,7 +685,7 @@ export function mainPage(): string {
           <div class="relative">
             <!-- 실사 사진 배경 (진료실) -->
             <div class="absolute -inset-8 rounded-[40px] overflow-hidden opacity-15 blur-[2px]">
-              <img src="/static/photos/Wpp3wlfj.jpg" alt="강남치과의원 진료실" class="w-full h-full object-cover">
+              <img src="/static/photos/Wpp3wlfj.webp" srcset="/static/photos/Wpp3wlfj-480.webp 480w, /static/photos/Wpp3wlfj.webp 1024w" sizes="(max-width: 768px) 100vw, 600px" alt="자연광이 드는 진료실 내부" class="w-full h-full object-cover">
             </div>
             <!-- Sketchfab 3D Implant Viewer (bigger size) -->
             <div class="relative w-[540px] h-[640px]">
@@ -838,7 +838,7 @@ export function mainPage(): string {
         </div>
         <div class="lg:col-span-5 card-premium p-10 md:p-12 flex flex-col justify-between min-h-[480px] stagger-item group relative overflow-hidden">
           <div class="absolute inset-0 opacity-[0.06]">
-            <img src="/static/photos/xfkmnFB6.jpg" alt="강남치과의원 진료 장비" class="w-full h-full object-cover">
+            <img src="/static/photos/xfkmnFB6.webp" srcset="/static/photos/xfkmnFB6-480.webp 480w, /static/photos/xfkmnFB6.webp 1024w" sizes="(max-width: 768px) 100vw, 600px" alt="치과 유닛 체어와 진료 장비" class="w-full h-full object-cover">
           </div>
           <div class="relative z-10">
             <div class="flex items-center justify-between mb-8">
@@ -862,8 +862,8 @@ export function mainPage(): string {
         <div class="lg:col-span-4 card-premium p-8 md:p-10 stagger-item bg-gradient-to-br from-white to-royal/[0.02]">
           <div class="w-14 h-14 rounded-2xl royal-grad flex items-center justify-center mb-6 royal-glow"><i class="fas fa-clock text-white text-xl"></i></div>
           <p class="text-royal text-sm italic font-medium mb-3">"시간 없는데, 빨리 끝나나?"</p>
-          <h3 class="text-xl font-extrabold text-charcoal mb-3">불필요한 재내원을<br>최소화합니다</h3>
-          <p class="text-gray-400 text-sm leading-relaxed mb-6">당일 발수, 당일 근충까지.<br>바쁜 분들을 위한 치과입니다.</p>
+          <h3 class="text-xl font-extrabold text-charcoal mb-3">크라운 치료,<br>보통 2번 오실 걸 1번으로 끝냅니다</h3>
+          <p class="text-gray-400 text-sm leading-relaxed mb-6">본뜨기 없이 구강스캐너로 촬영하고,<br>CEREC이 원내에서 바로 깎아냅니다.</p>
           <div class="relative py-6">
             <div class="absolute left-5 top-0 bottom-0 w-[2px] bg-gradient-to-b from-royal via-royal/50 to-royal/10"></div>
             <div class="space-y-6 pl-12 relative">
@@ -888,7 +888,7 @@ export function mainPage(): string {
             <div class="w-14 h-14 rounded-2xl royal-grad flex items-center justify-center mb-6 royal-glow"><i class="fas fa-bone text-white text-xl"></i></div>
             <p class="text-royal text-sm italic font-medium mb-3">"뼈가 부족해도 할 수 있어?"</p>
             <h3 class="text-xl font-extrabold text-charcoal mb-3">뼈가 부족하다고<br>포기하지 마세요</h3>
-            <p class="text-gray-400 text-sm leading-relaxed mb-6">뼈이식, 상악동 거상술은<br>구강외과 전문의의 전문 영역입니다.</p>
+            <p class="text-gray-400 text-sm leading-relaxed mb-6">뼈이식, 상악동(위턱 공간) 거상술은<br>구강외과 전문의의 전문 영역입니다.</p>
             <div class="flex flex-wrap gap-2">
               ${boneTagsHtml}
             </div>
@@ -970,7 +970,7 @@ export function mainPage(): string {
     <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
       <div class="text-center mb-24 reveal">
         <div class="section-label section-label-royal mx-auto mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>TREATMENTS</div>
-        <h2 class="display-xl text-charcoal mb-6">강남치과의원<br><span class="royal-grad-text">주력 진료</span></h2>
+        <h2 class="display-xl text-charcoal mb-6">어떤 치료가<br><span class="royal-grad-text">필요하신가요?</span></h2>
         <p class="text-gray-400 text-lg max-w-xl mx-auto">각 분야 전문의가 직접 진료합니다</p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 stagger-children">
@@ -1010,8 +1010,8 @@ export function mainPage(): string {
     <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
       <div class="text-center mb-16 reveal">
         <div class="section-label section-label-royal mx-auto mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>EQUIPMENT</div>
-        <h2 class="display-xl text-charcoal mb-6">대학병원급<br><span class="royal-grad-text">디지털 장비</span></h2>
-        <p class="text-gray-400 text-lg">정확한 진단과 빠른 치료를 위한 최첨단 장비를 갖추고 있습니다</p>
+        <h2 class="display-xl text-charcoal mb-6">내 진단, 어떤 장비로<br><span class="royal-grad-text">확인하나요?</span></h2>
+        <p class="text-gray-400 text-lg">3D CT로 신경 위치를 확인하고, CEREC 밀링머신으로 보철을 당일 제작합니다</p>
       </div>
       <div class="flex gap-5 overflow-x-auto snap-x pb-6 -mx-6 px-6 scrollbar-none stagger-children">
         ${equipGalleryHtml}
@@ -1067,7 +1067,7 @@ export function mainPage(): string {
           <p class="text-gray-400 leading-relaxed mb-8">첫 방문부터 치료 완료까지,<br>모든 과정을 미리 알려드립니다.<br>불안함 없이 편하게 오세요.</p>
           <a href="/reservation" class="btn-primary !text-sm !py-4 !px-8"><i class="fas fa-calendar-check text-xs"></i>첫 방문 예약하기</a>
           <div class="mt-8 rounded-2xl overflow-hidden hidden lg:block shadow-lg shadow-royal/5">
-            <img src="/static/photos/yzSmZXZD.jpg" alt="강남치과의원 상담실 - 전문의 상담 공간" class="w-full h-48 object-cover" loading="lazy">
+            <img src="/static/photos/yzSmZXZD.webp" srcset="/static/photos/yzSmZXZD-480.webp 480w, /static/photos/yzSmZXZD.webp 1024w" sizes="(max-width: 1024px) 0px, 350px" alt="전문의와 1:1로 진행하는 상담 공간" class="w-full h-48 object-cover" loading="lazy">
           </div>
         </div>
         <div class="lg:col-span-8">
@@ -1090,7 +1090,7 @@ export function mainPage(): string {
     <div class="max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12 relative z-10">
       <div class="text-center mb-14 md:mb-24 reveal">
         <div class="section-label section-label-royal mx-auto mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>DOCTORS</div>
-        <h2 class="display-xl text-charcoal mb-6">수술이 전문인<br><span class="royal-grad-text">전문의가 합니다</span></h2>
+        <h2 class="display-xl text-charcoal mb-6">내 수술,<br><span class="royal-grad-text">누가 집도하나요?</span></h2>
         <p class="text-gray-400 text-lg">구강악안면외과 전문의가 직접 임플란트를 식립합니다</p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto stagger-children">

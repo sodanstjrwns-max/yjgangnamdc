@@ -3,7 +3,7 @@ export function directionsPage(): string {
   <!-- Hero (White) -->
   <section class="relative min-h-[40vh] md:min-h-[60vh] flex items-end subpage-hero overflow-hidden">
     <div class="absolute inset-0 z-[1]">
-      <img src="/static/photos/3gQUD6CP.jpg" alt="강남치과의원 접수대와 로고" class="w-full h-full object-cover">
+      <img src="/static/photos/3gQUD6CP.webp" alt="접수대와 로고 사이니지" class="w-full h-full object-cover">
       <div class="absolute inset-0 bg-gradient-to-b from-white/90 via-white/70 to-white"></div>
     </div>
     <div class="orb orb-royal w-[500px] h-[500px] -top-48 -right-48 opacity-20 z-[2]"></div>
@@ -97,19 +97,19 @@ export function directionsPage(): string {
         </div>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 stagger-children">
           <div class="card-premium overflow-hidden stagger-item group">
-            <div class="aspect-[4/3] overflow-hidden"><img src="/static/photos/p9YyzTaw.jpg" alt="강남치과의원 대기실" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy"></div>
+            <div class="aspect-[4/3] overflow-hidden"><img src="/static/photos/p9YyzTaw.webp" srcset="/static/photos/p9YyzTaw-480.webp 480w, /static/photos/p9YyzTaw.webp 1024w" sizes="(max-width: 768px) 50vw, 340px" alt="프리미엄 소파가 있는 대기실" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy"></div>
             <div class="p-4"><h4 class="font-extrabold text-charcoal text-sm">대기실</h4><p class="text-gray-400 text-xs mt-0.5">프리미엄 라운지형 대기 공간</p></div>
           </div>
           <div class="card-premium overflow-hidden stagger-item group">
-            <div class="aspect-[4/3] overflow-hidden"><img src="/static/photos/KLnijX5L.jpg" alt="강남치과의원 진료실" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy"></div>
+            <div class="aspect-[4/3] overflow-hidden"><img src="/static/photos/KLnijX5L.webp" srcset="/static/photos/KLnijX5L-480.webp 480w, /static/photos/KLnijX5L.webp 1024w" sizes="(max-width: 768px) 50vw, 340px" alt="유리 파티션 개별 진료실" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy"></div>
             <div class="p-4"><h4 class="font-extrabold text-charcoal text-sm">진료실</h4><p class="text-gray-400 text-xs mt-0.5">유리 파티션 개별 진료 공간</p></div>
           </div>
           <div class="card-premium overflow-hidden stagger-item group">
-            <div class="aspect-[4/3] overflow-hidden"><img src="/static/photos/sOkojKif.jpg" alt="강남치과의원 상담실" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy"></div>
+            <div class="aspect-[4/3] overflow-hidden"><img src="/static/photos/sOkojKif.webp" srcset="/static/photos/sOkojKif-480.webp 480w, /static/photos/sOkojKif.webp 1024w" sizes="(max-width: 768px) 50vw, 340px" alt="전문의 인증서가 걸린 상담실" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy"></div>
             <div class="p-4"><h4 class="font-extrabold text-charcoal text-sm">상담실</h4><p class="text-gray-400 text-xs mt-0.5">전문의 1:1 상담 공간</p></div>
           </div>
           <div class="card-premium overflow-hidden stagger-item group">
-            <div class="aspect-[4/3] overflow-hidden"><img src="/static/photos/ZaCoVLBk.jpg" alt="강남치과의원 휴게실" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy"></div>
+            <div class="aspect-[4/3] overflow-hidden"><img src="/static/photos/ZaCoVLBk.webp" srcset="/static/photos/ZaCoVLBk-480.webp 480w, /static/photos/ZaCoVLBk.webp 1024w" sizes="(max-width: 768px) 50vw, 340px" alt="그랜드 피아노가 있는 환자 휴게실" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy"></div>
             <div class="p-4"><h4 class="font-extrabold text-charcoal text-sm">휴게실</h4><p class="text-gray-400 text-xs mt-0.5">그랜드 피아노 · 서재 공간</p></div>
           </div>
         </div>

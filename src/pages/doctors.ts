@@ -10,7 +10,7 @@ const doctors = [
 
 고려대학교 구강악안면외과에서 석사를 마치고, 고려대학교 구로병원에서 레지던트를 수료했습니다.
 매일 뼈를 다루고, 매일 수술을 합니다. 
-뼈이식, 상악동 거상술 같은 <strong class="text-charcoal">고난이도 수술</strong>을 일상적으로 시행합니다.
+뼈이식, 상악동(위턱 공간) 거상술 같은 <strong class="text-charcoal">고난이도 수술</strong>을 일상적으로 시행합니다.
 대한구강악안면성형재건외과학회 인정의입니다.
 
 <strong class="text-charcoal">임플란트는 뼈에 심는 수술입니다.</strong>
@@ -412,23 +412,23 @@ export function doctorsPage(): string {
       <div class="text-center mb-16 reveal">
         <div class="section-label section-label-royal mx-auto mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>CLINIC ENVIRONMENT</div>
         <h2 class="display-lg text-charcoal mb-6">전문의가 진료하는<br><span class="royal-grad-text">대학병원급 환경</span></h2>
-        <p class="text-gray-400 text-lg">구강외과 전문의 2인이 최첨단 장비로 직접 진료합니다</p>
+        <p class="text-gray-400 text-lg">구강악안면외과 전문의 2인이 3D CT·구강스캐너로 직접 진단합니다</p>
       </div>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4 stagger-children">
         <div class="card-premium overflow-hidden stagger-item group">
-          <div class="aspect-[4/3] overflow-hidden"><img src="/static/photos/KLnijX5L.jpg" alt="강남치과의원 진료실" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy"></div>
+          <div class="aspect-[4/3] overflow-hidden"><img src="/static/photos/KLnijX5L.webp" srcset="/static/photos/KLnijX5L-480.webp 480w, /static/photos/KLnijX5L.webp 1024w" sizes="(max-width: 768px) 50vw, 340px" alt="유리 파티션 개별 진료실" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy"></div>
           <div class="p-4"><h4 class="font-extrabold text-charcoal text-sm">진료실</h4><p class="text-gray-400 text-xs mt-0.5">유리 파티션 개별 진료 공간</p></div>
         </div>
         <div class="card-premium overflow-hidden stagger-item group">
-          <div class="aspect-[4/3] overflow-hidden"><img src="/static/photos/xfkmnFB6.jpg" alt="강남치과의원 진료 장비" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy"></div>
+          <div class="aspect-[4/3] overflow-hidden"><img src="/static/photos/xfkmnFB6.webp" srcset="/static/photos/xfkmnFB6-480.webp 480w, /static/photos/xfkmnFB6.webp 1024w" sizes="(max-width: 768px) 50vw, 340px" alt="치과 유닛 체어 진료 장비" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy"></div>
           <div class="p-4"><h4 class="font-extrabold text-charcoal text-sm">진료 장비</h4><p class="text-gray-400 text-xs mt-0.5">최신 치과 유닛 체어 시스템</p></div>
         </div>
         <div class="card-premium overflow-hidden stagger-item group">
-          <div class="aspect-[4/3] overflow-hidden"><img src="/static/photos/XLqoXGPt.jpg" alt="강남치과의원 X-RAY 복도" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy"></div>
+          <div class="aspect-[4/3] overflow-hidden"><img src="/static/photos/XLqoXGPt.webp" srcset="/static/photos/XLqoXGPt-480.webp 480w, /static/photos/XLqoXGPt.webp 1024w" sizes="(max-width: 768px) 50vw, 340px" alt="X-RAY 촬영실과 진료 복도" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy"></div>
           <div class="p-4"><h4 class="font-extrabold text-charcoal text-sm">X-RAY · 복도</h4><p class="text-gray-400 text-xs mt-0.5">디지털 진료 시스템</p></div>
         </div>
         <div class="card-premium overflow-hidden stagger-item group">
-          <div class="aspect-[4/3] overflow-hidden"><img src="/static/photos/sOkojKif.jpg" alt="강남치과의원 상담실" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy"></div>
+          <div class="aspect-[4/3] overflow-hidden"><img src="/static/photos/sOkojKif.webp" srcset="/static/photos/sOkojKif-480.webp 480w, /static/photos/sOkojKif.webp 1024w" sizes="(max-width: 768px) 50vw, 340px" alt="전문의 인증서가 걸린 상담실" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy"></div>
           <div class="p-4"><h4 class="font-extrabold text-charcoal text-sm">상담실</h4><p class="text-gray-400 text-xs mt-0.5">전문의 1:1 상담 공간</p></div>
         </div>
       </div>

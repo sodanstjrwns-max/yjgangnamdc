@@ -79,8 +79,8 @@ const treatmentPricing: Record<string, { priceLine: string; details: { label: st
       { label: 'Neo/Osstem 임플란트 (1개)', price: '130만원', note: '맞춤 어버트먼트 + 지르코니아 크라운 포함' },
       { label: '단순 뼈이식', price: '50만원', note: '필요 시 추가' },
       { label: '복합 뼈이식', price: '80만원', note: '큰 결손 시' },
-      { label: '상악동 거상술 (치조정)', price: '80만원', note: 'Crestal Approach' },
-      { label: '상악동 거상술 (측방)', price: '150만원', note: 'Lateral Approach' },
+      { label: '상악동(위턱 공간) 거상술 (치조정)', price: '80만원', note: 'Crestal Approach' },
+      { label: '상악동(위턱 공간) 거상술 (측방)', price: '150만원', note: 'Lateral Approach' },
       { label: '3D CT 촬영', price: '진단 시 포함', note: '정밀 진단용' }
     ],
     additionalCosts: ['임플란트 보철 변경 시 재료비', '재수술 시 보철비'],
@@ -154,7 +154,7 @@ const treatmentPricing: Record<string, { priceLine: string; details: { label: st
       { label: '동종골 / 합성골', price: '재료비 포함', note: '안전성 검증된 재료' },
       { label: '3D CT 정밀 진단', price: '진단 시 포함' }
     ],
-    additionalCosts: ['임플란트 비용 별도', '상악동 거상술 시 추가비'],
+    additionalCosts: ['임플란트 비용 별도', '상악동(위턱 공간) 거상술 시 추가비'],
     insurance: '비급여 (임플란트 부수 시술).',
     payment: ['임플란트와 통합 결제 가능', '카드 할부'],
     freeServices: ['뼈이식 후 1년 관리', '재수술 시 50% 할인']
@@ -193,8 +193,8 @@ const treatmentTrust: Record<string, { credentials: string[]; equipment: string[
   'implant': {
     credentials: ['구강악안면외과 전문의 2인 (이태형·최민혜 원장)', '고려대·인제대 백병원 레지던트 수료', '대한구강악안면성형재건외과학회 인정의'],
     equipment: ['3D CT (정밀 진단)', 'PrimeScan 디지털 스캐너', '디지털 임플란트 가이드', 'Neo/Osstem 정품 임플란트'],
-    cases: ['뼈이식 동반 임플란트 다수 시술 경험', '상악동 거상술 정기 시행', '전체 임플란트(All-on-4/6) 가능'],
-    differentiation: ['영주 유일 전문의 2인 상주', '뼈이식·상악동 거상술 직접 가능', '5년 정기검진 무료']
+    cases: ['뼈이식 동반 임플란트 다수 시술 경험', '상악동(위턱 공간) 거상술 정기 시행', '전체 임플란트(All-on-4/6) 가능'],
+    differentiation: ['영주 유일 전문의 2인 상주', '뼈이식·상악동(위턱 공간) 거상술 직접 가능', '5년 정기검진 무료']
   },
   'invisalign': {
     credentials: ['Invisalign Certified Doctor (본사 인증의)', 'iTero Element 인증 의료기관', '교정학 임상 수료'],
@@ -223,7 +223,7 @@ const treatmentTrust: Record<string, { credentials: string[]; equipment: string[
   'bone-graft': {
     credentials: ['구강악안면외과 전문의 전문 영역', '뼈이식 다수 임상', '재건 수술 가능'],
     equipment: ['3D CT (뼈량 정밀 측정)', '자가골·동종골·합성골 라인업', 'GBR (Guided Bone Regeneration)'],
-    cases: ['상악동 거상술 동반', '치조골 결손 재건', '임플란트 동시 식립'],
+    cases: ['상악동(위턱 공간) 거상술 동반', '치조골(잇몸뼈) 결손 재건', '임플란트 동시 식립'],
     differentiation: ['대학병원 의뢰 불필요', '임플란트와 원스톱', '뼈이식 후 1년 관리']
   },
   'cavity': {
@@ -499,7 +499,7 @@ function getIntentFAQs(area: string, treatment: string, intent: IntentInfo, pric
   if (intent.contentFocus === 'recommend' || intent.contentFocus === 'best') {
     base.push({
       q: `${area} 환자분들이 영주 강남치과의원을 선택하는 이유는?`,
-      a: `① 구강악안면외과 전문의 2인 상주 ② 대학병원급 장비(3D CT·PrimeScan·CEREC·iTero) ③ 뼈이식·상악동 거상술까지 원스톱 가능 ④ 5년 정기검진 무료 ⑤ ${area}에서 가까운 거리 — 이 5가지가 ${area} 환자분들의 가장 큰 선택 이유입니다.`
+      a: `① 구강악안면외과 전문의 2인 상주 ② 대학병원급 장비(3D CT·PrimeScan·CEREC·iTero) ③ 뼈이식·상악동(위턱 공간) 거상술까지 원스톱 가능 ④ 5년 정기검진 무료 ⑤ ${area}에서 가까운 거리 — 이 5가지가 ${area} 환자분들의 가장 큰 선택 이유입니다.`
     })
   }
 

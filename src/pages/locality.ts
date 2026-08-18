@@ -394,7 +394,7 @@ export function localityPage(slug: string): { html: string; title: string; descr
       <ul class="space-y-2 text-blue-50">
         <li><i class="fas fa-check-circle text-yellow-300 mr-2"></i><strong>구강악안면외과 전문의 2인</strong> 직접 수술 — ${loc.parentRegion}/주변에 없는 희소 자원</li>
         <li><i class="fas fa-check-circle text-yellow-300 mr-2"></i><strong>3D CT + 디지털 임플란트 가이드</strong> 정밀 식립</li>
-        <li><i class="fas fa-check-circle text-yellow-300 mr-2"></i><strong>뼈이식·상악동 거상술</strong> 동시 가능 — ${loc.name}에서 대구·서울 안 가도 됨</li>
+        <li><i class="fas fa-check-circle text-yellow-300 mr-2"></i><strong>뼈이식·상악동(위턱 공간) 거상술</strong> 동시 가능 — ${loc.name}에서 대구·서울 안 가도 됨</li>
         <li><i class="fas fa-check-circle text-yellow-300 mr-2"></i><strong>CEREC MC X 당일 크라운</strong> 시스템</li>
         <li><i class="fas fa-check-circle text-yellow-300 mr-2"></i><strong>인비절라인 인증의</strong> — iTero 스캐너로 5분 만에 시뮬레이션</li>
         <li><i class="fas fa-check-circle text-yellow-300 mr-2"></i>${loc.driveTime}만에 도착 — 시간 효율 최고</li>
@@ -418,7 +418,7 @@ export function localityPage(slug: string): { html: string; title: string; descr
         </div>
         <div>
           <p class="font-bold text-gray-900">Q. ${loc.name}에서 임플란트하러 굳이 영주까지 가야 할 이유가 있나요?</p>
-          <p class="text-gray-700 mt-1">A. 영주 강남치과는 ${loc.parentRegion} 일대에서 보기 드문 <strong>구강악안면외과 전문의 2인</strong>이 상주하는 치과입니다. 뼈가 부족해도 뼈이식·상악동 거상술이 동시 가능하고, 3D CT 정밀 진단 + 디지털 가이드로 식립 정확도가 높습니다. 대구·서울까지 가지 않아도 동일 수준의 진료를 받을 수 있습니다.</p>
+          <p class="text-gray-700 mt-1">A. 영주 강남치과는 ${loc.parentRegion} 일대에서 보기 드문 <strong>구강악안면외과 전문의 2인</strong>이 상주하는 치과입니다. 뼈가 부족해도 뼈이식·상악동(위턱 공간) 거상술이 동시 가능하고, 3D CT 정밀 진단 + 디지털 가이드로 식립 정확도가 높습니다. 대구·서울까지 가지 않아도 동일 수준의 진료를 받을 수 있습니다.</p>
         </div>
         <div>
           <p class="font-bold text-gray-900">Q. ${loc.name}에서 사랑니 뽑으러 가도 되나요? 매복 사랑니도 가능한가요?</p>
@@ -491,7 +491,7 @@ export function localityPage(slug: string): { html: string; title: string; descr
           "name": `${loc.name}에서 임플란트하러 영주 강남치과 가는 이유는?`,
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": `영주 강남치과는 ${loc.parentRegion} 일대에 드문 구강악안면외과 전문의 2인이 상주합니다. 뼈이식·상악동 거상술 동시 가능, 3D CT + 디지털 가이드 정밀 식립. 대구·서울까지 가지 않아도 동일 수준 진료. Neo/Osstem 임플란트 1개 130만원.`
+            "text": `영주 강남치과는 ${loc.parentRegion} 일대에 드문 구강악안면외과 전문의 2인이 상주합니다. 뼈이식·상악동(위턱 공간) 거상술 동시 가능, 3D CT + 디지털 가이드 정밀 식립. 대구·서울까지 가지 않아도 동일 수준 진료. Neo/Osstem 임플란트 1개 130만원.`
           }
         },
         {

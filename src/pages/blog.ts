@@ -196,7 +196,7 @@ const TREATMENT_LINK_MAP: { keywords: string[]; url: string; label: string }[] =
   { keywords: ['스케일링', '치석'], url: '/treatments/scaling', label: '스케일링' },
   { keywords: ['틀니', '의치'], url: '/treatments/denture', label: '틀니' },
   { keywords: ['너이식', '골이식'], url: '/treatments/bone-graft', label: '너이식' },
-  { keywords: ['상악동'], url: '/treatments/sinus-lift', label: '상악동 거상술' },
+  { keywords: ['상악동'], url: '/treatments/sinus-lift', label: '상악동(위턱 공간) 거상술' },
   { keywords: ['턱관절', 'tmj'], url: '/treatments/tmj', label: '턱관절 치료' },
   { keywords: ['라미네이트', '심미'], url: '/treatments/cosmetic', label: '심미보철' },
 ]
@@ -355,6 +355,7 @@ export function blogDetailPage(post: any, relatedPosts: any[] = []): { html: str
   </section>
 
   <style>
+    .blog-content .direct-answer { background: linear-gradient(135deg, rgba(91,71,214,0.05), rgba(91,71,214,0.02)); border-left: 4px solid #5B47D6; border-radius: 0 16px 16px 0; padding: 1.25rem 1.5rem; color: #374151; font-size: 1.05rem; line-height: 1.8; margin-bottom: 2rem; }
     .blog-content h2 { font-size: 1.5rem; font-weight: 800; color: #1C1C1E; margin: 2.5rem 0 1rem; line-height: 1.3; }
     .blog-content h3 { font-size: 1.25rem; font-weight: 700; color: #1C1C1E; margin: 2rem 0 0.8rem; }
     .blog-content p { color: #6B7280; font-size: 1rem; line-height: 1.9; margin-bottom: 1.5rem; }

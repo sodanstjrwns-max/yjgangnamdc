@@ -34,7 +34,7 @@ const audienceData: Record<string, AudienceInfo> = {
       '아이 눈높이 설명 (Tell-Show-Do 기법)',
       '소량 마취 + 무통 시술로 통증·공포 최소화',
       '부모 동반 가능 + 진료 과정 투명 공개',
-      '치아 발달 단계별 맞춤 진료',
+      '유치·혼합치열·영구치 시기별 치료 계획',
       '예방 중심 시스템 (불소도포·실란트)'
     ],
     recommendedTreatments: [
@@ -120,7 +120,7 @@ const audienceData: Record<string, AudienceInfo> = {
       '잇몸·치주 관리 우선 (전신질환 영향 큼)',
       '당뇨·고혈압·복용약 고려한 진료 계획',
       '저작 기능 회복 = 영양·전신건강 직결',
-      '편안한 진료 환경 (대기·동선 배려)'
+      '계단 없는 2층 진입 · 보호자 동반 대기 공간'
     ],
     recommendedTreatments: [
       { name: '임플란트 (보험적용)', desc: '만 65세 이상 평생 2개 본인부담 약 35만원/개', slug: 'implant' },
@@ -447,7 +447,7 @@ export function audienceIndexPage(): { html: string; title: string; description:
       <section class="bg-gradient-to-r from-purple-700 via-pink-600 to-rose-600 text-white py-16">
         <div class="max-w-5xl mx-auto px-4 text-center">
           <h1 class="text-4xl md:text-5xl font-bold mb-4" data-speakable>대상자별 치과 진료</h1>
-          <p class="text-lg text-white/95" data-speakable>어린이·임산부·어르신·직장인·외국인·공포환자 — 모두에게 맞춤 진료</p>
+          <p class="text-lg text-white/95" data-speakable>어린이·임산부·어르신·직장인·외국인·공포환자 — 상황별 진료 가이드</p>
         </div>
       </section>
       <section class="max-w-5xl mx-auto px-4 py-12">
