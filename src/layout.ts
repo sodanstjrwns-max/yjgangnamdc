@@ -772,17 +772,14 @@ export function layout(content: string, opts: LayoutOptions): string {
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 
-  <!-- Microsoft Clarity (행동 분석)
-       ⚠️ 비활성화 상태: 실제 프로젝트 ID 발급 후 아래 CLARITY_ID를 교체하고 주석 해제하세요.
-       (placeholder ID로 로드하면 모든 페이지에서 400 에러 발생 → 콘솔 오염 + 불필요 요청)
+  <!-- Microsoft Clarity (행동 분석) — 실제 프로젝트 ID(yc82mxyj7e) 적용으로 활성화 -->
   <script type="text/javascript">
     (function(c,l,a,r,i,t,y){
       c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
       t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
       y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-    })(window, document, "clarity", "script", "CLARITY_ID");
+    })(window, document, "clarity", "script", "yc82mxyj7e");
   </script>
-  -->
 
 
   <!-- Three.js removed for performance - using CSS particles instead -->
