@@ -550,6 +550,7 @@ Sitemap: https://kndent.kr/sitemap-blog.xml
 
 # RSS Feed (Google 색인 가속 — Google이 RSS도 sitemap으로 인식)
 Sitemap: https://kndent.kr/feed.xml
+Sitemap: https://kndent.kr/rss.xml
 
 # 부가 자료
 # HTML Sitemap (사람용): https://kndent.kr/all-pages
@@ -2647,6 +2648,59 @@ app.get('/feed.xml', async (c) => {
     <copyright>© 2026 영주 강남치과의원</copyright>
     <lastBuildDate>${today}</lastBuildDate>
     <ttl>1440</ttl>
+${itemsXml}
+  </channel>
+</rss>`
+
+  c.header('Content-Type', 'application/rss+xml; charset=utf-8')
+  c.header('Cache-Control', 'public, max-age=3600, s-maxage=3600')
+  return c.body(rss)
+})
+
+// ===== RSS 2.0 피드: 블로그 게시글 (/rss.xml) =====
+app.get('/rss.xml', async (c) => {
+  const baseUrl = 'https://kndent.kr'
+  let posts: any[] = []
+  try {
+    const result = await c.env.DB.prepare(
+      'SELECT slug, title, summary, category, published_at, updated_at FROM blog_posts WHERE is_published = 1 ORDER BY published_at DESC LIMIT 20'
+    ).all()
+    posts = result.results || []
+  } catch (e) { /* DB not available */ }
+
+  const xmlEscape = (s: string) => (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;')
+  const toRfc822 = (d: any) => {
+    const t = new Date(d || Date.now())
+    return isNaN(t.getTime()) ? new Date().toUTCString() : t.toUTCString()
+  }
+
+  const itemsXml = posts.map((p: any) => `    <item>
+      <title>${xmlEscape(p.title)}</title>
+      <link>${baseUrl}/blog/${p.slug}</link>
+      <guid isPermaLink="true">${baseUrl}/blog/${p.slug}</guid>
+      <description>${xmlEscape(p.summary || p.title)}</description>
+      ${p.category ? `<category>${xmlEscape(p.category)}</category>` : ''}
+      <pubDate>${toRfc822(p.published_at)}</pubDate>
+    </item>`).join('\n')
+
+  const lastBuild = posts.length ? toRfc822(posts[0].updated_at || posts[0].published_at) : new Date().toUTCString()
+
+  const rss = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>강남치과의원 블로그 | 치과 건강정보</title>
+    <link>${baseUrl}/blog</link>
+    <atom:link href="${baseUrl}/rss.xml" rel="self" type="application/rss+xml" />
+    <description>구강악안면외과 전문의가 직접 전하는 치과 건강정보 — 임플란트, 디지털 보철, 인비절라인, 사랑니 발치</description>
+    <language>ko-kr</language>
+    <copyright>© 2026 영주 강남치과의원</copyright>
+    <lastBuildDate>${lastBuild}</lastBuildDate>
+    <ttl>1440</ttl>
+    <image>
+      <url>${baseUrl}/static/logo.png</url>
+      <title>강남치과의원 블로그 | 치과 건강정보</title>
+      <link>${baseUrl}/blog</link>
+    </image>
 ${itemsXml}
   </channel>
 </rss>`

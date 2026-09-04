@@ -749,27 +749,66 @@ export function mainPage(): string {
       </div>
     </div>
 
+    <style>
+      /* === HERO entrance — CSS 기반 (no-js 폴백: 클래스 미부여 시 기본 opacity:1로 항상 보임) === */
+      #hero.hero-anim #heroTag { opacity: 0; transform: translateY(24px) scale(0.95); }
+      #hero.hero-anim #heroLine1, #hero.hero-anim #heroLine2 { transform: translateY(110%); }
+      #hero.hero-anim #heroSub { opacity: 0; transform: translateY(20px); }
+      #hero.hero-anim #heroCTA { opacity: 0; transform: translateY(16px); }
+      #hero.hero-anim #heroStats > * { opacity: 0; transform: translateY(14px) scale(0.97); }
+      #hero.hero-anim #heroVisualMobile { opacity: 0; transform: translateY(24px); }
+      #hero.hero-anim #heroVisual { opacity: 0; transform: translateX(40px) scale(0.96); }
+      #hero.hero-anim.hero-in #heroTag,
+      #hero.hero-anim.hero-in #heroLine1, #hero.hero-anim.hero-in #heroLine2,
+      #hero.hero-anim.hero-in #heroSub, #hero.hero-anim.hero-in #heroCTA,
+      #hero.hero-anim.hero-in #heroStats > *,
+      #hero.hero-anim.hero-in #heroVisualMobile, #hero.hero-anim.hero-in #heroVisual {
+        opacity: 1; transform: none;
+        transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1);
+      }
+      #hero.hero-anim.hero-in #heroLine1 { transition-delay: 0.05s; }
+      #hero.hero-anim.hero-in #heroLine2 { transition-delay: 0.15s; }
+      #hero.hero-anim.hero-in #heroSub { transition-delay: 0.25s; }
+      #hero.hero-anim.hero-in #heroCTA { transition-delay: 0.35s; }
+      #hero.hero-anim.hero-in #heroStats > *:nth-child(1) { transition-delay: 0.45s; }
+      #hero.hero-anim.hero-in #heroStats > *:nth-child(2) { transition-delay: 0.53s; }
+      #hero.hero-anim.hero-in #heroStats > *:nth-child(3) { transition-delay: 0.61s; }
+      #hero.hero-anim.hero-in #heroVisualMobile { transition-delay: 0.3s; }
+      #hero.hero-anim.hero-in #heroVisual { transition-delay: 0.2s; }
+      @media (prefers-reduced-motion: reduce) {
+        #hero.hero-anim #heroTag, #hero.hero-anim #heroLine1, #hero.hero-anim #heroLine2,
+        #hero.hero-anim #heroSub, #hero.hero-anim #heroCTA, #hero.hero-anim #heroStats > *,
+        #hero.hero-anim #heroVisualMobile, #hero.hero-anim #heroVisual {
+          opacity: 1 !important; transform: none !important; transition: none !important;
+        }
+      }
+    </style>
     <script>
-      // === HERO: Enhanced cinematic entrance ===
-      const heroTl = gsap.timeline({ delay: 0.2 });
-      heroTl
-        .from('#heroTag', { opacity: 0, y: 40, scale: 0.9, duration: 0.7, ease: 'back.out(1.7)' })
-        .from('#heroLine1', { y: '120%', duration: 1.1, ease: 'expo.out' }, '-=0.3')
-        .from('#heroLine2', { y: '120%', duration: 1.1, ease: 'expo.out' }, '-=0.7')
-        .from('#heroSub', { opacity: 0, y: 30, filter: 'blur(6px)', duration: 0.9, ease: 'power3.out' }, '-=0.5')
-        .from('#heroCTA', { opacity: 0, y: 25, duration: 0.7, ease: 'power3.out' }, '-=0.4')
-        .from('#heroStats > *', { opacity: 0, y: 20, scale: 0.95, stagger: 0.1, duration: 0.6, ease: 'power3.out' }, '-=0.3')
-        .from('#heroVisualMobile', { opacity: 0, y: 40, duration: 0.9, ease: 'power3.out' }, '-=0.5')
-        .from('#heroVisual', { opacity: 0, x: 100, scale: 0.92, rotationY: 8, duration: 1.4, ease: 'expo.out' }, '-=1.2');
+      // === HERO: 즉시 페이드인 엔트런스 (CSS 기반, GSAP 비의존) ===
+      // JS 실패/미실행 시 기본 상태가 opacity:1이므로 항상 보임.
+      // CSS transition은 메인 스레드가 막혀도 컴포지터에서 진행되어 초기 빈 화면이 없음.
+      (function(){
+        var hero = document.getElementById('hero');
+        if (!hero) return;
+        hero.classList.add('hero-anim');
+        var go = function(){ hero.classList.add('hero-in'); };
+        if (window.requestAnimationFrame) {
+          requestAnimationFrame(function(){ requestAnimationFrame(go); });
+        }
+        setTimeout(go, 300); // 어떤 경우에도 0.3초 내 페이드인 시작 보장
+        // 엔트런스 종료 후 transition 제거 (스크롤 패럴랙스와의 간섭 방지)
+        setTimeout(function(){ hero.classList.remove('hero-anim', 'hero-in'); }, 1800);
+      })();
 
       // === HERO: Parallax on scroll ===
-      if (window.innerWidth > 768) {
+      if (window.gsap && window.ScrollTrigger && window.innerWidth > 768) {
         gsap.to('#heroTitle', { yPercent: -20, ease: 'none', scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1.5 } });
         gsap.to('#heroVisual', { yPercent: 15, ease: 'none', scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1 } });
         gsap.to('#heroTag', { yPercent: -40, opacity: 0, ease: 'none', scrollTrigger: { trigger: '#hero', start: '20% top', end: '60% top', scrub: 1 } });
       }
 
       // === WHY section: Large text split reveal ===
+      if (window.gsap && window.ScrollTrigger) {
       gsap.utils.toArray('[data-speakable="true"]').forEach(el => {
         if (el.closest('#hero')) return; // skip hero (already animated)
         gsap.from(el, {
@@ -794,6 +833,7 @@ export function mainPage(): string {
           gsap.to(orb, { xPercent: 15, yPercent: -10, ease: 'none', scrollTrigger: { trigger: sec, start: 'top bottom', end: 'bottom top', scrub: 2 } });
         }
       });
+      } // end gsap guard
     </script>
   </section>
 

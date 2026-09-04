@@ -738,6 +738,10 @@ export function layout(content: string, opts: LayoutOptions): string {
   <link rel="alternate" hreflang="ko" href="${fullUrl}">
   <link rel="alternate" hreflang="x-default" href="${fullUrl}">
 
+  <!-- RSS 자동발견 -->
+  <link rel="alternate" type="application/rss+xml" title="강남치과의원 블로그 RSS" href="${SITE_URL}/rss.xml">
+  <link rel="alternate" type="application/rss+xml" title="강남치과의원 진료 가이드 피드" href="${SITE_URL}/feed.xml">
+
   <!-- Fonts -->
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
