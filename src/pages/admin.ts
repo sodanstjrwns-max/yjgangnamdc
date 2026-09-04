@@ -92,6 +92,7 @@ export function adminPage(): string {
               <div class="admin-tab" onclick="switchTab('blog')" data-tab="blog"><i class="fas fa-pen-fancy text-xs"></i><span class="whitespace-nowrap">블로그</span></div>
               <div class="admin-tab" onclick="switchTab('notices')" data-tab="notices"><i class="fas fa-bullhorn text-xs"></i><span class="whitespace-nowrap">공지사항</span></div>
               <div class="admin-tab" onclick="switchTab('users')" data-tab="users"><i class="fas fa-users text-xs"></i><span class="whitespace-nowrap">회원관리</span></div>
+              <div class="admin-tab" onclick="location.href='/admin/stats?key='+encodeURIComponent(localStorage.getItem('admin_key')||'')"><i class="fas fa-chart-line text-xs"></i><span class="whitespace-nowrap">검색·방문 통계</span></div>
             </div>
           </div>
         </div>

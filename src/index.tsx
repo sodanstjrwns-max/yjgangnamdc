@@ -22,6 +22,7 @@ import { blogListPage, blogDetailPage } from './pages/blog'
 import { beforeAfterListPage, beforeAfterDetailPage } from './pages/beforeafter'
 import { noticeListPage, noticeDetailPage } from './pages/notices'
 import { adminPage } from './pages/admin'
+import { statsPage, fetchDashboardStats, STATS_KEY } from './pages/stats'
 import { registerPage, loginPage, loginRequiredPage } from './pages/auth'
 import { dictionaryListPage, dictionaryDetailPage } from './pages/dictionary'
 import { searchPage, searchStatic } from './pages/search'
@@ -3013,6 +3014,20 @@ app.get('/admin', (c) => c.html(layout(adminPage(), {
   url: '/admin',
   robots: 'noindex, nofollow'
 })))
+
+// ===== 관리자 검색·방문 통계 (?key 보호 — 불일치 404) =====
+app.get('/admin/stats', async (c) => {
+  const key = c.req.query('key')
+  const adminKey = c.env.ADMIN_KEY || 'gangnam2017admin'
+  if (!key || (key !== STATS_KEY && key !== adminKey)) return c.notFound()
+  const data = await fetchDashboardStats()
+  return c.html(layout(statsPage(data), {
+    title: '검색·방문 통계 | 관리자',
+    description: '강남치과의원 검색·방문 통계',
+    url: '/admin/stats',
+    robots: 'noindex, nofollow'
+  }))
+})
 
 // ===== API: 공지사항 CRUD =====
 app.post('/api/notices', adminAuth, async (c) => {
