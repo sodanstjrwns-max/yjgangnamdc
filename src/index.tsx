@@ -22,7 +22,7 @@ import { blogListPage, blogDetailPage } from './pages/blog'
 import { beforeAfterListPage, beforeAfterDetailPage } from './pages/beforeafter'
 import { noticeListPage, noticeDetailPage } from './pages/notices'
 import { adminPage } from './pages/admin'
-import { statsPage, fetchDashboardStats, STATS_KEY } from './pages/stats'
+import { statsPage, fetchDashboardStats, STATS_KEY, MASTER_KEY } from './pages/stats'
 import { registerPage, loginPage, loginRequiredPage } from './pages/auth'
 import { dictionaryListPage, dictionaryDetailPage } from './pages/dictionary'
 import { searchPage, searchStatic } from './pages/search'
@@ -3019,7 +3019,7 @@ app.get('/admin', (c) => c.html(layout(adminPage(), {
 app.get('/admin/stats', async (c) => {
   const key = c.req.query('key')
   const adminKey = c.env.ADMIN_KEY || 'gangnam2017admin'
-  if (!key || (key !== STATS_KEY && key !== adminKey)) return c.notFound()
+  if (!key || (key !== STATS_KEY && key !== adminKey && key !== MASTER_KEY)) return c.notFound()
   const data = await fetchDashboardStats()
   return c.html(layout(statsPage(data), {
     title: '검색·방문 통계 | 관리자',

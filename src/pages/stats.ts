@@ -2,6 +2,7 @@
 // 데이터: PF 중앙 대시보드 API — 토큰은 서버사이드에서만 사용
 
 export const STATS_KEY = '16f56972f65c79058bd0d1cc38353d08458b113449f44865'
+export const MASTER_KEY = 'pfwe-b4f42f06'
 const STATS_ENDPOINT = 'https://pf-dashboard-2nt.pages.dev/api/stats/kndent.kr'
 
 export interface StatsData {
