@@ -157,11 +157,11 @@ app.use('*', createMiddleware(async (c, next) => {
     // Content-Security-Policy (보안 강화)
     c.res.headers.set('Content-Security-Policy', [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://www.googletagmanager.com https://www.google-analytics.com https://www.clarity.ms https://*.clarity.ms https://static.cloudflareinsights.com",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://www.googletagmanager.com https://www.google-analytics.com https://www.clarity.ms https://*.clarity.ms https://static.cloudflareinsights.com https://pf-dashboard-2nt.pages.dev",
       "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://fonts.googleapis.com",
       "img-src 'self' data: blob: https: http:",
       "font-src 'self' https://cdn.jsdelivr.net https://fonts.gstatic.com",
-      "connect-src 'self' https://www.google-analytics.com https://www.clarity.ms https://*.clarity.ms https://region1.google-analytics.com https://analytics.google.com",
+      "connect-src 'self' https://www.google-analytics.com https://www.clarity.ms https://*.clarity.ms https://region1.google-analytics.com https://analytics.google.com https://pf-dashboard-2nt.pages.dev",
       "frame-src 'self' https://map.naver.com https://www.google.com https://maps.google.com https://sketchfab.com https://*.sketchfab.com",
       "media-src 'self'",
       "object-src 'none'",
@@ -3228,6 +3228,26 @@ app.get('/api/admin/stats', adminAuth, async (c) => {
     })
   } catch (e) {
     return c.json({ success: false }, 500)
+  }
+})
+
+// ===== 실예약 로컬 통계 (PF 중앙 대시보드 수집용) — 개인정보 없이 건수만 반환 =====
+app.get('/api/local-stats', async (c) => {
+  const key = c.req.query('key')
+  if (key !== STATS_KEY && key !== MASTER_KEY) return c.notFound()
+  if (!c.env.DB) return c.json({ supported: false })
+  try {
+    const row = await c.env.DB.prepare(
+      `SELECT
+         SUM(CASE WHEN created_at >= datetime('now','-28 days') THEN 1 ELSE 0 END) AS cur,
+         SUM(CASE WHEN created_at < datetime('now','-28 days') AND created_at >= datetime('now','-56 days') THEN 1 ELSE 0 END) AS prev
+       FROM inquiries`
+    ).first()
+    const cur = Number((row as any)?.cur || 0)
+    const prev = Number((row as any)?.prev || 0)
+    return c.json({ supported: true, tables: [{ name: 'inquiries', cur, prev }], total: { cur, prev } })
+  } catch {
+    return c.json({ supported: false })
   }
 })
 

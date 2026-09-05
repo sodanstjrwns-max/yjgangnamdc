@@ -668,6 +668,8 @@ export function layout(content: string, opts: LayoutOptions): string {
     gtag('js', new Date());
     gtag('config', 'G-EE3V6FDE2M');
   </script>
+  <!-- PF 1st-party 비콘 -->
+  <script defer src="https://pf-dashboard-2nt.pages.dev/beacon.js"></script>
   <!-- Favicon (logo-based, v2) -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2">
   <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png?v=2">
