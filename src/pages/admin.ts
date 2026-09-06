@@ -91,6 +91,7 @@ export function adminPage(): string {
               <div class="admin-tab" onclick="switchTab('beforeafter')" data-tab="beforeafter"><i class="fas fa-images text-xs"></i><span class="whitespace-nowrap">전후사례</span></div>
               <div class="admin-tab" onclick="switchTab('blog')" data-tab="blog"><i class="fas fa-pen-fancy text-xs"></i><span class="whitespace-nowrap">블로그</span></div>
               <div class="admin-tab" onclick="switchTab('notices')" data-tab="notices"><i class="fas fa-bullhorn text-xs"></i><span class="whitespace-nowrap">공지사항</span></div>
+              <div class="admin-tab" onclick="switchTab('prices')" data-tab="prices"><i class="fas fa-won-sign text-xs"></i><span class="whitespace-nowrap">수가 관리</span></div>
               <div class="admin-tab" onclick="switchTab('users')" data-tab="users"><i class="fas fa-users text-xs"></i><span class="whitespace-nowrap">회원관리</span></div>
               <div class="admin-tab" onclick="location.href='/admin/stats?key='+encodeURIComponent(localStorage.getItem('admin_key')||'')"><i class="fas fa-chart-line text-xs"></i><span class="whitespace-nowrap">검색·방문 통계</span></div>
             </div>
@@ -153,6 +154,21 @@ export function adminPage(): string {
               <div class="overflow-x-auto">
                 <table class="admin-table"><thead><tr><th>상태</th><th>제목</th><th>카테고리</th><th>고정</th><th>조회</th><th>관리</th></tr></thead>
                 <tbody id="noticeTableBody"><tr><td colspan="6" class="text-center text-gray-400 py-8">로딩 중...</td></tr></tbody></table>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== 수가 관리 패널 ===== -->
+          <div class="admin-panel" id="panel-prices">
+            <div class="admin-card p-6">
+              <div class="flex items-center justify-between mb-2">
+                <h2 class="text-lg font-extrabold text-charcoal">비급여 수가 관리</h2>
+                <button class="admin-btn admin-btn-primary" onclick="openPriceModal()"><i class="fas fa-plus text-xs"></i>새 항목 추가</button>
+              </div>
+              <p class="text-gray-400 text-xs mb-6"><i class="fas fa-eye-slash text-royal/60 mr-1"></i>비공개로 전환한 항목은 홈페이지 <a href="/pricing" target="_blank" class="text-royal hover:underline">진료비용 안내</a> 페이지에 노출되지 않습니다. (전 항목이 비공개된 분류는 자동으로 숨겨집니다)</p>
+              <div class="overflow-x-auto">
+                <table class="admin-table"><thead><tr><th>공개</th><th>분류</th><th>항목명</th><th>설명</th><th>가격</th><th>관리</th></tr></thead>
+                <tbody id="priceTableBody"><tr><td colspan="6" class="text-center text-gray-400 py-8">로딩 중...</td></tr></tbody></table>
               </div>
             </div>
           </div>
@@ -421,6 +437,44 @@ export function adminPage(): string {
         <div class="flex gap-3">
           <button type="submit" class="admin-btn admin-btn-primary"><i class="fas fa-save text-xs"></i>저장</button>
           <button type="button" onclick="closeNoticeModal()" class="admin-btn admin-btn-secondary">취소</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== 수가 항목 Modal ===== -->
+  <div class="admin-modal-overlay" id="priceModal">
+    <div class="admin-modal" style="max-width:560px">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-extrabold text-charcoal" id="priceModalTitle">새 수가 항목 추가</h3>
+        <button onclick="closePriceModal()" class="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition"><i class="fas fa-times text-gray-400"></i></button>
+      </div>
+      <form id="priceForm" onsubmit="return savePrice(event)">
+        <input type="hidden" id="priceEditId">
+        <div class="mb-4">
+          <label class="field-label">분류 <span class="req">*</span></label>
+          <input class="admin-input" id="priceCategory" list="priceCategoryList" placeholder="예: 임플란트" required>
+          <datalist id="priceCategoryList"></datalist>
+          <p class="text-gray-300 text-[11px] mt-1.5 ml-1">기존 분류명을 그대로 입력하면 해당 분류에 추가됩니다.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div><label class="field-label">항목명 <span class="req">*</span></label><input class="admin-input" id="priceName" placeholder="예: 지르코니아 크라운" required></div>
+          <div><label class="field-label">가격 <span class="req">*</span></label><input class="admin-input" id="pricePrice" placeholder="예: 500,000원 또는 보험진료" required></div>
+        </div>
+        <div class="mb-4"><label class="field-label">설명 (선택)</label><input class="admin-input" id="priceDesc" placeholder="예: 맞춤 어버트먼트 + 지르코니아"></div>
+        <div class="flex flex-col gap-3 mb-6">
+          <label class="flex items-center gap-3 cursor-pointer">
+            <input type="checkbox" id="priceItemInsurance" class="w-5 h-5 rounded accent-emerald-600">
+            <span class="text-sm font-bold text-gray-600"><i class="fas fa-check-circle text-emerald-500 mr-1"></i>건강보험 적용 항목 (체크 표시)</span>
+          </label>
+          <label class="flex items-center gap-3 cursor-pointer">
+            <input type="checkbox" id="pricePublished" class="w-5 h-5 rounded accent-teal-600" checked>
+            <span class="text-sm font-bold text-gray-600"><i class="fas fa-eye text-royal mr-1"></i>홈페이지에 공개</span>
+          </label>
+        </div>
+        <div class="flex gap-3">
+          <button type="submit" class="admin-btn admin-btn-primary"><i class="fas fa-save text-xs"></i>저장</button>
+          <button type="button" onclick="closePriceModal()" class="admin-btn admin-btn-secondary">취소</button>
         </div>
       </form>
     </div>
@@ -981,6 +1035,65 @@ export function adminPage(): string {
     }
     async function deleteNotice(slug) { if (!confirm('정말 삭제?')) return; const d = await api('DELETE', '/api/notices/' + slug); if (d.success) { showToast('success', '삭제 완료'); loadNotices(); loadStats(); } }
 
+    // ===== 비급여 수가 관리 =====
+    window._priceItems = [];
+    async function loadPrices() {
+      const data = await api('GET', '/api/admin/prices');
+      if (!data.success) return;
+      window._priceItems = data.items;
+      // 분류 datalist 갱신
+      const cats = [...new Set(data.items.map(i => i.category))];
+      document.getElementById('priceCategoryList').innerHTML = cats.map(c => '<option value="' + c + '">').join('');
+      document.getElementById('priceTableBody').innerHTML = data.items.length === 0
+        ? '<tr><td colspan="6" class="text-center text-gray-400 py-8">등록된 수가 항목이 없습니다</td></tr>'
+        : data.items.map(p => \`<tr>
+          <td><button onclick="togglePricePublish(\${p.id}, \${p.is_published ? 0 : 1})" class="status-badge \${p.is_published ? 'status-completed' : 'status-new'}" style="cursor:pointer;border:none;">\${p.is_published ? '공개' : '비공개'}</button></td>
+          <td class="text-gray-500 text-xs whitespace-nowrap">\${p.category}</td>
+          <td class="font-bold">\${p.name}\${p.item_insurance ? ' <i class="fas fa-check-circle text-emerald-500 text-[10px]"></i>' : ''}</td>
+          <td class="text-gray-400 text-xs max-w-[180px] truncate">\${p.description || '-'}</td>
+          <td class="whitespace-nowrap font-semibold">\${p.price}</td>
+          <td class="flex gap-1">
+            <button onclick="editPrice(\${p.id})" class="admin-btn admin-btn-secondary !py-1 !px-3 !text-xs"><i class="fas fa-edit"></i></button>
+            <button onclick="deletePrice(\${p.id})" class="admin-btn admin-btn-danger !py-1 !px-3 !text-xs"><i class="fas fa-trash"></i></button>
+          </td></tr>\`).join('');
+    }
+    function openPriceModal(item) {
+      document.getElementById('priceModalTitle').textContent = item ? '수가 항목 수정' : '새 수가 항목 추가';
+      document.getElementById('priceEditId').value = item ? item.id : '';
+      document.getElementById('priceCategory').value = item ? item.category : '';
+      document.getElementById('priceCategory').readOnly = !!item;
+      document.getElementById('priceName').value = item ? item.name : '';
+      document.getElementById('pricePrice').value = item ? item.price : '';
+      document.getElementById('priceDesc').value = item ? (item.description || '') : '';
+      document.getElementById('priceItemInsurance').checked = item ? !!item.item_insurance : false;
+      document.getElementById('pricePublished').checked = item ? !!item.is_published : true;
+      document.getElementById('priceModal').classList.add('show');
+    }
+    function closePriceModal() { document.getElementById('priceModal').classList.remove('show'); }
+    function editPrice(id) { const item = (window._priceItems || []).find(x => x.id === id); if (item) openPriceModal(item); }
+    async function savePrice(e) {
+      e.preventDefault();
+      const editId = document.getElementById('priceEditId').value;
+      const body = {
+        category: document.getElementById('priceCategory').value.trim(),
+        name: document.getElementById('priceName').value.trim(),
+        price: document.getElementById('pricePrice').value.trim(),
+        description: document.getElementById('priceDesc').value.trim(),
+        item_insurance: document.getElementById('priceItemInsurance').checked ? 1 : 0,
+        is_published: document.getElementById('pricePublished').checked ? 1 : 0
+      };
+      const data = editId ? await api('PUT', '/api/prices/' + editId, body) : await api('POST', '/api/prices', body);
+      if (data.success) { showToast('success', editId ? '수정 완료' : '추가 완료'); closePriceModal(); loadPrices(); }
+      else { showToast('error', data.error || '저장 실패'); }
+      return false;
+    }
+    async function togglePricePublish(id, next) {
+      const data = await api('PATCH', '/api/prices/' + id + '/publish', { is_published: next });
+      if (data.success) { showToast('success', next ? '공개로 전환' : '비공개로 전환'); loadPrices(); }
+      else { showToast('error', data.error || '변경 실패'); }
+    }
+    async function deletePrice(id) { if (!confirm('이 수가 항목을 삭제할까요?')) return; const d = await api('DELETE', '/api/prices/' + id); if (d.success) { showToast('success', '삭제 완료'); loadPrices(); } }
+
     // ===== 회원관리 =====
     async function loadUsers() {
       const data = await api('GET', '/api/admin/users');
@@ -1004,6 +1117,7 @@ export function adminPage(): string {
       loadBlog();
       loadBA();
       loadNotices();
+      loadPrices();
       loadUsers();
     });
   </script>

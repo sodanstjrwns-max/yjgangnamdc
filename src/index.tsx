@@ -2001,7 +2001,23 @@ app.get('/directions', (c) => c.html(layout(directionsPage(), {
 })))
 
 // ===== 비용 안내 =====
-app.get('/pricing', (c) => c.html(layout(pricingPage(), {
+async function loadPublishedPriceCats(c: any): Promise<any[] | undefined> {
+  try {
+    if (!c.env?.DB) return undefined
+    const rows = (await c.env.DB.prepare(
+      'SELECT category, category_icon, cat_insurance, name, description, price, item_insurance FROM price_items WHERE is_published = 1 ORDER BY cat_order ASC, sort_order ASC, id ASC'
+    ).all()).results as any[]
+    if (!rows || !rows.length) return undefined
+    const map = new Map<string, any>()
+    for (const r of rows) {
+      if (!map.has(r.category)) map.set(r.category, { icon: r.category_icon || 'fa-tooth', title: r.category, ins: !!r.cat_insurance, items: [] })
+      map.get(r.category).items.push({ name: r.name, desc: r.description || undefined, price: r.price, ins: !!r.item_insurance })
+    }
+    // 공개 항목이 하나도 없는 그룹은 자동 제외
+    return Array.from(map.values()).filter((cat: any) => cat.items.length > 0)
+  } catch { return undefined }
+}
+app.get('/pricing', async (c) => c.html(layout(pricingPage(await loadPublishedPriceCats(c)), {
   title: '강남치과의원 진료비용 안내 | 임플란트·보철·교정 가격',
   description: '강남치과의원 임플란트, 인비절라인, 디지털 보철(싱글 크라운), 심미보철 등 진료비용을 안내합니다. 상담 후 정확한 견적을 받아보세요. 054-636-8222.',
   url: '/pricing',
@@ -3123,6 +3139,72 @@ app.get('/api/admin/notices/:slug', adminAuth, async (c) => {
     return notice ? c.json({ success: true, notice }) : c.json({ success: false, error: 'Not found' }, 404)
   } catch (e) {
     return c.json({ success: false, error: '조회 실패' }, 500)
+  }
+})
+
+// ===== API: 비급여 수가 CRUD (관리자용) =====
+app.get('/api/admin/prices', adminAuth, async (c) => {
+  try {
+    const result = await c.env.DB.prepare('SELECT * FROM price_items ORDER BY cat_order ASC, sort_order ASC, id ASC').all()
+    return c.json({ success: true, items: result.results })
+  } catch (e: any) {
+    return c.json({ success: false, error: '조회 실패' }, 500)
+  }
+})
+
+app.post('/api/prices', adminAuth, async (c) => {
+  try {
+    const { category, name, description, price, item_insurance, is_published, category_icon } = await c.req.json()
+    if (!category || !name || !price) return c.json({ error: 'category, name, price 필수' }, 400)
+    // 기존 카테고리면 아이콘·순서·보험여부 승계, 새 카테고리면 다음 순서 부여
+    const existing = await c.env.DB.prepare('SELECT category_icon, cat_order, cat_insurance FROM price_items WHERE category = ? LIMIT 1').bind(category).first() as any
+    let catIcon: string, catOrder: number, catIns: number
+    if (existing) {
+      catIcon = existing.category_icon; catOrder = existing.cat_order; catIns = existing.cat_insurance
+    } else {
+      const mx = await c.env.DB.prepare('SELECT COALESCE(MAX(cat_order), -1) + 1 AS n FROM price_items').first() as any
+      catOrder = mx?.n || 0; catIcon = category_icon || 'fa-tooth'; catIns = 0
+    }
+    const so = await c.env.DB.prepare('SELECT COALESCE(MAX(sort_order), -1) + 1 AS n FROM price_items WHERE category = ?').bind(category).first() as any
+    await c.env.DB.prepare(
+      'INSERT INTO price_items (category, category_icon, cat_order, cat_insurance, name, description, price, item_insurance, is_published, sort_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+    ).bind(category, catIcon, catOrder, catIns, name, description || '', price, item_insurance ? 1 : 0, is_published ?? 1, so?.n || 0).run()
+    return c.json({ success: true })
+  } catch (e: any) {
+    return c.json({ success: false, error: e.message }, 500)
+  }
+})
+
+app.put('/api/prices/:id', adminAuth, async (c) => {
+  try {
+    const id = c.req.param('id')
+    const { name, description, price, item_insurance, is_published } = await c.req.json()
+    await c.env.DB.prepare(
+      'UPDATE price_items SET name=?, description=?, price=?, item_insurance=?, is_published=?, updated_at=CURRENT_TIMESTAMP WHERE id=?'
+    ).bind(name, description || '', price, item_insurance ? 1 : 0, is_published ?? 1, id).run()
+    return c.json({ success: true })
+  } catch (e: any) {
+    return c.json({ success: false, error: e.message }, 500)
+  }
+})
+
+app.patch('/api/prices/:id/publish', adminAuth, async (c) => {
+  try {
+    const id = c.req.param('id')
+    const { is_published } = await c.req.json()
+    await c.env.DB.prepare('UPDATE price_items SET is_published=?, updated_at=CURRENT_TIMESTAMP WHERE id=?').bind(is_published ? 1 : 0, id).run()
+    return c.json({ success: true })
+  } catch (e: any) {
+    return c.json({ success: false, error: e.message }, 500)
+  }
+})
+
+app.delete('/api/prices/:id', adminAuth, async (c) => {
+  try {
+    await c.env.DB.prepare('DELETE FROM price_items WHERE id = ?').bind(c.req.param('id')).run()
+    return c.json({ success: true })
+  } catch (e: any) {
+    return c.json({ success: false, error: e.message }, 500)
   }
 })
 
