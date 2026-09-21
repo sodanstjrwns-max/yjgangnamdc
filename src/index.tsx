@@ -8,7 +8,7 @@ import { treatmentsPage, treatmentDetailPage } from './pages/treatments'
 import { reservationPage } from './pages/reservation'
 import { directionsPage } from './pages/directions'
 import { pricingPage } from './pages/pricing'
-import { areaPage, getAllAreaKeys, getAreaPriority } from './pages/area'
+import { areaPage, getAllAreaKeys, getAreaPriority, getAreaKeyBySlug } from './pages/area'
 import { comboPage, getAllComboPaths, getAreaSlugs, getTreatmentSlugs, getAreaInfo, getTreatmentInfo } from './pages/combo'
 import { intentPage, getAllIntentPaths } from './pages/intent'
 import { comparePage, getAllComparePaths, getAllCompareSlugs } from './pages/compare'
@@ -16,7 +16,7 @@ import { pillarPage, pillarIndexPage, getAllPillarSlugs } from './pages/pillar'
 import { symptomPage, symptomIndexPage, getAllSymptomSlugs, getAllSymptomPaths } from './pages/symptom'
 import { audiencePage, audienceIndexPage, getAllAudienceSlugs, getAllAudiencePaths } from './pages/audience'
 import { emergencyPage } from './pages/emergency'
-import { localityPage, localityTreatmentPage, localityIndexPage, getAllLocalityPaths, getLocalitySlugs } from './pages/locality'
+import { localityPage, localityTreatmentPage, localityIndexPage, getAllLocalityPaths, getLocalitySlugs, getLocalityTreatmentSlugs } from './pages/locality'
 import { faqPage, allFAQs } from './pages/faq'
 import { blogListPage, blogDetailPage } from './pages/blog'
 import { beforeAfterListPage, beforeAfterDetailPage } from './pages/beforeafter'
@@ -105,13 +105,35 @@ app.use('*', secureHeaders({
 
 app.use('/api/*', cors())
 
-// ===== SEO: www → non-www 301 리다이렉트 =====
+// ===== SEO: www / *.pages.dev → kndent.kr 301 리다이렉트 (중복 호스트 제거) =====
 app.use('*', createMiddleware(async (c, next) => {
-  const host = c.req.header('Host') || ''
-  if (host.startsWith('www.')) {
+  const host = (c.req.header('Host') || '').toLowerCase()
+  if (host.startsWith('www.') || host.endsWith('.pages.dev')) {
     const url = new URL(c.req.url)
-    url.host = url.host.replace(/^www\./, '')
+    url.protocol = 'https:'
+    url.host = 'kndent.kr'
     return c.redirect(url.toString(), 301)
+  }
+  await next()
+}))
+
+// ===== SEO: 대문자 경로 → 소문자 301, /index(.html) → 디렉터리 301 =====
+// 모든 라우트·slug는 소문자. 퍼센트 인코딩(%EC..)의 16진수는 유지한다.
+app.use('*', createMiddleware(async (c, next) => {
+  const path = c.req.path
+  if (!path.startsWith('/api/') && !path.startsWith('/static/')) {
+    let target: string | null = null
+    if (/[A-Z]/.test(path)) {
+      const lower = path.replace(/%[0-9A-Fa-f]{2}|[A-Z]+/g, m => m.startsWith('%') ? m : m.toLowerCase())
+      if (lower !== path) target = lower
+    }
+    const idx = (target || path).match(/^(.*?)\/index(?:\.html?)?$/)
+    if (idx) target = idx[1] || '/'
+    if (target && target !== path) {
+      const url = new URL(c.req.url)
+      url.pathname = target
+      return c.redirect(url.toString(), 301)
+    }
   }
   await next()
 }))
@@ -145,6 +167,43 @@ app.use('*', createMiddleware(async (c, next) => {
   if (redirect) return c.redirect(redirect, 301)
   await next()
 }))
+
+// ===== SEO: 폐기된 programmatic URL → 410 Gone (GSC 404 88건, 빠른 색인 제거) =====
+// /intent/<area>/<treatment>(/best), /local/<eup>(/<treatment>), /area/<영문slug> 등
+// 현재 데이터에 1:1 대응이 있으면 301, 없으면 410 + X-Robots-Tag: noindex
+function gone(c: any) {
+  c.header('X-Robots-Tag', 'noindex')
+  return c.html(layout(
+    `<section class="min-h-[60vh] flex items-center justify-center">
+      <div class="text-center">
+        <p class="text-8xl font-black text-royal/20 mb-4">410</p>
+        <h1 class="text-2xl font-bold text-charcoal mb-2">삭제된 페이지입니다</h1>
+        <p class="text-gray-400 mb-8">이 페이지는 더 이상 제공되지 않습니다. 진료 안내는 아래에서 확인해 주세요.</p>
+        <div class="flex flex-wrap gap-3 justify-center">
+          <a href="/treatments" class="btn-primary"><i class="fas fa-tooth"></i>진료 안내</a>
+          <a href="/local" class="btn-primary"><i class="fas fa-map-marker-alt"></i>지역별 안내</a>
+          <a href="/" class="btn-primary"><i class="fas fa-home"></i>홈으로</a>
+        </div>
+      </div>
+    </section>`,
+    {
+      title: '410 - 삭제된 페이지 | 강남치과의원',
+      description: '요청하신 페이지는 삭제되었습니다.',
+      url: '/410',
+      robots: 'noindex, nofollow'
+    }
+  ), 410)
+}
+// 레거시 /local/<eup> slug → 현재 locality slug (punggi → punggi-eup 등)
+function resolveLegacyLocality(slug: string): string | null {
+  const decoded = decodeURIComponent(slug)
+  const all = getLocalitySlugs()
+  if (all.includes(decoded)) return decoded
+  for (const suffix of ['-eup', '-myeon', '-dong']) {
+    if (all.includes(`${decoded}${suffix}`)) return `${decoded}${suffix}`
+  }
+  return null
+}
 
 // ===== 정적 페이지 캐시 헤더 + CSP (SEO 성능 + 보안 최적화) =====
 app.use('*', createMiddleware(async (c, next) => {
@@ -2127,7 +2186,12 @@ app.get('/faq', (c) => {
 app.get('/area/:region', (c) => {
   const region = c.req.param('region')
   const result = areaPage(region)
-  if (!result) return c.notFound()
+  if (!result) {
+    // 레거시 영문 slug (/area/buseok) → 현재 한글 키 URL 301, 미존재 → 410
+    const key = getAreaKeyBySlug(region)
+    if (key && key !== decodeURIComponent(region)) return c.redirect(`/area/${encodeURIComponent(key)}`, 301)
+    return gone(c)
+  }
 
   return c.html(layout(result.html, {
     title: result.title,
@@ -2146,7 +2210,7 @@ app.get('/area/:region/:treatment', (c) => {
   const region = c.req.param('region')
   const treatment = c.req.param('treatment')
   const result = comboPage(region, treatment)
-  if (!result) return c.notFound()
+  if (!result) return gone(c)
 
   return c.html(layout(result.html, {
     title: result.title,
@@ -2350,7 +2414,13 @@ app.get('/local', (c) => {
 app.get('/local/:slug', (c) => {
   const slug = c.req.param('slug')
   const result = localityPage(slug)
-  if (!result) return c.notFound()
+  if (!result) {
+    const resolved = resolveLegacyLocality(slug)
+    if (resolved) return c.redirect(`/local/${resolved}`, 301)
+    const areaKey = getAreaKeyBySlug(slug)
+    if (areaKey) return c.redirect(`/area/${encodeURIComponent(areaKey)}`, 301)
+    return gone(c)
+  }
   return c.html(layout(result.html, {
     title: result.title,
     description: result.description,
@@ -2366,7 +2436,13 @@ app.get('/local/:slug/:treatment', (c) => {
   const slug = c.req.param('slug')
   const treatment = c.req.param('treatment')
   const result = localityTreatmentPage(slug, treatment)
-  if (!result) return c.notFound()
+  if (!result) {
+    const resolved = resolveLegacyLocality(slug)
+    if (resolved && getLocalityTreatmentSlugs().includes(treatment)) return c.redirect(`/local/${resolved}/${treatment}`, 301)
+    if (getAreaInfo(slug) && getTreatmentInfo(treatment)) return c.redirect(`/area/${slug}/${treatment}`, 301)
+    if (resolved) return c.redirect(`/local/${resolved}`, 301)
+    return gone(c)
+  }
   return c.html(layout(result.html, {
     title: result.title,
     description: result.description,
@@ -2386,7 +2462,11 @@ app.get('/intent/:region/:treatment/:intent', (c) => {
   const treatment = c.req.param('treatment')
   const intent = c.req.param('intent')
   const result = intentPage(region, treatment, intent)
-  if (!result) return c.notFound()
+  if (!result) {
+    // 의도 slug만 잘못된 경우 지역×진료 페이지로 301, 지역/진료 자체가 없으면 410
+    if (getAreaInfo(region) && getTreatmentInfo(treatment)) return c.redirect(`/area/${region}/${treatment}`, 301)
+    return gone(c)
+  }
 
   return c.html(layout(result.html, {
     title: result.title,
@@ -2399,6 +2479,22 @@ app.get('/intent/:region/:treatment/:intent', (c) => {
     articleModifiedTime: MEDICAL_LAST_REVIEWED
   }))
 })
+
+// ===== 레거시 /intent 상위 경로 (GSC 404): /intent/<area>/<treatment> → /area/<area>/<treatment>, /intent/<area> → /area/<한글> =====
+app.get('/intent', (c) => gone(c))
+app.get('/intent/:region', (c) => {
+  const key = getAreaKeyBySlug(c.req.param('region'))
+  return key ? c.redirect(`/area/${encodeURIComponent(key)}`, 301) : gone(c)
+})
+app.get('/intent/:region/:treatment', (c) => {
+  const region = c.req.param('region')
+  const treatment = c.req.param('treatment')
+  if (getAreaInfo(region) && getTreatmentInfo(treatment)) return c.redirect(`/area/${region}/${treatment}`, 301)
+  return gone(c)
+})
+app.get('/intent/*', (c) => gone(c))
+app.get('/local/*', (c) => gone(c))
+app.get('/area/*', (c) => gone(c))
 
 // ===== 🚀 SEO 슈퍼업글 시즌 2: 비교(Compare) 페이지 =====
 // "영주 vs 대구 임플란트", "영주 vs 안동 사랑니" 등 비교 키워드 잡기

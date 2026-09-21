@@ -664,6 +664,14 @@ export function getAllAreaKeys(): string[] {
   return Object.keys(areaData)
 }
 
+// 영문 slug → 한글 키 (레거시 /area/<slug> 301용). 없으면 null
+export function getAreaKeyBySlug(slug: string): string | null {
+  const decoded = decodeURIComponent(slug)
+  if (areaData[decoded]) return decoded
+  const hit = Object.entries(areaData).find(([, a]) => a.slug === decoded)
+  return hit ? hit[0] : null
+}
+
 // 지역별 우선순위 정보 (sitemap 최적화용)
 export function getAreaPriority(key: string): number {
   return areaData[key]?.priority || 3
