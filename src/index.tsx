@@ -27,7 +27,7 @@ import { registerPage, loginPage, loginRequiredPage } from './pages/auth'
 import { dictionaryListPage, dictionaryDetailPage } from './pages/dictionary'
 import { searchPage, searchStatic } from './pages/search'
 import { layout, OG_IMAGE_PNG } from './layout'
-import { CONTENT_LASTMOD, MEDICAL_LAST_REVIEWED, SITEMAP_INDEX_LASTMOD, INDEXNOW_KEY, INDEXNOW_ENDPOINTS, INDEXNOW_DEFAULT_URLS, metaDescFrom, fitMetaDesc } from './seo'
+import { CONTENT_LASTMOD, MEDICAL_LAST_REVIEWED, INDEXNOW_KEY, INDEXNOW_ENDPOINTS, INDEXNOW_DEFAULT_URLS, metaDescFrom, fitMetaDesc } from './seo'
 
 // 서버 측 content 자동 변환: plain text → HTML (저장 전 적용)
 function formatContentForSave(content: string): string {
@@ -729,11 +729,33 @@ function sitemapUrl(baseUrl: string, p: { url: string; lastmod: string; changefr
         <image:caption>${img.caption}</image:caption>` : ''}
       </image:image>`).join('')
   return `  <url>
-    <loc>${baseUrl}${p.url}</loc>
-    <lastmod>${p.lastmod}</lastmod>
+    <loc>${baseUrl}${p.url}</loc>${p.lastmod ? `
+    <lastmod>${p.lastmod}</lastmod>` : ''}
     <changefreq>${p.changefreq}</changefreq>
     <priority>${p.priority}</priority>${imageXml}
   </url>`
+}
+
+// DB datetime("YYYY-MM-DD HH:MM:SS" 등) → YYYY-MM-DD. 없음/형식 불명 → '' (오늘로 채우지 않음 — 2026-09-29)
+const ymdOf = (raw: any): string => {
+  if (!raw || typeof raw !== 'string') return ''
+  const m = raw.match(/^(\d{4}-\d{2}-\d{2})/)
+  return m ? m[1] : ''
+}
+const newestYmd = (dates: string[]): string => dates.filter(Boolean).sort().pop() || ''
+
+// sitemap-blog 목록 페이지(/blog·/notices·/dictionary) lastmod = 실린 항목 중 최신 작성/수정일
+// (예전엔 CONTENT_LASTMOD.main 등 섹션 날짜 — 목록 내용과 무관하게 바뀜, 2026-09-29 교정)
+async function blogSectionDates(DB: D1Database): Promise<{ blog: string; notices: string; dictionary: string }> {
+  const one = async (sql: string): Promise<string> => {
+    try { return ymdOf(((await DB.prepare(sql).first()) as any)?.m) } catch { return '' }
+  }
+  const [blog, notices] = await Promise.all([
+    one('SELECT MAX(COALESCE(updated_at, published_at)) AS m FROM blog_posts WHERE is_published = 1'),
+    one('SELECT MAX(COALESCE(updated_at, published_at)) AS m FROM notices WHERE is_published = 1'),
+  ])
+  // 용어 상세 lastmod 는 CONTENT_LASTMOD.dictionary(용어 데이터 수정일) → 목록도 같은 값
+  return { blog, notices, dictionary: CONTENT_LASTMOD.dictionary }
 }
 
 // ===== SEO: Sitemap Index (12개 sub-sitemap 통합 인덱스) =====
@@ -751,10 +773,26 @@ function sitemapUrl(baseUrl: string, p: { url: string; lastmod: string; changefr
 //   - emergency(9) : 응급치과 (Season 3)
 //   - blog(269) : 블로그/증례/공지/용어
 // 총 ~1,083 URL
-app.get('/sitemap.xml', (c) => {
+app.get('/sitemap.xml', async (c) => {
   const baseUrl = 'https://kndent.kr'
-  // ✅ 가장 최근 콘텐츠 수정일 (항상 현재시각이면 Google이 lastmod를 무시함)
-  const now = SITEMAP_INDEX_LASTMOD
+  // ✅ 하위 사이트맵별 lastmod = 그 사이트맵에 실린 URL 중 최신 수정일 (2026-09-29: 전부 같은 날짜 → 하위별 실제 값)
+  //    정적 섹션은 CONTENT_LASTMOD, 블로그 사이트맵은 글·공지·용어 최신일. 알 수 없으면 생략(오늘로 채우지 않음)
+  const bs = await blogSectionDates(c.env.DB)
+  const childLastmod: Record<string, string> = {
+    'sitemap-main.xml': CONTENT_LASTMOD.main,
+    'sitemap-treatments.xml': CONTENT_LASTMOD.treatments,
+    'sitemap-faq.xml': CONTENT_LASTMOD.faq,
+    'sitemap-area.xml': CONTENT_LASTMOD.area,
+    'sitemap-combo.xml': CONTENT_LASTMOD.combo,
+    'sitemap-compare.xml': CONTENT_LASTMOD.compare,
+    'sitemap-pillar.xml': CONTENT_LASTMOD.pillar,
+    'sitemap-symptom.xml': CONTENT_LASTMOD.symptom,
+    'sitemap-audience.xml': CONTENT_LASTMOD.audience,
+    'sitemap-emergency.xml': CONTENT_LASTMOD.emergency,
+    'sitemap-locality.xml': CONTENT_LASTMOD.locality,
+    'sitemap-blog.xml': newestYmd([bs.blog, bs.notices, bs.dictionary]),
+  }
+  const now = newestYmd(Object.values(childLastmod))
 
   const subSitemaps = [
     'sitemap-main.xml',
@@ -773,8 +811,8 @@ app.get('/sitemap.xml', (c) => {
   ]
 
   const entries = subSitemaps.map(s => `  <sitemap>
-    <loc>${baseUrl}/${s}</loc>
-    <lastmod>${now}</lastmod>
+    <loc>${baseUrl}/${s}</loc>${childLastmod[s] ? `
+    <lastmod>${childLastmod[s]}</lastmod>` : ''}
   </sitemap>`).join('\n')
 
   c.header('Content-Type', 'application/xml; charset=utf-8')
@@ -782,7 +820,7 @@ app.get('/sitemap.xml', (c) => {
   c.header('X-Robots-Tag', 'noindex, follow')
   return c.body(`<?xml version="1.0" encoding="UTF-8"?>
 <!-- 강남치과의원 사이트맵 인덱스 | ${subSitemaps.length} sub-sitemaps -->
-<!-- 생성일시: ${now} -->
+<!-- 최신 콘텐츠 수정일: ${now} -->
 <!-- 제출처: Google Search Console / Naver Search Advisor / Bing Webmaster Tools -->
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${entries}
@@ -1280,45 +1318,40 @@ app.get('/sitemap-intent.xml', (c) => {
 // ===== Sitemap: 블로그 + 증례 + 공지 + 용어사전 (동적 콘텐츠) =====
 app.get('/sitemap-blog.xml', async (c) => {
   const baseUrl = 'https://kndent.kr'
-  const today = CONTENT_LASTMOD.dictionary > CONTENT_LASTMOD.main ? CONTENT_LASTMOD.dictionary : CONTENT_LASTMOD.main
+  // ✅ lastmod 정규화 — W3C ISO 8601 (YYYY-MM-DD). DB datetime 에서 날짜만, 없으면 '' → <lastmod> 생략
+  // (GSC "날짜가 잘못되었습니다" 대응 2026-05-27, 오늘 폴백 제거 2026-09-29)
+  const normalizeLastmod = ymdOf
 
-  // ✅ lastmod 정규화 헬퍼 — W3C ISO 8601 보장 (YYYY-MM-DD 형식)
-  // DB의 SQLite datetime("YYYY-MM-DD HH:MM:SS")을 안전하게 변환
-  // Google Search Console "날짜가 잘못되었습니다" 오류 17건 해결 (2026-05-27)
-  const normalizeLastmod = (raw: any): string => {
-    if (!raw || typeof raw !== 'string') return today
-    // 1) "YYYY-MM-DD HH:MM:SS" 또는 "YYYY-MM-DDTHH:MM:SS" → YYYY-MM-DD만 추출
-    const m = raw.match(/^(\d{4}-\d{2}-\d{2})/)
-    if (m) return m[1]
-    return today
-  }
-
-  // 목록 페이지
+  // 목록 페이지 — lastmod 는 아래에서 실린 항목 중 최신 작성/수정일로 채움
   // ⚠️ /before-after 는 의료광고법상 로그인 보호된 noindex 영역이므로 사이트맵에서 제외
   const staticPages = [
-    { url: '/blog', lastmod: today, priority: '0.8', changefreq: 'weekly' },
-    { url: '/notices', lastmod: today, priority: '0.7', changefreq: 'weekly' },
-    { url: '/dictionary', lastmod: today, priority: '0.8', changefreq: 'weekly' },
+    { url: '/blog', lastmod: '', priority: '0.8', changefreq: 'weekly' },
+    { url: '/notices', lastmod: '', priority: '0.7', changefreq: 'weekly' },
+    { url: '/dictionary', lastmod: CONTENT_LASTMOD.dictionary, priority: '0.8', changefreq: 'weekly' },
   ]
 
   // DB에서 동적 URL 가져오기
   let dynamicPages: typeof staticPages = []
   try {
-    const blogPosts = await c.env.DB.prepare('SELECT slug, updated_at FROM blog_posts WHERE is_published = 1 ORDER BY published_at DESC').all()
-    dynamicPages = dynamicPages.concat(blogPosts.results.map((p: any) => ({
+    const blogPosts = await c.env.DB.prepare('SELECT slug, updated_at, published_at FROM blog_posts WHERE is_published = 1 ORDER BY published_at DESC').all()
+    const blogUrls = blogPosts.results.map((p: any) => ({
       url: `/blog/${p.slug}`,
-      lastmod: normalizeLastmod(p.updated_at),
+      lastmod: normalizeLastmod(p.updated_at || p.published_at),
       priority: '0.7',
       changefreq: 'monthly' as const
-    })))
+    }))
+    staticPages[0].lastmod = newestYmd(blogUrls.map((u) => u.lastmod))
+    dynamicPages = dynamicPages.concat(blogUrls)
     // ⚠️ /before-after/:slug 도 noindex + canonical 부모 지향 → 사이트맵에서 제외 (Google 오류 해결)
-    const noticesList = await c.env.DB.prepare('SELECT slug, updated_at FROM notices WHERE is_published = 1 ORDER BY published_at DESC').all()
-    dynamicPages = dynamicPages.concat(noticesList.results.map((p: any) => ({
+    const noticesList = await c.env.DB.prepare('SELECT slug, updated_at, published_at FROM notices WHERE is_published = 1 ORDER BY published_at DESC').all()
+    const noticeUrls = noticesList.results.map((p: any) => ({
       url: `/notices/${p.slug}`,
-      lastmod: normalizeLastmod(p.updated_at),
+      lastmod: normalizeLastmod(p.updated_at || p.published_at),
       priority: '0.5',
       changefreq: 'monthly' as const
-    })))
+    }))
+    staticPages[1].lastmod = newestYmd(noticeUrls.map((u) => u.lastmod))
+    dynamicPages = dynamicPages.concat(noticeUrls)
     const dictTerms = await c.env.DB.prepare('SELECT slug FROM dictionary ORDER BY term_ko').all()
     dynamicPages = dynamicPages.concat(dictTerms.results.filter((p: any) => !DICT_ALIASES[p.slug]).map((p: any) => ({
       url: `/dictionary/${p.slug}`,
@@ -2762,9 +2795,11 @@ app.get('/rss.xml', async (c) => {
   } catch (e) { /* DB not available */ }
 
   const xmlEscape = (s: string) => (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;')
+  // 날짜 없음/무효 → '' (요청 시각·오늘로 채우지 않음, 2026-09-29)
   const toRfc822 = (d: any) => {
-    const t = new Date(d || Date.now())
-    return isNaN(t.getTime()) ? new Date().toUTCString() : t.toUTCString()
+    if (!d) return ''
+    const t = new Date(d)
+    return isNaN(t.getTime()) ? '' : t.toUTCString()
   }
 
   const itemsXml = posts.map((p: any) => `    <item>
@@ -2773,10 +2808,12 @@ app.get('/rss.xml', async (c) => {
       <guid isPermaLink="true">${baseUrl}/blog/${p.slug}</guid>
       <description>${xmlEscape(p.summary || p.title)}</description>
       ${p.category ? `<category>${xmlEscape(p.category)}</category>` : ''}
-      <pubDate>${toRfc822(p.published_at)}</pubDate>
+      ${toRfc822(p.published_at) ? `<pubDate>${toRfc822(p.published_at)}</pubDate>` : ''}
     </item>`).join('\n')
 
-  const lastBuild = posts.length ? toRfc822(posts[0].updated_at || posts[0].published_at) : new Date().toUTCString()
+  // lastBuildDate = 피드 항목 중 최신 작성/수정 시각, 없으면 생략
+  const newestPost = posts.map((p: any) => String(p.updated_at || p.published_at || '')).filter(Boolean).sort().pop()
+  const lastBuild = newestPost ? toRfc822(newestPost) : ''
 
   const rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
@@ -2787,7 +2824,7 @@ app.get('/rss.xml', async (c) => {
     <description>구강악안면외과 전문의가 직접 전하는 치과 건강정보 — 임플란트, 디지털 보철, 인비절라인, 사랑니 발치</description>
     <language>ko-kr</language>
     <copyright>© 2026 영주 강남치과의원</copyright>
-    <lastBuildDate>${lastBuild}</lastBuildDate>
+    ${lastBuild ? `<lastBuildDate>${lastBuild}</lastBuildDate>` : ''}
     <ttl>1440</ttl>
     <image>
       <url>${baseUrl}/static/logo.png</url>
