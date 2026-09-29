@@ -786,7 +786,7 @@ app.get('/sitemap.xml', (c) => {
     'sitemap-faq.xml',
     'sitemap-area.xml',
     'sitemap-combo.xml',
-    'sitemap-intent.xml',
+    // sitemap-intent.xml 제외 (2026-09-29): intent 4변형은 /area/{지역}/{진료} 로 canonical 통합
     'sitemap-compare.xml',
     'sitemap-pillar.xml',
     'sitemap-symptom.xml',
@@ -805,7 +805,7 @@ app.get('/sitemap.xml', (c) => {
   c.header('Cache-Control', 'public, max-age=3600, s-maxage=7200')
   c.header('X-Robots-Tag', 'noindex, follow')
   return c.body(`<?xml version="1.0" encoding="UTF-8"?>
-<!-- 강남치과의원 사이트맵 인덱스 | 12 sub-sitemaps | 총 ~1,083 URLs -->
+<!-- 강남치과의원 사이트맵 인덱스 | ${subSitemaps.length} sub-sitemaps -->
 <!-- 생성일시: ${now} -->
 <!-- 제출처: Google Search Console / Naver Search Advisor / Bing Webmaster Tools -->
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -1168,7 +1168,6 @@ app.get('/sitemap-main.xml', (c) => {
     { url: '/reservation', lastmod: today, priority: '0.8', changefreq: 'monthly' },
     { url: '/directions', lastmod: today, priority: '0.8', changefreq: 'yearly' },
     { url: '/all-pages', lastmod: today, priority: '0.7', changefreq: 'weekly' },
-    { url: '/search', lastmod: today, priority: '0.5', changefreq: 'monthly' },
   ]
 
   const urls = pages.map(p => sitemapUrl(baseUrl, p, pageImages[p.url])).join('\n')
@@ -1294,26 +1293,12 @@ app.get('/sitemap-combo.xml', (c) => {
 // ===== 🚀 Sitemap: 의도(Intent) 키워드 페이지 (448개 상업적 의도 키워드) =====
 // '영주 임플란트 가격', '봉화 사랑니 추천' 등 구매의도 키워드 1페이지 노출
 app.get('/sitemap-intent.xml', (c) => {
-  const baseUrl = 'https://kndent.kr'
-  const today = CONTENT_LASTMOD.intent
-
-  const paths = getAllIntentPaths()
-  const urls = paths.map(p => {
-    // priority 1(핵심지역×핵심진료×price/cost) → 0.85
-    // priority 2 → 0.75 / priority 3 → 0.65
-    const priority = p.priority === 1 ? '0.85' : p.priority === 2 ? '0.75' : '0.65'
-    const changefreq = p.priority === 1 ? 'weekly' : 'monthly'
-    return `  <url>
-    <loc>${baseUrl}/intent/${p.regionSlug}/${p.treatmentSlug}/${p.intentSlug}</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>${changefreq}</changefreq>
-    <priority>${priority}</priority>
-  </url>`
-  }).join('\n')
-
+  // 2026-09-29: intent 변형(price/cost/recommend/best) 448개는 GSC가 중복으로 판단 →
+  // 페이지는 유지하되 canonical 을 /area/{지역}/{진료} 로 통합하고 사이트맵에서 제외.
+  // (기존 제출 이력 대비 빈 urlset 으로 유효한 XML만 응답)
   c.header('Content-Type', 'application/xml')
   c.header('Cache-Control', 'public, max-age=86400, s-maxage=86400')
-  return c.body(`${sitemapXmlHeader()}\n${urls}\n</urlset>`)
+  return c.body(`${sitemapXmlHeader()}\n</urlset>`)
 })
 
 // ===== Sitemap: 블로그 + 증례 + 공지 + 용어사전 (동적 콘텐츠) =====
@@ -1359,7 +1344,7 @@ app.get('/sitemap-blog.xml', async (c) => {
       changefreq: 'monthly' as const
     })))
     const dictTerms = await c.env.DB.prepare('SELECT slug FROM dictionary ORDER BY term_ko').all()
-    dynamicPages = dynamicPages.concat(dictTerms.results.map((p: any) => ({
+    dynamicPages = dynamicPages.concat(dictTerms.results.filter((p: any) => !DICT_ALIASES[p.slug]).map((p: any) => ({
       url: `/dictionary/${p.slug}`,
       lastmod: CONTENT_LASTMOD.dictionary,
       priority: '0.6',
@@ -1403,14 +1388,14 @@ app.get('/search', async (c) => {
     title: query ? `"${query}" 검색 결과 | 강남치과의원` : '사이트 검색 | 강남치과의원',
     description: query ? `강남치과의원에서 "${query}" 검색 결과를 확인하세요.` : '진료, 증상, 비용 등 원하는 정보를 검색하세요.',
     url: query ? `/search?q=${encodeURIComponent(query)}` : '/search',
-    // 검색 결과 페이지는 색인 제외 (중복/저품질 콘텐츠 방지 — Google 권장)
-    robots: query ? 'noindex, follow' : 'index, follow'
+    // 검색 페이지는 빈 검색창 포함 색인 제외 (얇은 페이지·중복 방지 — 2026-09-29 사이트맵에서도 제외)
+    robots: 'noindex, follow'
   }))
 })
 
 // ===== 메인 페이지 =====
 app.get('/', (c) => c.html(layout(mainPage(), {
-  title: '영주 치과 강남치과의원 | 구강외과 전문의 2인 · 임플란트 · 인비절라인 · 디지털보철',
+  title: '영주 치과 강남치과의원 | 구강외과 전문의 2인 · 임플란트 · 인비절라인 교정 · 디지털보철',
   description: '경북 영주시 강남치과의원. 구강악안면외과 전문의 2인이 직접 진료합니다. 임플란트, 디지털 보철(싱글 크라운), 인비절라인, 사랑니 발치, 심미보철. 대학병원급 장비 완비. 봉화·예천·안동·단양·풍기·상주·문경에서 접근 용이. 054-636-8222.',
   url: '/',
   ogImage: 'https://kndent.kr/og/home',
@@ -1422,7 +1407,7 @@ app.get('/', (c) => c.html(layout(mainPage(), {
 
 // ===== 의료진 =====
 app.get('/doctors', (c) => c.html(layout(doctorsPage(), {
-  title: '강남치과의원 의료진 | 구강악안면외과 전문의 2인 – 이태형·최민혜 원장',
+  title: '영주 강남치과의원 의료진 | 구강악안면외과 전문의 2인 – 이태형·최민혜 원장',
   description: '강남치과의원 이태형 대표원장, 최민혜 원장. 구강악안면외과 전문의 2인이 모든 수술을 직접 시행합니다. 고려대 구로병원, 인제대 백병원 레지던트 수료.',
   url: '/doctors',
   keywords: '영주 구강외과 전문의, 영주 임플란트 전문의, 이태형 원장, 최민혜 원장, 구강악안면외과',
@@ -1557,8 +1542,8 @@ app.get('/doctors/:slug', (c) => {
 
 // ===== 진료 안내 =====
 app.get('/treatments', (c) => c.html(layout(treatmentsPage(), {
-  title: '강남치과의원 진료안내 | 임플란트·디지털보철·인비절라인·심미보철·사랑니',
-  description: '강남치과의원 전체 진료 안내. 임플란트, 디지털 보철(싱글 크라운), 인비절라인 투명교정, 심미보철, 사랑니 발치, 충치치료, 신경치료 등. 각 분야 전문의가 직접 진료합니다.',
+  title: '영주 치과 진료안내 | 임플란트·디지털보철·인비절라인 교정·심미보철·사랑니 – 강남치과의원',
+  description: '영주 강남치과의원 전체 진료 안내. 임플란트, 디지털 보철(싱글 크라운), 인비절라인 투명교정, 심미보철, 사랑니 발치, 충치치료, 신경치료 등. 각 분야 전문의가 직접 진료합니다.',
   url: '/treatments',
   keywords: '영주 임플란트, 영주 디지털보철, 영주 인비절라인, 영주 심미보철, 영주 사랑니',
   speakableSelectors: ['[data-speakable]', 'h1', 'h2'],
@@ -1585,11 +1570,12 @@ app.get('/treatments/:slug', async (c) => {
   const slug = c.req.param('slug')
   const result = await treatmentDetailPage(slug)
   if (!result) return c.notFound()
+  const txName = result.title.split(' – ')[0].split(' | ')[0].replace(/^영주\s+/, '')
   return c.html(layout(result.html, {
     title: result.title,
     description: result.description,
     url: `/treatments/${slug}`,
-    keywords: `영주 ${result.title.split(' – ')[0]}, ${result.title.split(' – ')[0]} 잘하는곳, 경북 ${result.title.split(' – ')[0]}`,
+    keywords: `영주 ${txName}, 영주 ${txName} 잘하는곳, 경북 ${txName}`,
     ogImage: `https://kndent.kr/og/${slug}`,
     ogType: 'article',
     schemas: result.schemas || [],
@@ -1598,6 +1584,12 @@ app.get('/treatments/:slug', async (c) => {
 })
 
 // ===== 치과 용어 사전 =====
+// 용어사전 중복 slug(같은 용어가 두 행) → primary 로 301 + 목록·사이트맵 제외 (2026-09-29, GSC 중복 제목)
+const DICT_ALIASES: Record<string, string> = {
+  'oral-scanner': 'intraoral-scanner',
+  'whitening': 'tooth-whitening',
+}
+
 app.get('/dictionary', async (c) => {
   const query = c.req.query('q')
   const selectedCategory = c.req.query('category')
@@ -1619,6 +1611,7 @@ app.get('/dictionary', async (c) => {
       const result = await c.env.DB.prepare('SELECT * FROM dictionary ORDER BY is_featured DESC, term_ko').all()
       terms = result.results
     }
+    terms = terms.filter((t: any) => !DICT_ALIASES[t.slug])
   } catch (e) { /* DB not available */ }
 
   const totalCount = categories.reduce((sum: number, c: any) => sum + c.cnt, 0)
@@ -1647,6 +1640,7 @@ app.get('/dictionary', async (c) => {
 
 app.get('/dictionary/:slug', async (c) => {
   const slug = c.req.param('slug')
+  if (DICT_ALIASES[slug]) return c.redirect(`/dictionary/${DICT_ALIASES[slug]}`, 301)
   let term: any = null
   let relatedTerms: any[] = []
   try {
@@ -1656,7 +1650,7 @@ app.get('/dictionary/:slug', async (c) => {
       if (keywords.length > 0) {
         const placeholders = keywords.map(() => '?').join(',')
         const result = await c.env.DB.prepare(`SELECT * FROM dictionary WHERE term_ko IN (${placeholders}) AND slug != ? ORDER BY is_featured DESC, term_ko LIMIT 8`).bind(...keywords, slug).all()
-        relatedTerms = result.results
+        relatedTerms = result.results.filter((t: any) => !DICT_ALIASES[t.slug])
       }
     }
   } catch (e) { /* DB not available */ }
@@ -2048,13 +2042,7 @@ app.get('/directions', (c) => c.html(layout(directionsPage(), {
         { "@type": "City", "name": "문경시" },
         { "@type": "City", "name": "영덕군" },
         { "@type": "City", "name": "울진군" }
-      ],
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.9",
-        "reviewCount": "120",
-        "bestRating": "5"
-      }
+      ]
     }
   ]
 })))
@@ -2077,8 +2065,8 @@ async function loadPublishedPriceCats(c: any): Promise<any[] | undefined> {
   } catch { return undefined }
 }
 app.get('/pricing', async (c) => c.html(layout(pricingPage(await loadPublishedPriceCats(c)), {
-  title: '강남치과의원 진료비용 안내 | 임플란트·보철·교정 가격',
-  description: '강남치과의원 임플란트, 인비절라인, 디지털 보철(싱글 크라운), 심미보철 등 진료비용을 안내합니다. 상담 후 정확한 견적을 받아보세요. 054-636-8222.',
+  title: '영주 강남치과의원 진료비용 안내 | 임플란트·보철·교정 가격',
+  description: '영주 강남치과의원 임플란트, 인비절라인, 디지털 보철(싱글 크라운), 심미보철 등 진료비용을 안내합니다. 상담 후 정확한 견적을 받아보세요. 054-636-8222.',
   url: '/pricing',
   ogImage: 'https://kndent.kr/og/pricing',
   keywords: '영주 임플란트 가격, 영주 치과 비용, 영주 인비절라인 가격, 영주 디지털보철 비용',
@@ -2193,10 +2181,13 @@ app.get('/area/:region', (c) => {
     return gone(c)
   }
 
+  // canonical 은 사이트맵과 같은 퍼센트 인코딩 형태로 (한글 원문 ↔ 인코딩 불일치 방지, 2026-09-29)
+  let areaKey = region
+  try { areaKey = decodeURIComponent(region) } catch {}
   return c.html(layout(result.html, {
     title: result.title,
     description: result.description,
-    url: `/area/${region}`,
+    url: `/area/${encodeURIComponent(areaKey)}`,
     keywords: result.keywords,
     speakableSelectors: ['[data-speakable]', 'h1', 'h2', '.faq-answer', '.area-summary', '.area-long-desc'],
     schemas: result.schemas
@@ -2339,7 +2330,8 @@ app.get('/sitemap-emergency.xml', (c) => {
   const baseUrl = 'https://kndent.kr'
   const today = CONTENT_LASTMOD.emergency
 
-  const regions = ['yeongju', 'bonghwa', 'yecheon', 'andong', 'mungyeong', 'yeongyang', 'cheongsong', 'sangju']
+  // 지역 데이터가 없는 영양·청송은 404 → 제외 (2026-09-29)
+  const regions = ['yeongju', 'bonghwa', 'yecheon', 'andong', 'mungyeong', 'yeongyang', 'cheongsong', 'sangju'].filter(r => getAreaInfo(r))
   const urls: string[] = [
     `  <url>
     <loc>${baseUrl}/emergency</loc>
@@ -2472,6 +2464,8 @@ app.get('/intent/:region/:treatment/:intent', (c) => {
     title: result.title,
     description: result.description,
     url: `/intent/${region}/${treatment}/${intent}`,
+    // 가격·비용·추천·잘하는곳 4변형은 주 페이지(지역×진료)와 사실상 같은 내용 → 정본 통합
+    canonical: `/area/${region}/${treatment}`,
     keywords: result.keywords,
     ogImage: `https://kndent.kr/og/${treatment}`,
     speakableSelectors: ['[data-speakable]', 'h1', 'h2', '.faq-answer', '.intent-summary', '.price-table'],
@@ -2582,6 +2576,8 @@ app.get('/symptom/:slug', (c) => {
 app.get('/symptom/:slug/:region', (c) => {
   const slug = c.req.param('slug')
   const region = c.req.param('region')
+  // 지역 데이터가 없는 slug(영양·청송 등)는 기본 증상 페이지와 동일 내용 → 301 통합 (2026-09-29)
+  if (!getAreaInfo(region)) return symptomPage(slug) ? c.redirect(`/symptom/${slug}`, 301) : c.notFound()
   const result = symptomPage(slug, region)
   if (!result) return c.notFound()
 
@@ -2629,6 +2625,8 @@ app.get('/audience/:slug', (c) => {
 app.get('/audience/:slug/:region', (c) => {
   const slug = c.req.param('slug')
   const region = c.req.param('region')
+  // 지역 데이터가 없는 slug(영양·청송 등)는 기본 대상자 페이지와 동일 내용 → 301 통합 (2026-09-29)
+  if (!getAreaInfo(region)) return audiencePage(slug) ? c.redirect(`/audience/${slug}`, 301) : c.notFound()
   const result = audiencePage(slug, region)
   if (!result) return c.notFound()
 
@@ -2677,7 +2675,12 @@ app.get('/emergency/:region', (c) => {
 // ===== 🚀 SEO 슈퍼업글 시즌 2: RSS 피드 (Google 색인 가속) =====
 app.get('/feed.xml', async (c) => {
   const baseUrl = 'https://kndent.kr'
-  const today = new Date().toUTCString()
+  // pubDate 는 섹션별 실제 콘텐츠 수정일 (요청 시각 = 가짜 최신 신호 → 사용 안 함, 2026-09-29)
+  const rfc = (d: string) => new Date(`${d}T00:00:00+09:00`).toUTCString()
+  const pillarDate = rfc(CONTENT_LASTMOD.pillar)
+  const compareDate = rfc(CONTENT_LASTMOD.compare)
+  const comboDate = rfc(CONTENT_LASTMOD.combo)
+  const today = rfc([CONTENT_LASTMOD.pillar, CONTENT_LASTMOD.compare, CONTENT_LASTMOD.combo].sort().reverse()[0])
 
   // 핵심 신규 페이지 RSS
   const items: { title: string; link: string; description: string; pubDate: string }[] = []
@@ -2690,7 +2693,7 @@ app.get('/feed.xml', async (c) => {
         title: result.title,
         link: `${baseUrl}/guide/${s}`,
         description: result.description,
-        pubDate: today
+        pubDate: pillarDate
       })
     }
   })
@@ -2714,28 +2717,27 @@ app.get('/feed.xml', async (c) => {
         title: result.title,
         link: `${baseUrl}/compare/${pair}/${treatment}`,
         description: result.description,
-        pubDate: today
+        pubDate: compareDate
       })
     }
   })
 
-  // 핵심 Intent 6개
-  const coreIntents = [
-    { r: 'yeongju', t: 'implant', i: 'price' },
-    { r: 'yeongju', t: 'implant', i: 'recommend' },
-    { r: 'yeongju', t: 'invisalign', i: 'price' },
-    { r: 'yeongju', t: 'wisdom-tooth', i: 'recommend' },
-    { r: 'bonghwa', t: 'implant', i: 'recommend' },
-    { r: 'yecheon', t: 'implant', i: 'recommend' }
+  // 핵심 지역×진료 5개 (intent 변형은 canonical 통합으로 제외, 2026-09-29)
+  const coreCombos = [
+    { r: 'yeongju', t: 'implant' },
+    { r: 'yeongju', t: 'invisalign' },
+    { r: 'yeongju', t: 'wisdom-tooth' },
+    { r: 'bonghwa', t: 'implant' },
+    { r: 'yecheon', t: 'implant' }
   ]
-  coreIntents.forEach(({ r, t, i }) => {
-    const result = intentPage(r, t, i)
+  coreCombos.forEach(({ r, t }) => {
+    const result = comboPage(r, t)
     if (result) {
       items.push({
         title: result.title,
-        link: `${baseUrl}/intent/${r}/${t}/${i}`,
+        link: `${baseUrl}/area/${r}/${t}`,
         description: result.description,
-        pubDate: today
+        pubDate: comboDate
       })
     }
   })

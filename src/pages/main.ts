@@ -210,13 +210,7 @@ export function mainPageSchemas(): object[] {
     "isAcceptingNewPatients": true,
     "smokingAllowed": false,
     "currenciesAccepted": "KRW",
-    "paymentAccepted": ["현금", "신용카드", "체크카드", "계좌이체"],
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.9",
-      "reviewCount": "120",
-      "bestRating": "5"
-    }
+    "paymentAccepted": ["현금", "신용카드", "체크카드", "계좌이체"]
   };
 
   return [faqSchema, howToSchema, medicalServiceSchema];
@@ -580,6 +574,7 @@ export function mainPage(): string {
           </div>
 
           <h1 class="display-hero text-charcoal mb-8" id="heroTitle" data-speakable="true">
+            <span class="block text-lg md:text-2xl font-extrabold text-royal tracking-tight mb-3 md:mb-4">영주 치과 강남치과의원</span>
             <span class="block overflow-hidden">
               <span class="block" id="heroLine1">일상으로의 빠른 복귀,</span>
             </span>
@@ -1026,6 +1021,27 @@ export function mainPage(): string {
         </a>
       </div>
       <div class="text-center mt-16 reveal"><a href="/treatments" class="btn-outline !py-5 !px-12 !text-[14px]">전체 진료 보기 <i class="fas fa-arrow-right text-xs ml-1"></i></a></div>
+      <!-- SEO: 영주 핵심 진료 바로가기 (지역+진료 앵커 → 주 진료 페이지, 2026-09-29) -->
+      <nav class="mt-14 reveal" aria-label="영주 진료 바로가기">
+        <h3 class="text-center text-charcoal font-extrabold text-lg md:text-xl mb-5">영주에서 찾는 진료 바로가기</h3>
+        <ul class="flex flex-wrap justify-center gap-2 max-w-4xl mx-auto">
+          ${[
+            ['/treatments/implant', '영주 임플란트'],
+            ['/treatments/invisalign', '영주 인비절라인 교정'],
+            ['/treatments/wisdom-tooth', '영주 사랑니 발치'],
+            ['/treatments/digital-prosthesis', '영주 디지털 보철'],
+            ['/treatments/cosmetic', '영주 심미보철'],
+            ['/treatments/bone-graft', '영주 뼈이식 임플란트'],
+            ['/treatments/cavity', '영주 충치치료'],
+            ['/treatments/root-canal', '영주 신경치료'],
+            ['/treatments/gum', '영주 잇몸치료'],
+            ['/treatments/denture', '영주 틀니'],
+            [`/area/${encodeURIComponent('영주시')}`, '영주 치과 지역 안내'],
+            ['/pricing', '진료비용 안내'],
+            ['/directions', '오시는 길']
+          ].map(([href, label]) => `<li><a href="${href}" class="inline-block px-4 py-2 rounded-full bg-white border border-royal/[0.12] text-sm text-royal font-semibold hover:bg-royal/[0.08] hover:border-royal/[0.25] transition-all duration-300">${label}</a></li>`).join('')}
+        </ul>
+      </nav>
     </div>
   </section>
 

@@ -673,7 +673,7 @@ export function symptomPage(symptomSlug: string, regionSlug?: string): { html: s
       "@type": "EmergencyService",
       "name": `영주 강남치과 ${symptom.shortKo} 응급 진료`,
       "telephone": "+82-54-636-8222",
-      "openingHours": "Mo-Fr 09:00-18:00, Sa 09:00-13:00",
+      "openingHours": ["Mo-Fr 09:00-13:00", "Mo-Fr 14:00-17:30"],
       "address": {
         "@type": "PostalAddress",
         "addressLocality": "영주시",
@@ -846,7 +846,8 @@ export function symptomIndexPage(): { html: string; title: string; description: 
 /** 모든 증상 페이지 경로 */
 export function getAllSymptomPaths(): { symptomSlug: string; regionSlug?: string; priority: number }[] {
   const paths: { symptomSlug: string; regionSlug?: string; priority: number }[] = []
-  const regions = ['yeongju', 'bonghwa', 'yecheon', 'andong', 'mungyeong', 'yeongyang', 'cheongsong', 'sangju']
+  // 영양·청송은 지역 데이터(getAreaInfo)가 없어 기본 페이지와 동일 내용이 렌더됨 → 경로에서 제외 (2026-09-29)
+  const regions = ['yeongju', 'bonghwa', 'yecheon', 'andong', 'mungyeong', 'yeongyang', 'cheongsong', 'sangju'].filter(r => getAreaInfo(r))
 
   Object.values(symptomData).forEach(s => {
     // 단독 증상 페이지

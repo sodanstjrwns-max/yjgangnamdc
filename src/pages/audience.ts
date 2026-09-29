@@ -186,7 +186,7 @@ const audienceData: Record<string, AudienceInfo> = {
       { q: '점심시간에 진료 가능한가요?', a: '네, 영주 강남치과는 점심시간에도 진료 가능합니다. 사전 예약 권장.' },
       { q: '교정해도 직장 생활에 영향 없나요?', a: '인비절라인은 투명해서 거의 보이지 않습니다. 식사·중요 미팅 때만 빼면 됩니다.' },
       { q: '임플란트 한 번에 끝낼 수 없나요?', a: '디지털 임플란트로 진료 횟수를 4~5회로 최소화 가능. 즉시 식립 케이스는 더 단축.' },
-      { q: '주말 진료?', a: '토요일 오전 진료. 자세한 시간은 054-636-8222 문의.' }
+      { q: '주말 진료?', a: '토·일·공휴일은 휴무입니다. 평일 09:00~17:30(접수마감 17:00) 진료하며, 자세한 시간은 054-636-8222로 문의해 주세요.' }
     ]
   },
   'foreign-resident': {
@@ -466,7 +466,8 @@ export function audienceIndexPage(): { html: string; title: string; description:
 
 export function getAllAudiencePaths(): { audienceSlug: string; regionSlug?: string; priority: number }[] {
   const paths: { audienceSlug: string; regionSlug?: string; priority: number }[] = []
-  const regions = ['yeongju', 'bonghwa', 'yecheon', 'andong', 'mungyeong', 'yeongyang', 'cheongsong', 'sangju']
+  // 영양·청송은 지역 데이터(getAreaInfo)가 없어 기본 페이지와 동일 내용이 렌더됨 → 경로에서 제외 (2026-09-29)
+  const regions = ['yeongju', 'bonghwa', 'yecheon', 'andong', 'mungyeong', 'yeongyang', 'cheongsong', 'sangju'].filter(r => getAreaInfo(r))
 
   Object.values(audienceData).forEach(a => {
     paths.push({ audienceSlug: a.slug, priority: 1 })

@@ -144,29 +144,29 @@ export function emergencyPage(regionSlug?: string): { html: string; title: strin
       "url": area ? `https://kndent.kr/emergency/${regionSlug}` : "https://kndent.kr/emergency",
       "address": {
         "@type": "PostalAddress",
-        "streetAddress": "경상북도 영주시 광복로 35",
+        "streetAddress": "대학로 217, 2층",
         "addressLocality": "영주시",
         "addressRegion": "경상북도",
-        "postalCode": "36050",
+        "postalCode": "36052",
         "addressCountry": "KR"
       },
       "geo": {
         "@type": "GeoCoordinates",
-        "latitude": 36.8056,
-        "longitude": 128.6240
+        "latitude": 36.8057,
+        "longitude": 128.7410
       },
       "openingHoursSpecification": [
         {
           "@type": "OpeningHoursSpecification",
           "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
           "opens": "09:00",
-          "closes": "18:00"
+          "closes": "13:00"
         },
         {
           "@type": "OpeningHoursSpecification",
-          "dayOfWeek": "Saturday",
-          "opens": "09:00",
-          "closes": "13:00"
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+          "opens": "14:00",
+          "closes": "17:30"
         }
       ],
       "areaServed": area ? [
@@ -209,7 +209,7 @@ export function emergencyPage(regionSlug?: string): { html: string; title: strin
           <div class="bg-white text-red-700 rounded-2xl p-6 shadow-2xl inline-block">
             <div class="text-sm font-bold mb-2">📞 ${areaPrefix}응급 진료 즉시 전화</div>
             <a href="tel:054-636-8222" class="text-4xl md:text-5xl font-black">054-636-8222</a>
-            <div class="text-xs mt-2 text-gray-600">평일 09:00~18:00 · 토 09:00~13:00 · 응급 대응 가능</div>
+            <div class="text-xs mt-2 text-gray-600">평일 09:00~17:30 (접수마감 17:00, 점심 13:00~14:00) · 토·일·공휴일 휴무</div>
           </div>
         </div>
       </section>

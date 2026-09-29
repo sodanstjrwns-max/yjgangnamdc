@@ -419,7 +419,6 @@ export function areaPage(region: string): { html: string; title: string; descrip
         { "@type": "MedicalProcedure", "name": "뼈이식", "url": "https://kndent.kr/treatments/bone-graft" },
         { "@type": "MedicalProcedure", "name": "상악동(위턱 공간) 거상술", "url": "https://kndent.kr/treatments/sinus-lift" }
       ],
-      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "120", "bestRating": "5" },
       "sameAs": [
         "https://blog.naver.com/gndentalclinic",
         "https://map.naver.com/p/entry/place/1099573867",
@@ -454,7 +453,7 @@ export function areaPage(region: string): { html: string; title: string; descrip
           <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="text-charcoal font-medium"><span itemprop="name">${area.name}</span><meta itemprop="position" content="3"></li>
         </ol>
       </nav>
-      <h1 class="display-lg text-charcoal mb-6" data-speakable="true">${title}</h1>
+      <h1 class="display-lg text-charcoal mb-6" data-speakable="true">${title.split(' | ')[0]}</h1>
       <p class="text-gray-400 text-lg area-summary" data-speakable="true">${area.description}</p>
     </div>
   </section>

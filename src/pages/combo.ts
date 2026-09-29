@@ -586,8 +586,7 @@ export function comboPage(regionParam: string, treatmentParam: string): { html: 
         }
       ],
       "medicalSpecialty": ["Oral and Maxillofacial Surgery", "Implantology", "Prosthodontics", "Orthodontics", "Cosmetic Dentistry"],
-      "availableService": [{ "@id": `${canonicalUrl}#procedure` }],
-      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "120", "bestRating": "5" }
+      "availableService": [{ "@id": `${canonicalUrl}#procedure` }]
     },
     // 5) BreadcrumbList (검색결과 빵부스러기)
     {

@@ -463,7 +463,7 @@ export function doctorProfilePage(slug: string): { html: string; title: string; 
   const doc = doctors.find(d => d.slug === slug)
   if (!doc) return null
   return {
-    title: doc.h1, description: doc.description,
+    title: `${doc.h1} | 영주 강남치과의원`, description: doc.description,
     html: `
     <!-- Hero -->
     <section class="relative min-h-[55vh] flex items-end subpage-hero overflow-hidden">

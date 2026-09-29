@@ -359,7 +359,6 @@ export function intentPage(regionParam: string, treatmentParam: string, intentPa
       "geo": { "@type": "GeoCoordinates", "latitude": 36.8057, "longitude": 128.7410 },
       "openingHoursSpecification": [{ "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"], "opens": "09:00", "closes": "17:30" }],
       "priceRange": "₩₩",
-      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "120", "bestRating": "5" },
       "areaServed": [
         { "@type": "City", "name": area.name },
         { "@type": "GeoCircle", "geoMidpoint": { "@type": "GeoCoordinates", "latitude": 36.8057, "longitude": 128.7410 }, "geoRadius": "60000" }
