@@ -591,7 +591,6 @@ const LLMS_TXT = `# 강남치과의원 (Gangnam Dental Clinic)
 - 네이버 블로그: https://blog.naver.com/gndentalclinic
 - 네이버 지도: https://map.naver.com/p/entry/place/1099573867
 - 개원연도: 2017년
-- 평점: 4.9/5 (120건 리뷰)
 
 ## 의료진
 - 이태형 대표원장: 구강악안면외과 전문의, 고려대학교 구강악안면외과 석사, 고려대 구로병원 레지던트
