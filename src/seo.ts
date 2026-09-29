@@ -28,6 +28,54 @@ export const CONTENT_LASTMOD = {
 // 의료 콘텐츠 최종 감수일 (전문의 감수 시점 — Schema.org lastReviewed용)
 export const MEDICAL_LAST_REVIEWED = '2026-08-18'
 
+// ============================================================
+// 메타 설명 보강: 요약이 70자 미만이면 화면 본문 앞 문장을 이어 붙여 155자 이내로 (사실 문장만, 새 문구 없음)
+// ============================================================
+export function plainText(src: string): string {
+  return String(src || '')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')      // 마크다운 이미지
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')    // 마크다운 링크 → 텍스트
+    .replace(/^[#>*\-•\s]+/gm, '')                // 제목·인용·목록 기호
+    .replace(/[*_`]+/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+export function fitMetaDesc(parts: Array<string | null | undefined>, max = 155): string {
+  let out = ''
+  for (const raw of parts) {
+    const t = plainText(raw || '')
+    if (!t || out.includes(t)) continue
+    if (!out) { out = t } else {
+      // 뒤 조각은 문장 단위로 필요한 만큼만
+      const sents = t.split(/(?<=[.!?])\s+/)
+      for (const sn of sents) {
+        if (out.length >= 90) break
+        out = `${out} ${sn.trim()}`
+      }
+    }
+    if (out.length >= 90) break
+  }
+  if (out.length <= max) return out
+  const cut = out.slice(0, max)
+  const end = Math.max(cut.lastIndexOf('다.'), cut.lastIndexOf('요.'), cut.lastIndexOf('. '))
+  if (end >= 70) return cut.slice(0, end + (cut[end] === '.' ? 1 : 2)).trim()
+  const sp = cut.lastIndexOf(' ')
+  return (sp >= 70 ? cut.slice(0, sp) : cut.slice(0, max - 1)).replace(/[\s,·—-]+$/, '') + '…'
+}
+
+/** 요약이 충분히 길면(70자+) 그대로, 짧거나 없으면 본문 앞 문장으로 보강 */
+export function metaDescFrom(summary: string | null | undefined, body: string | null | undefined, fallback = ''): string {
+  let s = plainText(summary || '')
+  if (s.length >= 70) return s.length <= 155 ? s : fitMetaDesc([s])
+  // 40자 미만 요약은 '○○ 차이' 같은 제목형 조각이라 문장 앞에 붙이면 어색 → 본문 문장만 사용
+  if (s.length < 40 && plainText(body || '')) s = ''
+  else if (s && !/[.!?。]$/.test(s)) s = `${s}.`
+  return fitMetaDesc([s, body, fallback]) || fallback
+}
+
 // 사이트맵 인덱스 lastmod = 가장 최근 섹션 수정일
 export const SITEMAP_INDEX_LASTMOD = Object.values(CONTENT_LASTMOD).sort().reverse()[0]
 

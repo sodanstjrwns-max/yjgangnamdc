@@ -285,6 +285,29 @@ const localTreatments: Record<string, LocalTreatment> = {
 }
 
 // ===== Export Helpers =====
+
+// 화면 FAQ와 FAQPage 스키마를 한 배열로 — 문항·답변 1:1 일치 (답변 HTML의 <strong> 등은 스키마에서 태그만 제거)
+type LocFaq = { q: string; a: string }
+const stripTags = (h: string) => h.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim()
+function renderLocFaqs(faqs: LocFaq[]): string {
+  return faqs.map((f) => `
+        <div>
+          <p class="font-bold text-gray-900">Q. ${f.q}</p>
+          <p class="text-gray-700 mt-1">A. ${f.a}</p>
+        </div>`).join('')
+}
+function locFaqSchema(faqs: LocFaq[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faqs.map((f) => ({
+      "@type": "Question",
+      "name": stripTags(f.q),
+      "acceptedAnswer": { "@type": "Answer", "text": stripTags(f.a) }
+    }))
+  }
+}
+
 export function getLocalitySlugs(): string[] {
   return Object.keys(localityData)
 }
@@ -348,6 +371,12 @@ export function localityPage(slug: string): { html: string; title: string; descr
 
   const landmarkHtml = loc.landmarks.map(l => `<span class="inline-block bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm mr-2 mb-2">${l}</span>`).join('')
 
+  const hubFaqs: LocFaq[] = [
+    { q: `${loc.name}에서 영주 강남치과까지 얼마나 걸리나요?`, a: `자가용으로 ${loc.driveTime}, 거리로는 ${loc.driveKm}입니다. ${loc.routeDesc}.` },
+    { q: `${loc.name}에서 임플란트하러 굳이 영주까지 가야 할 이유가 있나요?`, a: `영주 강남치과는 ${loc.parentRegion} 일대에서 보기 드문 <strong>구강악안면외과 전문의 2인</strong>이 상주하는 치과입니다. 뼈가 부족해도 뼈이식·상악동(위턱 공간) 거상술이 동시 가능하고, 3D CT 정밀 진단 + 디지털 가이드로 식립 정확도가 높습니다. 대구·서울까지 가지 않아도 동일 수준의 진료를 받을 수 있습니다.` },
+    { q: `${loc.name}에서 사랑니 뽑으러 가도 되나요? 매복 사랑니도 가능한가요?`, a: `네. 영주 강남치과는 구강악안면외과 전문의가 직접 발치합니다. 단순 사랑니부터 매복 사랑니(뿌리가 신경에 가까운 경우 포함)까지 모두 가능합니다. 보험 적용됩니다.` },
+    { q: `${loc.name}에서 가는 길이 복잡하지 않나요?`, a: `${loc.routeDesc}. 네이버 지도/카카오맵에 "영주 강남치과의원" 검색하시면 가장 빠른 길로 안내됩니다. 주차장 완비.` },
+  ]
   const html = `
 <main class="bg-gradient-to-b from-blue-50 to-white">
   <section class="max-w-5xl mx-auto px-4 py-10">
@@ -411,23 +440,7 @@ export function localityPage(slug: string): { html: string; title: string; descr
 
     <section class="bg-yellow-50 border-l-4 border-yellow-500 rounded-xl p-6 mb-8">
       <h2 class="text-xl font-bold text-yellow-900 mb-3"><i class="fas fa-question-circle mr-2"></i>자주 묻는 질문</h2>
-      <div class="space-y-4">
-        <div>
-          <p class="font-bold text-gray-900">Q. ${loc.name}에서 영주 강남치과까지 얼마나 걸리나요?</p>
-          <p class="text-gray-700 mt-1">A. 자가용으로 ${loc.driveTime}, 거리로는 ${loc.driveKm}입니다. ${loc.routeDesc}.</p>
-        </div>
-        <div>
-          <p class="font-bold text-gray-900">Q. ${loc.name}에서 임플란트하러 굳이 영주까지 가야 할 이유가 있나요?</p>
-          <p class="text-gray-700 mt-1">A. 영주 강남치과는 ${loc.parentRegion} 일대에서 보기 드문 <strong>구강악안면외과 전문의 2인</strong>이 상주하는 치과입니다. 뼈가 부족해도 뼈이식·상악동(위턱 공간) 거상술이 동시 가능하고, 3D CT 정밀 진단 + 디지털 가이드로 식립 정확도가 높습니다. 대구·서울까지 가지 않아도 동일 수준의 진료를 받을 수 있습니다.</p>
-        </div>
-        <div>
-          <p class="font-bold text-gray-900">Q. ${loc.name}에서 사랑니 뽑으러 가도 되나요? 매복 사랑니도 가능한가요?</p>
-          <p class="text-gray-700 mt-1">A. 네. 영주 강남치과는 구강악안면외과 전문의가 직접 발치합니다. 단순 사랑니부터 매복 사랑니(뿌리가 신경에 가까운 경우 포함)까지 모두 가능합니다. 보험 적용됩니다.</p>
-        </div>
-        <div>
-          <p class="font-bold text-gray-900">Q. ${loc.name}에서 가는 길이 복잡하지 않나요?</p>
-          <p class="text-gray-700 mt-1">A. ${loc.routeDesc}. 네이버 지도/카카오맵에 "영주 강남치과의원" 검색하시면 가장 빠른 길로 안내됩니다. 주차장 완비.</p>
-        </div>
+      <div class="space-y-4">${renderLocFaqs(hubFaqs)}
       </div>
     </section>
 
@@ -474,36 +487,7 @@ export function localityPage(slug: string): { html: string; title: string; descr
       },
       "medicalSpecialty": ["Dentistry", "OralAndMaxillofacialSurgery", "Orthodontics", "CosmeticDentistry"]
     },
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": `${loc.name}에서 영주 강남치과까지 얼마나 걸리나요?`,
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": `자가용으로 ${loc.driveTime}, 거리로는 ${loc.driveKm}입니다. ${loc.routeDesc}.`
-          }
-        },
-        {
-          "@type": "Question",
-          "name": `${loc.name}에서 임플란트하러 영주 강남치과 가는 이유는?`,
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": `영주 강남치과는 ${loc.parentRegion} 일대에 드문 구강악안면외과 전문의 2인이 상주합니다. 뼈이식·상악동(위턱 공간) 거상술 동시 가능, 3D CT + 디지털 가이드 정밀 식립. 대구·서울까지 가지 않아도 동일 수준 진료. Neo/Osstem 임플란트 1개 130만원.`
-          }
-        },
-        {
-          "@type": "Question",
-          "name": `${loc.name}에서 매복 사랑니도 발치 가능한가요?`,
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": `네. 구강악안면외과 전문의가 직접 발치합니다. 매복 사랑니, 신경에 가까운 사랑니 모두 가능. 보험 적용됩니다.`
-          }
-        }
-      ]
-    },
+    locFaqSchema(hubFaqs),
     {
       "@context": "https://schema.org",
       "@type": "MedicalWebPage",
@@ -552,6 +536,12 @@ export function localityTreatmentPage(localitySlug: string, treatmentSlug: strin
     </a>
   `).join('\n')
 
+  const txFaqs: LocFaq[] = [
+    { q: `${loc.name}에서 ${t.ko}하러 영주 강남치과까지 가는 게 효율적인가요?`, a: `네. ${loc.driveTime}이면 도착하고, ${loc.parentRegion} 일대에서 가장 가까운 <strong>구강악안면외과 전문의 치과</strong>입니다. 대구·서울에 가는 시간(2~3시간)에 비해 압도적으로 효율적입니다.` },
+    { q: `${loc.name}에 다른 치과도 있는데 굳이 영주까지?`, a: `일반 치과는 ${loc.name} 동네에서도 충분하지만, <strong>${t.ko}처럼 정밀이 필요한 진료</strong>는 구강악안면외과 전문의가 있는 치과가 안전합니다. 영주 강남치과는 전문의 2인이 직접 진료하며, 3D CT/디지털 가이드/CEREC 등 대학병원급 장비를 운영합니다.` },
+    { q: `${loc.name}에서 진료비 외 추가 비용 부담은?`, a: `${t.price}. 진료비 외 추가비용은 없습니다. 부분/전체 보험 적용 여부는 상담 시 정확히 안내드립니다.` },
+    { q: `${loc.name}에서 한 번 가면 몇 번 더 와야 하나요?`, a: `${t.ko}는 보통 ${t.slug === 'implant' ? '3~6개월에 4~5회 내원' : t.slug === 'invisalign' ? '6개월~2년에 8~12회 내원' : t.slug === 'wisdom-tooth' ? '발치 1회 + 발사/소독 1~2회' : t.slug === 'digital-prosthesis' ? '당일 1회로 완료 가능 (CEREC)' : t.slug === 'cosmetic' ? '진단 + 시술 2~3회' : '1~2회'}이 필요합니다. ${loc.driveTime} 거리니까 부담스럽지 않습니다.` },
+  ]
   const html = `
 <main class="bg-gradient-to-b from-blue-50 to-white">
   <section class="max-w-5xl mx-auto px-4 py-10">
@@ -618,23 +608,7 @@ export function localityTreatmentPage(localitySlug: string, treatmentSlug: strin
 
     <section class="bg-yellow-50 border-l-4 border-yellow-500 rounded-xl p-6 mb-8">
       <h2 class="text-xl font-bold text-yellow-900 mb-4"><i class="fas fa-question-circle mr-2"></i>${loc.name} ${t.ko} FAQ</h2>
-      <div class="space-y-4">
-        <div>
-          <p class="font-bold text-gray-900">Q. ${loc.name}에서 ${t.ko}하러 영주 강남치과까지 가는 게 효율적인가요?</p>
-          <p class="text-gray-700 mt-1">A. 네. ${loc.driveTime}이면 도착하고, ${loc.parentRegion} 일대에서 가장 가까운 <strong>구강악안면외과 전문의 치과</strong>입니다. 대구·서울에 가는 시간(2~3시간)에 비해 압도적으로 효율적입니다.</p>
-        </div>
-        <div>
-          <p class="font-bold text-gray-900">Q. ${loc.name}에 다른 치과도 있는데 굳이 영주까지?</p>
-          <p class="text-gray-700 mt-1">A. 일반 치과는 ${loc.name} 동네에서도 충분하지만, <strong>${t.ko}처럼 정밀이 필요한 진료</strong>는 구강악안면외과 전문의가 있는 치과가 안전합니다. 영주 강남치과는 전문의 2인이 직접 진료하며, 3D CT/디지털 가이드/CEREC 등 대학병원급 장비를 운영합니다.</p>
-        </div>
-        <div>
-          <p class="font-bold text-gray-900">Q. ${loc.name}에서 진료비 외 추가 비용 부담은?</p>
-          <p class="text-gray-700 mt-1">A. ${t.price}. 진료비 외 추가비용은 없습니다. 부분/전체 보험 적용 여부는 상담 시 정확히 안내드립니다.</p>
-        </div>
-        <div>
-          <p class="font-bold text-gray-900">Q. ${loc.name}에서 한 번 가면 몇 번 더 와야 하나요?</p>
-          <p class="text-gray-700 mt-1">A. ${t.ko}는 보통 ${t.slug === 'implant' ? '3~6개월에 4~5회 내원' : t.slug === 'invisalign' ? '6개월~2년에 8~12회 내원' : t.slug === 'wisdom-tooth' ? '발치 1회 + 발사/소독 1~2회' : t.slug === 'digital-prosthesis' ? '당일 1회로 완료 가능 (CEREC)' : t.slug === 'cosmetic' ? '진단 + 시술 2~3회' : '1~2회'}이 필요합니다. ${loc.driveTime} 거리니까 부담스럽지 않습니다.</p>
-        </div>
+      <div class="space-y-4">${renderLocFaqs(txFaqs)}
       </div>
     </section>
 
@@ -678,36 +652,7 @@ export function localityTreatmentPage(localitySlug: string, treatmentSlug: strin
         "telephone": "+82-54-636-8222"
       }
     },
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": `${loc.name}에서 ${t.ko}하러 영주 강남치과까지 가는 게 효율적인가요?`,
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": `네. ${loc.driveTime}이면 도착하고, ${loc.parentRegion} 일대에서 가장 가까운 구강악안면외과 전문의 치과입니다. 대구·서울에 가는 시간에 비해 압도적으로 효율적입니다.`
-          }
-        },
-        {
-          "@type": "Question",
-          "name": `${loc.name} ${t.ko} 비용은 얼마인가요?`,
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": `${t.price}. ${t.shortDesc}. 추가비용 없음.`
-          }
-        },
-        {
-          "@type": "Question",
-          "name": `${loc.name}에서 한 번 가면 몇 번 더 영주까지 와야 하나요?`,
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": t.slug === 'implant' ? '3~6개월에 4~5회 내원 필요' : t.slug === 'invisalign' ? '6개월~2년에 8~12회 내원' : t.slug === 'wisdom-tooth' ? '발치 1회 + 발사/소독 1~2회' : t.slug === 'digital-prosthesis' ? 'CEREC 당일 1회로 완료 가능' : '진단 + 시술 2~3회 정도'
-          }
-        }
-      ]
-    },
+    locFaqSchema(txFaqs),
     {
       "@context": "https://schema.org",
       "@type": "MedicalWebPage",

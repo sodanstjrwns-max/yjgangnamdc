@@ -4,10 +4,10 @@ import { secureHeaders } from 'hono/secure-headers'
 import { createMiddleware } from 'hono/factory'
 import { mainPage, mainPageSchemas } from './pages/main'
 import { doctorsPage, doctorProfilePage } from './pages/doctors'
-import { treatmentsPage, treatmentDetailPage } from './pages/treatments'
+import { treatmentsPage, treatmentDetailPage, getTreatmentSummaries } from './pages/treatments'
 import { reservationPage } from './pages/reservation'
 import { directionsPage } from './pages/directions'
-import { pricingPage } from './pages/pricing'
+import { pricingPage, DEFAULT_PRICE_CATS } from './pages/pricing'
 import { areaPage, getAllAreaKeys, getAreaPriority, getAreaKeyBySlug } from './pages/area'
 import { comboPage, getAllComboPaths, getAreaSlugs, getTreatmentSlugs, getAreaInfo, getTreatmentInfo } from './pages/combo'
 import { intentPage, getAllIntentPaths } from './pages/intent'
@@ -17,7 +17,7 @@ import { symptomPage, symptomIndexPage, getAllSymptomSlugs, getAllSymptomPaths }
 import { audiencePage, audienceIndexPage, getAllAudienceSlugs, getAllAudiencePaths } from './pages/audience'
 import { emergencyPage } from './pages/emergency'
 import { localityPage, localityTreatmentPage, localityIndexPage, getAllLocalityPaths, getLocalitySlugs, getLocalityTreatmentSlugs } from './pages/locality'
-import { faqPage, allFAQs } from './pages/faq'
+import { faqPage, allFAQs, getFAQsBySlug } from './pages/faq'
 import { blogListPage, blogDetailPage } from './pages/blog'
 import { beforeAfterListPage, beforeAfterDetailPage } from './pages/beforeafter'
 import { noticeListPage, noticeDetailPage } from './pages/notices'
@@ -26,8 +26,8 @@ import { statsPage, fetchDashboardStats, STATS_KEY, MASTER_KEY } from './pages/s
 import { registerPage, loginPage, loginRequiredPage } from './pages/auth'
 import { dictionaryListPage, dictionaryDetailPage } from './pages/dictionary'
 import { searchPage, searchStatic } from './pages/search'
-import { layout } from './layout'
-import { CONTENT_LASTMOD, MEDICAL_LAST_REVIEWED, SITEMAP_INDEX_LASTMOD, INDEXNOW_KEY, INDEXNOW_ENDPOINTS, INDEXNOW_DEFAULT_URLS } from './seo'
+import { layout, OG_IMAGE_PNG } from './layout'
+import { CONTENT_LASTMOD, MEDICAL_LAST_REVIEWED, SITEMAP_INDEX_LASTMOD, INDEXNOW_KEY, INDEXNOW_ENDPOINTS, INDEXNOW_DEFAULT_URLS, metaDescFrom, fitMetaDesc } from './seo'
 
 // 서버 측 content 자동 변환: plain text → HTML (저장 전 적용)
 function formatContentForSave(content: string): string {
@@ -283,58 +283,10 @@ async function getSessionUser(c: any): Promise<any | null> {
   } catch { return null }
 }
 
-// ===== SEO: 동적 OG 이미지 (페이지별 고유 OG 이미지 생성) =====
-app.get('/og/:slug', (c) => {
-  const slug = c.req.param('slug')
-  // 페이지별 타이틀 매핑
-  const ogTitles: Record<string, { title: string; subtitle: string; icon: string }> = {
-    'home': { title: '강남치과의원', subtitle: '구강악안면외과 전문의 2인 · 영주', icon: '🏥' },
-    'implant': { title: '임플란트', subtitle: '구강외과 전문의 직접 수술', icon: '🦷' },
-    'digital-prosthesis': { title: 'CEREC 디지털 보철', subtitle: '싱글 크라운 정밀 제작', icon: '⚡' },
-    'invisalign': { title: '인비절라인', subtitle: '투명교정 인증의', icon: '😁' },
-    'cosmetic': { title: '심미보철', subtitle: '라미네이트·올세라믹 크라운', icon: '💎' },
-    'wisdom-tooth': { title: '사랑니 발치', subtitle: '구강외과 전문의 안전 발치', icon: '🔬' },
-    'cavity': { title: '충치치료', subtitle: '당일 레진·크라운 가능', icon: '🩺' },
-    'root-canal': { title: '신경치료', subtitle: '정밀 근관 치료', icon: '💉' },
-    'crown': { title: '크라운', subtitle: 'CEREC 디지털 정밀 제작', icon: '👑' },
-    'resin': { title: '레진치료', subtitle: '자연치아색 수복', icon: '🎨' },
-    'whitening': { title: '치아미백', subtitle: '전문의 관리 미백', icon: '✨' },
-    'scaling': { title: '스케일링', subtitle: '잇몸 건강 관리', icon: '🪥' },
-    'gum': { title: '잇몸치료', subtitle: '치주 관리', icon: '💧' },
-    'tmj': { title: '턱관절 치료', subtitle: '통증·소리·개구장애', icon: '🦴' },
-    'pricing': { title: '진료비용 안내', subtitle: '투명한 비용, 합리적 진료', icon: '💰' },
-    'doctors': { title: '의료진 소개', subtitle: '구강악안면외과 전문의 2인', icon: '👨‍⚕️' },
-    'faq': { title: '자주 묻는 질문', subtitle: '170+ FAQ', icon: '❓' },
-    'directions': { title: '오시는 길', subtitle: '영주시 대학로 217', icon: '📍' },
-  }
-  const info = ogTitles[slug] || { title: '강남치과의원', subtitle: '영주 치과', icon: '🏥' }
-
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
-    <defs>
-      <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stop-color="#F3FBFB"/>
-        <stop offset="100%" stop-color="#E2F5F5"/>
-      </linearGradient>
-      <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0%" stop-color="#0C8385"/>
-        <stop offset="100%" stop-color="#10AFB2"/>
-      </linearGradient>
-    </defs>
-    <rect width="1200" height="630" fill="url(#bg)"/>
-    <rect y="620" width="1200" height="10" fill="url(#accent)"/>
-    <rect x="60" y="60" width="6" height="120" rx="3" fill="url(#accent)"/>
-    <text x="90" y="120" font-family="sans-serif" font-size="28" font-weight="700" fill="#0C8385">강남치과의원</text>
-    <text x="90" y="155" font-family="sans-serif" font-size="16" fill="#666">Gangnam Dental Clinic · 영주</text>
-    <text x="100" y="320" font-family="sans-serif" font-size="64" font-weight="900" fill="#1C1C1E">${info.icon} ${info.title}</text>
-    <text x="100" y="390" font-family="sans-serif" font-size="28" fill="#666">${info.subtitle}</text>
-    <text x="100" y="540" font-family="sans-serif" font-size="18" fill="#999">054-636-8222 · kndent.kr</text>
-    <text x="1100" y="540" font-family="sans-serif" font-size="18" fill="#999" text-anchor="end">구강악안면외과 전문의 2인</text>
-  </svg>`
-
-  c.header('Content-Type', 'image/svg+xml')
-  c.header('Cache-Control', 'public, max-age=86400, s-maxage=604800')
-  return c.body(svg)
-})
+// ===== SEO: 구 OG 이미지 주소 호환 =====
+// 예전 og:image(/og/:slug)는 SVG 라 카카오톡·페이스북·네이버가 읽지 못했다.
+// 이제 모든 페이지 og:image 는 /static/og-image.png(1200×630 PNG). 이미 공유·캐시된 구 주소는 같은 PNG 로 보낸다.
+app.get('/og/:slug', (c) => c.redirect(OG_IMAGE_PNG, 301))
 
 // ===== 네이버 소유권 확인 HTML 파일 =====
 app.get('/navere1c4536d7726b0dba39de96d848b193c.html', (c) => {
@@ -626,10 +578,7 @@ Host: https://kndent.kr
 })
 
 // ===== AEO: llms.txt (AI 크롤러용 사이트 요약) =====
-app.get('/llms.txt', (c) => {
-  c.header('Content-Type', 'text/plain; charset=utf-8')
-  c.header('Cache-Control', 'public, max-age=86400, s-maxage=86400')
-  return c.body(`# 강남치과의원 (Gangnam Dental Clinic)
+const LLMS_TXT = `# 강남치과의원 (Gangnam Dental Clinic)
 # https://kndent.kr
 # llms.txt — AI 검색엔진·LLM 크롤러를 위한 사이트 요약
 
@@ -702,17 +651,17 @@ app.get('/llms.txt', (c) => {
 ## 인용 시 참고
 이 사이트의 의료 정보는 구강악안면외과 전문의가 직접 작성·감수하였습니다.
 정확한 진단과 치료 계획은 반드시 내원 후 전문의 상담을 통해 결정됩니다.
-`)
+`
+
+app.get('/llms.txt', (c) => {
+  c.header('Content-Type', 'text/plain; charset=utf-8')
+  c.header('Cache-Control', 'public, max-age=86400, s-maxage=86400')
+  return c.body(`${LLMS_TXT}\n## 상세판\n- 진료별 요약·FAQ·진료비 전문: https://kndent.kr/llms-full.txt\n`)
 })
 
 // ===== AEO: llms-full.txt (상세 버전) =====
-app.get('/llms-full.txt', (c) => {
-  c.header('Content-Type', 'text/plain; charset=utf-8')
-  c.header('Cache-Control', 'public, max-age=86400, s-maxage=86400')
-  return c.body(`# 강남치과의원 상세 정보 (llms-full.txt)
-# 이 파일은 AI 검색엔진이 강남치과의원에 대해 정확한 답변을 할 수 있도록 작성되었습니다.
-
-## 자주 묻는 질문 (FAQ 요약)
+// llms.txt 전체 + 진료 17종 요약(화면 '핵심 요약' 블록과 같은 발췌)·소제목·진료별 FAQ + 공개 수가표. 사이트에 이미 있는 내용만.
+const LLMS_FAQ_SUMMARY = `## 자주 묻는 질문 (FAQ 요약)
 
 Q: 영주에서 임플란트 잘하는 치과는?
 A: 강남치과의원은 구강악안면외과 전문의 2인이 직접 임플란트를 수술합니다. 뼈이식, 상악동(위턱 공간) 거상술 등 고난이도 수술까지 가능하며, 3D CT·디지털 가이드 기반 정밀 시술을 합니다. Neo/Osstem 임플란트 1개 130만원(맞춤 어버트먼트+지르코니아 포함).
@@ -734,7 +683,35 @@ A: 보통 6개월~2년, 치아 상태에 따라 다릅니다. 비용은 인비�
 
 Q: 토요일에 진료하나요?
 A: 현재 평일(월~금) 09:00~17:30만 진료합니다. 점심시간 13:00~14:00, 접수마감 17:00. 토·일·공휴일은 휴무입니다.
-`)
+`
+app.get('/llms-full.txt', async (c) => {
+  const flat = (t: string) => String(t || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
+  const out: string[] = [LLMS_TXT.trimEnd(), '', '---', '', '## 진료별 요약', `각 진료 페이지 상단 '핵심 요약'과 같은 내용입니다. 감수: 이태형 대표원장(구강악안면외과 전문의) · 최종 검토 ${MEDICAL_LAST_REVIEWED}. 비용·기간은 개인 상태에 따라 달라지며 진단 후 안내합니다.`, '']
+  for (const t of getTreatmentSummaries()) {
+    out.push(`### ${t.title}`)
+    out.push(`URL: https://kndent.kr/treatments/${t.slug}`)
+    out.push(flat(t.summary))
+    if (t.sectionTitles.length) out.push(`다루는 내용: ${t.sectionTitles.map(flat).join(' / ')}`)
+    const fq = getFAQsBySlug(t.slug).slice(0, 5)
+    if (fq.length) {
+      out.push('자주 묻는 질문:')
+      for (const f of fq) { out.push(`- Q. ${flat(f.q)}`); out.push(`  A. ${flat(f.a)}`) }
+    }
+    out.push('')
+  }
+  const cats = (await loadPublishedPriceCats(c)) || DEFAULT_PRICE_CATS
+  out.push('## 진료비용 (https://kndent.kr/pricing 과 동일, 공개 항목만)')
+  for (const cat of cats) {
+    out.push(`### ${cat.title}${cat.ins ? ' (건강보험 적용)' : ''}`)
+    for (const it of cat.items) out.push(`- ${flat(it.name)}${it.desc ? ` (${flat(it.desc)})` : ''}: ${flat(it.price)}`)
+  }
+  out.push('실제 비용은 구강 상태에 따라 달라질 수 있으며 CT·상담 후 확정됩니다.')
+  out.push('')
+  out.push(LLMS_FAQ_SUMMARY.trim())
+  out.push('')
+  c.header('Content-Type', 'text/plain; charset=utf-8')
+  c.header('Cache-Control', 'public, max-age=3600, s-maxage=3600')
+  return c.body(out.join('\n'))
 })
 
 // ===== Sitemap Helper Functions =====
@@ -1398,7 +1375,7 @@ app.get('/', (c) => c.html(layout(mainPage(), {
   title: '영주 치과 강남치과의원 | 구강외과 전문의 2인 · 임플란트 · 인비절라인 교정 · 디지털보철',
   description: '경북 영주시 강남치과의원. 구강악안면외과 전문의 2인이 직접 진료합니다. 임플란트, 디지털 보철(싱글 크라운), 인비절라인, 사랑니 발치, 심미보철. 대학병원급 장비 완비. 봉화·예천·안동·단양·풍기·상주·문경에서 접근 용이. 054-636-8222.',
   url: '/',
-  ogImage: 'https://kndent.kr/og/home',
+  ogImage: OG_IMAGE_PNG,
   keywords: '영주 치과, 영주 임플란트, 영주 치과 추천, 영주 임플란트 잘하는곳, 영주 인비절라인, 영주 투명교정, 영주 사랑니발치, 영주 디지털보철, 구강외과 전문의 영주, 영주시 임플란트 가격, 봉화 임플란트, 예천 치과, 안동 임플란트, 풍기 치과, 단양 치과, 경북 임플란트, 영주혁신도시 치과, 영주 구강외과, 상주 임플란트, 문경 치과',
   schemas: mainPageSchemas(),
   speakableSelectors: ['[data-speakable]', '#heroTitle', '#heroSub'],
@@ -1411,7 +1388,7 @@ app.get('/doctors', (c) => c.html(layout(doctorsPage(), {
   description: '강남치과의원 이태형 대표원장, 최민혜 원장. 구강악안면외과 전문의 2인이 모든 수술을 직접 시행합니다. 고려대 구로병원, 인제대 백병원 레지던트 수료.',
   url: '/doctors',
   keywords: '영주 구강외과 전문의, 영주 임플란트 전문의, 이태형 원장, 최민혜 원장, 구강악안면외과',
-  ogImage: 'https://kndent.kr/og/doctors',
+  ogImage: OG_IMAGE_PNG,
   ogType: 'profile',
   speakableSelectors: ['[data-speakable]', '#dHeroTitle', '#dHeroSub'],
   schemas: [
@@ -1576,10 +1553,11 @@ app.get('/treatments/:slug', async (c) => {
     description: result.description,
     url: `/treatments/${slug}`,
     keywords: `영주 ${txName}, 영주 ${txName} 잘하는곳, 경북 ${txName}`,
-    ogImage: `https://kndent.kr/og/${slug}`,
+    ogImage: OG_IMAGE_PNG,
     ogType: 'article',
     schemas: result.schemas || [],
-    speakableSelectors: ['[data-speakable]', 'h1', 'h2', '.treatment-section']
+    // .treatment-section 은 DOM 에 없어 제거 — 상단 핵심 요약(#tx-answer)·FAQ 답변([data-speakable])·h1
+    speakableSelectors: ['h1', '#tx-answer', '[data-speakable]']
   }))
 })
 
@@ -1666,7 +1644,8 @@ app.get('/dictionary/:slug', async (c) => {
   const page = dictionaryDetailPage(term, relatedTerms)
   return c.html(layout(page.html, {
     title: `${term.term_ko}${term.term_en ? ` (${term.term_en})` : ''} – 치과 용어 사전 | 강남치과의원`,
-    description: term.summary,
+    // 요약(10~20자)이 짧으면 화면 본문(description) 앞 문장으로 보강
+    description: (term.summary || '').length >= 70 ? term.summary : fitMetaDesc([`${term.term_ko}: ${String(term.summary || '').replace(/[.。]\s*$/, '')}.`, term.description]),
     url: `/dictionary/${term.slug}`,
     keywords: `${term.term_ko}, ${term.term_en || ''}, ${term.category}, 치과 용어, ${term.related_terms || ''}`,
     ogType: 'article',
@@ -1972,7 +1951,7 @@ app.get('/directions', (c) => c.html(layout(directionsPage(), {
   title: '강남치과의원 오시는 길 | 영주시 대학로 217 · 주차 가능 · 영주역 10분',
   description: '경북 영주시 대학로 217, 2층 (택지 사거리 모모제인 건물). 건물 후면 지상·지하 주차장 완비. 영주역에서 택시 10분. 풍기 15분, 봉화 30분, 예천 35분, 안동 40분, 단양 40분에서 접근 용이. 054-636-8222.',
   url: '/directions',
-  ogImage: 'https://kndent.kr/og/directions',
+  ogImage: OG_IMAGE_PNG,
   keywords: '영주 강남치과 위치, 강남치과 주소, 영주 치과 주차, 영주 대학로 치과, 영주 치과 오시는길, 봉화에서 영주 치과, 예천에서 영주 치과, 안동에서 영주 치과, 풍기에서 영주 치과, 단양에서 영주 치과, 상주에서 영주 치과, 문경에서 영주 치과',
   speakableSelectors: ['[data-speakable]', 'h1', '.card-premium'],
   schemas: [
@@ -2068,7 +2047,7 @@ app.get('/pricing', async (c) => c.html(layout(pricingPage(await loadPublishedPr
   title: '영주 강남치과의원 진료비용 안내 | 임플란트·보철·교정 가격',
   description: '영주 강남치과의원 임플란트, 인비절라인, 디지털 보철(싱글 크라운), 심미보철 등 진료비용을 안내합니다. 상담 후 정확한 견적을 받아보세요. 054-636-8222.',
   url: '/pricing',
-  ogImage: 'https://kndent.kr/og/pricing',
+  ogImage: OG_IMAGE_PNG,
   keywords: '영주 임플란트 가격, 영주 치과 비용, 영주 인비절라인 가격, 영주 디지털보철 비용',
   speakableSelectors: ['[data-speakable]', 'h1', 'h2'],
   schemas: [
@@ -2164,7 +2143,7 @@ app.get('/faq', (c) => {
     description: result.description,
     url: `/faq${category ? `?category=${category}` : ''}`,
     keywords: '영주 치과 FAQ, 임플란트 질문, 인비절라인 질문, 치과 비용, 사랑니 발치, 디지털 보철, 영주 강남치과',
-    ogImage: 'https://kndent.kr/og/faq',
+    ogImage: OG_IMAGE_PNG,
     speakableSelectors: ['[data-speakable]', 'h1', '.faq-answer'],
     schemas: result.schemas
   }))
@@ -2208,7 +2187,7 @@ app.get('/area/:region/:treatment', (c) => {
     description: result.description,
     url: `/area/${region}/${treatment}`,
     keywords: result.keywords,
-    ogImage: `https://kndent.kr/og/${treatment}`,
+    ogImage: OG_IMAGE_PNG,
     speakableSelectors: ['[data-speakable]', 'h1', 'h2', '.faq-answer', '.combo-summary'],
     schemas: result.schemas,
     articleModifiedTime: MEDICAL_LAST_REVIEWED
@@ -2398,7 +2377,7 @@ app.get('/local', (c) => {
     description: result.description,
     keywords: result.keywords,
     url: '/local',
-    ogImage: 'https://kndent.kr/og/local',
+    ogImage: OG_IMAGE_PNG,
     speakableSelectors: ['[data-speakable]']
   }))
 })
@@ -2418,7 +2397,7 @@ app.get('/local/:slug', (c) => {
     description: result.description,
     keywords: result.keywords,
     url: `/local/${slug}`,
-    ogImage: `https://kndent.kr/og/local-${slug}`,
+    ogImage: OG_IMAGE_PNG,
     schemas: result.schemas,
     speakableSelectors: ['[data-speakable]', '#locality-hero', '#locality-treatments']
   }))
@@ -2440,7 +2419,7 @@ app.get('/local/:slug/:treatment', (c) => {
     description: result.description,
     keywords: result.keywords,
     url: `/local/${slug}/${treatment}`,
-    ogImage: `https://kndent.kr/og/local-${slug}-${treatment}`,
+    ogImage: OG_IMAGE_PNG,
     schemas: result.schemas,
     speakableSelectors: ['[data-speakable]']
   }))
@@ -2467,7 +2446,7 @@ app.get('/intent/:region/:treatment/:intent', (c) => {
     // 가격·비용·추천·잘하는곳 4변형은 주 페이지(지역×진료)와 사실상 같은 내용 → 정본 통합
     canonical: `/area/${region}/${treatment}`,
     keywords: result.keywords,
-    ogImage: `https://kndent.kr/og/${treatment}`,
+    ogImage: OG_IMAGE_PNG,
     speakableSelectors: ['[data-speakable]', 'h1', 'h2', '.faq-answer', '.intent-summary', '.price-table'],
     schemas: result.schemas,
     articleModifiedTime: MEDICAL_LAST_REVIEWED
@@ -2504,7 +2483,7 @@ app.get('/compare/:pair/:treatment', (c) => {
     description: result.description,
     url: `/compare/${pair}/${treatment}`,
     keywords: result.keywords,
-    ogImage: `https://kndent.kr/og/${treatment}`,
+    ogImage: OG_IMAGE_PNG,
     speakableSelectors: ['[data-speakable]', 'h1', 'h2', '.faq-answer', '.compare-summary'],
     schemas: result.schemas,
     articleModifiedTime: MEDICAL_LAST_REVIEWED
@@ -2536,7 +2515,7 @@ app.get('/guide/:treatment', (c) => {
     description: result.description,
     url: `/guide/${treatment}`,
     keywords: result.keywords,
-    ogImage: `https://kndent.kr/og/${treatment}`,
+    ogImage: OG_IMAGE_PNG,
     speakableSelectors: ['[data-speakable]', 'h1', 'h2', '.faq-answer', '.pillar-summary'],
     schemas: result.schemas,
     articleModifiedTime: MEDICAL_LAST_REVIEWED

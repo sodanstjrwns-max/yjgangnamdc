@@ -1,3 +1,4 @@
+import { metaDescFrom } from '../seo'
 // ===== 블로그 게시판 페이지 =====
 
 // plain text → HTML 자동 변환 (HTML 태그가 없는 content 처리)
@@ -239,7 +240,7 @@ export function blogDetailPage(post: any, relatedPosts: any[] = []): { html: str
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     "headline": post.title,
-    "description": post.summary || post.title,
+    "description": metaDescFrom(post.summary, post.content, post.title),
     "author": authorSchema,
     // E-E-A-T: 의료 콘텐츠 전문의 감수 명시
     "reviewedBy": {
@@ -370,7 +371,8 @@ export function blogDetailPage(post: any, relatedPosts: any[] = []): { html: str
   return {
     html,
     title: `${post.title} | 강남치과의원 블로그`,
-    description: post.summary || post.title,
+    // 요약이 10~40자로 짧은 글이 많아 본문 앞 문장으로 보강 (≤155자)
+    description: metaDescFrom(post.summary, post.content, post.title),
     schemas: [articleSchema]
   };
 }

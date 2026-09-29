@@ -1,4 +1,5 @@
-import { MEDICAL_LAST_REVIEWED } from '../seo'
+import { MEDICAL_LAST_REVIEWED, metaDescFrom } from '../seo'
+import { OG_IMAGE_PNG } from '../layout'
 interface Treatment {
   slug: string; category: string; title: string; h1: string; description: string;
   icon: string; heroDesc: string; worry: string; promise: string;
@@ -239,6 +240,29 @@ export function treatmentsPage(): string {
   `
 }
 
+// 진료 페이지 상단 핵심 요약 — 첫 본문 섹션(정의 문단)의 앞 2~3문장을 그대로 발췌 (새 주장 없음, 태그 제거)
+function txAnswerSummary(t: Treatment): string {
+  const src = (t.sections[0]?.content || t.description || '').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim()
+  const sents = src.match(/[^.!?]+[.!?](?=\s|$)/g) || [src]
+  let out = ''
+  for (const sn of sents) {
+    const next = (out + ' ' + sn.trim()).trim()
+    if (out && next.length > 230) break
+    out = next
+    if (out.length >= 120 && (out.match(/[.!?]/g) || []).length >= 2) break
+  }
+  return out
+}
+
+/** llms-full.txt 용 진료 요약 — 화면 상단 핵심 요약(#tx-answer)과 같은 발췌 + 본문 소제목 */
+export function getTreatmentSummaries(): { slug: string; title: string; h1: string; heroDesc: string; summary: string; sectionTitles: string[] }[] {
+  return treatments.map((t) => ({
+    slug: t.slug, title: t.title, h1: t.h1, heroDesc: t.heroDesc,
+    summary: txAnswerSummary(t),
+    sectionTitles: t.sections.map((x) => x.title),
+  }))
+}
+
 export async function treatmentDetailPage(slug: string): Promise<{ html: string; title: string; description: string; schemas: object[] } | null> {
   const t = treatments.find(tr => tr.slug === slug)
   if (!t) return null
@@ -397,12 +421,7 @@ export async function treatmentDetailPage(slug: string): Promise<{ html: string;
     "preparation": meta.preparation || "정밀 진단 및 전문의 상담",
     "followup": meta.followup || "정기 경과 관찰",
     "status": "https://schema.org/ActiveActionStatus",
-    "mainEntityOfPage": {
-      "@type": "MedicalWebPage",
-      "@id": `https://kndent.kr/treatments/${t.slug}`,
-      "dateModified": MEDICAL_LAST_REVIEWED,
-      "lastReviewed": MEDICAL_LAST_REVIEWED
-    },
+    "mainEntityOfPage": { "@id": `https://kndent.kr/treatments/${t.slug}#webpage` },
     "performedBy": [
       { "@type": "Physician", "@id": "https://kndent.kr/doctors/lee-taehyung#physician", "name": "이태형", "jobTitle": "대표원장" },
       { "@type": "Physician", "@id": "https://kndent.kr/doctors/choi-minhye#physician", "name": "최민혜", "jobTitle": "원장" }
@@ -558,17 +577,18 @@ export async function treatmentDetailPage(slug: string): Promise<{ html: string;
     "name": t.h1,
     "description": t.description,
     "inLanguage": "ko-KR",
-    "isPartOf": { "@id": "https://kndent.kr/#organization" },
+    "isPartOf": { "@id": "https://kndent.kr/#website" },
     "about": { "@id": `https://kndent.kr/treatments/${t.slug}#procedure` },
-    "primaryImageOfPage": {
-      "@type": "ImageObject",
-      "url": `https://kndent.kr/static/treatment-${t.slug}.jpg`
-    },
+    "publisher": { "@id": "https://kndent.kr/#organization" },
+    "primaryImageOfPage": { "@type": "ImageObject", "url": OG_IMAGE_PNG },
+    // 화면 감수 줄(#tx-reviewed)과 같은 값 — MEDICAL_LAST_REVIEWED(고정)
     "lastReviewed": MEDICAL_LAST_REVIEWED,
+    "dateModified": MEDICAL_LAST_REVIEWED,
     "reviewedBy": {
       "@type": "Physician",
+      "@id": "https://kndent.kr/doctors/lee-taehyung#physician",
       "name": "이태형",
-      "jobTitle": "구강악안면외과 전문의"
+      "jobTitle": "대표원장 · 구강악안면외과 전문의"
     },
     "medicalAudience": [
       { "@type": "MedicalAudience", "audienceType": "Patient" }
@@ -579,7 +599,8 @@ export async function treatmentDetailPage(slug: string): Promise<{ html: string;
   return {
     // 2026-09-29 로컬 검색 의도: 제목에 지역(영주)+병원명, 설명에 지역 명시
     title: `${t.h1} | 강남치과의원`,
-    description: t.description.includes('영주') ? t.description : `영주 강남치과의원 ${t.description}`,
+    // 70자 미만이면 첫 본문 섹션 문장으로 보강 (≤155자)
+    description: metaDescFrom(t.description.includes('영주') ? t.description : `영주 강남치과의원 ${t.description}`, t.sections[0]?.content),
     schemas: [medicalProcedureSchema, serviceSchema, medicalWebPageSchema, ...(howToSchema ? [howToSchema] : []), ...(faqSchema ? [faqSchema] : [])],
     html: `
     <!-- Hero (White) -->
@@ -597,6 +618,17 @@ export async function treatmentDetailPage(slug: string): Promise<{ html: string;
         </div>
         <h1 class="display-lg text-charcoal mb-6">${t.h1}</h1>
         <p class="text-gray-400 text-lg max-w-2xl">${t.heroDesc}</p>
+        <p id="tx-reviewed" class="text-gray-400 text-sm mt-5"><i class="fas fa-user-doctor text-royal mr-1.5" aria-hidden="true"></i>감수: <a href="/doctors/lee-taehyung" class="text-charcoal font-semibold hover:text-royal">이태형 대표원장</a> (구강악안면외과 전문의) · 최종 검토 <time datetime="${MEDICAL_LAST_REVIEWED}">${MEDICAL_LAST_REVIEWED}</time></p>
+      </div>
+    </section>
+
+    <!-- 핵심 요약 (AEO 답변 블록 — 본문 첫 섹션 발췌) -->
+    <section class="py-10 bg-white border-b border-royal/[0.08]">
+      <div class="max-w-5xl mx-auto px-5 md:px-8 lg:px-12">
+        <div class="card-premium p-6 md:p-8">
+          <p class="text-royal text-xs font-bold tracking-wide mb-3"><i class="fas fa-circle-info mr-1.5" aria-hidden="true"></i>${t.title} 핵심 요약</p>
+          <p id="tx-answer" class="text-charcoal text-base md:text-lg leading-relaxed" data-speakable="true">${txAnswerSummary(t)}</p>
+        </div>
       </div>
     </section>
 

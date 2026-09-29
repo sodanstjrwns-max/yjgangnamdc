@@ -1,4 +1,5 @@
 import { MEDICAL_LAST_REVIEWED } from '../seo'
+import { OG_IMAGE_PNG } from '../layout'
 /**
  * 🚀 SEO 슈퍼업글 시즌 2: Pillar 콘텐츠 허브 페이지
  * 각 핵심 진료의 "거대 가이드 페이지" 생성 — 모든 관련 페이지를 묶는 토픽 클러스터 중심
@@ -341,7 +342,7 @@ export function pillarPage(treatmentSlug: string): { html: string; title: string
       "@type": "Article",
       "headline": title,
       "description": description,
-      "image": `https://kndent.kr/og/${treatmentSlug}`,
+      "image": OG_IMAGE_PNG,
       "datePublished": "2026-01-01",
       "dateModified": MEDICAL_LAST_REVIEWED,
       "author": {

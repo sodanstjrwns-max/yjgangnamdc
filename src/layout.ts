@@ -26,7 +26,9 @@ export const SITE_NAME = '강남치과의원'
 const SITE_NAME_EN = 'Gangnam Dental Clinic'
 const PHONE = '+82-54-636-8222'
 const PHONE_DISPLAY = '054-636-8222'
-const DEFAULT_OG_IMAGE = `${SITE_URL}/static/og-image.png`
+// og:image 는 1200×630 PNG 한 장(로고 대표 이미지)으로 통일 — 예전 /og/:slug 는 SVG 라 카카오톡·페이스북·네이버 미리보기에서 깨졌다
+export const OG_IMAGE_PNG = `${SITE_URL}/static/og-image.png`
+const DEFAULT_OG_IMAGE = OG_IMAGE_PNG
 const NAVER_MAP_URL = 'https://map.naver.com/p/entry/place/1099573867'
 const BLOG_URL = 'https://blog.naver.com/gndentalclinic'
 
@@ -107,7 +109,8 @@ function buildBaseSchema() {
     },
     "founder": {
       "@type": "Physician",
-      "@id": `${SITE_URL}/doctors#director`,
+      // 의료진 @id 는 의료진 상세 페이지 기준 하나로 통일 (reviewedBy·performedBy 가 모두 이 @id 참조)
+      "@id": `${SITE_URL}/doctors/lee-taehyung#physician`,
       "name": "이태형",
       "givenName": "태형",
       "familyName": "이",
@@ -146,6 +149,7 @@ function buildBaseSchema() {
     "employee": [
       {
         "@type": "Physician",
+        "@id": `${SITE_URL}/doctors/choi-minhye#physician`,
         "name": "최민혜",
         "jobTitle": "원장",
         "description": "구강악안면외과 전문의. 인제대학교 백병원 구강악안면외과 레지던트 수료.",
@@ -540,6 +544,7 @@ function buildWebSiteSchema() {
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
+    "@id": `${SITE_URL}/#website`,
     "name": SITE_NAME,
     "alternateName": SITE_NAME_EN,
     "url": SITE_URL,
@@ -557,6 +562,9 @@ function buildWebSiteSchema() {
   }
 }
 
+// 속성값 안의 큰따옴표가 content="..." 를 끊어 설명이 통째로 사라지던 문제 방지 (예: 요약이 "인용문"으로 시작하는 칼럼)
+const attr = (v: unknown): string => String(v ?? '').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+
 export function layout(content: string, opts: LayoutOptions): string {
   const { title, description, url, schemas = [], keywords, ogType, ogImage, speakableSelectors, robots, articlePublishedTime, articleModifiedTime, canonical } = opts
   const fullUrl = `${SITE_URL}${canonical || url}`
@@ -567,6 +575,9 @@ export function layout(content: string, opts: LayoutOptions): string {
   const speakableSchema = speakableSelectors && speakableSelectors.length > 0 ? {
     "@context": "https://schema.org",
     "@type": "WebPage",
+    // 페이지 노드 @id 를 {url}#webpage 로 — 진료 페이지의 MedicalWebPage(#webpage)와 같은 노드로 합쳐진다
+    "@id": `${fullUrl}#webpage`,
+    "isPartOf": { "@id": `${SITE_URL}/#website` },
     "name": title,
     "speakable": {
       "@type": "SpeakableSpecification",
@@ -613,7 +624,7 @@ export function layout(content: string, opts: LayoutOptions): string {
   <link rel="icon" type="image/x-icon" href="/favicon.ico?v=2">
   <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png?v=2">
   <title>${title}</title>
-  <meta name="description" content="${description}">
+  <meta name="description" content="${attr(description)}">
   <meta name="keywords" content="${finalKeywords}">
   <meta name="author" content="${SITE_NAME}">
   <meta name="robots" content="${robotsContent}">
@@ -632,29 +643,29 @@ export function layout(content: string, opts: LayoutOptions): string {
 
   <!-- Open Graph -->
   <meta property="og:type" content="${ogType || 'website'}">
-  <meta property="og:title" content="${title}">
-  <meta property="og:description" content="${description}">
+  <meta property="og:title" content="${attr(title)}">
+  <meta property="og:description" content="${attr(description)}">
   <meta property="og:url" content="${fullUrl}">
   <meta property="og:site_name" content="${SITE_NAME}">
   <meta property="og:locale" content="ko_KR">
   <meta property="og:image" content="${pageOgImage}">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="${title}">
+  <meta property="og:image:alt" content="${attr(title)}">
   ${articlePublishedTime ? `<meta property="article:published_time" content="${articlePublishedTime}">` : ''}
   ${articleModifiedTime ? `<meta property="article:modified_time" content="${articleModifiedTime}">` : ''}
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="${title}">
-  <meta name="twitter:description" content="${description}">
+  <meta name="twitter:title" content="${attr(title)}">
+  <meta name="twitter:description" content="${attr(description)}">
   <meta name="twitter:image" content="${pageOgImage}">
 
   <!-- Naver / Google / Bing / Healthcare meta -->
   <meta name="naver-site-verification" content="b56c6202c4fd245ed343ab587cf89959897bcfcf">
   <meta name="google-site-verification" content="SdTkpZ5-mkIKb24NvY13ajYmt--8y0LYVEdjON9iI5g">
   <meta name="msvalidate.01" content="BING_VERIFY_PLACEHOLDER">
-  <meta name="subject" content="${description}">
+  <meta name="subject" content="${attr(description)}">
   <meta name="classification" content="Healthcare, Dentistry">
   <meta name="coverage" content="경상북도 영주시">
   <meta name="rating" content="General">
