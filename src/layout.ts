@@ -19,6 +19,8 @@ interface LayoutOptions {
   // SEO: 페이지 article 관련
   articlePublishedTime?: string
   articleModifiedTime?: string
+  // SEO: BreadcrumbList 직접 지정 (없으면 URL 경로로 자동 생성). @id = {url}#breadcrumb
+  breadcrumbItems?: { name: string; url: string }[]
 }
 
 export const SITE_URL = 'https://kndent.kr'
@@ -566,7 +568,7 @@ function buildWebSiteSchema() {
 const attr = (v: unknown): string => String(v ?? '').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
 export function layout(content: string, opts: LayoutOptions): string {
-  const { title, description, url, schemas = [], keywords, ogType, ogImage, speakableSelectors, robots, articlePublishedTime, articleModifiedTime, canonical } = opts
+  const { title, description, url, schemas = [], keywords, ogType, ogImage, speakableSelectors, robots, articlePublishedTime, articleModifiedTime, canonical, breadcrumbItems } = opts
   const fullUrl = `${SITE_URL}${canonical || url}`
   const pageOgImage = ogImage || DEFAULT_OG_IMAGE
   const robotsContent = robots || 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1'
@@ -590,11 +592,17 @@ export function layout(content: string, opts: LayoutOptions): string {
   const allSchemas: object[] = [
     buildBaseSchema(),
     buildWebSiteSchema(),
-    buildBreadcrumb(url, title),
+    breadcrumbItems ? {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "@id": `${fullUrl}#breadcrumb`,
+      "itemListElement": breadcrumbItems.map((b, i) => ({ "@type": "ListItem", "position": i + 1, "name": b.name, "item": `${SITE_URL}${b.url}` }))
+    } : buildBreadcrumb(url, title),
     ...schemas,
     ...(speakableSchema ? [speakableSchema] : [])
   ]
-  const schemasHtml = allSchemas.map(s => `<script type="application/ld+json">${JSON.stringify(s)}</script>`).join('\n  ')
+  // '<' 이스케이프 — 본문 문자열의 '</script>' 가 스크립트를 닫지 않게 (JSON 의미 동일)
+  const schemasHtml = allSchemas.map(s => `<script type="application/ld+json">${JSON.stringify(s).replace(/</g, '\\u003c')}</script>`).join('\n  ')
 
   // 기본 키워드 (모든 페이지 공통) — 중복 자동 제거
   const baseKeywords = '영주 치과, 영주 임플란트, 강남치과의원, 구강외과 전문의, 디지털 보철, 인비절라인, 영주시 치과, 영주 치과 추천, 영주 임플란트 잘하는곳, 봉화 치과, 예천 임플란트, 안동 치과, 풍기 치과, 단양 치과, 영주혁신도시 치과, 경북 임플란트, 상주 임플란트, 문경 치과'

@@ -575,3 +575,6 @@ export function doctorProfilePage(slug: string): { html: string; title: string; 
     `
   }
 }
+
+// 칼럼 작성자 박스·스키마에서 재사용 (2026-10-03)
+export const DOCTOR_LIST = doctors

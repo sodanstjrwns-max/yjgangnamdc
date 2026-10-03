@@ -1,4 +1,64 @@
 import { metaDescFrom } from '../seo'
+import { DOCTOR_LIST } from './doctors'
+
+const SITE = 'https://kndent.kr'
+
+function htmlText(s: string): string {
+  return String(s || '').replace(/<(script|style)[^>]*>[\s\S]*?<\/\1>/gi, ' ').replace(/<br\s*\/?>/gi, ' ').replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'")
+    .replace(/\s+/g, ' ').trim()
+}
+const QUESTION_END = /(\?|？|까요|나요|가요|을까|할까|되나요|있나요|없나요|하나요|인가요)\s*[.!]?$/
+/** 렌더 본문의 질문형 소제목(H2·H3) + 다음 소제목 전까지 → FAQ (화면 문구 그대로) */
+export function faqsFromArticleHtml(html: string, maxItems = 20, maxAnswer = 900): { q: string; a: string }[] {
+  const out: { q: string; a: string }[] = []
+  const seen = new Set<string>()
+  for (const m of String(html || '').matchAll(/<h([23])\b[^>]*>([\s\S]*?)<\/h\1>/gi)) {
+    if (out.length >= maxItems) break
+    const q = htmlText(m[2]).replace(/^Q\s*\d*\s*[.:)]\s*/i, '')
+    if (!q || q.length > 200 || !QUESTION_END.test(q) || seen.has(q)) continue
+    let seg = html.slice((m.index || 0) + m[0].length)
+    const next = seg.search(/<h[1-3][\s>]/i)
+    if (next >= 0) seg = seg.slice(0, next)
+    let a = htmlText(seg)
+    if (a.length < 10) continue
+    if (a.length > maxAnswer) a = a.slice(0, maxAnswer).replace(/\s+\S*$/, '') + '…'
+    seen.add(q)
+    out.push({ q, a })
+  }
+  return out
+}
+/** 본문 이미지: 빈/파일명 alt → 제목 기반, 첫 장 외 lazy, decoding async */
+function polishImages(html: string, title: string): string {
+  let n = 0
+  return html.replace(/<img\b([^>]*?)\/?>/gi, (_m, attrs: string) => {
+    n++
+    let a = attrs
+    const altM = a.match(/\balt\s*=\s*(["'])(.*?)\1/i)
+    const alt = altM ? altM[2].trim() : ''
+    if (!alt || /^[\w\-. ()]+\.(png|jpe?g|webp|gif)$/i.test(alt)) {
+      const v = `${title.replace(/"/g, '&quot;')} 관련 이미지 ${n}`
+      a = altM ? a.replace(altM[0], `alt="${v}"`) : `${a} alt="${v}"`
+    }
+    if (!/\bloading\s*=/.test(a)) a += n === 1 ? ' loading="eager"' : ' loading="lazy"'
+    if (!/\bdecoding\s*=/.test(a)) a += ' decoding="async"'
+    return `<img ${a.trim()}>`
+  })
+}
+/** 작성자 문자열 → 의료진 데이터 (이름 포함 매칭, 없으면 대표원장) */
+function doctorFor(author?: string) {
+  const a = String(author || '')
+  return DOCTOR_LIST.find((d: any) => a.includes(d.name)) || DOCTOR_LIST[0]
+}
+function ymd(v?: string | null): string | undefined {
+  const m = String(v || '').match(/^(\d{4}-\d{2}-\d{2})/)
+  return m ? m[1] : undefined
+}
+function isoTime(v?: string | null): string | undefined {
+  const m = String(v || '').match(/^(\d{4}-\d{2}-\d{2})[ T](\d{2}:\d{2}:\d{2})/)
+  return m ? `${m[1]}T${m[2]}+00:00` : ymd(v)
+}
+export { isoTime as blogIsoTime }
 // ===== 블로그 게시판 페이지 =====
 
 // plain text → HTML 자동 변환 (HTML 태그가 없는 content 처리)
@@ -82,14 +142,26 @@ function formatContent(content: string): string {
 }
 
 // 블로그 목록 페이지
-export function blogListPage(posts: any[]): string {
-  const categories = ['전체', '임플란트', 'CEREC', '교정', '구강외과', '일반'];
+export function blogListPage(posts: any[], opts: { categories?: string[]; active?: string; page?: number; pages?: number } = {}): string {
+  // 카테고리 필터 = DB 에 실제 있는 값만 (예전 고정 목록의 '일반'·'구강외과'는 글 0건이었음), 서버 링크(?category=)
+  const categories = ['전체', ...(opts.categories || [])];
+  const active = opts.active || '전체';
+  const page = opts.page || 1, pages = opts.pages || 1;
+  const base = active === '전체' ? '/blog' : `/blog?category=${encodeURIComponent(active)}`;
+  const pageHref = (n: number) => n <= 1 ? base : `${base}${base.includes('?') ? '&' : '?'}page=${n}`;
+  const pagerHtml = pages > 1 ? `<nav class="flex flex-wrap justify-center gap-2 mt-12" aria-label="블로그 목록 페이지">
+    ${page > 1 ? `<a href="${pageHref(page - 1)}" rel="prev" class="px-4 py-2 rounded-full border border-gray-200 text-sm font-bold text-gray-500 hover:border-royal hover:text-royal">← 이전</a>` : ''}
+    ${Array.from({ length: pages }, (_, i) => i + 1).map(n => n === page
+      ? `<span aria-current="page" class="px-4 py-2 rounded-full royal-grad text-white text-sm font-bold">${n}</span>`
+      : `<a href="${pageHref(n)}" class="px-4 py-2 rounded-full border border-gray-200 text-sm font-bold text-gray-500 hover:border-royal hover:text-royal">${n}</a>`).join('')}
+    ${page < pages ? `<a href="${pageHref(page + 1)}" rel="next" class="px-4 py-2 rounded-full border border-gray-200 text-sm font-bold text-gray-500 hover:border-royal hover:text-royal">다음 →</a>` : ''}
+  </nav>` : '';
 
   const postsHtml = posts.length > 0 ? posts.map(post => `
     <a href="/blog/${post.slug}" class="card-premium group block stagger-item overflow-hidden">
       ${post.thumbnail ? `
       <div class="relative aspect-[16/10] overflow-hidden">
-        <img src="${post.thumbnail}" alt="${post.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy">
+        <img src="${post.thumbnail}" alt="${post.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" decoding="async">
         <div class="absolute top-3 left-3 px-3 py-1.5 rounded-full bg-royal/80 text-white text-[10px] font-bold backdrop-blur-sm">${post.category}</div>
       </div>
       ` : `
@@ -126,7 +198,7 @@ export function blogListPage(posts: any[]): string {
   `;
 
   const categoriesHtml = categories.map(cat => `
-    <button onclick="filterBlog('${cat}')" class="blog-cat-btn px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300 border ${cat === '전체' ? 'royal-grad text-white border-royal' : 'bg-white text-gray-400 border-gray-200 hover:border-royal/30 hover:text-royal'}" data-category="${cat}">${cat}</button>
+    <a href="${cat === '전체' ? '/blog' : `/blog?category=${encodeURIComponent(cat)}`}" ${cat === active ? 'aria-current="page" ' : ''}class="blog-cat-btn whitespace-nowrap px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300 border ${cat === active ? 'royal-grad text-white border-royal' : 'bg-white text-gray-400 border-gray-200 hover:border-royal/30 hover:text-royal'}" data-category="${cat}">${cat}</a>
   `).join('');
 
   return `
@@ -156,6 +228,7 @@ export function blogListPage(posts: any[]): string {
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 stagger-children" id="blogGrid">
         ${postsHtml}
       </div>
+      ${pagerHtml}
     </div>
   </section>
 
@@ -168,19 +241,7 @@ export function blogListPage(posts: any[]): string {
     </div>
   </section>
 
-  <script>
-    function filterBlog(cat) {
-      document.querySelectorAll('.blog-cat-btn').forEach(btn => {
-        if(btn.dataset.category === cat) {
-          btn.className = 'blog-cat-btn px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300 border royal-grad text-white border-royal';
-        } else {
-          btn.className = 'blog-cat-btn px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300 border bg-white text-gray-400 border-gray-200 hover:border-royal/30 hover:text-royal';
-        }
-      });
-      if(cat === '전체') { window.location.href = '/blog'; }
-      else { window.location.href = '/blog?category=' + encodeURIComponent(cat); }
-    }
-  </script>
+
   `;
 }
 
@@ -202,7 +263,7 @@ const TREATMENT_LINK_MAP: { keywords: string[]; url: string; label: string }[] =
   { keywords: ['라미네이트', '심미'], url: '/treatments/cosmetic', label: '심미보철' },
 ]
 
-function findRelatedTreatments(post: any): { url: string; label: string }[] {
+export function findRelatedTreatments(post: any): { url: string; label: string }[] {
   const haystack = `${post.title} ${post.summary || ''} ${post.tags || ''} ${(post.content || '').slice(0, 2000)}`.toLowerCase()
   const found: { url: string; label: string }[] = []
   for (const m of TREATMENT_LINK_MAP) {
@@ -219,43 +280,76 @@ export function blogDetailPage(post: any, relatedPosts: any[] = []): { html: str
     `<span class="px-3.5 py-1.5 rounded-full bg-royal/[0.04] text-royal text-[11px] font-bold border border-royal/[0.08]">#${t.trim()}</span>`
   ).join('') : '';
 
-  // E-E-A-T: author를 실제 의사 프로필 페이지와 연결 (Person + url + jobTitle)
-  const authorName = post.author || '이태형'
-  const isLee = authorName.includes('이태형') || authorName === '강남치과의원'
-  const isChoi = authorName.includes('최민혜')
-  const authorSchema = (isLee || isChoi) ? {
-    "@type": "Person",
-    "name": isChoi ? '최민혜' : '이태형',
-    "url": isChoi ? 'https://kndent.kr/doctors/choi-minhye' : 'https://kndent.kr/doctors/lee-taehyung',
-    "jobTitle": isChoi ? '원장 (구강악안면외과 전문의)' : '대표원장 (구강악안면외과 전문의)',
-    "worksFor": { "@id": "https://kndent.kr/#organization" },
-    "knowsAbout": ["임플란트", "사랑니 발치", "너이식", "구강악안면외과"]
-  } : {
-    "@type": "Person",
-    "name": authorName,
-    "worksFor": { "@id": "https://kndent.kr/#organization" }
-  }
-
+  // 작성·감수 의료진 (작성자 문자열에서 이름 매칭, 없으면 대표원장)
+  const doc: any = doctorFor(post.author)
+  const authorId = `${SITE}/doctors/${doc.slug}#physician`
+  const reviewerId = `${SITE}/doctors/lee-taehyung#physician`
+  const url = `${SITE}/blog/${post.slug}`
+  const bodyHtml = polishImages(formatContent(post.content), post.title)
+  const faqs = faqsFromArticleHtml(bodyHtml)
+  const desc = metaDescFrom(post.summary, post.content, post.title)
+  const about = relatedTreatments.map(t => ({ "@id": `${SITE}${t.url}#procedure` }))
+  const published = isoTime(post.published_at)
+  const modified = isoTime(post.updated_at || post.published_at)
+  const reviewed = ymd(post.updated_at || post.published_at)
+  const imgM = String(post.content || '').match(/<img[^>]+src=["']([^"']+)["']/i)
+  const imgRaw = post.thumbnail || (imgM ? imgM[1] : '')
+  const img = imgRaw ? (imgRaw.startsWith('http') ? imgRaw : `${SITE}${imgRaw}`) : `${SITE}/static/og-image.png`
+  const hasDirect = /class=["'][^"']*direct-answer/.test(post.content || '')
+  // @graph: Physician + MedicalWebPage(speakable·reviewedBy·about) + BlogPosting + FAQPage (Breadcrumb 은 layout 에서 같은 @id)
   const articleSchema = {
     "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    "headline": post.title,
-    "description": metaDescFrom(post.summary, post.content, post.title),
-    "author": authorSchema,
-    // E-E-A-T: 의료 콘텐츠 전문의 감수 명시
-    "reviewedBy": {
-      "@type": "Person",
-      "name": "이태형",
-      "url": "https://kndent.kr/doctors/lee-taehyung",
-      "jobTitle": "구강악안면외과 전문의"
-    },
-    "publisher": { "@id": "https://kndent.kr/#organization" },
-    "datePublished": post.published_at,
-    "dateModified": post.updated_at || post.published_at,
-    "mainEntityOfPage": `https://kndent.kr/blog/${post.slug}`,
-    "articleSection": post.category,
-    "keywords": post.tags || '',
-    "inLanguage": "ko"
+    "@graph": [
+      {
+        "@type": ["Person", "Physician"],
+        "@id": authorId,
+        "name": doc.name,
+        "jobTitle": `${doc.title} (${doc.specialty})`,
+        "url": `${SITE}/doctors/${doc.slug}`,
+        ...(doc.photo ? { "image": `${SITE}${doc.photo}` } : {}),
+        "worksFor": { "@id": `${SITE}/#organization` }
+      },
+      {
+        "@type": "MedicalWebPage",
+        "@id": `${url}#webpage`,
+        "url": url,
+        "name": post.title,
+        "description": desc,
+        "inLanguage": "ko-KR",
+        "isPartOf": { "@id": `${SITE}/#website` },
+        "breadcrumb": { "@id": `${url}#breadcrumb` },
+        "mainEntity": { "@id": `${url}#article` },
+        ...(about.length ? { "about": about } : {}),
+        "reviewedBy": { "@id": reviewerId },
+        ...(reviewed ? { "lastReviewed": reviewed } : {}),
+        "speakable": { "@type": "SpeakableSpecification", "cssSelector": hasDirect ? ["h1", ".direct-answer"] : ["h1"] },
+        "publisher": { "@id": `${SITE}/#organization` }
+      },
+      {
+        "@type": "BlogPosting",
+        "@id": `${url}#article`,
+        "headline": String(post.title).slice(0, 110),
+        "description": desc,
+        "url": url,
+        "image": { "@type": "ImageObject", "url": img },
+        ...(published ? { "datePublished": published } : {}),
+        ...(modified ? { "dateModified": modified } : {}),
+        "author": { "@id": authorId },
+        "publisher": { "@id": `${SITE}/#organization` },
+        "mainEntityOfPage": { "@id": `${url}#webpage` },
+        "isPartOf": { "@id": `${SITE}/#website` },
+        ...(about.length ? { "about": about } : {}),
+        "articleSection": post.category,
+        "keywords": post.tags || '',
+        "inLanguage": "ko-KR"
+      },
+      ...(faqs.length >= 2 ? [{
+        "@type": "FAQPage",
+        "@id": `${url}#faq`,
+        "isPartOf": { "@id": `${url}#webpage` },
+        "mainEntity": faqs.map(f => ({ "@type": "Question", "name": f.q, "acceptedAnswer": { "@type": "Answer", "text": f.a } }))
+      }] : [])
+    ]
   };
 
   const html = `
@@ -269,7 +363,7 @@ export function blogDetailPage(post: any, relatedPosts: any[] = []): { html: str
         <i class="fas fa-chevron-right text-[8px] text-gray-300"></i>
         <a href="/blog" class="hover:text-royal transition-colors">블로그</a>
         <i class="fas fa-chevron-right text-[8px] text-gray-300"></i>
-        <span class="text-charcoal font-medium">${post.category}</span>
+        <a href="/blog?category=${encodeURIComponent(post.category)}" class="text-charcoal font-medium hover:text-royal">${post.category}</a>
       </nav>
       <div class="flex items-center gap-3 mb-5">
         <span class="px-4 py-2 rounded-full royal-grad text-white text-[11px] font-bold">${post.category}</span>
@@ -293,18 +387,24 @@ export function blogDetailPage(post: any, relatedPosts: any[] = []): { html: str
       </div>
 
       <div class="blog-content prose prose-lg" data-speakable="true">
-        ${formatContent(post.content)}
+        ${bodyHtml}
       </div>
 
       ${tagsHtml ? `<div class="flex flex-wrap gap-2 mt-12 pt-8 border-t border-gray-100">${tagsHtml}</div>` : ''}
 
-      <!-- E-E-A-T: 전문의 감수 배지 -->
-      <aside class="mt-10 bg-royal/[0.03] border border-royal/10 rounded-2xl p-6" aria-label="의학 정보 감수 안내">
+      <!-- 작성·감수 박스 (PFWE 칼럼 표준 A3) -->
+      <aside class="mt-10 bg-royal/[0.03] border border-royal/10 rounded-2xl p-6" aria-label="작성·감수">
         <div class="flex items-start gap-4">
-          <div class="w-12 h-12 rounded-xl royal-grad flex items-center justify-center flex-shrink-0"><i class="fas fa-user-md text-white"></i></div>
+          ${doc.photo
+            ? `<a href="/doctors/${doc.slug}" class="flex-shrink-0"><img src="${doc.photo}" alt="${doc.name} ${doc.title}" width="72" height="72" class="w-[72px] h-[72px] rounded-2xl object-cover" style="object-position:center 20%" loading="lazy" decoding="async"></a>`
+            : `<div class="w-[72px] h-[72px] rounded-2xl royal-grad flex items-center justify-center flex-shrink-0"><i class="fas fa-user-md text-white text-xl"></i></div>`}
           <div>
-            <p class="text-charcoal font-bold text-sm mb-1"><i class="fas fa-check-circle text-royal mr-1"></i>이 글은 구강악안면외과 전문의가 직접 작성·감수했습니다</p>
-            <p class="text-gray-400 text-xs leading-relaxed">감수: <a href="/doctors/lee-taehyung" class="text-royal font-bold hover:underline">이태형 대표원장</a> (구강악안면외과 전문의, 고려대 구로병원 수련) · 정확한 진단은 반드시 내원 후 상담을 통해 결정됩니다.</p>
+            <p class="text-royal text-[11px] font-bold mb-1">작성·감수</p>
+            <p class="text-charcoal font-bold mb-1"><a href="/doctors/${doc.slug}" class="hover:underline">${doc.name} ${doc.title}</a> <span class="text-gray-400 text-sm font-medium">${doc.specialty}</span></p>
+            ${doc.education && doc.education[1] ? `<p class="text-gray-500 text-sm">${doc.education[1]}${doc.education[2] ? ` · ${doc.education[2]}` : ''}</p>` : ''}
+            ${doc.specialties ? `<p class="text-gray-500 text-sm">진료 분야: ${doc.specialties.join(' · ')}</p>` : ''}
+            ${reviewed ? `<p class="text-gray-500 text-sm">최종 검토일 <time datetime="${reviewed}">${reviewed}</time>${doc.slug !== 'lee-taehyung' ? ' · 감수 <a href="/doctors/lee-taehyung" class="text-royal font-bold hover:underline">이태형 대표원장</a>' : ''}</p>` : ''}
+            <p class="text-gray-400 text-xs leading-relaxed mt-2">※ 이 글은 일반적인 건강 정보이며, 정확한 진단은 반드시 내원 후 상담을 통해 결정됩니다. 치료 결과에는 개인차가 있습니다.</p>
           </div>
         </div>
       </aside>
@@ -370,7 +470,7 @@ export function blogDetailPage(post: any, relatedPosts: any[] = []): { html: str
 
   return {
     html,
-    title: `${post.title} | 강남치과의원 블로그`,
+    title: `${post.title} | 강남치과의원`,
     // 요약이 10~40자로 짧은 글이 많아 본문 앞 문장으로 보강 (≤155자)
     description: metaDescFrom(post.summary, post.content, post.title),
     schemas: [articleSchema]

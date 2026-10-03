@@ -18,7 +18,7 @@ import { audiencePage, audienceIndexPage, getAllAudienceSlugs, getAllAudiencePat
 import { emergencyPage } from './pages/emergency'
 import { localityPage, localityTreatmentPage, localityIndexPage, getAllLocalityPaths, getLocalitySlugs, getLocalityTreatmentSlugs } from './pages/locality'
 import { faqPage, allFAQs, getFAQsBySlug } from './pages/faq'
-import { blogListPage, blogDetailPage } from './pages/blog'
+import { blogListPage, blogDetailPage, blogIsoTime, findRelatedTreatments } from './pages/blog'
 import { beforeAfterListPage, beforeAfterDetailPage } from './pages/beforeafter'
 import { noticeListPage, noticeDetailPage } from './pages/notices'
 import { adminPage } from './pages/admin'
@@ -652,10 +652,24 @@ const LLMS_TXT = `# 강남치과의원 (Gangnam Dental Clinic)
 정확한 진단과 치료 계획은 반드시 내원 후 전문의 상담을 통해 결정됩니다.
 `
 
-app.get('/llms.txt', (c) => {
+// 공개 칼럼 목록 (llms.txt·llms-full.txt 공통) — DB 값만
+async function llmsBlogLines(c: any, withSummary = false): Promise<string> {
+  try {
+    const r = await c.env.DB.prepare('SELECT slug, title, summary, category, published_at, updated_at FROM blog_posts WHERE is_published = 1 ORDER BY published_at DESC').all()
+    const rows = (r.results || []) as any[]
+    if (!rows.length) return ''
+    return `## 칼럼 (전문의 작성·감수, ${rows.length}편)\n` + rows.map((p) => {
+      const d = String(p.updated_at || p.published_at || '').slice(0, 10)
+      return `- [${p.title}](https://kndent.kr/blog/${p.slug})${p.category ? ` · ${p.category}` : ''}${d ? ` · ${d}` : ''}${withSummary && p.summary ? `\n  ${String(p.summary).replace(/\s+/g, ' ').trim()}` : ''}`
+    }).join('\n') + '\n'
+  } catch { return '' }
+}
+
+app.get('/llms.txt', async (c) => {
   c.header('Content-Type', 'text/plain; charset=utf-8')
   c.header('Cache-Control', 'public, max-age=86400, s-maxage=86400')
-  return c.body(`${LLMS_TXT}\n## 상세판\n- 진료별 요약·FAQ·진료비 전문: https://kndent.kr/llms-full.txt\n`)
+  const blogs = await llmsBlogLines(c)
+  return c.body(`${LLMS_TXT}${blogs ? `\n${blogs}` : ''}\n## 상세판\n- 진료별 요약·FAQ·진료비 전문: https://kndent.kr/llms-full.txt\n`)
 })
 
 // ===== AEO: llms-full.txt (상세 버전) =====
@@ -708,6 +722,8 @@ app.get('/llms-full.txt', async (c) => {
   out.push('')
   out.push(LLMS_FAQ_SUMMARY.trim())
   out.push('')
+  const blogs = await llmsBlogLines(c, true)
+  if (blogs) out.push(blogs)
   c.header('Content-Type', 'text/plain; charset=utf-8')
   c.header('Cache-Control', 'public, max-age=3600, s-maxage=3600')
   return c.body(out.join('\n'))
@@ -1580,7 +1596,30 @@ app.get('/treatments/:slug', async (c) => {
   const result = await treatmentDetailPage(slug)
   if (!result) return c.notFound()
   const txName = result.title.split(' – ')[0].split(' | ')[0].replace(/^영주\s+/, '')
-  return c.html(layout(result.html, {
+  // 진료 상세 ↔ 칼럼 내부 링크: 본문 진료 키워드가 이 진료로 연결되는 최신 칼럼 5편 (PFWE 칼럼 표준 A5)
+  let txHtml = result.html
+  try {
+    const rows = await c.env.DB.prepare('SELECT slug, title, summary, content, tags, category, published_at FROM blog_posts WHERE is_published = 1 ORDER BY published_at DESC LIMIT 100').all()
+    const hits = (rows.results || []).filter((p: any) => findRelatedTreatments(p).some((t) => t.url === `/treatments/${slug}`)).slice(0, 5)
+    if (hits.length > 0) {
+      const esc = (x: string) => String(x || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+      const section = `
+    <!-- 관련 칼럼 (진료 ↔ 칼럼 내부 링크) -->
+    <section class="py-16 bg-white" aria-label="${esc(txName)} 관련 칼럼">
+      <div class="max-w-4xl mx-auto px-5 md:px-8 lg:px-12">
+        <h2 class="text-charcoal font-extrabold text-2xl mb-6">${esc(txName)} 관련 칼럼</h2>
+        <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          ${hits.map((p: any) => `<li><a href="/blog/${p.slug}" class="block bg-snow-50 rounded-2xl p-5 border border-gray-100 hover:border-royal/30 transition-all"><span class="text-royal text-[10px] font-bold">${esc(p.category || '')}</span><span class="block text-charcoal font-bold mt-1">${esc(p.title)}</span></a></li>`).join('')}
+        </ul>
+        <p class="mt-6"><a href="/blog" class="text-royal text-sm font-bold hover:underline">칼럼 전체 보기 →</a></p>
+      </div>
+    </section>
+`
+      const marker = '    <!-- 의료광고법 준수: 부작용 고지'
+      txHtml = txHtml.includes(marker) ? txHtml.replace(marker, section + marker) : txHtml + section
+    }
+  } catch { /* DB not available */ }
+  return c.html(layout(txHtml, {
     title: result.title,
     description: result.description,
     url: `/treatments/${slug}`,
@@ -1687,44 +1726,66 @@ app.get('/dictionary/:slug', async (c) => {
 })
 
 // ===== 블로그 게시판 =====
+// 블로그 목록: 카테고리 = DB 실제 값(서버 링크), 서버 페이지네이션 ?page=N, CollectionPage+ItemList (PFWE 칼럼 표준 A5)
+const BLOG_PER_PAGE = 12
 app.get('/blog', async (c) => {
-  const category = c.req.query('category')
+  const rawCat = c.req.query('category') || ''
+  let categories: string[] = []
   let posts: any[] = []
+  let total = 0
   try {
-    if (category && category !== '전체') {
-      const result = await c.env.DB.prepare('SELECT * FROM blog_posts WHERE is_published = 1 AND category = ? ORDER BY published_at DESC LIMIT 50').bind(category).all()
-      posts = result.results
-    } else {
-      const result = await c.env.DB.prepare('SELECT * FROM blog_posts WHERE is_published = 1 ORDER BY published_at DESC LIMIT 50').all()
-      posts = result.results
-    }
+    const cats = await c.env.DB.prepare('SELECT category, COUNT(*) AS n FROM blog_posts WHERE is_published = 1 GROUP BY category ORDER BY n DESC').all()
+    categories = (cats.results || []).map((r: any) => r.category).filter(Boolean)
   } catch (e) { /* DB not available */ }
+  const category = rawCat && rawCat !== '전체' && categories.includes(rawCat) ? rawCat : ''
+  if (rawCat && !category) return c.redirect('/blog', 301)
+  const base = category ? `/blog?category=${encodeURIComponent(category)}` : '/blog'
+  try {
+    const cnt: any = category
+      ? await c.env.DB.prepare('SELECT COUNT(*) AS n FROM blog_posts WHERE is_published = 1 AND category = ?').bind(category).first()
+      : await c.env.DB.prepare('SELECT COUNT(*) AS n FROM blog_posts WHERE is_published = 1').first()
+    total = cnt?.n || 0
+  } catch {}
+  const pages = Math.max(1, Math.ceil(total / BLOG_PER_PAGE))
+  const rawPage = c.req.query('page')
+  if (rawPage !== undefined && (!/^[1-9]\d*$/.test(rawPage) || rawPage === '1' || parseInt(rawPage, 10) > pages)) return c.redirect(base, 301)
+  const page = rawPage ? parseInt(rawPage, 10) : 1
+  const offset = (page - 1) * BLOG_PER_PAGE
+  try {
+    const result = category
+      ? await c.env.DB.prepare('SELECT * FROM blog_posts WHERE is_published = 1 AND category = ? ORDER BY published_at DESC LIMIT ? OFFSET ?').bind(category, BLOG_PER_PAGE, offset).all()
+      : await c.env.DB.prepare('SELECT * FROM blog_posts WHERE is_published = 1 ORDER BY published_at DESC LIMIT ? OFFSET ?').bind(BLOG_PER_PAGE, offset).all()
+    posts = result.results
+  } catch (e) { /* DB not available */ }
+  const path = page > 1 ? `${base}${base.includes('?') ? '&' : '?'}page=${page}` : base
+  const label = category ? `${category} 칼럼` : '블로그'
 
-  return c.html(layout(blogListPage(posts), {
-    title: '강남치과의원 블로그 | 치과 건강정보 · 임플란트 · 디지털보철 · 교정',
-    description: '구강악안면외과 전문의가 직접 전하는 치과 건강정보. 임플란트, 디지털 보철, 인비절라인, 사랑니 발치 등 치과 치료에 대한 정확한 정보를 제공합니다.',
-    url: '/blog',
+  return c.html(layout(blogListPage(posts, { categories, active: category || '전체', page, pages }), {
+    title: category
+      ? `영주 ${category} 칼럼${page > 1 ? ` ${page}페이지` : ''} | 강남치과의원 블로그`
+      : `강남치과의원 블로그${page > 1 ? ` ${page}페이지` : ''} | 치과 건강정보 · 임플란트 · 디지털보철 · 교정`,
+    description: category
+      ? `강남치과의원 구강악안면외과 전문의가 쓰는 ${category} 관련 치과 건강정보 ${total}편.${page > 1 ? ` (${page}페이지)` : ''}`
+      : `구강악안면외과 전문의가 직접 전하는 치과 건강정보. 임플란트, 디지털 보철, 인비절라인, 사랑니 발치 등 치과 치료에 대한 정확한 정보를 제공합니다.${page > 1 ? ` (${page}페이지)` : ''}`,
+    url: path,
     keywords: '영주 치과 블로그, 임플란트 정보, 디지털 보철, 인비절라인 후기, 사랑니 발치 정보, 치과 건강정보',
     speakableSelectors: ['[data-speakable]', 'h1', 'h2'],
+    breadcrumbItems: [{ name: '홈', url: '/' }, { name: '블로그', url: '/blog' }, ...(category ? [{ name: category, url: base }] : [])],
     schemas: [{
       "@context": "https://schema.org",
-      "@type": "Blog",
-      "name": "강남치과의원 블로그",
+      "@type": "CollectionPage",
+      "@id": `https://kndent.kr${path}#collection`,
+      "name": `강남치과의원 ${label}`,
       "description": "구강외과 전문의가 전하는 치과 건강정보",
-      "url": "https://kndent.kr/blog",
+      "url": `https://kndent.kr${path}`,
+      "isPartOf": { "@id": "https://kndent.kr/#website" },
       "publisher": { "@id": "https://kndent.kr/#organization" },
       "inLanguage": "ko",
-      "about": [
-        { "@type": "MedicalSpecialty", "name": "Implantology" },
-        { "@type": "MedicalSpecialty", "name": "Oral and Maxillofacial Surgery" },
-        { "@type": "MedicalSpecialty", "name": "Prosthodontics" },
-        { "@type": "MedicalSpecialty", "name": "Orthodontics" }
-      ],
-      "author": [
-        { "@type": "Physician", "@id": "https://kndent.kr/doctors/lee-taehyung#physician", "name": "이태형" },
-        { "@type": "Physician", "@id": "https://kndent.kr/doctors/choi-minhye#physician", "name": "최민혜" }
-      ],
-      "mainEntityOfPage": { "@type": "WebPage", "url": "https://kndent.kr/blog" }
+      "mainEntity": {
+        "@type": "ItemList",
+        "numberOfItems": total,
+        "itemListElement": posts.map((p: any, i: number) => ({ "@type": "ListItem", "position": offset + i + 1, "url": `https://kndent.kr/blog/${p.slug}`, "name": p.title }))
+      }
     }]
   }))
 })
@@ -1746,13 +1807,13 @@ app.get('/blog/:slug', async (c) => {
   let relatedPosts: any[] = []
   try {
     const sameCat = await c.env.DB.prepare(
-      'SELECT slug, title, summary, category FROM blog_posts WHERE is_published = 1 AND slug != ?1 AND category = ?2 ORDER BY published_at DESC LIMIT 4'
+      'SELECT slug, title, summary, category FROM blog_posts WHERE is_published = 1 AND slug != ?1 AND category = ?2 ORDER BY published_at DESC LIMIT 3'
     ).bind(slug, post.category).all()
     relatedPosts = sameCat.results || []
-    if (relatedPosts.length < 4) {
+    if (relatedPosts.length < 3) {
       const recent = await c.env.DB.prepare(
         'SELECT slug, title, summary, category FROM blog_posts WHERE is_published = 1 AND slug != ?1 AND category != ?2 ORDER BY published_at DESC LIMIT ?3'
-      ).bind(slug, post.category, 4 - relatedPosts.length).all()
+      ).bind(slug, post.category, 3 - relatedPosts.length).all()
       relatedPosts = relatedPosts.concat(recent.results || [])
     }
   } catch {}
@@ -1763,9 +1824,22 @@ app.get('/blog/:slug', async (c) => {
     description: page.description,
     url: `/blog/${slug}`,
     ogType: 'article',
+    // og:image = 대표 이미지(썸네일 → 본문 첫 이미지), SVG·없음이면 기본 PNG
+    ogImage: (() => {
+      const m = String(post.content || '').match(/<img[^>]+src=["']([^"']+)["']/i)
+      const raw = post.thumbnail || (m ? m[1] : '')
+      if (!raw || /\.svg(\?|$)/i.test(raw)) return undefined
+      return raw.startsWith('http') ? raw : `https://kndent.kr${raw.startsWith('/') ? '' : '/'}${raw}`
+    })(),
     schemas: page.schemas,
-    articlePublishedTime: post.published_at,
-    articleModifiedTime: post.updated_at || post.published_at
+    breadcrumbItems: [
+      { name: '홈', url: '/' },
+      { name: '블로그', url: '/blog' },
+      ...(post.category ? [{ name: post.category, url: `/blog?category=${encodeURIComponent(post.category)}` }] : []),
+      { name: post.title, url: `/blog/${slug}` }
+    ],
+    articlePublishedTime: blogIsoTime(post.published_at),
+    articleModifiedTime: blogIsoTime(post.updated_at || post.published_at)
   }))
 })
 
