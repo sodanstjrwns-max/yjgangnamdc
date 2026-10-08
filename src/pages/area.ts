@@ -1,3 +1,4 @@
+import { hubAnchor } from './hub-link'
 // ===== 영주 근처 지역 SEO 대폭 강화 (2026-04 리팩토링) =====
 // 목표: 영주 인근 지역 키워드 검색 시 강남치과의원이 Google/Naver 상단 노출
 // 전략: 롱테일 키워드 커버리지 + 지역 맞춤 콘텐츠 + NLP 자연어 FAQ + GeoCircle Schema
@@ -458,6 +459,7 @@ export function areaPage(region: string): { html: string; title: string; descrip
       </nav>
       <h1 class="display-lg text-charcoal mb-6" data-speakable="true">${title.split(' | ')[0]}</h1>
       <p class="text-gray-400 text-lg area-summary" data-speakable="true">${area.description}</p>
+      <p class="text-gray-500 text-sm mt-4"><i class="fas fa-map-marker-alt text-royal/60 mr-1.5" aria-hidden="true"></i>강남치과의원(영주 대학로 217)의 위치·진료시간·의료진은 ${hubAnchor()} 안내에 모아 두었습니다.</p>
     </div>
   </section>
 
@@ -631,7 +633,7 @@ export function areaPage(region: string): { html: string; title: string; descrip
       <h2 class="font-extrabold text-charcoal mb-6 text-center">주변 지역에서도 찾아오시는 강남치과의원</h2>
       <p class="text-center text-gray-400 text-sm mb-8">영주 근처 어디서든 구강외과 전문의 2인의 진료를 받으실 수 있습니다</p>
       <div class="flex flex-wrap justify-center gap-3">
-        ${Object.entries(areaData).filter(([k]) => k !== decoded).map(([k, v]) => `
+        ${Object.entries(areaData).filter(([k]) => k !== decoded && k !== '영주시').map(([k, v]) => `
         <a href="/area/${encodeURIComponent(k)}" class="px-5 py-2.5 rounded-full bg-white border border-gray-100 text-sm font-medium text-gray-500 hover:text-royal hover:border-royal/30 transition-all duration-300">${v.name} <span class="text-gray-300 text-xs">${v.driveTime}</span></a>
         `).join('')}
       </div>

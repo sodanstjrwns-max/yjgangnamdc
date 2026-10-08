@@ -1,3 +1,4 @@
+import { HUB_PATH, HUB_ANCHOR, hubAnchor } from './hub-link'
 // ============================================================================
 // 지역 × 진료 조합 SEO 페이지 (Programmatic SEO 슈퍼업그레이드 2026-05)
 // ============================================================================
@@ -594,7 +595,7 @@ export function comboPage(regionParam: string, treatmentParam: string): { html: 
       "@type": "BreadcrumbList",
       "itemListElement": [
         { "@type": "ListItem", "position": 1, "name": "홈", "item": "https://kndent.kr/" },
-        { "@type": "ListItem", "position": 2, "name": area.name, "item": `https://kndent.kr/area/${area.slug}` },
+        { "@type": "ListItem", "position": 2, "name": area.slug === 'yeongju' ? HUB_ANCHOR : area.name, "item": area.slug === 'yeongju' ? `https://kndent.kr${HUB_PATH}` : `https://kndent.kr/area/${area.slug}` },
         { "@type": "ListItem", "position": 3, "name": `${area.name} ${treatment.shortName}`, "item": canonicalUrl }
       ]
     },
@@ -626,7 +627,7 @@ export function comboPage(regionParam: string, treatmentParam: string): { html: 
         <ol class="flex items-center gap-2 flex-wrap">
           <li><a href="/" class="hover:text-royal">홈</a></li>
           <li><i class="fas fa-chevron-right text-[8px] text-gray-300"></i></li>
-          <li><a href="/area/${area.slug}" class="hover:text-royal">${area.name}</a></li>
+          <li>${area.slug === 'yeongju' ? `<a href="${HUB_PATH}" class="hover:text-royal">${HUB_ANCHOR}</a>` : `<a href="/area/${area.slug}" class="hover:text-royal">${area.name}</a>`}</li>
           <li><i class="fas fa-chevron-right text-[8px] text-gray-300"></i></li>
           <li><a href="/treatments/${treatment.slug}" class="hover:text-royal">${treatment.shortName}</a></li>
           <li><i class="fas fa-chevron-right text-[8px] text-gray-300"></i></li>
@@ -647,6 +648,7 @@ export function comboPage(regionParam: string, treatmentParam: string): { html: 
       <p class="text-gray-500 text-base md:text-lg max-w-3xl leading-relaxed mb-10 combo-summary" data-speakable="true">
         <i class="fas fa-map-marker-alt text-royal mr-2"></i><strong>${area.name}</strong>에서 차로 <strong>${area.driveTime}</strong>${area.driveKm !== '-' ? ` (약 ${area.driveKm})` : ''}. ${area.routeHighway ? `${area.routeHighway}.` : ''}
       </p>
+      ${area.slug !== 'yeongju' ? `<p class="text-gray-500 text-sm max-w-3xl -mt-6 mb-10"><i class="fas fa-circle-info text-royal/60 mr-2" aria-hidden="true"></i>병원 위치·주차·진료시간은 ${hubAnchor()} 안내에서 한 번에 보실 수 있습니다.</p>` : ''}
 
       <!-- Key Info Cards -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-10">
@@ -677,7 +679,7 @@ export function comboPage(regionParam: string, treatmentParam: string): { html: 
       <div class="flex flex-col sm:flex-row gap-3">
         <a href="tel:054-636-8222" class="btn-primary !py-4 !px-8"><i class="fas fa-phone"></i>054-636-8222</a>
         <a href="/reservation" class="btn-subtle"><i class="fas fa-calendar-check text-royal"></i>온라인 상담 예약</a>
-        <a href="/area/${area.slug}" class="btn-subtle"><i class="fas fa-map text-royal"></i>${area.name} 오시는 길</a>
+        <a href="${area.slug === 'yeongju' ? '/directions' : `/area/${area.slug}`}" class="btn-subtle"><i class="fas fa-map text-royal"></i>${area.name} 오시는 길</a>
       </div>
     </div>
   </section>

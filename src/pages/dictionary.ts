@@ -3,6 +3,7 @@
 import { SITE_URL, SITE_NAME } from '../layout'
 import type { DictEnriched } from '../data/dictionary'
 import { DICT_ENRICHED_DATE } from '../seo'
+import { hubAnchor } from './hub-link'
 
 const TREATMENT_NAMES: Record<string, string> = {
   'implant': '임플란트', 'digital-prosthesis': '디지털 보철', 'invisalign': '인비절라인', 'cosmetic': '심미보철',
@@ -335,6 +336,7 @@ export function dictionaryDetailPage(term: any, relatedTerms: any[], enriched?: 
           </a>
         </div>
         ` : ''}
+        <p class="mt-6 text-sm text-gray-500 leading-relaxed"><i class="fas fa-map-marker-alt text-royal/50 mr-1.5" aria-hidden="true"></i>강남치과의원 위치·진료시간 안내: ${hubAnchor()}</p>
       </div>
 
       ${relatedTermList.length > 0 ? `
@@ -531,6 +533,7 @@ function dictionaryEnrichedPage(term: any, e: DictEnriched, relatedTerms: any[])
       </div>` : ''}
 
       <p class="mt-10 text-sm text-gray-500 leading-relaxed">${clinicLine}</p>
+      <p class="mt-2 text-sm text-gray-500 leading-relaxed"><i class="fas fa-map-marker-alt text-royal/50 mr-1.5" aria-hidden="true"></i>강남치과의원 위치·진료시간 안내: ${hubAnchor()}</p>
       <p class="mt-2 text-xs text-gray-400 leading-relaxed">이 글은 일반적인 정보이며, 개인의 구강 상태에 따라 진단과 치료는 달라질 수 있습니다.</p>
     </div>
   </section>

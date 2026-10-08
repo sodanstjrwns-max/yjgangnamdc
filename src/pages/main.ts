@@ -497,7 +497,7 @@ export function mainPage(): string {
     { area: '단양', time: '45분', km: '40km' }
   ];
   const areasHtml = areas.map(a => `
-    <a href="/area/${encodeURIComponent(a.area)}" class="card-premium p-6 text-center stagger-item group hover:border-royal/20">
+    <a href="${a.area === '영주시' ? '/directions' : `/area/${encodeURIComponent(a.area)}`}" class="card-premium p-6 text-center stagger-item group hover:border-royal/20">
       <div class="w-12 h-12 mx-auto rounded-xl bg-royal/[0.06] border border-royal/10 flex items-center justify-center mb-4 group-hover:bg-royal/10 transition-colors">
         <i class="fas fa-car text-royal text-sm"></i>
       </div>

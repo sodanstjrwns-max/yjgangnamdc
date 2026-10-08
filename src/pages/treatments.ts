@@ -1,5 +1,6 @@
 import { MEDICAL_LAST_REVIEWED, metaDescFrom } from '../seo'
 import { OG_IMAGE_PNG } from '../layout'
+import { hubAnchor } from './hub-link'
 interface Treatment {
   slug: string; category: string; title: string; h1: string; description: string;
   icon: string; heroDesc: string; worry: string; promise: string;
@@ -765,6 +766,8 @@ export async function treatmentDetailPage(slug: string): Promise<{ html: string;
           <a href="/reservation" class="w-full sm:w-auto btn-primary !py-5 !px-12 !font-extrabold"><i class="fas fa-calendar-check"></i>상담 예약하기</a>
           <a href="tel:054-636-8222" class="w-full sm:w-auto btn-subtle justify-center"><i class="fas fa-phone text-sm text-royal"></i>054-636-8222</a>
         </div>
+        <!-- 오시는 길·진료 안내: "영주 치과" 허브 링크 (2026-10-08) -->
+        <p class="text-gray-500 text-sm mt-8">${t.title} 진료를 받으러 오실 때의 위치·주차·진료시간은 ${hubAnchor()} 안내에서 확인하실 수 있습니다.</p>
       </div>
     </section>
 

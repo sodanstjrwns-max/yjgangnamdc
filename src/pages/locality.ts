@@ -1,3 +1,4 @@
+import { hubAnchor } from './hub-link'
 // ============================================================================
 // 세부 지역(동·읍·면) × 핵심진료 SEO 페이지 (Hyper-Local SEO 시즌 4)
 // ============================================================================
@@ -393,6 +394,7 @@ export function localityPage(slug: string): { html: string; title: string; descr
         ${loc.name}에서 차로 <strong>${loc.driveTime}</strong>(${loc.driveKm}) 거리의 <strong>구강악안면외과 전문의 치과</strong>.
         ${loc.name} 주민을 위한 임플란트, 인비절라인, 사랑니발치, 디지털보철, 심미보철, 충치치료 종합 진료 제공합니다.
       </p>
+      <p class="text-sm text-gray-600 mt-3"><i class="fas fa-circle-info text-blue-500 mr-1" aria-hidden="true"></i>병원 위치·진료시간·의료진 전체 안내는 ${hubAnchor('text-blue-700 font-bold hover:underline')} 페이지에 있습니다.</p>
     </header>
 
     <div class="grid md:grid-cols-3 gap-4 mb-10">
@@ -567,6 +569,7 @@ export function localityTreatmentPage(localitySlug: string, treatmentSlug: strin
         ${loc.name}에서 ${t.ko}를 찾으신다면 차로 <strong>${loc.driveTime}</strong> 거리의 <strong>영주 강남치과의원</strong>.
         ${t.shortDesc}. 구강악안면외과 전문의 2인이 상주하는 ${loc.parentRegion} 일대 희소 치과입니다.
       </p>
+      <p class="text-sm text-gray-600 mt-3"><i class="fas fa-circle-info text-blue-500 mr-1" aria-hidden="true"></i>${t.ko} 진료 위치·주차·진료시간은 ${hubAnchor('text-blue-700 font-bold hover:underline')} 안내에서 확인하실 수 있습니다.</p>
     </header>
 
     <div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-2xl p-8 mb-10">

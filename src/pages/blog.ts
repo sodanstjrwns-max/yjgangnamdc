@@ -1,5 +1,6 @@
 import { metaDescFrom } from '../seo'
 import { DOCTOR_LIST } from './doctors'
+import { blogHubBlock } from './hub-link'
 
 const SITE = 'https://kndent.kr'
 
@@ -274,10 +275,10 @@ const TREATMENT_LINK_MAP: { keywords: string[]; url: string; label: string }[] =
   { keywords: ['신경치료', '근관'], url: '/treatments/root-canal', label: '신경치료' },
   { keywords: ['크라운', '보철', '세렉', 'cerec'], url: '/treatments/digital-prosthesis', label: 'CEREC 디지털 보철' },
   { keywords: ['미백', '화이트닝'], url: '/treatments/whitening', label: '치아미백' },
-  { keywords: ['잇뱀', '치주', '치은'], url: '/treatments/gum', label: '잇뱀치료' },
+  { keywords: ['잇몸', '치주', '치은'], url: '/treatments/gum', label: '잇몸치료' },
   { keywords: ['스케일링', '치석'], url: '/treatments/scaling', label: '스케일링' },
   { keywords: ['틀니', '의치'], url: '/treatments/denture', label: '틀니' },
-  { keywords: ['너이식', '골이식'], url: '/treatments/bone-graft', label: '너이식' },
+  { keywords: ['뼈이식', '골이식'], url: '/treatments/bone-graft', label: '뼈이식' },
   { keywords: ['상악동'], url: '/treatments/sinus-lift', label: '상악동(위턱 공간) 거상술' },
   { keywords: ['턱관절', 'tmj'], url: '/treatments/tmj', label: '턱관절 치료' },
   { keywords: ['라미네이트', '심미'], url: '/treatments/cosmetic', label: '심미보철' },
@@ -411,6 +412,7 @@ export function blogDetailPage(post: any, relatedPosts: any[] = []): { html: str
       </div>
 
       ${tagsHtml ? `<div class="flex flex-wrap gap-2 mt-12 pt-8 border-t border-gray-100">${tagsHtml}</div>` : ''}
+      ${blogHubBlock(String(post.slug || post.id || ''), relatedTreatments[0]?.label)}
 
       ${doc ? `
       <!-- 작성·감수 박스 (PFWE 칼럼 표준 A3) -->
