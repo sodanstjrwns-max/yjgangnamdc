@@ -8,7 +8,8 @@ import { treatmentsPage, treatmentDetailPage, getTreatmentSummaries } from './pa
 import { reservationPage } from './pages/reservation'
 import { directionsPage } from './pages/directions'
 import { pricingPage, DEFAULT_PRICE_CATS } from './pages/pricing'
-import { areaPage, getAllAreaKeys, getAreaPriority, getAreaKeyBySlug } from './pages/area'
+import { areaPage, getAllAreaKeys, getAreaPriority, getAreaKeyBySlug, getAreaSummaries } from './pages/area'
+import { yeongjuHubPage, YEONGJU_HUB_MODIFIED } from './pages/yeongju-hub'
 import { comboPage, getAllComboPaths, getAreaSlugs, getTreatmentSlugs, getAreaInfo, getTreatmentInfo } from './pages/combo'
 import { intentPage, getAllIntentPaths } from './pages/intent'
 import { comparePage, getAllComparePaths, getAllCompareSlugs } from './pages/compare'
@@ -25,9 +26,10 @@ import { adminPage } from './pages/admin'
 import { statsPage, fetchDashboardStats, STATS_KEY, MASTER_KEY } from './pages/stats'
 import { registerPage, loginPage, loginRequiredPage } from './pages/auth'
 import { dictionaryListPage, dictionaryDetailPage } from './pages/dictionary'
+import { DICT_ENRICHED } from './data/dictionary'
 import { searchPage, searchStatic } from './pages/search'
 import { layout, OG_IMAGE_PNG } from './layout'
-import { CONTENT_LASTMOD, MEDICAL_LAST_REVIEWED, INDEXNOW_KEY, INDEXNOW_ENDPOINTS, INDEXNOW_DEFAULT_URLS, metaDescFrom, fitMetaDesc } from './seo'
+import { CONTENT_LASTMOD, DICT_ENRICHED_DATE, MEDICAL_LAST_REVIEWED, INDEXNOW_KEY, INDEXNOW_ENDPOINTS, INDEXNOW_DEFAULT_URLS, metaDescFrom, fitMetaDesc } from './seo'
 
 // 서버 측 content 자동 변환: plain text → HTML (저장 전 적용)
 function formatContentForSave(content: string): string {
@@ -551,7 +553,6 @@ Sitemap: https://kndent.kr/sitemap-treatments.xml
 Sitemap: https://kndent.kr/sitemap-faq.xml
 Sitemap: https://kndent.kr/sitemap-area.xml
 Sitemap: https://kndent.kr/sitemap-combo.xml
-Sitemap: https://kndent.kr/sitemap-intent.xml
 Sitemap: https://kndent.kr/sitemap-compare.xml
 Sitemap: https://kndent.kr/sitemap-pillar.xml
 Sitemap: https://kndent.kr/sitemap-symptom.xml
@@ -559,10 +560,10 @@ Sitemap: https://kndent.kr/sitemap-audience.xml
 Sitemap: https://kndent.kr/sitemap-emergency.xml
 Sitemap: https://kndent.kr/sitemap-locality.xml
 Sitemap: https://kndent.kr/sitemap-blog.xml
+Sitemap: https://kndent.kr/sitemap-dictionary.xml
 
-# RSS Feed (Google 색인 가속 — Google이 RSS도 sitemap으로 인식)
-Sitemap: https://kndent.kr/feed.xml
-Sitemap: https://kndent.kr/rss.xml
+# RSS 피드(구독용, Sitemap 으로 등록하지 않음 — 2026-10-08)
+# https://kndent.kr/rss.xml (블로그) · https://kndent.kr/feed.xml (진료 가이드)
 
 # 부가 자료
 # HTML Sitemap (사람용): https://kndent.kr/all-pages
@@ -760,9 +761,9 @@ const ymdOf = (raw: any): string => {
 }
 const newestYmd = (dates: string[]): string => dates.filter(Boolean).sort().pop() || ''
 
-// sitemap-blog 목록 페이지(/blog·/notices·/dictionary) lastmod = 실린 항목 중 최신 작성/수정일
+// sitemap-blog 목록 페이지(/blog·/notices) lastmod = 실린 항목 중 최신 작성/수정일
 // (예전엔 CONTENT_LASTMOD.main 등 섹션 날짜 — 목록 내용과 무관하게 바뀜, 2026-09-29 교정)
-async function blogSectionDates(DB: D1Database): Promise<{ blog: string; notices: string; dictionary: string }> {
+async function blogSectionDates(DB: D1Database): Promise<{ blog: string; notices: string }> {
   const one = async (sql: string): Promise<string> => {
     try { return ymdOf(((await DB.prepare(sql).first()) as any)?.m) } catch { return '' }
   }
@@ -770,8 +771,7 @@ async function blogSectionDates(DB: D1Database): Promise<{ blog: string; notices
     one('SELECT MAX(COALESCE(updated_at, published_at)) AS m FROM blog_posts WHERE is_published = 1'),
     one('SELECT MAX(COALESCE(updated_at, published_at)) AS m FROM notices WHERE is_published = 1'),
   ])
-  // 용어 상세 lastmod 는 CONTENT_LASTMOD.dictionary(용어 데이터 수정일) → 목록도 같은 값
-  return { blog, notices, dictionary: CONTENT_LASTMOD.dictionary }
+  return { blog, notices }
 }
 
 // ===== SEO: Sitemap Index (12개 sub-sitemap 통합 인덱스) =====
@@ -795,7 +795,7 @@ app.get('/sitemap.xml', async (c) => {
   //    정적 섹션은 CONTENT_LASTMOD, 블로그 사이트맵은 글·공지·용어 최신일. 알 수 없으면 생략(오늘로 채우지 않음)
   const bs = await blogSectionDates(c.env.DB)
   const childLastmod: Record<string, string> = {
-    'sitemap-main.xml': CONTENT_LASTMOD.main,
+    'sitemap-main.xml': newestYmd(mainSitemapPages().map(p => p.lastmod)),
     'sitemap-treatments.xml': CONTENT_LASTMOD.treatments,
     'sitemap-faq.xml': CONTENT_LASTMOD.faq,
     'sitemap-area.xml': CONTENT_LASTMOD.area,
@@ -806,7 +806,8 @@ app.get('/sitemap.xml', async (c) => {
     'sitemap-audience.xml': CONTENT_LASTMOD.audience,
     'sitemap-emergency.xml': CONTENT_LASTMOD.emergency,
     'sitemap-locality.xml': CONTENT_LASTMOD.locality,
-    'sitemap-blog.xml': newestYmd([bs.blog, bs.notices, bs.dictionary]),
+    'sitemap-blog.xml': newestYmd([bs.blog, bs.notices]),
+    'sitemap-dictionary.xml': CONTENT_LASTMOD.dictionary,
   }
   const now = newestYmd(Object.values(childLastmod))
 
@@ -824,6 +825,8 @@ app.get('/sitemap.xml', async (c) => {
     'sitemap-emergency.xml',
     'sitemap-locality.xml',
     'sitemap-blog.xml',
+    // 2026-10-08: 용어 사전은 sitemap-blog 에서 분리 (블로그·공지만 남김)
+    'sitemap-dictionary.xml',
   ]
 
   const entries = subSitemaps.map(s => `  <sitemap>
@@ -852,14 +855,14 @@ app.get('/sitemap-stats', async (c) => {
     { name: 'sitemap-faq.xml', desc: 'FAQ 카테고리', category: '핵심' },
     { name: 'sitemap-area.xml', desc: '14개 지역 페이지', category: '지역' },
     { name: 'sitemap-combo.xml', desc: '지역×진료 조합 (Season 1)', category: 'SEO' },
-    { name: 'sitemap-intent.xml', desc: '의도형 키워드 (Season 2)', category: 'SEO' },
     { name: 'sitemap-compare.xml', desc: '비교 페이지 (Season 2)', category: 'SEO' },
     { name: 'sitemap-pillar.xml', desc: '필러/가이드 (Season 2)', category: 'SEO' },
     { name: 'sitemap-symptom.xml', desc: '증상 진입 (Season 3)', category: 'SEO' },
     { name: 'sitemap-audience.xml', desc: '대상자 페르소나 (Season 3)', category: 'SEO' },
     { name: 'sitemap-emergency.xml', desc: '응급치과 (Season 3)', category: 'SEO' },
     { name: 'sitemap-locality.xml', desc: '세부 지역(동·읍·면) × 진료 (Season 4)', category: 'SEO' },
-    { name: 'sitemap-blog.xml', desc: '블로그/증례/공지/용어', category: '동적' },
+    { name: 'sitemap-blog.xml', desc: '블로그/공지', category: '동적' },
+    { name: 'sitemap-dictionary.xml', desc: '치과 용어 사전', category: '동적' },
   ]
 
   const html = `
@@ -1157,11 +1160,24 @@ app.get('/ping-search-engines', (c) => {
 </html>`)
 })
 
+// sitemap-main URL별 lastmod = 각 화면 소스 파일의 마지막 커밋일 (2026-10-08: 섹션 단일 날짜 → 페이지별)
+function mainSitemapPages() {
+  const L = CONTENT_LASTMOD
+  return [
+    { url: '/', lastmod: L.main, priority: '1.0', changefreq: 'weekly' },
+    { url: '/doctors', lastmod: L.doctors, priority: '0.9', changefreq: 'monthly' },
+    { url: '/doctors/lee-taehyung', lastmod: L.doctors, priority: '0.8', changefreq: 'monthly' },
+    { url: '/doctors/choi-minhye', lastmod: L.doctors, priority: '0.8', changefreq: 'monthly' },
+    { url: '/pricing', lastmod: L.pricing, priority: '0.9', changefreq: 'monthly' },
+    { url: '/reservation', lastmod: L.reservation, priority: '0.8', changefreq: 'monthly' },
+    { url: '/directions', lastmod: L.directions, priority: '0.8', changefreq: 'yearly' },
+    { url: '/all-pages', lastmod: L.allPages, priority: '0.7', changefreq: 'weekly' },
+  ]
+}
+
 // ===== Sitemap: 핵심 페이지 (메인, 의료진, 가격, 예약, 오시는길) =====
 app.get('/sitemap-main.xml', (c) => {
   const baseUrl = 'https://kndent.kr'
-  // ✅ 실제 콘텐츠 수정일 사용 (Google: 항상 현재시각이면 lastmod 무시됨)
-  const today = CONTENT_LASTMOD.main
 
   const pageImages: Record<string, { loc: string; title: string; caption?: string }[]> = {
     '/': [
@@ -1189,16 +1205,7 @@ app.get('/sitemap-main.xml', (c) => {
     ],
   }
 
-  const pages = [
-    { url: '/', lastmod: today, priority: '1.0', changefreq: 'weekly' },
-    { url: '/doctors', lastmod: today, priority: '0.9', changefreq: 'monthly' },
-    { url: '/doctors/lee-taehyung', lastmod: today, priority: '0.8', changefreq: 'monthly' },
-    { url: '/doctors/choi-minhye', lastmod: today, priority: '0.8', changefreq: 'monthly' },
-    { url: '/pricing', lastmod: today, priority: '0.9', changefreq: 'monthly' },
-    { url: '/reservation', lastmod: today, priority: '0.8', changefreq: 'monthly' },
-    { url: '/directions', lastmod: today, priority: '0.8', changefreq: 'yearly' },
-    { url: '/all-pages', lastmod: today, priority: '0.7', changefreq: 'weekly' },
-  ]
+  const pages = mainSitemapPages()
 
   const urls = pages.map(p => sitemapUrl(baseUrl, p, pageImages[p.url])).join('\n')
   c.header('Content-Type', 'application/xml')
@@ -1325,10 +1332,10 @@ app.get('/sitemap-combo.xml', (c) => {
 app.get('/sitemap-intent.xml', (c) => {
   // 2026-09-29: intent 변형(price/cost/recommend/best) 448개는 GSC가 중복으로 판단 →
   // 페이지는 유지하되 canonical 을 /area/{지역}/{진료} 로 통합하고 사이트맵에서 제외.
-  // (기존 제출 이력 대비 빈 urlset 으로 유효한 XML만 응답)
-  c.header('Content-Type', 'application/xml')
+  // 2026-10-08: 빈 urlset 응답 → 410 (인덱스·robots 에서도 제거, 검색엔진이 제출 목록에서 정리하도록)
+  c.header('X-Robots-Tag', 'noindex')
   c.header('Cache-Control', 'public, max-age=86400, s-maxage=86400')
-  return c.body(`${sitemapXmlHeader()}\n</urlset>`)
+  return c.text('Gone', 410)
 })
 
 // ===== Sitemap: 블로그 + 증례 + 공지 + 용어사전 (동적 콘텐츠) =====
@@ -1343,7 +1350,6 @@ app.get('/sitemap-blog.xml', async (c) => {
   const staticPages = [
     { url: '/blog', lastmod: '', priority: '0.8', changefreq: 'weekly' },
     { url: '/notices', lastmod: '', priority: '0.7', changefreq: 'weekly' },
-    { url: '/dictionary', lastmod: CONTENT_LASTMOD.dictionary, priority: '0.8', changefreq: 'weekly' },
   ]
 
   // DB에서 동적 URL 가져오기
@@ -1368,18 +1374,32 @@ app.get('/sitemap-blog.xml', async (c) => {
     }))
     staticPages[1].lastmod = newestYmd(noticeUrls.map((u) => u.lastmod))
     dynamicPages = dynamicPages.concat(noticeUrls)
-    const dictTerms = await c.env.DB.prepare('SELECT slug FROM dictionary ORDER BY term_ko').all()
-    dynamicPages = dynamicPages.concat(dictTerms.results.filter((p: any) => !DICT_ALIASES[p.slug]).map((p: any) => ({
-      url: `/dictionary/${p.slug}`,
-      lastmod: CONTENT_LASTMOD.dictionary,
-      priority: '0.6',
-      changefreq: 'monthly' as const
-    })))
   } catch (e) { /* DB not available, skip dynamic pages */ }
 
   const allPages = [...staticPages, ...dynamicPages]
   const urls = allPages.map(p => sitemapUrl(baseUrl, p)).join('\n')
   c.header('Content-Type', 'application/xml')
+  c.header('Cache-Control', 'public, max-age=3600, s-maxage=7200')
+  return c.body(`${sitemapXmlHeader()}\n${urls}\n</urlset>`)
+})
+
+// ===== Sitemap: 치과 용어 사전 (2026-10-08 sitemap-blog 에서 분리) =====
+// 용어별 lastmod = 보강 원고가 있으면 그 반영일, 없으면 D1 updated_at (날짜 없으면 생략)
+app.get('/sitemap-dictionary.xml', async (c) => {
+  const baseUrl = 'https://kndent.kr'
+  let termPages: { url: string; lastmod: string; priority: string; changefreq: string }[] = []
+  try {
+    const dictTerms = await c.env.DB.prepare('SELECT slug, updated_at FROM dictionary ORDER BY term_ko').all()
+    termPages = (dictTerms.results as any[]).filter((p: any) => !DICT_ALIASES[p.slug]).map((p: any) => ({
+      url: `/dictionary/${p.slug}`,
+      lastmod: DICT_ENRICHED[p.slug] ? DICT_ENRICHED_DATE : ymdOf(p.updated_at),
+      priority: '0.6',
+      changefreq: 'monthly'
+    }))
+  } catch (e) { /* DB not available */ }
+  const list = { url: '/dictionary', lastmod: newestYmd(termPages.map(p => p.lastmod)), priority: '0.8', changefreq: 'weekly' }
+  const urls = [list, ...termPages].map(p => sitemapUrl(baseUrl, p)).join('\n')
+  c.header('Content-Type', 'application/xml; charset=utf-8')
   c.header('Cache-Control', 'public, max-age=3600, s-maxage=7200')
   return c.body(`${sitemapXmlHeader()}\n${urls}\n</urlset>`)
 })
@@ -1567,7 +1587,7 @@ app.get('/doctors/:slug', (c) => {
 
 // ===== 진료 안내 =====
 app.get('/treatments', (c) => c.html(layout(treatmentsPage(), {
-  title: '영주 치과 진료안내 | 임플란트·디지털보철·인비절라인 교정·심미보철·사랑니 – 강남치과의원',
+  title: '진료안내 | 임플란트·디지털보철·인비절라인 교정·심미보철·사랑니 – 영주 강남치과의원',
   description: '영주 강남치과의원 전체 진료 안내. 임플란트, 디지털 보철(싱글 크라운), 인비절라인 투명교정, 심미보철, 사랑니 발치, 충치치료, 신경치료 등. 각 분야 전문의가 직접 진료합니다.',
   url: '/treatments',
   keywords: '영주 임플란트, 영주 디지털보철, 영주 인비절라인, 영주 심미보철, 영주 사랑니',
@@ -1637,6 +1657,22 @@ app.get('/treatments/:slug', async (c) => {
 const DICT_ALIASES: Record<string, string> = {
   'oral-scanner': 'intraoral-scanner',
   'whitening': 'tooth-whitening',
+  // 2026-10-08: 동의어·중복 용어 통합 (통합된 쪽 본문에 동의어 설명 포함)
+  'dental-milling': 'milling',
+  'root-canal-treatment': 'root-canal',
+  'dental-pulp': 'pulp',
+  'dental-caries': 'cavity',
+  'composite-resin': 'resin',
+  'tooth-sensitivity': 'sensitivity',
+  'dry-mouth': 'xerostomia',
+  'panoramic-xray': 'panorama',
+  'periapical-xray': 'periapical',
+  'baby-tooth': 'deciduous-tooth',
+  'clear-aligner': 'aligner',
+  'veneer': 'laminate',
+  'guided-surgery': 'digital-guide',
+  'implant-insurance': 'senior-implant',
+  'dental-recall': 'dental-checkup',
 }
 
 app.get('/dictionary', async (c) => {
@@ -1646,7 +1682,9 @@ app.get('/dictionary', async (c) => {
   let categories: any[] = []
   try {
     // 카테고리별 수량
-    const catResult = await c.env.DB.prepare('SELECT category, COUNT(*) as cnt FROM dictionary GROUP BY category ORDER BY cnt DESC').all()
+    // 동의어(alias) 행은 301 대상이라 수량에서 제외
+    const aliasSlugs = Object.keys(DICT_ALIASES)
+    const catResult = await c.env.DB.prepare(`SELECT category, COUNT(*) as cnt FROM dictionary WHERE slug NOT IN (${aliasSlugs.map(() => '?').join(',')}) GROUP BY category ORDER BY cnt DESC`).bind(...aliasSlugs).all()
     categories = catResult.results
 
     // 용어 검색/필터
@@ -1694,7 +1732,14 @@ app.get('/dictionary/:slug', async (c) => {
   let relatedTerms: any[] = []
   try {
     term = await c.env.DB.prepare('SELECT * FROM dictionary WHERE slug = ?').bind(slug).first()
-    if (term && term.related_terms) {
+    const enrichedRel = DICT_ENRICHED[slug]?.related || []
+    if (term && enrichedRel.length) {
+      // 보강 원고의 관련 용어(slug) 순서대로
+      const ph = enrichedRel.map(() => '?').join(',')
+      const result = await c.env.DB.prepare(`SELECT slug, term_ko, summary, category FROM dictionary WHERE slug IN (${ph})`).bind(...enrichedRel).all()
+      const bySlug = new Map((result.results as any[]).map((t: any) => [t.slug, t]))
+      relatedTerms = enrichedRel.map(s2 => bySlug.get(DICT_ALIASES[s2] || s2)).filter(Boolean) as any[]
+    } else if (term && term.related_terms) {
       const keywords = term.related_terms.split(',').map((t: string) => t.trim()).slice(0, 8)
       if (keywords.length > 0) {
         const placeholders = keywords.map(() => '?').join(',')
@@ -1712,16 +1757,20 @@ app.get('/dictionary/:slug', async (c) => {
     }), 404)
   }
 
-  const page = dictionaryDetailPage(term, relatedTerms)
+  const enriched = DICT_ENRICHED[term.slug]
+  const page = dictionaryDetailPage(term, relatedTerms, enriched)
   return c.html(layout(page.html, {
-    title: `${term.term_ko}${term.term_en ? ` (${term.term_en})` : ''} – 치과 용어 사전 | 강남치과의원`,
-    // 요약(10~20자)이 짧으면 화면 본문(description) 앞 문장으로 보강
-    description: (term.summary || '').length >= 70 ? term.summary : fitMetaDesc([`${term.term_ko}: ${String(term.summary || '').replace(/[.。]\s*$/, '')}.`, term.description]),
+    title: enriched
+      ? `${term.term_ko}${term.term_en ? `(${term.term_en})` : ''} 뜻과 쉬운 설명 – 치과 용어 사전 | 강남치과의원`
+      : `${term.term_ko}${term.term_en ? ` (${term.term_en})` : ''} – 치과 용어 사전 | 강남치과의원`,
+    // 보강 원고가 있으면 쉬운 정의(lead), 없으면 요약+본문 앞 문장
+    description: enriched ? fitMetaDesc([enriched.lead]) : (term.summary || '').length >= 70 ? term.summary : fitMetaDesc([`${term.term_ko}: ${String(term.summary || '').replace(/[.。]\s*$/, '')}.`, term.description]),
     url: `/dictionary/${term.slug}`,
     keywords: `${term.term_ko}, ${term.term_en || ''}, ${term.category}, 치과 용어, ${term.related_terms || ''}`,
     ogType: 'article',
     schemas: page.schemas,
-    speakableSelectors: ['[data-speakable]', 'h1', 'h2']
+    articleModifiedTime: enriched ? DICT_ENRICHED_DATE : undefined,
+    speakableSelectors: enriched ? ['h1', '#tx-answer', '.faq-answer'] : ['[data-speakable]', 'h1', 'h2']
   }))
 })
 
@@ -2258,6 +2307,22 @@ app.get('/faq', (c) => {
 // ===== 지역 SEO (Schema 대폭 강화 — FAQPage + LocalBusiness + BreadcrumbList) =====
 app.get('/area/:region', (c) => {
   const region = c.req.param('region')
+  // "영주 치과" 대표 키워드 허브 (2026-10-08) — 기존 /area/영주시 URL 유지, 전용 본문
+  let regionKey = region
+  try { regionKey = decodeURIComponent(region) } catch {}
+  if (regionKey === '영주시') {
+    const hub = yeongjuHubPage(getAreaSummaries().filter(a => a.key !== '영주시'))
+    return c.html(layout(hub.html, {
+      title: hub.title,
+      description: hub.description,
+      url: `/area/${encodeURIComponent('영주시')}`,
+      keywords: hub.keywords,
+      schemas: hub.schemas,
+      breadcrumbItems: hub.breadcrumbItems,
+      articleModifiedTime: YEONGJU_HUB_MODIFIED,
+      speakableSelectors: ['h1', '#tx-answer', '.faq-answer']
+    }))
+  }
   const result = areaPage(region)
   if (!result) {
     // 레거시 영문 slug (/area/buseok) → 현재 한글 키 URL 301, 미존재 → 410
@@ -2827,12 +2892,12 @@ app.get('/feed.xml', async (c) => {
     }
   })
 
-  const xmlEscape = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;')
+  const xmlEscape = (s: string) => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;')
 
   const itemsXml = items.map(item => `    <item>
       <title>${xmlEscape(item.title)}</title>
-      <link>${item.link}</link>
-      <guid isPermaLink="true">${item.link}</guid>
+      <link>${xmlEscape(item.link)}</link>
+      <guid isPermaLink="true">${xmlEscape(item.link)}</guid>
       <description>${xmlEscape(item.description)}</description>
       <pubDate>${item.pubDate}</pubDate>
     </item>`).join('\n')
@@ -2840,10 +2905,10 @@ app.get('/feed.xml', async (c) => {
   const rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>영주 강남치과의원 - 진료 가이드 & 새 소식</title>
+    <title>${xmlEscape('영주 강남치과의원 - 진료 가이드 & 새 소식')}</title>
     <link>${baseUrl}</link>
     <atom:link href="${baseUrl}/feed.xml" rel="self" type="application/rss+xml" />
-    <description>경북북부 거점 치과 영주 강남치과의 진료 가이드, 비교 분석, 비용/추천 정보 최신 RSS 피드</description>
+    <description>${xmlEscape('영주 강남치과의원의 진료 가이드, 지역 비교, 비용 안내 페이지 RSS 피드')}</description>
     <language>ko-kr</language>
     <copyright>© 2026 영주 강남치과의원</copyright>
     <lastBuildDate>${today}</lastBuildDate>

@@ -1031,7 +1031,7 @@ export function mainPage(): string {
             ['/treatments/root-canal', '영주 신경치료'],
             ['/treatments/gum', '영주 잇몸치료'],
             ['/treatments/denture', '영주 틀니'],
-            [`/area/${encodeURIComponent('영주시')}`, '영주 치과 지역 안내'],
+            [`/area/${encodeURIComponent('영주시')}`, '영주 치과 이용 안내'],
             ['/pricing', '진료비용 안내'],
             ['/directions', '오시는 길']
           ].map(([href, label]) => `<li><a href="${href}" class="inline-block px-4 py-2 rounded-full bg-white border border-royal/[0.12] text-sm text-royal font-semibold hover:bg-royal/[0.08] hover:border-royal/[0.25] transition-all duration-300">${label}</a></li>`).join('')}

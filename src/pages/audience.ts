@@ -7,6 +7,7 @@
  */
 
 import { getAreaInfo, getTreatmentInfo } from './combo'
+import { getAreaRouteBySlug } from './area'
 
 interface AudienceInfo {
   slug: string
@@ -288,6 +289,21 @@ export function audiencePage(audienceSlug: string, regionSlug?: string): { html:
 
   const area = regionSlug ? getAreaInfo(regionSlug) : null
   const areaPrefix = area ? `${area.name} ` : ''
+  // 지역 변형 페이지 고유 안내 (2026-10-08: 기본 페이지와 거의 같은 본문 → 지역 교통·내원 안내와 지역 FAQ 1문항 추가)
+  const route = regionSlug ? getAreaRouteBySlug(regionSlug) : null
+  const regionNoteHtml = area && route ? `
+      <section class="max-w-5xl mx-auto px-4 pt-10">
+        <div class="bg-white rounded-xl p-6 shadow-md border-l-4 border-pink-500">
+          <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-3">${route.name}에 사는 ${audience.shortKo} 내원 안내</h2>
+          <p class="text-gray-700 leading-relaxed">${route.routeDesc}${route.routeHighway ? ` (경로: ${route.routeHighway})` : ''}</p>
+          <p class="text-gray-700 leading-relaxed mt-3">${route.name}에서 ${route.driveTime} 거리라 여러 번 오가기 부담스러우시면, 첫 상담 때 필요한 검사와 치료 순서를 한꺼번에 정해 내원 일정을 미리 잡아 두시길 권합니다.</p>
+          ${route.subAreas.length ? `<p class="text-sm text-gray-500 mt-3">${route.subAreas.slice(0, 6).join(' · ')} 등 ${route.name} 생활권에서 같은 경로로 오실 수 있습니다.</p>` : ''}
+        </div>
+      </section>` : ''
+  const faqs = area && route ? [...audience.faqs, {
+    q: `${route.name}에서 ${audience.shortKo} 진료를 받으러 가면 얼마나 걸리나요?`,
+    a: `${route.name}에서 영주 강남치과의원(영주시 대학로 217)까지 자동차로 ${route.driveTime}${route.driveKm && route.driveKm !== '-' ? `, 거리로는 ${route.driveKm}` : ''} 정도입니다. 평일 오전 9시~오후 5시 30분 진료(접수 마감 오후 5시), 토·일·공휴일 휴진입니다.`
+  }] : audience.faqs
 
   // SEO
   const title = `${areaPrefix}${audience.ko} | 영주 강남치과의원 - 보험적용·전문진료`
@@ -318,7 +334,7 @@ export function audiencePage(audienceSlug: string, regionSlug?: string): { html:
   `).join('')
 
   // FAQ
-  const faqsHtml = audience.faqs.map(f => `
+  const faqsHtml = faqs.map(f => `
     <details class="bg-white rounded-xl p-5 shadow-md border-l-4 border-emerald-500 mb-3" open>
       <summary class="text-lg font-bold text-gray-800 cursor-pointer list-none flex items-start gap-2">
         <span class="text-emerald-600 font-black">Q.</span> ${f.q}
@@ -352,7 +368,7 @@ export function audiencePage(audienceSlug: string, regionSlug?: string): { html:
     {
       "@context": "https://schema.org",
       "@type": "FAQPage",
-      "mainEntity": audience.faqs.map(f => ({
+      "mainEntity": faqs.map(f => ({
         "@type": "Question",
         "name": f.q,
         "acceptedAnswer": { "@type": "Answer", "text": f.a }
@@ -375,6 +391,7 @@ export function audiencePage(audienceSlug: string, regionSlug?: string): { html:
           <p class="text-lg text-white/95 audience-summary" data-speakable>${audience.hero}</p>
         </div>
       </section>
+${regionNoteHtml}
 
       <section class="max-w-5xl mx-auto px-4 py-12">
         <h2 class="text-2xl font-bold text-gray-800 mb-4">✨ ${audience.shortKo} 진료 특성</h2>

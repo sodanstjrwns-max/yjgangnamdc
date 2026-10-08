@@ -7,6 +7,7 @@
  * 12개 증상 × 9지역 = 108개 + 12개 단독 = 120 페이지
  */
 
+import { getAreaRouteBySlug } from './area'
 import { getAreaInfo, getTreatmentInfo, getAreaSlugs } from './combo'
 
 interface SymptomInfo {
@@ -521,11 +522,28 @@ export function symptomPage(symptomSlug: string, regionSlug?: string): { html: s
   const area = regionSlug ? getAreaInfo(regionSlug) : null
   const areaPrefix = area ? `${area.name} ` : ''
   const areaContext = area ? `${area.name}·인근 거주자를 위한 ` : ''
+  // 지역 변형 페이지 고유 안내 (2026-10-08: 기본 페이지와 본문이 83%까지 겹쳐 지역 교통·내원 안내와 지역 FAQ 1문항 추가)
+  const route = regionSlug ? getAreaRouteBySlug(regionSlug) : null
+  const regionNoteHtml = area && route ? `
+      <section class="max-w-5xl mx-auto px-4 pt-10">
+        <div class="bg-white rounded-xl p-6 shadow-md border-l-4 border-orange-500">
+          <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-3">${route.name}에서 ${symptom.shortKo} 때문에 내원하신다면</h2>
+          <p class="text-gray-700 leading-relaxed">${route.routeDesc}${route.routeHighway ? ` (경로: ${route.routeHighway})` : ''}</p>
+          <p class="text-gray-700 leading-relaxed mt-3">${symptom.urgency === 'high'
+            ? `${symptom.shortKo}처럼 서둘러야 하는 증상은 출발 전에 054-636-8222로 전화해 그날 진료 가능 시간을 먼저 확인하세요. 평일 접수는 오후 5시에 마감하고, 토·일·공휴일은 휴진입니다.`
+            : `${symptom.shortKo}은(는) 원인을 찾으려면 촬영과 검사가 필요할 수 있어, ${route.name}처럼 ${route.driveTime} 거리에서 오신다면 예약 후 내원하시는 편이 기다림이 적습니다.`}</p>
+          ${route.subAreas.length ? `<p class="text-sm text-gray-500 mt-3">${route.subAreas.slice(0, 6).join(' · ')} 등 ${route.name} 생활권에서 같은 경로로 오실 수 있습니다.</p>` : ''}
+        </div>
+      </section>` : ''
+  const faqs = area && route ? [...symptom.faqs, {
+    q: `${route.name}에서 ${symptom.shortKo} 진료를 받으러 가면 얼마나 걸리나요?`,
+    a: `${route.name}에서 영주 강남치과의원(영주시 대학로 217)까지 자동차로 ${route.driveTime}${route.driveKm && route.driveKm !== '-' ? `, 거리로는 ${route.driveKm}` : ''} 정도입니다. 진료는 평일 오전 9시~오후 5시 30분이며 점심시간은 오후 1시~2시입니다.`
+  }] : symptom.faqs
 
   // SEO
   const urgencyTag = symptom.urgency === 'high' ? '⚠️ 응급' : symptom.urgency === 'medium' ? '🟡 주의' : '🟢 일반'
   const title = `${areaPrefix}${symptom.ko} 원인·진료법 | 영주 강남치과 ${symptom.shortKo} 진료 가이드`
-  const description = `${areaContext}${symptom.shortKo} 증상의 원인 ${symptom.causes.length}가지, 진료법, 자가관리법, 내원 시점까지. 영주 강남치과 서울대 출신 전문의의 ${symptom.shortKo} 진료 안내. ${symptom.causes[0]?.title || ''} 등 ${symptom.urgency === 'high' ? '응급 진료 가능' : '체계적 진료'}.`
+  const description = `${areaContext}${symptom.shortKo} 증상의 원인 ${symptom.causes.length}가지, 진료법, 자가관리법, 내원 시점까지. 영주 강남치과 구강악안면외과 전문의의 ${symptom.shortKo} 진료 안내. ${symptom.causes[0]?.title || ''} 등 ${symptom.urgency === 'high' ? '응급 진료 가능' : '체계적 진료'}.`
   const keywords = [
     ...symptom.searchKeywords,
     `${symptom.shortKo} 치과`,
@@ -580,7 +598,7 @@ export function symptomPage(symptomSlug: string, regionSlug?: string): { html: s
   `).join('')
 
   // FAQ
-  const faqsHtml = symptom.faqs.map(f => `
+  const faqsHtml = faqs.map(f => `
     <details class="bg-white rounded-xl p-5 shadow-md border-l-4 border-emerald-500 mb-3 group" open>
       <summary class="text-lg font-bold text-gray-800 cursor-pointer list-none flex items-start gap-2">
         <span class="text-emerald-600 font-black">Q.</span> ${f.q}
@@ -639,7 +657,7 @@ export function symptomPage(symptomSlug: string, regionSlug?: string): { html: s
     {
       "@context": "https://schema.org",
       "@type": "FAQPage",
-      "mainEntity": symptom.faqs.map(f => ({
+      "mainEntity": faqs.map(f => ({
         "@type": "Question",
         "name": f.q,
         "acceptedAnswer": {
@@ -700,7 +718,7 @@ export function symptomPage(symptomSlug: string, regionSlug?: string): { html: s
           <div class="inline-block bg-white text-orange-700 px-3 py-1 rounded-full text-xs font-bold mb-3">${urgencyTag} 진료 가이드</div>
           <h1 class="text-3xl md:text-4xl font-bold mb-4 leading-tight" data-speakable>
             ${areaPrefix}${symptom.ko}<br/>
-            <span class="text-white/90 text-2xl md:text-3xl">원인·진료법·자가관리 완벽 가이드</span>
+            <span class="text-white/90 text-2xl md:text-3xl">원인·진료법·자가관리 가이드</span>
           </h1>
           <p class="text-lg text-white/95 leading-relaxed symptom-summary" data-speakable>${symptom.hero}</p>
           ${symptom.urgency === 'high' ? `
@@ -714,7 +732,7 @@ export function symptomPage(symptomSlug: string, regionSlug?: string): { html: s
           ` : ''}
         </div>
       </section>
-
+${regionNoteHtml}
       <!-- 원인 -->
       <section class="max-w-5xl mx-auto px-4 py-12">
         <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">🔍 ${symptom.shortKo}의 가능한 원인 ${symptom.causes.length}가지</h2>
@@ -735,7 +753,7 @@ export function symptomPage(symptomSlug: string, regionSlug?: string): { html: s
       <!-- 진료법 -->
       <section class="max-w-5xl mx-auto px-4 py-12">
         <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">🩺 ${symptom.shortKo} 진료법</h2>
-        <p class="text-gray-600 mb-6">원인에 따라 적절한 진료를 선택합니다. 영주 강남치과는 모든 진료가 가능합니다.</p>
+        <p class="text-gray-600 mb-6">원인에 따라 적절한 진료를 선택합니다.</p>
         <div class="grid md:grid-cols-2 gap-4">
           ${treatmentsHtml}
         </div>
@@ -781,7 +799,7 @@ export function symptomPage(symptomSlug: string, regionSlug?: string): { html: s
       <section class="bg-gradient-to-r from-emerald-700 to-teal-700 text-white py-12">
         <div class="max-w-4xl mx-auto px-4 text-center">
           <h2 class="text-3xl font-bold mb-4">${areaPrefix}${symptom.shortKo}, 영주 강남치과에서 정확히 진단받으세요</h2>
-          <p class="text-emerald-100 mb-6 text-lg">서울대 출신 전문의 + 디지털 정밀진단 시스템</p>
+          <p class="text-emerald-100 mb-6 text-lg">구강악안면외과 전문의 + 디지털 정밀진단 시스템</p>
           <div class="flex flex-wrap justify-center gap-4">
             <a href="/reservation" class="bg-white text-emerald-700 font-bold px-8 py-3 rounded-full hover:bg-emerald-50 transition">📅 진료 예약하기</a>
             <a href="tel:054-636-8222" class="bg-emerald-800 text-white font-bold px-8 py-3 rounded-full hover:bg-emerald-900 transition border-2 border-white">📞 054-636-8222</a>

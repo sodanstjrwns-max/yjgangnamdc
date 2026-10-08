@@ -671,6 +671,18 @@ export function getAreaKeyBySlug(slug: string): string | null {
   return hit ? hit[0] : null
 }
 
+// 지역 slug(yeongju·bonghwa…) → 교통 정보 (증상·대상자 지역 변형 페이지의 지역 고유 안내용, 2026-10-08)
+export function getAreaRouteBySlug(slug: string): { name: string; driveTime: string; driveKm: string; routeDesc: string; routeHighway?: string; subAreas: string[] } | null {
+  const hit = Object.values(areaData).find(a => a.slug === slug)
+  if (!hit) return null
+  return { name: hit.name, driveTime: hit.driveTime, driveKm: hit.driveKm, routeDesc: hit.routeDesc, routeHighway: hit.routeHighway, subAreas: hit.subAreas }
+}
+
+// 허브 페이지용 지역 목록 (이름·소요시간)
+export function getAreaSummaries(): { key: string; name: string; driveTime: string }[] {
+  return Object.entries(areaData).map(([key, a]) => ({ key, name: a.name, driveTime: a.driveTime }))
+}
+
 // 지역별 우선순위 정보 (sitemap 최적화용)
 export function getAreaPriority(key: string): number {
   return areaData[key]?.priority || 3

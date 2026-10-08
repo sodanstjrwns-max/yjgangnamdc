@@ -284,7 +284,7 @@ export function emergencyPage(regionSlug?: string): { html: string; title: strin
           <div class="bg-white rounded-xl p-5 shadow border-2 border-emerald-200">
             <div class="text-2xl mb-2">👨‍⚕️</div>
             <h3 class="font-bold text-emerald-800 mb-2">전문의 직접 진료</h3>
-            <p class="text-sm text-gray-700">서울대 출신 통합치과 전문의가 직접 응급 진료. 안전한 시술.</p>
+            <p class="text-sm text-gray-700">구강악안면외과 전문의가 직접 응급 진료. 안전한 시술.</p>
           </div>
         </div>
       </section>

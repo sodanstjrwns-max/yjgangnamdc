@@ -1487,6 +1487,7 @@ export function layout(content: string, opts: LayoutOptions): string {
             <li><a href="/faq" class="hover:text-royal transition-colors duration-300">자주묻는질문</a></li>
             <li><a href="/pricing" class="hover:text-royal transition-colors duration-300">비용안내</a></li>
             <li><a href="/directions" class="hover:text-royal transition-colors duration-300">오시는길</a></li>
+            <li><a href="/area/%EC%98%81%EC%A3%BC%EC%8B%9C" class="hover:text-royal transition-colors duration-300">영주 치과 안내</a></li>
             <li><a href="/reservation" class="hover:text-royal transition-colors duration-300">상담예약</a></li>
           </ul>
         </div>

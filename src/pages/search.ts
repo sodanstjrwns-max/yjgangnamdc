@@ -49,7 +49,7 @@ export const STATIC_SEARCH_INDEX: SearchEntry[] = [
   { url: '/area/영주혁신도시', title: '영주혁신도시 치과', desc: '혁신도시에서 10분', category: '지역', keywords: '혁신도시 영주혁신도시' },
   // 콘텐츠 허브
   { url: '/blog', title: '블로그', desc: '치과 건강 정보 칼럼', category: '콘텐츠', keywords: '블로그 칼럼 글' },
-  { url: '/dictionary', title: '치과 용어사전', desc: '치과 용어 248개 해설', category: '콘텐츠', keywords: '용어 사전 용어사전 뜻' },
+  { url: '/dictionary', title: '치과 용어사전', desc: '치과 용어 231개 해설', category: '콘텐츠', keywords: '용어 사전 용어사전 뜻' },
   { url: '/symptom', title: '증상별 안내', desc: '증상으로 찾는 치료법', category: '콘텐츠', keywords: '증상 아파요 시려요 통증' },
   { url: '/emergency/영주', title: '영주 응급치과', desc: '치과 응급상황 대처법', category: '콘텐츠', keywords: '응급 급해요 야간 주말' },
 ]

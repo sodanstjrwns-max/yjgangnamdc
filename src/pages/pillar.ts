@@ -33,9 +33,9 @@ interface PillarConfig {
 const pillarConfigs: Record<string, PillarConfig> = {
   'implant': {
     treatmentSlug: 'implant',
-    longTitle: '임플란트 완벽 가이드: 종류·비용·기간·후기·관리법 [2026]',
-    metaDescription: '임플란트 종류별 차이부터 가격(개당 80~150만원), 4~6개월 진료기간, 평생관리법까지. 영주 강남치과 서울대 전문의의 임플란트 완벽 가이드. 디지털 임플란트·뼈이식·즉시식립 모두.',
-    intro: '임플란트는 자연치아를 잃었을 때 가장 가깝게 복원하는 현대 치과의 핵심 진료입니다. 영주 강남치과는 서울대 출신 통합치과 전문의가 직접 진료하며, CBCT 정밀진단 + 디지털 임플란트 시스템 + 6개 독립 수술실을 갖춘 경북북부 거점 임플란트 치과입니다.',
+    longTitle: '임플란트 가이드: 종류·비용·기간·후기·관리법 [2026]',
+    metaDescription: '임플란트 종류별 차이부터 가격(개당 80~150만원), 4~6개월 진료기간, 평생관리법까지. 영주 강남치과 구강악안면외과 전문의의 임플란트 가이드. 디지털 임플란트·뼈이식·즉시식립 모두.',
+    intro: '임플란트는 자연치아를 잃었을 때 가장 가깝게 복원하는 현대 치과의 핵심 진료입니다. 영주 강남치과는 구강악안면외과 전문의가 직접 진료하며, CBCT 정밀진단 + 디지털 임플란트 시스템 + 6개 독립 수술실을 갖춘 경북북부 거점 임플란트 치과입니다.',
     problem: '임플란트는 한 번 식립하면 평생 사용하는 시술입니다. 그런데도 일부 치과에서는 가격만 강조하거나, 정밀진단 없이 식립하다 실패 사례가 발생하기도 합니다. 진짜 중요한 것은 (1) 정확한 진단 (2) 의료진의 임상 깊이 (3) 사후관리 시스템 세 가지입니다.',
     procedure: [
       '1단계: 초진 상담 + CBCT 3D 정밀진단 — 잇몸뼈 상태·신경 위치·교합 분석',
@@ -60,9 +60,9 @@ const pillarConfigs: Record<string, PillarConfig> = {
   },
   'invisalign': {
     treatmentSlug: 'invisalign',
-    longTitle: '인비절라인 투명교정 완벽 가이드: 비용·기간·관리법 [2026]',
+    longTitle: '인비절라인 투명교정 종합 가이드: 비용·기간·관리법 [2026]',
     metaDescription: '인비절라인 교정 비용(400~900만원), 기간(1~2년), 관리법, 식사·관리 주의사항. 영주 강남치과 인비절라인 공인 전문의 가이드.',
-    intro: '인비절라인은 투명한 맞춤형 교정장치로 미국 알라인테크놀로지가 개발한 글로벌 1위 투명교정 시스템입니다. 영주 강남치과는 인비절라인 공인 진료 치과로 서울대 출신 전문의가 직접 진료합니다.',
+    intro: '인비절라인은 투명한 맞춤형 교정장치로 미국 알라인테크놀로지가 개발한 글로벌 1위 투명교정 시스템입니다. 영주 강남치과는 인비절라인 공인 진료 치과로 구강악안면외과 전문의가 직접 진료합니다.',
     problem: '교정은 한번 시작하면 1~2년 진행되는 장기 진료입니다. 그래서 시작 전 (1) 정확한 진단 (2) 맞춤형 치료계획 (3) 정기 점검 시스템이 핵심입니다. 영주 강남치과는 인비절라인 공식 진단 시스템 ClinCheck로 시작부터 끝까지 미리 시뮬레이션합니다.',
     procedure: [
       '1단계: 초진 상담 + 디지털 스캔 + 사진/방사선 검사',
@@ -87,9 +87,9 @@ const pillarConfigs: Record<string, PillarConfig> = {
   },
   'wisdom-tooth': {
     treatmentSlug: 'wisdom-tooth',
-    longTitle: '사랑니 발치 완벽 가이드: 종류·비용·통증·관리법 [2026]',
-    metaDescription: '사랑니 발치 비용(보험적용 5~30만원), 매복사랑니 수술, 발치 후 관리법. 영주 강남치과 서울대 전문의 사랑니 가이드.',
-    intro: '사랑니는 마지막에 나는 어금니로, 잘못 나거나 매복된 경우 충치·잇몸병·통증을 유발합니다. 영주 강남치과는 서울대 출신 통합치과 전문의가 직접 매복사랑니 수술까지 진행합니다.',
+    longTitle: '사랑니 발치 종합 가이드: 종류·비용·통증·관리법 [2026]',
+    metaDescription: '사랑니 발치 비용(보험적용 5~30만원), 매복사랑니 수술, 발치 후 관리법. 영주 강남치과 구강악안면외과 전문의 사랑니 가이드.',
+    intro: '사랑니는 마지막에 나는 어금니로, 잘못 나거나 매복된 경우 충치·잇몸병·통증을 유발합니다. 영주 강남치과는 구강악안면외과 전문의가 직접 매복사랑니 수술까지 진행합니다.',
     problem: '사랑니는 단순 발치부터 신경 근접 매복사랑니 수술까지 난이도가 천차만별입니다. 정확한 CBCT 진단 없이 수술하면 신경 손상 위험이 큽니다. 영주 강남치과는 CBCT 3D 진단으로 신경·치근 위치를 정확히 파악한 후 안전하게 수술합니다.',
     procedure: [
       '1단계: 상담 + CBCT 3D 진단 — 사랑니 위치·신경 근접도 정확히 파악',
@@ -114,7 +114,7 @@ const pillarConfigs: Record<string, PillarConfig> = {
   },
   'digital-prosthesis': {
     treatmentSlug: 'digital-prosthesis',
-    longTitle: '디지털 보철 완벽 가이드: 크라운·브릿지·비용·기간 [2026]',
+    longTitle: '디지털 보철 종합 가이드: 크라운·브릿지·비용·기간 [2026]',
     metaDescription: '디지털 보철(크라운·브릿지) 종류, 비용(30~70만원), 디지털 스캐너 기반 정밀 보철. 영주 강남치과 가이드.',
     intro: '디지털 보철은 디지털 스캐너로 정밀 본뜨고, CAD/CAM으로 자연치아처럼 제작하는 첨단 보철입니다. 영주 강남치과는 디지털 보철 시스템 풀세트를 갖추고 있습니다.',
     problem: '전통 본뜨기는 인상재 거부감·정확도 한계가 있었습니다. 디지털 스캐너는 1분 만에 정밀 스캔하고, CAD/CAM으로 1mm 오차 내 제작합니다. 영주 강남치과는 디지털 보철 풀워크플로우를 갖춘 경북북부 거점 치과입니다.',
@@ -141,7 +141,7 @@ const pillarConfigs: Record<string, PillarConfig> = {
   },
   'cosmetic': {
     treatmentSlug: 'cosmetic',
-    longTitle: '심미치과 완벽 가이드: 라미네이트·올세라믹·미백 [2026]',
+    longTitle: '심미치과 종합 가이드: 라미네이트·올세라믹·미백 [2026]',
     metaDescription: '라미네이트(60~100만원), 올세라믹(50~70만원), 치아미백 비용·과정·관리. 영주 강남치과 심미진료.',
     intro: '심미치과는 자연치아의 색·형태·배열을 개선하는 진료입니다. 영주 강남치과는 디지털 스마일 디자인으로 환자와 함께 미리 결과를 시뮬레이션합니다.',
     problem: '심미진료는 영구적 변화를 가져옵니다. 그래서 (1) 시뮬레이션 (2) 환자 합의 (3) 정밀 제작 세 단계가 필수입니다.',
@@ -168,7 +168,7 @@ const pillarConfigs: Record<string, PillarConfig> = {
   },
   'bone-graft': {
     treatmentSlug: 'bone-graft',
-    longTitle: '뼈이식 완벽 가이드: GBR·상악동(위턱 공간) 거상술·비용 [2026]',
+    longTitle: '뼈이식 종합 가이드: GBR·상악동(위턱 공간) 거상술·비용 [2026]',
     metaDescription: '잇몸뼈이식(GBR, 30~80만원), 상악동(위턱 공간) 거상술(50~150만원), 임플란트 동시 식립. 영주 강남치과 가이드.',
     intro: '잇몸뼈가 부족해도 뼈이식으로 임플란트 식립이 가능합니다. 영주 강남치과는 GBR·상악동(위턱 공간) 거상술 등 모든 뼈이식 기법을 갖추고 있습니다.',
     problem: '치아 상실 후 시간이 지나면 잇몸뼈가 자연 흡수됩니다. 임플란트 식립을 위해서는 충분한 뼈가 필요하며, 뼈가 부족하면 뼈이식이 필요합니다.',
@@ -195,7 +195,7 @@ const pillarConfigs: Record<string, PillarConfig> = {
   },
   'cavity': {
     treatmentSlug: 'cavity',
-    longTitle: '충치치료 완벽 가이드: 레진·인레이·신경치료 [2026]',
+    longTitle: '충치치료 종합 가이드: 레진·인레이·신경치료 [2026]',
     metaDescription: '충치치료 비용(레진 5~15만원, 인레이 15~30만원, 신경치료 보험적용 10~25만원), 단계별 진료. 영주 강남치과.',
     intro: '충치는 치아 표면이 산성 환경으로 부식되는 진행성 질환입니다. 초기에 발견하면 간단한 레진 충전으로 끝나지만, 방치하면 신경치료·발치까지 진행됩니다.',
     problem: '충치는 진행 단계에 따라 치료법이 완전히 달라집니다. 정확한 진단 없이 치료하면 과잉진료 또는 부족한 치료가 됩니다.',
@@ -221,7 +221,7 @@ const pillarConfigs: Record<string, PillarConfig> = {
   },
   'whitening': {
     treatmentSlug: 'whitening',
-    longTitle: '치아미백 완벽 가이드: 종류·비용·효과·관리법 [2026]',
+    longTitle: '치아미백 종합 가이드: 종류·비용·효과·관리법 [2026]',
     metaDescription: '치아미백 종류(전문가/홈/내부미백), 비용(20~50만원), 효과 지속기간, 관리법. 영주 강남치과 가이드.',
     intro: '치아미백은 안전한 약제로 치아 색을 밝게 하는 진료입니다. 영주 강남치과는 전문가 미백 + 홈미백 병행 시스템을 운영합니다.',
     problem: '시판 미백제는 효과가 제한적이거나 잇몸 자극이 있습니다. 전문가 미백은 농도·시간을 조절해 안전하고 효과적입니다.',
@@ -321,7 +321,7 @@ export function pillarPage(treatmentSlug: string): { html: string; title: string
     const ti = getTreatmentInfo(rt)
     if (!ti) return ''
     return `<a href="/guide/${rt}" class="bg-emerald-50 rounded-lg p-3 border border-emerald-200 hover:border-emerald-500 hover:shadow transition">
-      <div class="font-semibold text-emerald-700">${ti.koSlug} 완벽 가이드</div>
+      <div class="font-semibold text-emerald-700">${ti.koSlug} 종합 가이드</div>
       <div class="text-xs text-gray-600 mt-1">${ti.koSlug} 비용·기간·관리법</div>
     </a>`
   }).join('')
@@ -410,7 +410,7 @@ export function pillarPage(treatmentSlug: string): { html: string; title: string
           </nav>
           <div class="inline-block bg-yellow-400 text-emerald-900 px-3 py-1 rounded-full text-xs font-bold mb-3">📚 PILLAR 가이드 [2026]</div>
           <h1 class="text-3xl md:text-4xl font-bold mb-4 leading-tight" data-speakable>
-            ${treatment.koSlug} 완벽 가이드<br/>
+            ${treatment.koSlug} 종합 가이드<br/>
             <span class="text-yellow-300 text-2xl md:text-3xl">종류·비용·기간·관리법 총정리</span>
           </h1>
           <p class="text-lg text-emerald-100 leading-relaxed pillar-summary" data-speakable>
@@ -497,7 +497,7 @@ export function pillarPage(treatmentSlug: string): { html: string; title: string
       <section class="bg-gradient-to-r from-emerald-700 to-teal-700 text-white py-12">
         <div class="max-w-4xl mx-auto px-4 text-center">
           <h2 class="text-3xl font-bold mb-4">${treatment.koSlug}, 영주 강남치과에 맡기세요</h2>
-          <p class="text-emerald-100 mb-6 text-lg">서울대 출신 전문의 + 디지털 시스템 + 평생관리</p>
+          <p class="text-emerald-100 mb-6 text-lg">구강악안면외과 전문의 + 디지털 시스템 + 평생관리</p>
           <div class="flex flex-wrap justify-center gap-4">
             <a href="/reservation" class="bg-white text-emerald-700 font-bold px-8 py-3 rounded-full hover:bg-emerald-50 transition">📅 진료 예약하기</a>
             <a href="tel:054-633-2828" class="bg-emerald-800 text-white font-bold px-8 py-3 rounded-full hover:bg-emerald-900 transition border-2 border-white">📞 054-633-2828</a>
@@ -521,7 +521,7 @@ export function pillarIndexPage(): { html: string; title: string; description: s
     return `
       <a href="/guide/${slug}" class="bg-white rounded-xl p-6 shadow-lg border-2 border-emerald-200 hover:border-emerald-500 hover:shadow-xl transition group">
         <div class="text-2xl mb-3">📚</div>
-        <h3 class="text-xl font-bold text-emerald-800 mb-2 group-hover:text-emerald-600">${t.ko} 완벽 가이드</h3>
+        <h3 class="text-xl font-bold text-emerald-800 mb-2 group-hover:text-emerald-600">${t.ko} 종합 가이드</h3>
         <p class="text-sm text-gray-600 leading-relaxed">${config.metaDescription.substring(0, 80)}...</p>
         <div class="mt-4 text-emerald-600 font-semibold text-sm group-hover:translate-x-1 transition">자세히 보기 →</div>
       </a>
@@ -533,7 +533,7 @@ export function pillarIndexPage(): { html: string; title: string; description: s
       <section class="bg-gradient-to-r from-emerald-700 to-teal-700 text-white py-16">
         <div class="max-w-5xl mx-auto px-4 text-center">
           <div class="inline-block bg-yellow-400 text-emerald-900 px-3 py-1 rounded-full text-xs font-bold mb-3">📚 PILLAR 가이드 [2026]</div>
-          <h1 class="text-4xl md:text-5xl font-bold mb-4" data-speakable>치과 진료 완벽 가이드</h1>
+          <h1 class="text-4xl md:text-5xl font-bold mb-4" data-speakable>치과 진료 종합 가이드</h1>
           <p class="text-lg text-emerald-100" data-speakable>영주 강남치과 8대 핵심 진료 — 비용·기간·관리법까지 한번에</p>
         </div>
       </section>
@@ -548,8 +548,8 @@ export function pillarIndexPage(): { html: string; title: string; description: s
 
   return {
     html,
-    title: '치과 진료 완벽 가이드 | 영주 강남치과 PILLAR 가이드',
-    description: '영주 강남치과의 8대 핵심 진료 완벽 가이드. 임플란트·교정·사랑니·보철·심미·뼈이식·충치·미백 비용/기간/관리법 총정리.',
+    title: '치과 진료 종합 가이드 | 영주 강남치과 PILLAR 가이드',
+    description: '영주 강남치과의 8대 핵심 진료 종합 가이드. 임플란트·교정·사랑니·보철·심미·뼈이식·충치·미백 비용/기간/관리법 총정리.',
     keywords: '치과 진료 가이드, 임플란트 가이드, 교정 가이드, 사랑니 가이드, 영주 강남치과 가이드, 치과 비용, 치과 진료 절차'
   }
 }

@@ -8,22 +8,37 @@
 // 콘텐츠를 실제로 수정한 배포 시점에 해당 섹션의 날짜만 갱신할 것.
 // ============================================================
 
-// 섹션별 콘텐츠 최종 수정일 (실제 콘텐츠 변경 시에만 갱신)
+// 섹션별 콘텐츠 최종 수정일
+// 2026-10-08: 수동 고정값 → 빌드 시 각 소스 파일의 마지막 커밋일(vite define __SRC_DATES__).
+//   수동 값은 git 을 못 쓰는 빌드 환경용 폴백. (예전 수동 값이 실제 수정보다 뒤처져 있었음:
+//   symptom 04-29 ↔ 파일 09-29, combo 04-08 ↔ 09-29 등)
+declare const __SRC_DATES__: Record<string, string> | undefined
+export const SRC_DATES: Record<string, string> = (typeof __SRC_DATES__ !== 'undefined' && __SRC_DATES__) || {}
+const pick = (key: string, fallback: string) => SRC_DATES[key] || fallback
+
+// 용어 사전 보강 원고 반영일 (src/data/dictionary/*.json — 실제 작성일, 고정값)
+export const DICT_ENRICHED_DATE = '2026-10-08'
+
 export const CONTENT_LASTMOD = {
-  main: '2026-09-29',        // 메인/의료진/가격/예약/오시는길
-  treatments: '2026-09-29',  // 진료과목 17개
-  faq: '2026-05-15',         // FAQ 170개
-  area: '2026-09-29',        // 지역 페이지 14개
-  combo: '2026-04-08',       // 지역×진료 조합 112개
-  intent: '2026-04-15',      // 의도형 키워드 448개
-  compare: '2026-04-15',     // 비교 페이지 64개
-  pillar: '2026-04-15',      // 필러 가이드 9개
-  symptom: '2026-04-29',     // 증상 페이지 93개
-  audience: '2026-09-29',    // 대상자 페이지 31개
-  emergency: '2026-09-29',   // 응급 페이지 9개
-  locality: '2026-05-15',    // 세부지역 122개
-  dictionary: '2026-03-23',  // 치과용어사전 248개
-} as const
+  main: pick('main', '2026-09-29'),             // 홈
+  doctors: pick('doctors', '2026-10-03'),       // 의료진
+  pricing: pick('pricing', '2026-09-06'),       // 수가 안내(화면 틀; 금액은 D1 수가 편집기)
+  reservation: pick('reservation', '2026-08-18'),
+  directions: pick('directions', '2026-08-18'),
+  allPages: pick('allPages', '2026-10-08'),     // HTML 사이트맵(/all-pages)
+  treatments: pick('treatments', '2026-09-29'), // 진료과목 17개
+  faq: pick('faq', '2026-08-18'),               // FAQ
+  area: pick('area', '2026-10-08'),             // 지역 페이지 14개 (영주 치과 허브 포함)
+  combo: pick('combo', '2026-09-29'),           // 지역×진료 조합 112개
+  intent: pick('intent', '2026-09-29'),         // 의도형 키워드 (canonical 통합, 사이트맵 제외)
+  compare: pick('compare', '2026-06-11'),       // 비교 페이지 64개
+  pillar: pick('pillar', '2026-09-29'),         // 필러 가이드 9개
+  symptom: pick('symptom', '2026-09-29'),       // 증상 페이지
+  audience: pick('audience', '2026-09-29'),     // 대상자 페이지
+  emergency: pick('emergency', '2026-09-29'),   // 응급 페이지
+  locality: pick('locality', '2026-09-29'),     // 세부지역
+  dictionary: DICT_ENRICHED_DATE,               // 치과용어사전 (보강 원고 반영일)
+}
 
 // 의료 콘텐츠 최종 감수일 (전문의 감수 시점 — Schema.org lastReviewed용)
 export const MEDICAL_LAST_REVIEWED = '2026-08-18'
@@ -77,7 +92,7 @@ export function metaDescFrom(summary: string | null | undefined, body: string | 
 }
 
 // 사이트맵 인덱스 lastmod = 가장 최근 섹션 수정일
-export const SITEMAP_INDEX_LASTMOD = Object.values(CONTENT_LASTMOD).sort().reverse()[0]
+export const SITEMAP_INDEX_LASTMOD = Object.values(CONTENT_LASTMOD).filter(Boolean).sort().reverse()[0]
 
 // ============================================================
 // IndexNow (Bing / Naver / Seznam / Yandex 즉시 색인 프로토콜)

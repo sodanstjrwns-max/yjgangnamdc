@@ -1,6 +1,19 @@
 // ===== 치과 용어 사전 페이지 =====
 
 import { SITE_URL, SITE_NAME } from '../layout'
+import type { DictEnriched } from '../data/dictionary'
+import { DICT_ENRICHED_DATE } from '../seo'
+
+const TREATMENT_NAMES: Record<string, string> = {
+  'implant': '임플란트', 'digital-prosthesis': '디지털 보철', 'invisalign': '인비절라인', 'cosmetic': '심미보철',
+  'wisdom-tooth': '사랑니 발치', 'cavity': '충치치료', 'root-canal': '신경치료', 'crown': '크라운', 'resin': '레진',
+  'whitening': '미백', 'scaling': '스케일링', 'gum': '잇몸치료', 'tmj': '턱관절', 'bone-graft': '뼈이식 임플란트',
+  'sinus-lift': '상악동 임플란트', 'denture': '틀니', 'prevention': '예방치료',
+}
+// 구 진료 slug(D1 related_treatment) → 현재 진료 페이지
+const TREATMENT_SLUG_FIX: Record<string, string> = { 'cerec': 'digital-prosthesis' }
+const esc = (t: string) => String(t || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+const ymd = (raw: any) => (typeof raw === 'string' && /^\d{4}-\d{2}-\d{2}/.test(raw)) ? raw.slice(0, 10) : undefined
 
 // 카테고리 아이콘/색상 맵
 const categoryMeta: Record<string, { icon: string; color: string; colorBg: string; label: string }> = {
@@ -181,7 +194,8 @@ export function dictionaryListPage(terms: any[], categories: any[], query?: stri
 }
 
 // ===== 용어 상세 페이지 =====
-export function dictionaryDetailPage(term: any, relatedTerms: any[]): { html: string; schemas: any[] } {
+export function dictionaryDetailPage(term: any, relatedTerms: any[], enriched?: DictEnriched): { html: string; schemas: any[] } {
+  if (enriched) return dictionaryEnrichedPage(term, enriched, relatedTerms)
   const meta = categoryMeta[term.category] || categoryMeta['일반']
   const relatedTermList = term.related_terms ? term.related_terms.split(',').map((t: string) => t.trim()) : []
 
@@ -370,5 +384,170 @@ export function dictionaryDetailPage(term: any, relatedTerms: any[]): { html: st
   </section>
   `
 
+  return { html, schemas }
+}
+
+// ===== 보강 원고가 있는 용어 상세 (2026-10-08) =====
+// 화면: H1 → 쉬운 정의(#tx-answer) → 유형별 질문형 섹션 → FAQ(details) → 관련 진료·관련 용어 → 병원 안내 1문장
+// 스키마: DefinedTerm + MedicalWebPage(#webpage, dateModified=보강일) + FAQPage(화면 문구와 동일)
+function dictionaryEnrichedPage(term: any, e: DictEnriched, relatedTerms: any[]): { html: string; schemas: any[] } {
+  const meta = categoryMeta[term.category] || categoryMeta['일반']
+  const url = `${SITE_URL}/dictionary/${term.slug}`
+  const treatments = (e.treatments || []).map(t => TREATMENT_SLUG_FIX[t] || t).filter(t => TREATMENT_NAMES[t])
+  if (!treatments.length && term.related_treatment) {
+    const t = TREATMENT_SLUG_FIX[term.related_treatment] || term.related_treatment
+    if (TREATMENT_NAMES[t]) treatments.push(t)
+  }
+  const sectionHtml = e.sections.map(sec => {
+    const paras = (sec.p || []).map(p => `<p class="mb-4 last:mb-0">${esc(p)}</p>`).join('')
+    const items = sec.li && sec.li.length
+      ? (sec.key === 'steps'
+        ? `<ol class="list-decimal pl-6 space-y-2 mt-3">${sec.li.map(x => `<li>${esc(x)}</li>`).join('')}</ol>`
+        : `<ul class="list-disc pl-6 space-y-2 mt-3">${sec.li.map(x => `<li>${esc(x)}</li>`).join('')}</ul>`)
+      : ''
+    return `
+      <section class="dict-sec dict-sec-${sec.key} mb-10 last:mb-0">
+        <h2 class="text-xl font-extrabold text-charcoal mb-4">${esc(sec.h)}</h2>
+        <div class="text-gray-600 text-base leading-[1.9]">${paras}${items}</div>
+      </section>`
+  }).join('')
+
+  const faqHtml = e.faqs.map((f, i) => `
+        <details class="card-premium group"${i === 0 ? ' open' : ''}>
+          <summary class="flex items-center justify-between p-5 cursor-pointer select-none">
+            <h3 class="font-bold text-charcoal text-base pr-4">${esc(f.q)}</h3>
+            <i class="fas fa-chevron-down text-gray-300 group-open:rotate-180 transition-transform duration-300 flex-shrink-0"></i>
+          </summary>
+          <div class="px-5 pb-5 pt-0 text-gray-600 text-[15px] leading-relaxed faq-answer" data-speakable>${esc(f.a)}</div>
+        </details>`).join('')
+
+  const relatedHtml = relatedTerms.map(rt => {
+    const rtMeta = categoryMeta[rt.category] || categoryMeta['일반']
+    return `
+    <a href="/dictionary/${rt.slug}" class="group flex items-center gap-4 p-4 rounded-2xl bg-white border border-gray-100 hover:border-royal/20 hover:shadow-lg transition-all duration-300">
+      <div class="w-10 h-10 rounded-xl ${rtMeta.colorBg} flex items-center justify-center flex-shrink-0"><i class="${rtMeta.icon} ${rtMeta.color} text-sm"></i></div>
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-bold text-charcoal group-hover:text-royal transition-colors truncate">${esc(rt.term_ko)}</p>
+        <p class="text-xs text-gray-400 truncate">${esc(rt.summary || '')}</p>
+      </div>
+      <i class="fas fa-chevron-right text-gray-200 text-xs group-hover:text-royal transition-colors"></i>
+    </a>`
+  }).join('')
+
+  const clinicLine = treatments.length
+    ? `영주 강남치과의원에서는 구강악안면외과 전문의가 ${treatments.map(t => TREATMENT_NAMES[t]).join('·')} 관련 상담과 진료를 하고 있습니다.`
+    : `${esc(term.term_ko)}에 대해 더 궁금한 점은 영주 강남치과의원(054-636-8222)에 문의하실 수 있습니다.`
+
+  const schemas: any[] = [
+    {
+      "@context": "https://schema.org",
+      "@type": "DefinedTerm",
+      "@id": `${url}#term`,
+      "name": term.term_ko,
+      "alternateName": term.term_en || undefined,
+      "description": e.lead,
+      "inDefinedTermSet": { "@type": "DefinedTermSet", "@id": `${SITE_URL}/dictionary#glossary`, "name": `${SITE_NAME} 치과 용어 사전`, "url": `${SITE_URL}/dictionary` },
+      "url": url,
+      "termCode": term.slug
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "MedicalWebPage",
+      "@id": `${url}#webpage`,
+      "name": `${term.term_ko} | ${SITE_NAME} 치과 용어 사전`,
+      "description": e.lead,
+      "url": url,
+      "about": { "@id": `${url}#term` },
+      "mainEntity": { "@id": `${url}#term` },
+      "author": [
+        { "@type": "Physician", "@id": `${SITE_URL}/doctors/lee-taehyung#physician`, "name": "이태형" },
+        { "@type": "Physician", "@id": `${SITE_URL}/doctors/choi-minhye#physician`, "name": "최민혜" }
+      ],
+      "publisher": { "@id": `${SITE_URL}/#organization` },
+      "inLanguage": "ko",
+      "isPartOf": { "@id": `${SITE_URL}/dictionary#glossary` },
+      "datePublished": ymd(term.created_at),
+      "dateModified": DICT_ENRICHED_DATE,
+      "relatedLink": treatments.map(t => `${SITE_URL}/treatments/${t}`)
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "@id": `${url}#faq`,
+      "mainEntity": e.faqs.map(f => ({ "@type": "Question", "name": f.q, "acceptedAnswer": { "@type": "Answer", "text": f.a } }))
+    }
+  ]
+
+  const html = `
+  <section class="relative pt-12 pb-8 bg-gradient-to-b from-royal/[0.03] to-transparent overflow-hidden">
+    <div class="max-w-4xl mx-auto px-5 relative">
+      <nav class="flex items-center gap-2 mb-6 text-sm flex-wrap" aria-label="breadcrumb">
+        <a href="/" class="text-gray-300 hover:text-royal transition-colors"><i class="fas fa-home"></i><span class="sr-only">홈</span></a>
+        <i class="fas fa-chevron-right text-gray-200 text-[8px]"></i>
+        <a href="/dictionary" class="text-gray-400 hover:text-royal transition-colors font-medium">치과 용어 사전</a>
+        <i class="fas fa-chevron-right text-gray-200 text-[8px]"></i>
+        <a href="/dictionary?category=${encodeURIComponent(term.category)}" class="text-gray-400 hover:text-royal transition-colors font-medium">${meta.label}</a>
+        <i class="fas fa-chevron-right text-gray-200 text-[8px]"></i>
+        <span class="text-royal font-bold">${esc(term.term_ko)}</span>
+      </nav>
+      <div class="flex items-start gap-5 mb-6">
+        <div class="w-14 h-14 rounded-2xl ${meta.colorBg} flex items-center justify-center flex-shrink-0 shadow-md"><i class="${meta.icon} ${meta.color} text-xl"></i></div>
+        <div class="flex-1">
+          <div class="flex items-center gap-2 mb-2 flex-wrap">
+            <span class="px-3 py-1 rounded-full ${meta.colorBg} ${meta.color} text-[11px] font-bold">${meta.label}</span>
+            <span class="px-2.5 py-1 rounded-full ${difficultyColor(term.difficulty)} text-[10px] font-bold">${difficultyLabel(term.difficulty)}</span>
+          </div>
+          <h1 class="text-3xl md:text-4xl font-black text-charcoal leading-tight" data-speakable>${esc(term.term_ko)}</h1>
+          ${term.term_en ? `<p class="text-base text-gray-400 font-medium mt-1">${esc(term.term_en)}</p>` : ''}
+        </div>
+      </div>
+      <div class="p-6 rounded-2xl bg-royal/[0.04] border border-royal/10">
+        <p id="tx-answer" class="text-[17px] text-charcoal font-semibold leading-relaxed" data-speakable>${esc(e.lead)}</p>
+        <p class="text-xs text-gray-400 mt-3">최종 수정 <time datetime="${DICT_ENRICHED_DATE}">${DICT_ENRICHED_DATE}</time> · 강남치과의원 치과 용어 사전</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-8">
+    <div class="max-w-4xl mx-auto px-5">
+      <article class="card-premium p-7 md:p-10">
+        ${sectionHtml}
+      </article>
+
+      <div class="mt-10">
+        <h2 class="text-xl font-extrabold text-charcoal mb-5">${esc(term.term_ko)} 자주 묻는 질문</h2>
+        <div class="space-y-3">${faqHtml}</div>
+      </div>
+
+      ${treatments.length ? `
+      <div class="mt-10 flex flex-wrap gap-3">
+        ${treatments.map(t => `
+        <a href="/treatments/${t}" class="inline-flex items-center gap-3 px-5 py-3.5 rounded-2xl bg-royal/[0.04] hover:bg-royal/[0.08] border border-royal/10 transition-all group">
+          <span class="w-9 h-9 rounded-xl royal-grad flex items-center justify-center"><i class="fas fa-stethoscope text-white text-xs"></i></span>
+          <span><span class="block text-xs text-gray-400">관련 진료</span><span class="text-sm font-bold text-royal group-hover:underline">${TREATMENT_NAMES[t]} 안내</span></span>
+        </a>`).join('')}
+      </div>` : ''}
+
+      ${relatedTerms.length ? `
+      <div class="mt-10">
+        <h2 class="text-xl font-extrabold text-charcoal mb-5">함께 알아두면 좋은 용어</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">${relatedHtml}</div>
+      </div>` : ''}
+
+      <p class="mt-10 text-sm text-gray-500 leading-relaxed">${clinicLine}</p>
+      <p class="mt-2 text-xs text-gray-400 leading-relaxed">이 글은 일반적인 정보이며, 개인의 구강 상태에 따라 진단과 치료는 달라질 수 있습니다.</p>
+    </div>
+  </section>
+
+  <section class="py-10 bg-gradient-to-b from-transparent to-royal/[0.02]">
+    <div class="max-w-4xl mx-auto px-5">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <a href="/dictionary?category=${encodeURIComponent(term.category)}" class="btn-outline px-6 py-3.5 rounded-2xl text-sm font-bold"><i class="${meta.icon} mr-2"></i>${meta.label} 용어 더 보기</a>
+        <a href="/dictionary" class="btn-outline px-6 py-3.5 rounded-2xl text-sm font-bold"><i class="fas fa-book-medical mr-2"></i>용어 사전 홈</a>
+        <a href="/reservation" class="btn-primary px-6 py-3.5 rounded-2xl text-sm font-bold"><i class="fas fa-calendar-check mr-2"></i>상담 예약</a>
+      </div>
+    </div>
+  </section>
+  `
   return { html, schemas }
 }
