@@ -8,7 +8,7 @@ import { treatmentsPage, treatmentDetailPage, getTreatmentSummaries } from './pa
 import { reservationPage } from './pages/reservation'
 import { directionsPage } from './pages/directions'
 import { pricingPage, DEFAULT_PRICE_CATS } from './pages/pricing'
-import { areaPage, getAllAreaKeys, getAreaPriority, getAreaKeyBySlug, getAreaSummaries } from './pages/area'
+import { areaPage, getAllAreaKeys, getAreaPriority, getAreaKeyBySlug, getAreaSummaries, AREA_PAGES_MODIFIED } from './pages/area'
 import { yeongjuHubPage, YEONGJU_HUB_MODIFIED } from './pages/yeongju-hub'
 import { comboPage, getAllComboPaths, getAreaSlugs, getTreatmentSlugs, getAreaInfo, getTreatmentInfo } from './pages/combo'
 import { intentPage, getAllIntentPaths } from './pages/intent'
@@ -1290,7 +1290,8 @@ app.get('/sitemap-area.xml', (c) => {
     const p = getAreaPriority(k)
     return {
       url: `/area/${encodeURIComponent(k)}`,
-      lastmod: today,
+      // 영주시 = "영주 치과" 허브(전용 본문 수정일), 나머지 지역 = 지역 본문 마지막 수정일
+      lastmod: k === '영주시' ? YEONGJU_HUB_MODIFIED : AREA_PAGES_MODIFIED,
       priority: p === 1 ? '0.9' : p === 2 ? '0.8' : '0.7',
       changefreq: p <= 2 ? 'weekly' as const : 'monthly' as const
     }

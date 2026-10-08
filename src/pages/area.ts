@@ -2,6 +2,9 @@
 // 목표: 영주 인근 지역 키워드 검색 시 강남치과의원이 Google/Naver 상단 노출
 // 전략: 롱테일 키워드 커버리지 + 지역 맞춤 콘텐츠 + NLP 자연어 FAQ + GeoCircle Schema
 
+// 지역 페이지(영주시 허브 제외) 본문 마지막 실제 수정일 — 지역 문구를 고칠 때만 갱신 (2026-10-08 커밋은 헬퍼 함수만 추가)
+export const AREA_PAGES_MODIFIED = '2026-09-29'
+
 interface AreaInfo {
   name: string
   slug: string               // URL-safe slug
