@@ -45,10 +45,30 @@ function polishImages(html: string, title: string): string {
     return `<img ${a.trim()}>`
   })
 }
-/** 작성자 문자열 → 의료진 데이터 (이름 포함 매칭, 없으면 대표원장) */
-function doctorFor(author?: string) {
-  const a = String(author || '')
-  return DOCTOR_LIST.find((d: any) => a.includes(d.name)) || DOCTOR_LIST[0]
+// ===== 칼럼 작성 주체 (2026-10-08, 사용자 승인) =====
+// 원장을 작성·감수자로 표시하는 근거 = 병원이 관리자 화면에서 원장 이름으로 직접 입력한 글뿐.
+// 대행사가 넣은 글은 원장이 쓰거나 검토한 근거가 없다 → 작성·발행 = 병원(Organization), reviewedBy·감수 표시 없음.
+//  - id 16·17 (implant-refused-bone-loss-real-case, wisdom-tooth-no-symptom-extraction):
+//    migrations_manual/c4_experience_posts.sql, 대행사 커밋 ee5ad8a(2026-08-18)로 투입
+//  - id 1·2 (implant-bone-graft-guide, cerec-same-day-crown): 2026-03-22 11:17:50 같은 초에 일괄 삽입된 초기 대행사 글
+//    (작성자 '이태형 원장' — 관리자 선택값 '이태형 대표원장'과 다른 형식, 관리자 입력 흔적 없음)
+// 그 외 글도 작성자 문자열에 원장 이름이 없으면(예: '강남치과의원') 대표원장으로 끌어다 붙이지 않는다(예전 기본값 제거).
+export const AGENCY_SEED_POST_IDS = new Set([1, 2, 16, 17])
+export const AGENCY_SEED_POST_SLUGS = new Set(['implant-bone-graft-guide', 'cerec-same-day-crown', 'implant-refused-bone-loss-real-case', 'wisdom-tooth-no-symptom-extraction'])
+export const CLINIC_NAME = '강남치과의원'
+export const CLINIC_GENERAL_INFO_NOTE = '일반 건강정보입니다. 진료 판단은 내원 상담에서 원장이 직접 합니다.'
+export function isAgencyPost(p: { id?: number | string | null; slug?: string | null }): boolean {
+  return AGENCY_SEED_POST_IDS.has(Number(p?.id)) || AGENCY_SEED_POST_SLUGS.has(String(p?.slug || ''))
+}
+/** 병원이 원장 이름으로 직접 입력한 글이면 그 의료진, 아니면 null(= 병원 발행) */
+export function attestedDoctor(p: { id?: number | string | null; slug?: string | null; author?: string | null }): any | null {
+  if (!p || isAgencyPost(p)) return null
+  const a = String(p.author || '')
+  return DOCTOR_LIST.find((d: any) => a.includes(d.name)) || null
+}
+/** 목록·RSS·llms 표시용 작성자 문자열 */
+export function postByline(p: { id?: number | string | null; slug?: string | null; author?: string | null }): string {
+  return attestedDoctor(p) ? String(p.author) : CLINIC_NAME
 }
 function ymd(v?: string | null): string | undefined {
   const m = String(v || '').match(/^(\d{4}-\d{2}-\d{2})/)
@@ -179,8 +199,8 @@ export function blogListPage(posts: any[], opts: { categories?: string[]; active
         <p class="text-gray-400 text-sm leading-relaxed mb-5 line-clamp-3">${post.summary || ''}</p>
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
-            <div class="w-8 h-8 rounded-lg royal-grad flex items-center justify-center"><span class="text-white text-[10px] font-bold">${(post.author || '강남')[0]}</span></div>
-            <span class="text-gray-400 text-xs font-medium">${post.author || '강남치과의원'}</span>
+            <div class="w-8 h-8 rounded-lg royal-grad flex items-center justify-center"><span class="text-white text-[10px] font-bold">${postByline(post)[0]}</span></div>
+            <span class="text-gray-400 text-xs font-medium">${postByline(post)}</span>
           </div>
           <div class="flex items-center gap-2 text-royal text-sm font-bold group-hover:gap-3 transition-all duration-500">읽기 <i class="fas fa-arrow-right text-xs"></i></div>
         </div>
@@ -280,9 +300,10 @@ export function blogDetailPage(post: any, relatedPosts: any[] = []): { html: str
     `<span class="px-3.5 py-1.5 rounded-full bg-royal/[0.04] text-royal text-[11px] font-bold border border-royal/[0.08]">#${t.trim()}</span>`
   ).join('') : '';
 
-  // 작성·감수 의료진 (작성자 문자열에서 이름 매칭, 없으면 대표원장)
-  const doc: any = doctorFor(post.author)
-  const authorId = `${SITE}/doctors/${doc.slug}#physician`
+  // 작성·감수 의료진: 병원이 원장 이름으로 직접 입력한 글만 (대행사 글·원장 이름 없는 글 → 병원 발행, 위 attestedDoctor)
+  const doc: any = attestedDoctor(post)
+  const orgId = `${SITE}/#organization`
+  const authorId = doc ? `${SITE}/doctors/${doc.slug}#physician` : orgId
   const reviewerId = `${SITE}/doctors/lee-taehyung#physician`
   const url = `${SITE}/blog/${post.slug}`
   const bodyHtml = polishImages(formatContent(post.content), post.title)
@@ -300,15 +321,15 @@ export function blogDetailPage(post: any, relatedPosts: any[] = []): { html: str
   const articleSchema = {
     "@context": "https://schema.org",
     "@graph": [
-      {
+      ...(doc ? [{
         "@type": ["Person", "Physician"],
         "@id": authorId,
         "name": doc.name,
         "jobTitle": `${doc.title} (${doc.specialty})`,
         "url": `${SITE}/doctors/${doc.slug}`,
         ...(doc.photo ? { "image": `${SITE}${doc.photo}` } : {}),
-        "worksFor": { "@id": `${SITE}/#organization` }
-      },
+        "worksFor": { "@id": orgId }
+      }] : []),
       {
         "@type": "MedicalWebPage",
         "@id": `${url}#webpage`,
@@ -320,8 +341,7 @@ export function blogDetailPage(post: any, relatedPosts: any[] = []): { html: str
         "breadcrumb": { "@id": `${url}#breadcrumb` },
         "mainEntity": { "@id": `${url}#article` },
         ...(about.length ? { "about": about } : {}),
-        "reviewedBy": { "@id": reviewerId },
-        ...(reviewed ? { "lastReviewed": reviewed } : {}),
+        ...(doc ? { "reviewedBy": { "@id": reviewerId }, ...(reviewed ? { "lastReviewed": reviewed } : {}) } : {}),
         "speakable": { "@type": "SpeakableSpecification", "cssSelector": hasDirect ? ["h1", ".direct-answer"] : ["h1"] },
         "publisher": { "@id": `${SITE}/#organization` }
       },
@@ -379,10 +399,10 @@ export function blogDetailPage(post: any, relatedPosts: any[] = []): { html: str
   <article class="py-16 md:py-24 bg-white" aria-label="블로그 본문">
     <div class="max-w-3xl mx-auto px-5 md:px-8">
       <div class="flex items-center gap-4 mb-12 pb-8 border-b border-gray-100">
-        <div class="w-12 h-12 rounded-xl royal-grad flex items-center justify-center"><span class="text-white font-bold">${(post.author || '강남')[0]}</span></div>
+        <div class="w-12 h-12 rounded-xl royal-grad flex items-center justify-center"><span class="text-white font-bold">${doc ? String(post.author)[0] : CLINIC_NAME[0]}</span></div>
         <div>
-          <div class="text-charcoal font-bold">${post.author || '강남치과의원'}</div>
-          <div class="text-gray-400 text-sm">구강악안면외과 전문의</div>
+          <div class="text-charcoal font-bold">${doc ? post.author : `${CLINIC_NAME} 발행`}</div>
+          <div class="text-gray-400 text-sm">${doc ? doc.specialty : '일반 건강정보'}</div>
         </div>
       </div>
 
@@ -392,6 +412,7 @@ export function blogDetailPage(post: any, relatedPosts: any[] = []): { html: str
 
       ${tagsHtml ? `<div class="flex flex-wrap gap-2 mt-12 pt-8 border-t border-gray-100">${tagsHtml}</div>` : ''}
 
+      ${doc ? `
       <!-- 작성·감수 박스 (PFWE 칼럼 표준 A3) -->
       <aside class="mt-10 bg-royal/[0.03] border border-royal/10 rounded-2xl p-6" aria-label="작성·감수">
         <div class="flex items-start gap-4">
@@ -407,7 +428,20 @@ export function blogDetailPage(post: any, relatedPosts: any[] = []): { html: str
             <p class="text-gray-400 text-xs leading-relaxed mt-2">※ 이 글은 일반적인 건강 정보이며, 정확한 진단은 반드시 내원 후 상담을 통해 결정됩니다. 치료 결과에는 개인차가 있습니다.</p>
           </div>
         </div>
-      </aside>
+      </aside>` : `
+      <!-- 병원 발행 박스: 원장 작성·감수 근거 없는 글 (2026-10-08) -->
+      <aside class="mt-10 bg-royal/[0.03] border border-royal/10 rounded-2xl p-6" aria-label="발행 정보">
+        <div class="flex items-start gap-4">
+          <div class="w-[72px] h-[72px] rounded-2xl royal-grad flex items-center justify-center flex-shrink-0"><i class="fas fa-tooth text-white text-xl" aria-hidden="true"></i></div>
+          <div>
+            <p class="text-royal text-[11px] font-bold mb-1">발행</p>
+            <p class="text-charcoal font-bold mb-1">${CLINIC_NAME}</p>
+            <p class="text-gray-500 text-sm">${CLINIC_GENERAL_INFO_NOTE}</p>
+            ${reviewed ? `<p class="text-gray-500 text-sm">최종 업데이트 <time datetime="${reviewed}">${reviewed}</time></p>` : ''}
+            <p class="text-gray-400 text-xs leading-relaxed mt-2">※ 정확한 진단은 반드시 내원 후 상담을 통해 결정됩니다. 치료 결과에는 개인차가 있습니다.</p>
+          </div>
+        </div>
+      </aside>`}
 
       ${relatedTreatments.length > 0 ? `
       <!-- 관련 진료 내부링크 (SEO: 토픽 클러스터 연결) -->

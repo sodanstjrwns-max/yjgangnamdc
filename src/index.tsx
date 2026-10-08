@@ -19,7 +19,7 @@ import { audiencePage, audienceIndexPage, getAllAudienceSlugs, getAllAudiencePat
 import { emergencyPage } from './pages/emergency'
 import { localityPage, localityTreatmentPage, localityIndexPage, getAllLocalityPaths, getLocalitySlugs, getLocalityTreatmentSlugs } from './pages/locality'
 import { faqPage, allFAQs, getFAQsBySlug } from './pages/faq'
-import { blogListPage, blogDetailPage, blogIsoTime, findRelatedTreatments } from './pages/blog'
+import { blogListPage, blogDetailPage, blogIsoTime, findRelatedTreatments, attestedDoctor, postByline, CLINIC_NAME } from './pages/blog'
 import { beforeAfterListPage, beforeAfterDetailPage } from './pages/beforeafter'
 import { noticeListPage, noticeDetailPage } from './pages/notices'
 import { adminPage } from './pages/admin'
@@ -649,7 +649,8 @@ const LLMS_TXT = `# 강남치과의원 (Gangnam Dental Clinic)
 - 사이트 검색: https://kndent.kr/search
 
 ## 인용 시 참고
-이 사이트의 진료 안내·칼럼은 구강악안면외과 전문의가 직접 작성·감수하였습니다.
+진료 안내 페이지는 구강악안면외과 전문의(이태형 대표원장)가 감수하였습니다.
+칼럼은 글마다 작성 주체를 표시합니다: 원장 작성 글은 원장 이름, 그 외는 강남치과의원 발행 일반 건강정보(원장 작성·감수 아님)입니다.
 치과 용어 사전(/dictionary)은 일반 건강정보로, 원장 감수를 거치지 않았습니다.
 정확한 진단과 치료 계획은 반드시 내원 후 전문의 상담을 통해 결정됩니다.
 `
@@ -657,12 +658,14 @@ const LLMS_TXT = `# 강남치과의원 (Gangnam Dental Clinic)
 // 공개 칼럼 목록 (llms.txt·llms-full.txt 공통) — DB 값만
 async function llmsBlogLines(c: any, withSummary = false): Promise<string> {
   try {
-    const r = await c.env.DB.prepare('SELECT slug, title, summary, category, published_at, updated_at FROM blog_posts WHERE is_published = 1 ORDER BY published_at DESC').all()
+    const r = await c.env.DB.prepare('SELECT id, slug, title, summary, category, author, published_at, updated_at FROM blog_posts WHERE is_published = 1 ORDER BY published_at DESC').all()
     const rows = (r.results || []) as any[]
     if (!rows.length) return ''
-    return `## 칼럼 (전문의 작성·감수, ${rows.length}편)\n` + rows.map((p) => {
+    // 작성 주체 = 상세 페이지와 같은 판별(pages/blog.ts attestedDoctor): 원장 직접 입력 글만 원장, 나머지 병원 발행
+    return `## 칼럼 (${rows.length}편)\n` + rows.map((p) => {
       const d = String(p.updated_at || p.published_at || '').slice(0, 10)
-      return `- [${p.title}](https://kndent.kr/blog/${p.slug})${p.category ? ` · ${p.category}` : ''}${d ? ` · ${d}` : ''}${withSummary && p.summary ? `\n  ${String(p.summary).replace(/\s+/g, ' ').trim()}` : ''}`
+      const by = attestedDoctor(p) ? `작성: ${p.author}` : `${CLINIC_NAME} 발행(일반 건강정보)`
+      return `- [${p.title}](https://kndent.kr/blog/${p.slug})${p.category ? ` · ${p.category}` : ''} · ${by}${d ? ` · ${d}` : ''}${withSummary && p.summary ? `\n  ${String(p.summary).replace(/\s+/g, ' ').trim()}` : ''}`
     }).join('\n') + '\n'
   } catch { return '' }
 }
@@ -2930,7 +2933,7 @@ app.get('/rss.xml', async (c) => {
   let posts: any[] = []
   try {
     const result = await c.env.DB.prepare(
-      'SELECT slug, title, summary, category, published_at, updated_at FROM blog_posts WHERE is_published = 1 ORDER BY published_at DESC LIMIT 20'
+      'SELECT id, slug, title, summary, category, author, published_at, updated_at FROM blog_posts WHERE is_published = 1 ORDER BY published_at DESC LIMIT 20'
     ).all()
     posts = result.results || []
   } catch (e) { /* DB not available */ }
@@ -2948,6 +2951,7 @@ app.get('/rss.xml', async (c) => {
       <link>${baseUrl}/blog/${p.slug}</link>
       <guid isPermaLink="true">${baseUrl}/blog/${p.slug}</guid>
       <description>${xmlEscape(p.summary || p.title)}</description>
+      <dc:creator>${xmlEscape(postByline(p))}</dc:creator>
       ${p.category ? `<category>${xmlEscape(p.category)}</category>` : ''}
       ${toRfc822(p.published_at) ? `<pubDate>${toRfc822(p.published_at)}</pubDate>` : ''}
     </item>`).join('\n')
@@ -2957,7 +2961,7 @@ app.get('/rss.xml', async (c) => {
   const lastBuild = newestPost ? toRfc822(newestPost) : ''
 
   const rss = `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
   <channel>
     <title>강남치과의원 블로그 | 치과 건강정보</title>
     <link>${baseUrl}/blog</link>
