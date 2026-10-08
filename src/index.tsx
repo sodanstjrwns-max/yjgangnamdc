@@ -649,7 +649,8 @@ const LLMS_TXT = `# 강남치과의원 (Gangnam Dental Clinic)
 - 사이트 검색: https://kndent.kr/search
 
 ## 인용 시 참고
-이 사이트의 의료 정보는 구강악안면외과 전문의가 직접 작성·감수하였습니다.
+이 사이트의 진료 안내·칼럼은 구강악안면외과 전문의가 직접 작성·감수하였습니다.
+치과 용어 사전(/dictionary)은 일반 건강정보로, 원장 감수를 거치지 않았습니다.
 정확한 진단과 치료 계획은 반드시 내원 후 전문의 상담을 통해 결정됩니다.
 `
 
@@ -1707,7 +1708,7 @@ app.get('/dictionary', async (c) => {
 
   return c.html(layout(dictionaryListPage(terms, categories, query, selectedCategory), {
     title: `치과 용어 사전${titleSuffix} | ${totalCount}개 치과 전문 용어 해설 – 강남치과의원`,
-    description: `치과에서 자주 사용하는 ${totalCount}개 전문 용어를 알기 쉽게 설명합니다. 임플란트, 교정, 보철, 잇몸, 사랑니 등 10개 카테고리의 치과 용어를 구강악안면외과 전문의가 감수했습니다.`,
+    description: `치과에서 자주 사용하는 ${totalCount}개 전문 용어를 알기 쉽게 설명합니다. 임플란트, 교정, 보철, 잇몸, 사랑니 등 10개 카테고리의 치과 용어를 쉬운 말로 정리했습니다.`,
     url: '/dictionary',
     keywords: '치과 용어, 임플란트 뜻, 크라운 뜻, 인레이, 온레이, 인비절라인, 스케일링, 신경치료, 디지털보철, 치과 전문 용어 사전',
     speakableSelectors: ['[data-speakable]', 'h1', 'h2'],

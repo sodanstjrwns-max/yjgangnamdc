@@ -76,8 +76,8 @@ export function yeongjuHubPage(otherAreas: { key: string; name: string; driveTim
       "isPartOf": { "@id": `${SITE}/#website` },
       "about": { "@id": `${SITE}/#organization` },
       "mainEntity": { "@id": `${SITE}/#organization` },
+      "publisher": { "@id": `${SITE}/#organization` },
       "dateModified": YEONGJU_HUB_MODIFIED,
-      "lastReviewed": YEONGJU_HUB_MODIFIED,
       "spatialCoverage": { "@type": "City", "name": "영주시", "containedInPlace": { "@type": "AdministrativeArea", "name": "경상북도" } },
       "relatedLink": TREATMENTS.map(t => `${SITE}${t.href}`)
     },

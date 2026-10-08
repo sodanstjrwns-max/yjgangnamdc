@@ -111,7 +111,7 @@ export function dictionaryListPage(terms: any[], categories: any[], query?: stri
           </div>
           <p class="text-gray-500 text-base leading-relaxed max-w-xl" data-speakable>
             치과에서 자주 사용하는 전문 용어를 알기 쉽게 설명합니다.<br>
-            <span class="text-royal font-bold">구강악안면외과 전문의</span>가 감수한 정확하고 신뢰할 수 있는 정보입니다.
+            <span class="text-gray-400 text-sm">일반 건강정보입니다. 진료 판단은 내원 상담에서 원장이 직접 합니다.</span>
           </p>
         </div>
         <!-- 검색 -->
@@ -246,10 +246,8 @@ export function dictionaryDetailPage(term: any, relatedTerms: any[], enriched?: 
         "medicineSystem": "WesternConventional",
         "relevantSpecialty": { "@type": "MedicalSpecialty", "name": "Dentistry" }
       },
-      "author": [
-        { "@type": "Physician", "@id": `${SITE_URL}/doctors/lee-taehyung#physician`, "name": "이태형" },
-        { "@type": "Physician", "@id": `${SITE_URL}/doctors/choi-minhye#physician`, "name": "최민혜" }
-      ],
+      // 2026-10-08: 용어 원고는 원장 검토 기록이 없어 author 를 원장(Physician) 대신 병원으로 둔다
+      "author": { "@id": `${SITE_URL}/#organization` },
       "publisher": { "@id": `${SITE_URL}/#organization` },
       "inLanguage": "ko",
       "isPartOf": { "@id": `${SITE_URL}/dictionary#glossary` },
@@ -459,10 +457,8 @@ function dictionaryEnrichedPage(term: any, e: DictEnriched, relatedTerms: any[])
       "url": url,
       "about": { "@id": `${url}#term` },
       "mainEntity": { "@id": `${url}#term` },
-      "author": [
-        { "@type": "Physician", "@id": `${SITE_URL}/doctors/lee-taehyung#physician`, "name": "이태형" },
-        { "@type": "Physician", "@id": `${SITE_URL}/doctors/choi-minhye#physician`, "name": "최민혜" }
-      ],
+      // 2026-10-08: 용어 원고는 원장 검토 기록이 없어 author 를 원장(Physician) 대신 병원으로 둔다
+      "author": { "@id": `${SITE_URL}/#organization` },
       "publisher": { "@id": `${SITE_URL}/#organization` },
       "inLanguage": "ko",
       "isPartOf": { "@id": `${SITE_URL}/dictionary#glossary` },
