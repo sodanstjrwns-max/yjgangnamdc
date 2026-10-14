@@ -625,12 +625,12 @@ export function layout(content: string, opts: LayoutOptions): string {
   </script>
   <!-- PF 1st-party 비콘 -->
   <script defer src="https://pf-dashboard-2nt.pages.dev/beacon.js"></script>
-  <!-- Favicon (logo-based, v2) -->
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2">
-  <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png?v=2">
-  <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon-16x16.png?v=2">
-  <link rel="icon" type="image/x-icon" href="/favicon.ico?v=2">
-  <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png?v=2">
+  <!-- Favicon (2026-10-14 승인본) -->
+  <link rel="icon" href="/favicon.ico?v=fav20261014" sizes="any">
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png?v=fav20261014">
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96.png?v=fav20261014">
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png?v=fav20261014">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=fav20261014">
   <title>${title}</title>
   <meta name="description" content="${attr(description)}">
   <meta name="keywords" content="${finalKeywords}">
