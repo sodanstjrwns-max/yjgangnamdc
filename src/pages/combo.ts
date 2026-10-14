@@ -1,4 +1,5 @@
 import { HUB_PATH, HUB_ANCHOR, hubAnchor } from './hub-link'
+import { yeongjuCard, yeongjuCardImg, yeongjuComboTitle, yeongjuComboFigure } from './yeongju-cards'
 // ============================================================================
 // 지역 × 진료 조합 SEO 페이지 (Programmatic SEO 슈퍼업그레이드 2026-05)
 // ============================================================================
@@ -436,7 +437,7 @@ const treatmentSlugMap: Record<string, string> = Object.values(treatmentData).re
 // ============================================================================
 // 핵심 함수: 조합 페이지 HTML + 스키마 생성
 // ============================================================================
-export function comboPage(regionParam: string, treatmentParam: string): { html: string; title: string; description: string; keywords: string; schemas: object[]; canonicalUrl: string } | null {
+export function comboPage(regionParam: string, treatmentParam: string): { html: string; title: string; description: string; keywords: string; schemas: object[]; canonicalUrl: string; ogImage?: string; ogImageAlt?: string } | null {
   const regionKey = areaSlugToKey[decodeURIComponent(regionParam)] || decodeURIComponent(regionParam)
   const area = areaMap[regionKey]
   if (!area) return null
@@ -446,7 +447,12 @@ export function comboPage(regionParam: string, treatmentParam: string): { html: 
   if (!treatment) return null
 
   // ===== SEO 메타 =====
-  const title = `${area.name} ${treatment.shortName} – 영주 강남치과의원 | 구강외과 전문의 직접 진료 (차로 ${area.driveTime})`
+  // 영주 하위 8개는 페이지별 제목(2026-10-14: 공통 꼬리 '| 구강외과 전문의 직접 진료 (차로 시내)' 제거) — yeongju-cards.ts
+  const yjTitle = area.slug === 'yeongju' ? yeongjuComboTitle(treatment.slug) : null
+  const title = yjTitle || `${area.name} ${treatment.shortName} – 영주 강남치과의원 | 구강외과 전문의 직접 진료 (차로 ${area.driveTime})`
+  // 영주 핵심 6개: 고유 대표 사진(og·본문 첫 사진·스키마·사이트맵 동일)
+  const yjCard = area.slug === 'yeongju' ? yeongjuCard(treatment.slug) : undefined
+  const yjOg = yjCard ? `https://kndent.kr${yeongjuCardImg(yjCard.slug).og}` : undefined
   const description = `${area.name}에서 ${treatment.shortName} 진료를 찾으신다면 영주 강남치과의원으로 오세요. ${treatment.description} ${area.name}에서 차로 ${area.driveTime} 거리. 054-636-8222.`
 
   // 롱테일 키워드 자동 생성 (지역명 × 진료 키워드 조합)
@@ -527,6 +533,10 @@ export function comboPage(regionParam: string, treatmentParam: string): { html: 
       "description": description,
       "url": canonicalUrl,
       "inLanguage": "ko-KR",
+      ...(yjCard && yjOg ? {
+        "image": yjOg,
+        "primaryImageOfPage": { "@type": "ImageObject", "url": yjOg, "width": 1200, "height": 630, "caption": yjCard.alt }
+      } : {}),
       "dateModified": "2026-05-26",
       "lastReviewed": "2026-05-26",
       "reviewedBy": {
@@ -641,6 +651,7 @@ export function comboPage(regionParam: string, treatmentParam: string): { html: 
         <span class="royal-grad-text">${area.name} ${treatment.shortName}</span><br>
         영주 강남치과의원
       </h1>
+      ${yjCard ? yeongjuComboFigure(yjCard.slug) : ''}
 
       <p class="text-gray-500 text-lg md:text-xl max-w-3xl leading-relaxed mb-3 combo-summary" data-speakable="true">
         <i class="fas fa-tooth text-royal mr-2"></i>${treatment.hero}
@@ -856,7 +867,7 @@ export function comboPage(regionParam: string, treatmentParam: string): { html: 
   </section>
   `
 
-  return { html, title, description, keywords, schemas, canonicalUrl }
+  return { html, title, description, keywords, schemas, canonicalUrl, ogImage: yjOg, ogImageAlt: yjCard?.alt }
 }
 
 // ============================================================================

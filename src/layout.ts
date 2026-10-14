@@ -10,6 +10,10 @@ interface LayoutOptions {
   ogType?: string
   // SEO: 페이지별 og:image (없으면 기본값)
   ogImage?: string
+  // og:image 크기·대체텍스트 — 기본 PNG(1200×630) 외 이미지는 크기를 아는 경우만 지정(모르면 width/height 메타 생략)
+  ogImageWidth?: number
+  ogImageHeight?: number
+  ogImageAlt?: string
   // AEO: Speakable 영역 CSS 셀렉터
   speakableSelectors?: string[]
   // SEO: noindex/nofollow 등 커스텀 robots
@@ -568,9 +572,11 @@ function buildWebSiteSchema() {
 const attr = (v: unknown): string => String(v ?? '').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
 export function layout(content: string, opts: LayoutOptions): string {
-  const { title, description, url, schemas = [], keywords, ogType, ogImage, speakableSelectors, robots, articlePublishedTime, articleModifiedTime, canonical, breadcrumbItems } = opts
+  const { title, description, url, schemas = [], keywords, ogType, ogImage, ogImageWidth, ogImageHeight, ogImageAlt, speakableSelectors, robots, articlePublishedTime, articleModifiedTime, canonical, breadcrumbItems } = opts
   const fullUrl = `${SITE_URL}${canonical || url}`
   const pageOgImage = ogImage || DEFAULT_OG_IMAGE
+  // 블로그 대표 이미지(/api/images/*)처럼 크기를 모르는 og 는 1200×630 으로 잘못 신고하지 않는다 (2026-10-14)
+  const ogDims = ogImageWidth && ogImageHeight ? { w: ogImageWidth, h: ogImageHeight } : pageOgImage === DEFAULT_OG_IMAGE ? { w: 1200, h: 630 } : null
   const robotsContent = robots || 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1'
 
   // Speakable Schema (AEO 음성 검색 최적화)
@@ -657,9 +663,9 @@ export function layout(content: string, opts: LayoutOptions): string {
   <meta property="og:site_name" content="${SITE_NAME}">
   <meta property="og:locale" content="ko_KR">
   <meta property="og:image" content="${pageOgImage}">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="${attr(title)}">
+  ${ogDims ? `<meta property="og:image:width" content="${ogDims.w}">
+  <meta property="og:image:height" content="${ogDims.h}">` : ''}
+  <meta property="og:image:alt" content="${attr(ogImageAlt || title)}">
   ${articlePublishedTime ? `<meta property="article:published_time" content="${articlePublishedTime}">` : ''}
   ${articleModifiedTime ? `<meta property="article:modified_time" content="${articleModifiedTime}">` : ''}
 

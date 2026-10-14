@@ -10,6 +10,7 @@ import { directionsPage } from './pages/directions'
 import { pricingPage, DEFAULT_PRICE_CATS } from './pages/pricing'
 import { areaPage, getAllAreaKeys, getAreaPriority, getAreaKeyBySlug, getAreaSummaries, AREA_PAGES_MODIFIED } from './pages/area'
 import { yeongjuHubPage, YEONGJU_HUB_MODIFIED } from './pages/yeongju-hub'
+import { yeongjuCard, yeongjuCardImg, yeongjuCardItemListLd } from './pages/yeongju-cards'
 import { comboPage, getAllComboPaths, getAreaSlugs, getTreatmentSlugs, getAreaInfo, getTreatmentInfo } from './pages/combo'
 import { intentPage, getAllIntentPaths } from './pages/intent'
 import { comparePage, getAllComparePaths, getAllCompareSlugs } from './pages/compare'
@@ -301,7 +302,7 @@ app.get('/robots.txt', (c) => {
   c.header('Cache-Control', 'public, max-age=3600, s-maxage=3600')
   return c.body(`# 강남치과의원 (Gangnam Dental Clinic) robots.txt
 # https://kndent.kr
-# Updated: 2026-04-08
+# Updated: 2026-10-14 (블로그 대표 이미지 /api/images/ 허용 — 나머지 /api/ 는 차단 유지)
 
 # ============================================================
 # 1. 주요 검색엔진 (제한 없이 전체 허용)
@@ -310,6 +311,7 @@ app.get('/robots.txt', (c) => {
 # Google
 User-agent: Googlebot
 Allow: /
+Allow: /api/images/
 Disallow: /api/
 Disallow: /admin
 Disallow: /login
@@ -319,11 +321,13 @@ Disallow: /before-after
 User-agent: Googlebot-Image
 Allow: /static/
 Allow: /favicon.svg
+Allow: /api/images/
 Disallow: /api/
 
 # Naver
 User-agent: Yeti
 Allow: /
+Allow: /api/images/
 Disallow: /api/
 Disallow: /admin
 Disallow: /login
@@ -333,6 +337,7 @@ Disallow: /before-after
 # Bing
 User-agent: Bingbot
 Allow: /
+Allow: /api/images/
 Disallow: /api/
 Disallow: /admin
 Disallow: /login
@@ -342,6 +347,7 @@ Disallow: /before-after
 # Daum / Kakao
 User-agent: Daum
 Allow: /
+Allow: /api/images/
 Disallow: /api/
 Disallow: /admin
 Disallow: /login
@@ -355,6 +361,7 @@ Disallow: /before-after
 # ChatGPT 사용자 요청 (실시간 브라우징)
 User-agent: ChatGPT-User
 Allow: /
+Allow: /api/images/
 Disallow: /api/
 Disallow: /admin
 Disallow: /login
@@ -362,6 +369,7 @@ Disallow: /login
 # OpenAI 검색 인덱싱 (ChatGPT Search 노출의 핵심 — 전체 허용)
 User-agent: OAI-SearchBot
 Allow: /
+Allow: /api/images/
 Disallow: /api/
 Disallow: /admin
 Disallow: /login
@@ -377,6 +385,7 @@ Allow: /directions
 Allow: /area/
 Allow: /dictionary/
 Allow: /blog/
+Allow: /api/images/
 Disallow: /api/
 Disallow: /admin
 Disallow: /login
@@ -393,6 +402,7 @@ Allow: /directions
 Allow: /area/
 Allow: /dictionary/
 Allow: /blog/
+Allow: /api/images/
 Disallow: /api/
 Disallow: /admin
 
@@ -403,12 +413,14 @@ Allow: /faq
 Allow: /pricing
 Allow: /doctors
 Allow: /directions
+Allow: /api/images/
 Disallow: /api/
 Disallow: /admin
 
 # Anthropic ClaudeBot (웹 크롤러 — 전체 허용, AI 답변 노출용)
 User-agent: ClaudeBot
 Allow: /
+Allow: /api/images/
 Disallow: /api/
 Disallow: /admin
 Disallow: /login
@@ -417,18 +429,21 @@ Disallow: /before-after
 # Claude 사용자 실시간 요청
 User-agent: Claude-User
 Allow: /
+Allow: /api/images/
 Disallow: /api/
 Disallow: /admin
 
 # Claude 검색 인덱싱
 User-agent: Claude-SearchBot
 Allow: /
+Allow: /api/images/
 Disallow: /api/
 Disallow: /admin
 
 # Perplexity (인덱싱)
 User-agent: PerplexityBot
 Allow: /
+Allow: /api/images/
 Disallow: /api/
 Disallow: /admin
 Disallow: /login
@@ -436,18 +451,21 @@ Disallow: /login
 # Perplexity 사용자 실시간 요청
 User-agent: Perplexity-User
 Allow: /
+Allow: /api/images/
 Disallow: /api/
 Disallow: /admin
 
 # Microsoft Copilot
 User-agent: CopilotBot
 Allow: /
+Allow: /api/images/
 Disallow: /api/
 Disallow: /admin
 
 # Apple Intelligence / Siri (Applebot 인덱싱 허용)
 User-agent: Applebot
 Allow: /
+Allow: /api/images/
 Disallow: /api/
 Disallow: /admin
 
@@ -459,6 +477,7 @@ Allow: /pricing
 Allow: /doctors
 Allow: /directions
 Allow: /area/
+Allow: /api/images/
 Disallow: /api/
 Disallow: /admin
 
@@ -469,12 +488,14 @@ Allow: /faq
 Allow: /pricing
 Allow: /doctors
 Allow: /directions
+Allow: /api/images/
 Disallow: /api/
 Disallow: /admin
 
 # Amazon Alexa / Rufus
 User-agent: Amazonbot
 Allow: /
+Allow: /api/images/
 Disallow: /api/
 Disallow: /admin
 
@@ -483,18 +504,21 @@ User-agent: cohere-ai
 Allow: /treatments/
 Allow: /faq
 Allow: /pricing
+Allow: /api/images/
 Disallow: /api/
 Disallow: /admin
 
 # xAI Grok
 User-agent: GrokBot
 Allow: /
+Allow: /api/images/
 Disallow: /api/
 Disallow: /admin
 
 # DuckDuckGo AI (DuckAssist)
 User-agent: DuckAssistBot
 Allow: /
+Allow: /api/images/
 Disallow: /api/
 Disallow: /admin
 
@@ -503,6 +527,7 @@ Disallow: /admin
 # ============================================================
 User-agent: *
 Allow: /
+Allow: /api/images/
 Disallow: /api/
 Disallow: /admin
 Disallow: /login
@@ -1319,11 +1344,18 @@ app.get('/sitemap-combo.xml', (c) => {
     // 우선순위 3 → 0.65
     const priority = p.priority === 1 ? '0.85' : p.priority === 2 ? '0.75' : '0.65'
     const changefreq = p.priority === 1 ? 'weekly' : 'monthly'
+    // 영주 핵심 6개: 페이지 대표 사진(og·본문 첫 사진과 동일) image:image (2026-10-14)
+    const card = p.regionSlug === 'yeongju' ? yeongjuCard(p.treatmentSlug) : undefined
+    const imageXml = card ? `
+    <image:image>
+      <image:loc>${baseUrl}${yeongjuCardImg(card.slug).og}</image:loc>
+      <image:title>${card.name} — 강남치과의원</image:title>
+    </image:image>` : ''
     return `  <url>
     <loc>${baseUrl}/area/${p.regionSlug}/${p.treatmentSlug}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>${changefreq}</changefreq>
-    <priority>${priority}</priority>
+    <priority>${priority}</priority>${imageXml}
   </url>`
   }).join('\n')
 
@@ -1450,7 +1482,8 @@ app.get('/', (c) => c.html(layout(mainPage(), {
   url: '/',
   ogImage: OG_IMAGE_PNG,
   keywords: '영주 치과, 영주 임플란트, 영주 치과 추천, 영주 임플란트 잘하는곳, 영주 인비절라인, 영주 투명교정, 영주 사랑니발치, 영주 디지털보철, 구강외과 전문의 영주, 영주시 임플란트 가격, 봉화 임플란트, 예천 치과, 안동 임플란트, 풍기 치과, 단양 치과, 경북 임플란트, 영주혁신도시 치과, 영주 구강외과, 상주 임플란트, 문경 치과',
-  schemas: mainPageSchemas(),
+  // 홈 "영주 진료 안내" 사진 카드 6장과 1:1 ItemList (2026-10-14)
+  schemas: [...mainPageSchemas(), yeongjuCardItemListLd('https://kndent.kr/', '영주 진료 안내 — 강남치과의원')],
   speakableSelectors: ['[data-speakable]', '#heroTitle', '#heroSub'],
   articleModifiedTime: MEDICAL_LAST_REVIEWED
 })))
@@ -2363,7 +2396,9 @@ app.get('/area/:region/:treatment', (c) => {
     description: result.description,
     url: `/area/${region}/${treatment}`,
     keywords: result.keywords,
-    ogImage: OG_IMAGE_PNG,
+    // 영주 핵심 6개는 페이지 고유 대표 사진(1200×630), 나머지는 공통 PNG
+    ogImage: result.ogImage || OG_IMAGE_PNG,
+    ...(result.ogImage ? { ogImageWidth: 1200, ogImageHeight: 630, ogImageAlt: result.ogImageAlt } : {}),
     speakableSelectors: ['[data-speakable]', 'h1', 'h2', '.faq-answer', '.combo-summary'],
     schemas: result.schemas,
     articleModifiedTime: MEDICAL_LAST_REVIEWED

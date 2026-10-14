@@ -3,7 +3,8 @@
 // 사실 정보는 레포에 이미 있는 값만: 주소·전화·진료시간(layout 푸터·directions), 이동시간(directions·locality),
 // 의료진 학력(doctors.ts), 장비(treatments.ts), 사랑니 건강보험(area FAQ). 가격은 수가 편집기(D1) 값이라 여기서 쓰지 않고 /pricing 링크.
 
-export const YEONGJU_HUB_MODIFIED = '2026-10-08'
+export const YEONGJU_HUB_MODIFIED = '2026-10-14'
+import { yeongjuCardGrid, yeongjuCardItemListLd } from './yeongju-cards'
 const SITE = 'https://kndent.kr'
 const HUB_PATH = `/area/${encodeURIComponent('영주시')}`
 const NAVER_PLACE = 'https://map.naver.com/p/entry/place/1099573867'
@@ -57,6 +58,12 @@ const NEIGHBORHOODS: { slug: string; name: string; time: string }[] = [
   { slug: 'pyeongeun-myeon', name: '평은면', time: '차로 약 25분' },
 ]
 
+// 카드 6장 밖의 영주 하위 페이지 2개 — 허브에서 8개 모두 링크
+const OTHER_SUBPAGES: { slug: string; name: string }[] = [
+  { slug: 'cavity', name: '영주 충치치료' },
+  { slug: 'whitening', name: '영주 치아미백' },
+]
+
 const esc = (t: string) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
 export function yeongjuHubPage(otherAreas: { key: string; name: string; driveTime: string }[]) {
@@ -79,8 +86,11 @@ export function yeongjuHubPage(otherAreas: { key: string; name: string; driveTim
       "publisher": { "@id": `${SITE}/#organization` },
       "dateModified": YEONGJU_HUB_MODIFIED,
       "spatialCoverage": { "@type": "City", "name": "영주시", "containedInPlace": { "@type": "AdministrativeArea", "name": "경상북도" } },
-      "relatedLink": TREATMENTS.map(t => `${SITE}${t.href}`)
+      "relatedLink": TREATMENTS.map(t => `${SITE}${t.href}`),
+      "hasPart": { "@id": `${url}#yeongju-cards` }
     },
+    // 사진 카드 6장과 1:1 (2026-10-14)
+    yeongjuCardItemListLd(url, '영주 진료 안내 — 강남치과의원'),
     {
       "@context": "https://schema.org",
       // 공통 병원 노드(#organization, layout 기본 스키마)에 이 허브의 진료 지역만 덧붙임
@@ -120,6 +130,15 @@ export function yeongjuHubPage(otherAreas: { key: string; name: string; driveTim
 
   <section class="py-12 md:py-16 bg-white">
     <div class="max-w-5xl mx-auto px-5 md:px-8 space-y-14 text-gray-600 leading-[1.9]">
+
+      <div>
+        <h2 class="display-sm text-charcoal mb-3">영주에서 많이 찾으시는 진료 안내</h2>
+        <p class="mb-6">진료별로 영주 주민분들이 자주 물으시는 내용과 진료 순서를 따로 정리한 페이지입니다.</p>
+        ${yeongjuCardGrid('yj-hub')}
+        <p class="mt-6 text-sm">그 밖의 영주 진료 안내:
+          ${OTHER_SUBPAGES.map(o => `<a href="/area/yeongju/${o.slug}" class="inline-block mr-3 text-royal hover:underline">${o.name}</a>`).join('')}
+        </p>
+      </div>
 
       <div>
         <h2 class="display-sm text-charcoal mb-5">영주 시내에서 강남치과의원은 어디에 있나요?</h2>

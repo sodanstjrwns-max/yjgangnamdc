@@ -1,3 +1,4 @@
+import { yeongjuCardGrid } from './yeongju-cards'
 // 홈 FAQ — 화면 '자주 묻는 질문' 섹션과 FAQPage 스키마가 함께 쓰는 단일 배열
 export const HOME_FAQ_ITEMS: { q: string; a: string }[] = [
     { q: '임플란트 비용은 얼마인가요?', a: '강남치과의원 임플란트 비용은 Neo/Osstem 임플란트 기준 1개당 130만원입니다(맞춤 어버트먼트 + 지르코니아 크라운 포함). 뼈이식이 필요한 경우 단순 50만원, 복합 80만원이 추가됩니다. 상악동(위턱 공간) 거상술은 치조정 80만원, 측방 150만원입니다. 정확한 비용은 CT 촬영 후 상담 시 안내드립니다.' },
@@ -1016,6 +1017,14 @@ export function mainPage(): string {
         </a>
       </div>
       <div class="text-center mt-16 reveal"><a href="/treatments" class="btn-outline !py-5 !px-12 !text-[14px]">전체 진료 보기 <i class="fas fa-arrow-right text-xs ml-1"></i></a></div>
+      <!-- 영주 진료 안내 사진 카드 6장 (/area/yeongju/* 핵심 6, ItemList 와 1:1 — 2026-10-14) -->
+      <section class="mt-20 md:mt-28" aria-labelledby="yj-cards-home-h">
+        <div class="text-center mb-10">
+          <h3 id="yj-cards-home-h" class="text-charcoal font-extrabold text-2xl md:text-3xl mb-3">영주 진료 안내</h3>
+          <p class="text-gray-400 text-sm md:text-base">영주에서 많이 찾으시는 진료 6가지를 사진과 함께 정리했습니다</p>
+        </div>
+        ${yeongjuCardGrid('yj-home')}
+      </section>
       <!-- SEO: 영주 핵심 진료 바로가기 (지역+진료 앵커 → 주 진료 페이지, 2026-09-29) -->
       <nav class="mt-14 reveal" aria-label="영주 진료 바로가기">
         <h3 class="text-center text-charcoal font-extrabold text-lg md:text-xl mb-5">영주에서 찾는 진료 바로가기</h3>
