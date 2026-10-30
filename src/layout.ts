@@ -1,3 +1,7 @@
+// 홈 스크롤 몰입 연출 정적 파일 내용 해시 (vite.config.ts define — ?v= 캐시 버스팅, 고정 문자열 금지)
+declare const __IMMERSIVE_CSS_V__: string
+declare const __IMMERSIVE_JS_V__: string
+
 interface LayoutOptions {
   title: string
   description: string
@@ -23,6 +27,8 @@ interface LayoutOptions {
   // SEO: 페이지 article 관련
   articlePublishedTime?: string
   articleModifiedTime?: string
+  // 메인 홈 스크롤 몰입 연출 (Lenis + /static/immersive.*) — 홈에서만 true
+  immersive?: boolean
   // SEO: BreadcrumbList 직접 지정 (없으면 URL 경로로 자동 생성). @id = {url}#breadcrumb
   breadcrumbItems?: { name: string; url: string }[]
 }
@@ -572,7 +578,7 @@ function buildWebSiteSchema() {
 const attr = (v: unknown): string => String(v ?? '').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
 export function layout(content: string, opts: LayoutOptions): string {
-  const { title, description, url, schemas = [], keywords, ogType, ogImage, ogImageWidth, ogImageHeight, ogImageAlt, speakableSelectors, robots, articlePublishedTime, articleModifiedTime, canonical, breadcrumbItems } = opts
+  const { title, description, url, schemas = [], keywords, ogType, ogImage, ogImageWidth, ogImageHeight, ogImageAlt, speakableSelectors, robots, articlePublishedTime, articleModifiedTime, canonical, breadcrumbItems, immersive } = opts
   const fullUrl = `${SITE_URL}${canonical || url}`
   const pageOgImage = ogImage || DEFAULT_OG_IMAGE
   // 블로그 대표 이미지(/api/images/*)처럼 크기를 모르는 og 는 1200×630 으로 잘못 신고하지 않는다 (2026-10-14)
@@ -1246,6 +1252,7 @@ export function layout(content: string, opts: LayoutOptions): string {
       }
     }
   </style>
+${immersive ? `<link rel="stylesheet" href="/static/immersive.css?v=${__IMMERSIVE_CSS_V__}">` : ''}
 </head>
 <body class="font-pretendard page-transition">
   <!-- Scroll progress bar -->
@@ -1998,6 +2005,8 @@ export function layout(content: string, opts: LayoutOptions): string {
       window.location.href = '/';
     }
   </script>
+${immersive ? `<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
+  <script src="/static/immersive.js?v=${__IMMERSIVE_JS_V__}" defer></script>` : ''}
 </body>
 </html>`
 }

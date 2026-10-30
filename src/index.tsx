@@ -111,6 +111,12 @@ app.use('/api/*', cors())
 // ===== SEO: www / *.pages.dev → kndent.kr 301 리다이렉트 (중복 호스트 제거) =====
 app.use('*', createMiddleware(async (c, next) => {
   const host = (c.req.header('Host') || '').toLowerCase()
+  // 스크롤 몰입 연출 미리보기 별칭만 예외 — 리디렉션 없이 보여 주되 검색 색인은 제외 (immersive-pilot 브랜치 전용)
+  if (host === 'immersive-preview.yjgangnamdc.pages.dev') {
+    await next()
+    c.res.headers.set('X-Robots-Tag', 'noindex, nofollow')
+    return
+  }
   if (host.startsWith('www.') || host.endsWith('.pages.dev')) {
     const url = new URL(c.req.url)
     url.protocol = 'https:'
@@ -1485,7 +1491,8 @@ app.get('/', (c) => c.html(layout(mainPage(), {
   // 홈 "영주 진료 안내" 사진 카드 6장과 1:1 ItemList (2026-10-14)
   schemas: [...mainPageSchemas(), yeongjuCardItemListLd('https://kndent.kr/', '영주 진료 안내 — 강남치과의원')],
   speakableSelectors: ['[data-speakable]', '#heroTitle', '#heroSub'],
-  articleModifiedTime: MEDICAL_LAST_REVIEWED
+  articleModifiedTime: MEDICAL_LAST_REVIEWED,
+  immersive: true
 })))
 
 // ===== 의료진 =====

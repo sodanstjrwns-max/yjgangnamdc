@@ -3,6 +3,8 @@ import devServer from '@hono/vite-dev-server'
 import adapter from '@hono/vite-dev-server/cloudflare'
 import { defineConfig } from 'vite'
 import { execSync } from 'node:child_process'
+import { createHash } from 'node:crypto'
+import { readFileSync } from 'node:fs'
 
 // 사이트맵 lastmod 용 "실제 수정일" = 각 콘텐츠 소스 파일의 마지막 커밋일 (빌드 시점 git, 2026-10-08)
 // git 을 못 쓰는 환경이면 빈 값 → src/seo.ts 의 수동 날짜로 폴백. new Date() 는 쓰지 않는다.
@@ -33,8 +35,13 @@ function gitDate(path: string): string {
 }
 const SRC_DATES = Object.fromEntries(Object.entries(SRC_FILES).map(([k, p]) => [k, gitDate(p)]))
 
+// 홈 스크롤 몰입 연출 정적 파일의 내용 해시 (?v= 캐시 버스팅 — 고정 버전 문자열 금지)
+const fileHash = (f: string) => createHash('sha256').update(readFileSync(f)).digest('hex').slice(0, 10)
+
 export default defineConfig({
   define: {
+    __IMMERSIVE_CSS_V__: JSON.stringify(fileHash('public/static/immersive.css')),
+    __IMMERSIVE_JS_V__: JSON.stringify(fileHash('public/static/immersive.js')),
     __SRC_DATES__: JSON.stringify(SRC_DATES)
   },
   plugins: [
