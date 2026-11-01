@@ -29,7 +29,7 @@ import { registerPage, loginPage, loginRequiredPage } from './pages/auth'
 import { dictionaryListPage, dictionaryDetailPage } from './pages/dictionary'
 import { DICT_ENRICHED } from './data/dictionary'
 import { searchPage, searchStatic } from './pages/search'
-import { layout, OG_IMAGE_PNG } from './layout'
+import { layout, OG_IMAGE_PNG, TAILWIND_CSS_HREF } from './layout'
 import { CONTENT_LASTMOD, DICT_ENRICHED_DATE, MEDICAL_LAST_REVIEWED, INDEXNOW_KEY, INDEXNOW_ENDPOINTS, INDEXNOW_DEFAULT_URLS, metaDescFrom, fitMetaDesc } from './seo'
 
 // 서버 측 content 자동 변환: plain text → HTML (저장 전 적용)
@@ -219,8 +219,8 @@ app.use('*', createMiddleware(async (c, next) => {
     // Content-Security-Policy (보안 강화)
     c.res.headers.set('Content-Security-Policy', [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://www.googletagmanager.com https://www.google-analytics.com https://www.clarity.ms https://*.clarity.ms https://static.cloudflareinsights.com https://pf-dashboard-2nt.pages.dev",
-      "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://fonts.googleapis.com",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://www.googletagmanager.com https://www.google-analytics.com https://www.clarity.ms https://*.clarity.ms https://static.cloudflareinsights.com https://pf-dashboard-2nt.pages.dev",
+      "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com",
       "img-src 'self' data: blob: https: http:",
       "font-src 'self' https://cdn.jsdelivr.net https://fonts.gstatic.com",
       "connect-src 'self' https://www.google-analytics.com https://www.clarity.ms https://*.clarity.ms https://region1.google-analytics.com https://analytics.google.com https://pf-dashboard-2nt.pages.dev",
@@ -901,8 +901,8 @@ app.get('/sitemap-stats', async (c) => {
 <meta charset="UTF-8">
 <meta name="robots" content="noindex,follow">
 <title>Sitemap 통계 — 강남치과의원</title>
-<script src="https://cdn.tailwindcss.com"></script>
 <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="${TAILWIND_CSS_HREF}">
 </head>
 <body class="bg-slate-50 p-8">
 <div class="max-w-5xl mx-auto">
@@ -1105,8 +1105,8 @@ app.get('/ping-search-engines', (c) => {
 <meta charset="UTF-8">
 <meta name="robots" content="noindex,follow">
 <title>검색엔진 Ping — 강남치과의원</title>
-<script src="https://cdn.tailwindcss.com"></script>
 <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="${TAILWIND_CSS_HREF}">
 </head>
 <body class="bg-slate-50 p-8">
 <div class="max-w-3xl mx-auto">

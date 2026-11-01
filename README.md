@@ -1,9 +1,18 @@
 # 강남치과의원 웹사이트
 
+## Tailwind 빌드 CSS (2026-11-01 CDN → 빌드 전환)
+
+공용 화면의 Tailwind를 CDN 실행(`cdn.tailwindcss.com` + 인라인 `tailwind.config`)에서 빌드 CSS로 바꿨다. 사이트 색·폰트 설정은 `tailwind.config.cjs`, 입력은 `src/styles/tailwind.css`, 출력은 `public/static/tailwind.css`다(Tailwind 3.4.17 = CDN과 같은 버전).
+- `npm run build`가 `css:build`를 먼저 실행하고, `vite.config.ts`의 `__TAILWIND_CSS_V__`가 새 CSS의 내용 해시를 `?v=`로 붙인다(고정 `?v=` 금지). 새 유틸리티 클래스를 쓰면 커밋 전에 `npm run css:build`로 CSS도 함께 갱신한다.
+- 클래스 이름을 문자열 조합(`'mt-' + n`, `` `lg:grid-cols-${n}` ``)으로 만들지 않는다. 빌드는 `src/**`, `public/static/**/*.js`에 그대로 적힌 클래스만 만든다. 불가피하면 `tailwind.config.cjs`의 `safelist`에 추가한다. DB에 저장되는 본문에 새 Tailwind 클래스를 넣는 것도 같은 이유로 피한다.
+- `--minify` 금지(cssnano가 색을 hsla로 반올림해 바꿈). browserslist(`defaults`, `safari/ios_saf >= 12`)로 CDN과 같은 `-webkit-` 접두사를 유지한다.
+- CDN이 head 끝에 넣던 것과 같은 우선순위를 위해 Tailwind 스타일시트는 다른 모든 스타일시트 뒤에서 로드한다.
+- 사이트맵 통계(`/sitemap-stats`)·검색엔진 Ping(`/ping-search-engines`) 유틸 페이지도 같은 CSS를 쓴다(테마가 extend라 기본 색 그대로).
+
 ## 프로젝트 개요
 - **병원명**: 강남치과의원 (경북 영주시)
 - **대표원장**: 이태형 (구강악안면외과 전문의)
-- **기술 스택**: Hono + TypeScript + Tailwind CSS (CDN) + Cloudflare Pages
+- **기술 스택**: Hono + TypeScript + Tailwind CSS (빌드 CSS, 3.4.17) + Cloudflare Pages
 - **디자인**: 화이트 베이스 + 골드(#C9A962) 액센트, Pretendard 폰트
 
 ## 현재 완성된 기능

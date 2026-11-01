@@ -1,6 +1,9 @@
 // 홈 스크롤 몰입 연출 정적 파일 내용 해시 (vite.config.ts define — ?v= 캐시 버스팅, 고정 문자열 금지)
 declare const __IMMERSIVE_CSS_V__: string
 declare const __IMMERSIVE_JS_V__: string
+// Tailwind 빌드 CSS 내용 해시(2026-11-01 CDN → 빌드). npm run build 가 css:build 를 먼저 실행하므로 항상 새 CSS 기준
+declare const __TAILWIND_CSS_V__: string
+export const TAILWIND_CSS_HREF = `/static/tailwind.css?v=${__TAILWIND_CSS_V__}`
 
 interface LayoutOptions {
   title: string
@@ -693,7 +696,6 @@ export function layout(content: string, opts: LayoutOptions): string {
   <meta name="MobileOptimized" content="320">
   <meta http-equiv="x-dns-prefetch-control" content="on">
   <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
-  <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
   <link rel="dns-prefetch" href="https://www.googletagmanager.com">
   <link rel="dns-prefetch" href="https://www.google-analytics.com">
   <link rel="dns-prefetch" href="https://www.clarity.ms">
@@ -713,30 +715,9 @@ export function layout(content: string, opts: LayoutOptions): string {
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-  <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
   <link rel="preload" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" as="style">
   <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
   
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            royal: { 50:'#F3FBFB', 100:'#E2F5F5', 200:'#C3EBEB', 300:'#93DBDC', 400:'#4BC3C5', DEFAULT:'#10AFB2', dark:'#0C8385', 900:'#085759' },
-
-            charcoal: { DEFAULT:'#1C1C1E', light:'#2a2a2a', 800:'#333333', 700:'#444444' },
-            lavender: { DEFAULT:'#F3FBFB', light:'#F7FCFC', dark:'#E2F5F5' },
-            snow: { DEFAULT:'#FFFFFF', 50:'#FAFBFC', 100:'#F5F6F8' }
-          },
-          fontFamily: {
-            pretendard: ['"Pretendard Variable"', 'Pretendard', '-apple-system', 'system-ui', 'sans-serif']
-          }
-        }
-      }
-    }
-  </script>
 
   <!-- Font Awesome -->
   <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" rel="stylesheet">
@@ -1253,6 +1234,8 @@ export function layout(content: string, opts: LayoutOptions): string {
     }
   </style>
 ${immersive ? `<link rel="stylesheet" href="/static/immersive.css?v=${__IMMERSIVE_CSS_V__}">` : ''}
+<!-- Tailwind 빌드 CSS: CDN 이 head 끝에 넣던 것과 같은 우선순위(인라인 style·immersive.css 뒤) — head 마지막, ?v= 는 내용 해시 -->
+<link rel="stylesheet" href="${TAILWIND_CSS_HREF}">
 </head>
 <body class="font-pretendard page-transition">
   <!-- Scroll progress bar -->

@@ -90,10 +90,30 @@
     pending.slice().forEach(function (it) { if (it.el.getBoundingClientRect().top < innerHeight * 0.92) play(it); });
   }
   ScrollTrigger.addEventListener('scrollEnd', sweep);
+  // 그라데이션 글씨(background-clip:text, 예 .royal-grad-text) 안을 낱말로 쪼개면 글자가 투명해진다(대구 2026-11-01 사고)
+  // → 그 요소 자체를 낱말 하나처럼 통째로 감싸 움직인다(요소 자신의 clip:text 는 transform 이 있어도 정상).
+  //   예전의 '낱말마다 그라데이션 다시 입히기'는 낱말마다 색이 처음부터 다시 시작돼 원래 디자인과 달랐다.
+  function clipTextHost(node) {
+    for (var e = node.parentElement; e; e = e.parentElement) {
+      var cs = getComputedStyle(e);
+      if (cs.webkitBackgroundClip === 'text' || cs.backgroundClip === 'text') return e;
+    }
+    return null;
+  }
   function splitWords(el) {
     var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
     var nodes = [];
-    while (walker.nextNode()) nodes.push(walker.currentNode);
+    var hosts = [];
+    while (walker.nextNode()) {
+      var host = clipTextHost(walker.currentNode);
+      if (host) { if (hosts.indexOf(host) < 0) hosts.push(host); continue; }
+      nodes.push(walker.currentNode);
+    }
+    hosts.forEach(function (h) {
+      if (h === el || h.contains(el)) return; // 제목 전체가 그라데이션(또는 그 안)이면 쪼개지 않음
+      var w = document.createElement('span'); w.className = 'mx-w';
+      h.parentNode.insertBefore(w, h); w.appendChild(h); h.classList.add('mx-wi');
+    });
     nodes.forEach(function (node) {
       var parts = node.textContent.split(/(\s+)/);
       if (parts.join('').trim() === '') return;
@@ -105,20 +125,7 @@
         var i = document.createElement('span'); i.className = 'mx-wi'; i.textContent = p;
         w.appendChild(i); frag.appendChild(w);
       });
-      var host = node.parentNode;
-      host.replaceChild(frag, node);
-      // 글자 그라데이션(background-clip:text)은 낱말마다 다시 입혀야 보인다
-      var src = host;
-      while (src && src !== el.parentNode && getComputedStyle(src).backgroundImage === 'none') src = src.parentElement;
-      if (src && src !== el.parentNode && getComputedStyle(host).webkitTextFillColor === 'rgba(0, 0, 0, 0)') {
-        var bg = getComputedStyle(src).backgroundImage;
-        host.querySelectorAll(':scope > .mx-w > .mx-wi').forEach(function (wi) {
-          wi.style.backgroundImage = bg;
-          wi.style.webkitBackgroundClip = 'text';
-          wi.style.backgroundClip = 'text';
-          wi.style.webkitTextFillColor = 'transparent';
-        });
-      }
+      node.parentNode.replaceChild(frag, node);
     });
     return el.querySelectorAll('.mx-wi');
   }
