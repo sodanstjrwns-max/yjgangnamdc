@@ -30,6 +30,7 @@ import { dictionaryListPage, dictionaryDetailPage } from './pages/dictionary'
 import { DICT_ENRICHED } from './data/dictionary'
 import { searchPage, searchStatic } from './pages/search'
 import { layout, OG_IMAGE_PNG, TAILWIND_CSS_HREF } from './layout'
+import { phraseBreaks } from './lib/phrase'
 import { CONTENT_LASTMOD, DICT_ENRICHED_DATE, MEDICAL_LAST_REVIEWED, INDEXNOW_KEY, INDEXNOW_ENDPOINTS, INDEXNOW_DEFAULT_URLS, metaDescFrom, fitMetaDesc } from './seo'
 
 // 서버 측 content 자동 변환: plain text → HTML (저장 전 적용)
@@ -107,6 +108,15 @@ app.use('*', secureHeaders({
 }))
 
 app.use('/api/*', cors())
+
+// ===== 의미 단위 줄바꿈 (2026-11-05): h1~h3·.display 문구를 문장·절 단위 inline-block 으로 묶는다 (관리자·API 제외) =====
+app.use('*', createMiddleware(async (c, next) => {
+  await next()
+  const ct = c.res.headers.get('Content-Type') || ''
+  if (!ct.includes('text/html') || c.req.path.startsWith('/api/') || c.req.path.startsWith('/admin')) return
+  const body = await c.res.text()
+  c.res = new Response(phraseBreaks(body), c.res)
+}))
 
 // ===== SEO: www / *.pages.dev → kndent.kr 301 리다이렉트 (중복 호스트 제거) =====
 app.use('*', createMiddleware(async (c, next) => {

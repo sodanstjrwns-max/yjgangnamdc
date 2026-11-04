@@ -493,14 +493,14 @@ export function blogDetailPage(post: any, relatedPosts: any[] = []): { html: str
 
   <style>
     .blog-content .direct-answer { background: linear-gradient(135deg, rgba(91,71,214,0.05), rgba(91,71,214,0.02)); border-left: 4px solid #5B47D6; border-radius: 0 16px 16px 0; padding: 1.25rem 1.5rem; color: #374151; font-size: 1.05rem; line-height: 1.8; margin-bottom: 2rem; }
-    .blog-content h2 { font-size: 1.5rem; font-weight: 800; color: #1C1C1E; margin: 2.5rem 0 1rem; line-height: 1.3; }
-    .blog-content h3 { font-size: 1.25rem; font-weight: 700; color: #1C1C1E; margin: 2rem 0 0.8rem; }
+    .blog-content h2 { font-size: 1.5rem; font-weight: 800; color: #14202A; margin: 2.5rem 0 1rem; line-height: 1.3; }
+    .blog-content h3 { font-size: 1.25rem; font-weight: 700; color: #14202A; margin: 2rem 0 0.8rem; }
     .blog-content p { color: #6B7280; font-size: 1rem; line-height: 1.9; margin-bottom: 1.5rem; }
-    .blog-content strong { color: #1C1C1E; font-weight: 700; }
+    .blog-content strong { color: #14202A; font-weight: 700; }
     .blog-content ul, .blog-content ol { color: #6B7280; padding-left: 1.5rem; margin-bottom: 1.5rem; }
     .blog-content li { margin-bottom: 0.5rem; line-height: 1.8; }
     .blog-content img { border-radius: 16px; margin: 2rem 0; width: 100%; }
-    .blog-content blockquote { border-left: 4px solid #10AFB2; padding: 1rem 1.5rem; background: #F3FBFB; border-radius: 0 12px 12px 0; margin: 2rem 0; color: #10AFB2; font-style: italic; }
+    .blog-content blockquote { border-left: 4px solid #0E8F8B; padding: 1rem 1.5rem; background: #ECE9E0; border-radius: 0 12px 12px 0; margin: 2rem 0; color: #0E8F8B; font-style: italic; }
   </style>
   `;
 

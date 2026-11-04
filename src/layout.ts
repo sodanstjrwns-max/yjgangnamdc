@@ -1,9 +1,12 @@
 // 홈 스크롤 몰입 연출 정적 파일 내용 해시 (vite.config.ts define — ?v= 캐시 버스팅, 고정 문자열 금지)
 declare const __IMMERSIVE_CSS_V__: string
 declare const __IMMERSIVE_JS_V__: string
+declare const __APP_JS_V__: string
 // Tailwind 빌드 CSS 내용 해시(2026-11-01 CDN → 빌드). npm run build 가 css:build 를 먼저 실행하므로 항상 새 CSS 기준
 declare const __TAILWIND_CSS_V__: string
 export const TAILWIND_CSS_HREF = `/static/tailwind.css?v=${__TAILWIND_CSS_V__}`
+import { todayStatus, HOURS_LINES } from './lib/hours'
+import { icon, naverMark } from './lib/icons'
 
 interface LayoutOptions {
   title: string
@@ -580,9 +583,31 @@ function buildWebSiteSchema() {
 // 속성값 안의 큰따옴표가 content="..." 를 끊어 설명이 통째로 사라지던 문제 방지 (예: 요약이 "인용문"으로 시작하는 칼럼)
 const attr = (v: unknown): string => String(v ?? '').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
+// ===== 공용 셸 (2026-11-05 리디자인 v2 "도면: 한 번에, 정확하게") =====
+// 헤더(브랜드·메뉴·내원안내 드롭다운·진료 상태 칩·전화·로그인·예약)·종이 드로어·푸터·모바일 하단바·FAB.
+// 인라인 <style>·<script> 는 전부 public/static/tailwind.css(빌드)·app.js 로 옮겼다. GSAP 은 홈에서만 defer 로드.
+const NAV: { label: string; href: string; en: string }[] = [
+  { label: '의료진', href: '/doctors', en: 'DOCTORS' },
+  { label: '진료안내', href: '/treatments', en: 'TREATMENTS' },
+  { label: '임플란트', href: '/treatments/implant', en: 'IMPLANT' },
+  { label: '인비절라인', href: '/treatments/invisalign', en: 'INVISALIGN' },
+  { label: '치료전후', href: '/before-after', en: 'CASES' },
+  { label: '블로그', href: '/blog', en: 'BLOG' },
+  { label: '공지사항', href: '/notices', en: 'NOTICE' },
+]
+const VISIT: { label: string; href: string; icon: string }[] = [
+  { label: '오시는 길', href: '/directions', icon: 'pin' },
+  { label: '수가 안내', href: '/pricing', icon: 'won' },
+  { label: '치과 용어 사전', href: '/dictionary', icon: 'book' },
+  { label: '자주 묻는 질문', href: '/faq', icon: 'question' },
+]
+const HUB_PATH = `/area/${encodeURIComponent('영주시')}`
+
 export function layout(content: string, opts: LayoutOptions): string {
   const { title, description, url, schemas = [], keywords, ogType, ogImage, ogImageWidth, ogImageHeight, ogImageAlt, speakableSelectors, robots, articlePublishedTime, articleModifiedTime, canonical, breadcrumbItems, immersive } = opts
   const fullUrl = `${SITE_URL}${canonical || url}`
+  const pagePath = canonical || url
+  const isHome = pagePath === '/'
   const pageOgImage = ogImage || DEFAULT_OG_IMAGE
   // 블로그 대표 이미지(/api/images/*)처럼 크기를 모르는 og 는 1200×630 으로 잘못 신고하지 않는다 (2026-10-14)
   const ogDims = ogImageWidth && ogImageHeight ? { w: ogImageWidth, h: ogImageHeight } : pageOgImage === DEFAULT_OG_IMAGE ? { w: 1200, h: 630 } : null
@@ -624,6 +649,12 @@ export function layout(content: string, opts: LayoutOptions): string {
   const mergedKeywords = keywords ? `${keywords}, ${baseKeywords}` : baseKeywords
   const finalKeywords = [...new Set(mergedKeywords.split(',').map(k => k.trim()).filter(Boolean))].join(', ')
 
+  // 진료 상태(KST) 초기값 — app.js 가 30초마다 갱신
+  const st = todayStatus()
+  const chipCls = st.state === 'open' ? ' is-open' : st.state === 'lunch' ? ' is-lunch' : ''
+  const isCurrent = (href: string) => pagePath === href || (href !== '/' && pagePath.startsWith(href + '/'))
+  const isVisitCurrent = VISIT.some(v => isCurrent(v.href))
+
   return `<!DOCTYPE html>
 <html lang="ko" dir="ltr" prefix="og: https://ogp.me/ns#">
 <head>
@@ -655,6 +686,7 @@ export function layout(content: string, opts: LayoutOptions): string {
   <meta name="bingbot" content="${robotsContent}">
   <meta name="yeti" content="${robotsContent}">
   <meta name="format-detection" content="telephone=yes">
+  <meta name="theme-color" content="#F5F3EC">
   <link rel="canonical" href="${fullUrl}">
 
   <!-- Geo/Regional SEO -->
@@ -702,6 +734,8 @@ export function layout(content: string, opts: LayoutOptions): string {
 
   <!-- Preconnect for critical third-party origins (Core Web Vitals) -->
   <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
   <!-- hreflang -->
@@ -713,20 +747,17 @@ export function layout(content: string, opts: LayoutOptions): string {
   <link rel="alternate" type="application/rss+xml" title="강남치과의원 블로그 RSS" href="${SITE_URL}/rss.xml">
   <link rel="alternate" type="application/rss+xml" title="강남치과의원 진료 가이드 피드" href="${SITE_URL}/feed.xml">
 
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <!-- Fonts: 제목 Freesentation(눈누 CDN, @font-face 는 tailwind.css) · 본문 Pretendard · 숫자 IBM Plex Mono -->
+  <link rel="preload" href="https://cdn.jsdelivr.net/gh/projectnoonnu/2404@1.0/Freesentation-7Bold.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" as="style">
   <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
-  <!-- Font Awesome -->
-  <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" rel="stylesheet">
+  <!-- Font Awesome: 하위페이지 아이콘용(비차단 로드). 홈·공용 셸은 인라인 SVG -->
+  <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" rel="stylesheet"></noscript>
 
-  <!-- GSAP + ScrollTrigger (must load synchronously before inline scripts) -->
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-
-  <!-- Microsoft Clarity (행동 분석) — 실제 프로젝트 ID(yc82mxyj7e) 적용으로 활성화 -->
+  <!-- Microsoft Clarity (행동 분석) -->
   <script type="text/javascript">
     (function(c,l,a,r,i,t,y){
       c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
@@ -735,1261 +766,161 @@ export function layout(content: string, opts: LayoutOptions): string {
     })(window, document, "clarity", "script", "yc82mxyj7e");
   </script>
 
-
-  <!-- Three.js removed for performance - using CSS particles instead -->
-  
   <!-- Structured Data (SEO/AEO) -->
   ${schemasHtml}
 
-  <style>
-    :root {
-      --royal: #10AFB2;
-      --royal-dark: #0C8385;
-      --royal-light: #E2F5F5;
-      --royal-50: #F3FBFB;
-      --charcoal: #1C1C1E;
-      --white: #FFFFFF;
-      --lavender: #F3FBFB;
-    }
-    * { font-family: 'Pretendard Variable', Pretendard, -apple-system, system-ui, sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-    body { color: #1C1C1E; background: #FFFFFF; overflow-x: hidden; }
-
-    /* ===== Premium Typography ===== */
-    .display-hero { font-size: clamp(1.75rem, 4.2vw, 3.6rem); line-height: 1.15; letter-spacing: -0.03em; font-weight: 900; }
-    .display-xl { font-size: clamp(1.85rem, 6vw, 5rem); line-height: 1.1; letter-spacing: -0.035em; font-weight: 800; }
-    .display-lg { font-size: clamp(1.6rem, 4.5vw, 3.5rem); line-height: 1.15; letter-spacing: -0.025em; font-weight: 700; }
-    .display-md { font-size: clamp(1.35rem, 3vw, 2.25rem); line-height: 1.2; letter-spacing: -0.02em; font-weight: 700; }
-
-    /* ===== Royal Purple Gradients ===== */
-    .royal-grad { background: linear-gradient(135deg, #4BC3C5, #10AFB2 40%, #0C8385); }
-    .royal-grad-text { background: linear-gradient(135deg, #0C8385, #10AFB2 30%, #4BC3C5 60%, #10AFB2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .royal-glow { box-shadow: 0 8px 32px rgba(16,175,178,0.25), 0 2px 8px rgba(16,175,178,0.12); }
-    .royal-border { border: 1px solid rgba(16,175,178,0.15); }
-    .royal-border-glow { border: 1px solid rgba(16,175,178,0.2); box-shadow: 0 4px 24px rgba(16,175,178,0.1); }
-    .royal-line-h { height: 1px; background: linear-gradient(90deg, transparent, rgba(16,175,178,0.15), transparent); }
-
-    /* ===== Accent (unified with royal) ===== */
-    .royal-accent { color: var(--royal); }
-    .royal-accent-bg { background: rgba(16,175,178,0.06); border: 1px solid rgba(16,175,178,0.12); }
-
-    /* ===== Glass Effects ===== */
-    .glass-royal { background: rgba(16,175,178,0.04); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(16,175,178,0.1); }
-
-    /* ===== Cards ===== */
-    .card-premium {
-      background: #fff;
-      border: 1px solid rgba(0,0,0,0.05);
-      border-radius: 28px;
-      transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-      position: relative;
-      overflow: hidden;
-    }
-    .card-premium::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent 10%, #10AFB2 50%, transparent 90%);
-      opacity: 0;
-      transition: opacity 0.6s;
-    }
-    .card-premium:hover {
-      transform: translateY(-4px) scale(1.002);
-      box-shadow: 0 15px 40px rgba(0,0,0,0.04), 0 4px 15px rgba(16,175,178,0.06);
-      border-color: rgba(16,175,178,0.15);
-    }
-    @media (min-width: 768px) {
-      .card-premium:hover { transform: translateY(-8px) scale(1.005); box-shadow: 0 30px 80px rgba(0,0,0,0.06), 0 8px 30px rgba(16,175,178,0.08); }
-    }
-    .card-premium { border-radius: 20px; }
-    @media (min-width: 768px) {
-      .card-premium { border-radius: 28px; }
-    }
-    .card-premium:hover::before { opacity: 1; }
-
-    .card-white {
-      background: #FFFFFF;
-      border: 1px solid rgba(0,0,0,0.06);
-      border-radius: 28px;
-      transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-      position: relative;
-      overflow: hidden;
-    }
-    .card-white::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(16,175,178,0.05) 0%, transparent 60%);
-      opacity: 0; transition: opacity 0.4s;
-    }
-    .card-white:hover::before { opacity: 1; }
-    .card-white:hover {
-      border-color: rgba(16,175,178,0.2);
-      transform: translateY(-6px);
-      box-shadow: 0 25px 60px rgba(0,0,0,0.06), 0 4px 16px rgba(16,175,178,0.08);
-    }
-
-    /* ===== Buttons with Ripple Effect ===== */
-    .btn-primary {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 14px 28px;
-      background: linear-gradient(135deg, #4BC3C5 0%, #10AFB2 40%, #0C8385 100%);
-      color: #fff; font-weight: 700; font-size: 14px;
-      border-radius: 100px; border: none; cursor: pointer;
-      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 0 6px 30px rgba(16,175,178,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
-      position: relative; overflow: hidden;
-      text-decoration: none;
-    }
-    @media (min-width: 768px) {
-      .btn-primary { padding: 18px 40px; font-size: 15px; gap: 10px; }
-    }
-    .btn-primary::before {
-      content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
-      transition: left 0.7s;
-    }
-    .btn-primary:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 12px 50px rgba(16,175,178,0.4), inset 0 1px 0 rgba(255,255,255,0.2); }
-    .btn-primary:hover::before { left: 100%; }
-    .btn-primary:active { transform: translateY(0) scale(0.97); transition-duration: 0.1s; }
-
-    .btn-outline {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 14px 28px;
-      border: 2px solid rgba(16,175,178,0.3);
-      color: var(--royal); font-weight: 700; font-size: 14px;
-      border-radius: 100px; cursor: pointer; background: transparent;
-      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-      text-decoration: none; position: relative; overflow: hidden;
-    }
-    @media (min-width: 768px) {
-      .btn-outline { padding: 18px 40px; font-size: 15px; gap: 10px; }
-    }
-    .btn-outline:hover { background: var(--royal); color: #fff; border-color: var(--royal); box-shadow: 0 8px 40px rgba(16,175,178,0.25); transform: translateY(-2px); }
-    .btn-outline:active { transform: translateY(0) scale(0.97); transition-duration: 0.1s; }
-
-    .btn-subtle {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 14px 28px;
-      border: 1.5px solid rgba(0,0,0,0.08);
-      color: var(--charcoal); font-weight: 700; font-size: 14px;
-      border-radius: 100px; cursor: pointer; background: rgba(0,0,0,0.02);
-      transition: all 0.5s;
-      text-decoration: none; position: relative; overflow: hidden;
-    }
-    @media (min-width: 768px) {
-      .btn-subtle { padding: 18px 40px; font-size: 15px; gap: 10px; }
-    }
-    .btn-subtle:hover { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.12); transform: translateY(-2px); }
-    .btn-subtle:active { transform: translateY(0) scale(0.97); transition-duration: 0.1s; }
-
-    /* ===== Ripple effect ===== */
-    .ripple-effect {
-      position: absolute; border-radius: 50%; background: rgba(255,255,255,0.4);
-      transform: scale(0); animation: rippleAnim 0.6s ease-out forwards; pointer-events: none;
-    }
-    @keyframes rippleAnim { to { transform: scale(4); opacity: 0; } }
-
-    /* ===== Section helpers ===== */
-    .section-label {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 8px 20px; border-radius: 100px;
-      font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
-    }
-    .section-label-royal { background: rgba(16,175,178,0.06); color: var(--royal); border: 1px solid rgba(16,175,178,0.12); }
-    .divider-royal { width: 48px; height: 2px; background: linear-gradient(90deg, var(--royal), var(--royal-light)); border-radius: 2px; }
-
-    /* ===== Animations ===== */
-    .reveal { opacity: 0; transform: translateY(50px); }
-    .reveal-left { opacity: 0; transform: translateX(-50px); }
-    .reveal-right { opacity: 0; transform: translateX(50px); }
-    .reveal-scale { opacity: 0; transform: scale(0.92); }
-    .reveal-rotate { opacity: 0; transform: translateY(30px) rotate(2deg); }
-    .reveal-blur { opacity: 0; filter: blur(8px); transform: translateY(20px); }
-
-    /* ===== 3D Card tilt ===== */
-    .card-tilt, .card-premium {
-      transition: transform 0.5s cubic-bezier(0.03, 0.98, 0.52, 0.99), box-shadow 0.5s ease;
-      transform-style: preserve-3d; will-change: transform;
-    }
-    .card-tilt:hover { box-shadow: 0 30px 60px rgba(0,0,0,0.08), 0 4px 16px rgba(16,175,178,0.1); }
-
-    /* ===== Magnetic hover ===== */
-    .magnetic, .btn-primary, .btn-outline { transition: transform 0.3s cubic-bezier(0.03, 0.98, 0.52, 0.99); }
-
-    /* ===== Text gradient shimmer ===== */
-    .shimmer-text {
-      background-size: 200% auto;
-      animation: shimmerGrad 3s ease infinite;
-    }
-    @keyframes shimmerGrad {
-      0% { background-position: 0% center; }
-      50% { background-position: 100% center; }
-      100% { background-position: 0% center; }
-    }
-
-    /* ===== Parallax layers ===== */
-    .parallax-slow { will-change: transform; }
-    .parallax-fast { will-change: transform; }
-
-    /* ===== Smooth section divider ===== */
-    .section-wave {
-      position: relative;
-    }
-    .section-wave::after {
-      content: ''; position: absolute; bottom: -1px; left: 0; right: 0; height: 80px;
-      background: linear-gradient(to bottom, transparent, var(--bg-next, #fff));
-      pointer-events: none;
-    }
-
-    /* ===== Progress indicator (scroll) ===== */
-    .scroll-progress {
-      position: fixed; top: 0; left: 0; height: 3px; z-index: 99999;
-      background: linear-gradient(90deg, var(--royal), var(--royal-light));
-      transform-origin: left; transform: scaleX(0);
-      transition: transform 0.1s linear;
-    }
-
-    /* ===== Hover line underline ===== */
-    .hover-line { position: relative; }
-    .hover-line::after {
-      content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px;
-      background: var(--royal); transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .hover-line:hover::after { width: 100%; }
-
-    /* ===== Glow on scroll ===== */
-    .glow-border {
-      position: relative;
-    }
-    .glow-border::before {
-      content: ''; position: absolute; inset: -2px; border-radius: inherit;
-      background: linear-gradient(135deg, var(--royal), var(--royal-light), var(--royal));
-      opacity: 0; transition: opacity 0.5s; z-index: -1;
-    }
-    .glow-border.is-visible::before { opacity: 1; }
-
-    /* ===== Patterns ===== */
-    .grid-pattern {
-      background-image:
-        linear-gradient(rgba(16,175,178,0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(16,175,178,0.02) 1px, transparent 1px);
-      background-size: 80px 80px;
-    }
-
-    /* ===== Scrollbar ===== */
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: #FAFBFC; }
-    ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #10AFB2, #0C8385); border-radius: 4px; }
-
-    /* ===== Mobile CTA ===== */
-    .floating-cta {
-      position: fixed; bottom: 0; left: 0; right: 0; z-index: 9960;
-      padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
-      display: none;
-      background: rgba(255,255,255,0.97);
-      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-      border-top: 1px solid rgba(0,0,0,0.06);
-      box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
-    }
-    @media (max-width: 768px) {
-      .floating-cta { display: flex; gap: 10px; }
-      body { padding-bottom: 76px; }
-    }
-
-    /* ===== Mobile-specific overrides ===== */
-    @media (max-width: 640px) {
-      .section-label { padding: 6px 14px; font-size: 10px; letter-spacing: 0.1em; }
-      .card-premium { border-radius: 16px; }
-      .card-white { border-radius: 16px; }
-    }
-
-    /* ===== Marquee ===== */
-    @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-    .marquee-track { animation: marquee 40s linear infinite; }
-
-    /* ===== Orbs ===== */
-    .orb { position: absolute; border-radius: 50%; filter: blur(100px); pointer-events: none; }
-    .orb-royal { background: rgba(16,175,178,0.06); }
-
-    /* ===== Counter ===== */
-    .counter { font-variant-numeric: tabular-nums; }
-
-    /* ===== Page transition ===== */
-    .page-transition { animation: pageIn 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
-    @keyframes pageIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-    /* ===== Stagger cascade ===== */
-    .stagger-cascade > *:nth-child(1) { transition-delay: 0s; }
-    .stagger-cascade > *:nth-child(2) { transition-delay: 0.08s; }
-    .stagger-cascade > *:nth-child(3) { transition-delay: 0.16s; }
-    .stagger-cascade > *:nth-child(4) { transition-delay: 0.24s; }
-    .stagger-cascade > *:nth-child(5) { transition-delay: 0.32s; }
-    .stagger-cascade > *:nth-child(6) { transition-delay: 0.40s; }
-    .stagger-cascade > *:nth-child(7) { transition-delay: 0.48s; }
-    .stagger-cascade > *:nth-child(8) { transition-delay: 0.56s; }
-
-    /* ===== Elastic bounce ===== */
-    @keyframes elasticIn {
-      0% { transform: scale(0) rotate(-3deg); opacity: 0; }
-      60% { transform: scale(1.08) rotate(1deg); }
-      80% { transform: scale(0.97); }
-      100% { transform: scale(1) rotate(0); opacity: 1; }
-    }
-    .elastic-in { animation: elasticIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
-
-    /* ===== Number highlight ===== */
-    .number-highlight {
-      display: inline-block;
-      background: linear-gradient(135deg, var(--royal), var(--royal-light));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    /* ===== FAQ ===== */
-    details summary::-webkit-details-marker { display: none; }
-    details[open] .faq-icon { transform: rotate(45deg); }
-
-    /* ===== Float animation ===== */
-    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
-    @keyframes pulse-royal { 0%,100%{box-shadow:0 0 20px rgba(16,175,178,0.15)} 50%{box-shadow:0 0 40px rgba(16,175,178,0.3)} }
-
-    /* ===== 3D Implant animations ===== */
-    @keyframes implantPulse { 0%,100%{transform:translate(-50%,-50%) scale(1); opacity:1} 50%{transform:translate(-50%,-50%) scale(1.15); opacity:0.6} }
-    @keyframes fadeInOut { 0%,100%{opacity:0} 30%,70%{opacity:1} }
-
-    /* ===== Floating label (hero) ===== */
-    .float-label {
-      position: absolute;
-      padding: 14px;
-      border-radius: 16px;
-      background: rgba(255,255,255,0.9);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(16,175,178,0.1);
-      box-shadow: 0 20px 25px -5px rgba(16,175,178,0.06);
-      pointer-events: none;
-      z-index: 20;
-      animation: float 5s ease-in-out infinite;
-    }
-    .float-label-d1 { animation-delay: -2s; }
-    .float-label-d2 { animation-delay: -3.5s; }
-
-    /* ===== Horizontal scroll snap ===== */
-    .snap-x { scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
-    .snap-x > * { scroll-snap-align: start; }
-
-    /* ===== CSS Particles (Three.js replacement) ===== */
-    .css-particles { position: absolute; inset: 0; overflow: hidden; }
-    .css-particle {
-      position: absolute;
-      border-radius: 50%;
-      background: var(--royal);
-      animation: particleFloat linear infinite;
-    }
-    .css-particle:nth-child(odd) { background: var(--royal-dark); }
-    @keyframes particleFloat {
-      0% { transform: translate(0, 0) scale(1); }
-      25% { transform: translate(30px, -40px) scale(1.2); }
-      50% { transform: translate(-20px, -80px) scale(0.8); }
-      75% { transform: translate(40px, -30px) scale(1.1); }
-      100% { transform: translate(0, 0) scale(1); }
-    }
-
-    /* ===== Cursor glow ===== */
-    .cursor-glow {
-      position: fixed; width: 400px; height: 400px; border-radius: 50%;
-      background: radial-gradient(circle, rgba(16,175,178,0.04) 0%, transparent 70%);
-      pointer-events: none; z-index: 1; transform: translate(-50%, -50%);
-      transition: opacity 0.3s;
-    }
-
-    /* ===== Hero section BG ===== */
-    .hero-white {
-      background: linear-gradient(180deg, #FFFFFF 0%, #FAFBFC 40%, #F3FBFB 100%);
-    }
-
-    /* ===== Sub page hero ===== */
-    .subpage-hero {
-      background: linear-gradient(180deg, #FAFBFC 0%, #F3FBFB 50%, #FFFFFF 100%);
-    }
-
-    /* ===== Section backgrounds ===== */
-    .section-lavender { background: linear-gradient(180deg, #F3FBFB, #E2F5F5); }
-    .section-snow { background: linear-gradient(180deg, #FAFBFC, #F5F6F8); }
-    /* ===== Skip Navigation (접근성) ===== */
-    .skip-nav {
-      position: absolute; top: -100%; left: 50%; transform: translateX(-50%);
-      padding: 12px 24px; background: var(--royal); color: #fff;
-      border-radius: 0 0 12px 12px; font-weight: 700; font-size: 14px;
-      z-index: 99999; transition: top 0.3s;
-      text-decoration: none;
-    }
-    .skip-nav:focus { top: 0; }
-
-    /* ===== Layout z-index system ===== */
-    .z-topbar { z-index: 9970; pointer-events: auto; }
-    .z-navbar { z-index: 9990; pointer-events: none; }
-    .z-navbar-inner { pointer-events: auto; position: relative; }
-    .z-mobile-menu { z-index: 9980; }
-    .z-overlay-5 { z-index: 5; }
-    .z-overlay-6 { z-index: 6; }
-    .z-overlay-10 { z-index: 10; }
-    .z-overlay-20 { z-index: 20; }
-    .z-behind { z-index: -1; }
-
-    /* ===== Mobile menu ===== */
-    .mobile-menu-overlay {
-      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      opacity: 0; transition: opacity 0.4s ease;
-    }
-    .mobile-menu-bg {
-      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(255,255,255,0.98);
-      backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
-    }
-    .mobile-menu-content {
-      position: relative; z-index: 10; height: 100%;
-      display: flex; flex-direction: column;
-      padding: 96px 32px 32px 32px; overflow-y: auto;
-    }
-    .mobile-menu-links {
-      flex: 1; display: flex; flex-direction: column;
-      justify-content: center; gap: 4px;
-    }
-
-    /* ===== Nav inner default ===== */
-    .nav-glass {
-      background: rgba(255,255,255,0.95);
-      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-    }
-
-    /* ===== Sketchfab overlays ===== */
-    .sf-overlay-top {
-      background: linear-gradient(to bottom, white 0%, white 40%, rgba(255,255,255,0.85) 60%, rgba(255,255,255,0) 100%);
-    }
-    .sf-overlay-corner {
-      background: linear-gradient(135deg, white 0%, white 50%, rgba(255,255,255,0) 100%);
-    }
-    .sf-overlay-bottom {
-      background: linear-gradient(to top, white 0%, white 30%, rgba(255,255,255,0.85) 55%, rgba(255,255,255,0) 100%);
-    }
-
-    /* ===== Hero implant glow ===== */
-    .implant-glow {
-      background: radial-gradient(circle, rgba(59,130,246,0.08) 0%, rgba(59,130,246,0.02) 50%, transparent 70%);
-      animation: implantPulse 4s ease-in-out infinite;
-    }
-
-    /* ===== Scroll snap hide scrollbar ===== */
-    .scrollbar-none { scrollbar-width: none; -ms-overflow-style: none; }
-    .scrollbar-none::-webkit-scrollbar { display: none; }
-
-    /* ===== Object position for doctor photos ===== */
-    .obj-top-20 { object-position: center 20%; }
-
-    /* ===== Hero stat pulse ===== */
-    .pulse-royal-anim { animation: pulse-royal 3s ease infinite; }
-    .pulse-royal-d1 { animation: pulse-royal 3s ease infinite; animation-delay: 1s; }
-    .pulse-royal-d2 { animation: pulse-royal 3s ease infinite; animation-delay: 2s; }
-
-    /* ===== Focus visible (accessibility) ===== */
-    :focus-visible {
-      outline: 3px solid var(--royal);
-      outline-offset: 2px;
-      border-radius: 4px;
-    }
-
-    /* ===== Core Web Vitals: CLS Prevention ===== */
-    img { max-width: 100%; height: auto; }
-    img[loading="lazy"] { content-visibility: auto; }
-
-    /* ===== Mobile spacing helpers ===== */
-    @media (max-width: 640px) {
-      .py-32 { padding-top: 4rem !important; padding-bottom: 4rem !important; }
-      .py-36 { padding-top: 4.5rem !important; padding-bottom: 4.5rem !important; }
-      .py-48 { padding-top: 5rem !important; padding-bottom: 5rem !important; }
-      .mb-24 { margin-bottom: 3rem !important; }
-      .mb-20 { margin-bottom: 2.5rem !important; }
-      .mb-16 { margin-bottom: 2rem !important; }
-      .gap-16 { gap: 2.5rem !important; }
-      .gap-20 { gap: 3rem !important; }
-      .gap-24 { gap: 3rem !important; }
-      .pt-48 { padding-top: 7rem !important; }
-      .min-h-\\[480px\\] { min-height: 360px !important; }
-    }
-    @media (max-width: 768px) {
-      /* Prevent horizontal overflow */
-      html, body { overflow-x: hidden; }
-      main { overflow-x: hidden; }
-    }
-    /* Reduce motion for accessibility + performance */
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
-      }
-    }
-  </style>
-${immersive ? `<link rel="stylesheet" href="/static/immersive.css?v=${__IMMERSIVE_CSS_V__}">` : ''}
-<!-- Tailwind 빌드 CSS: CDN 이 head 끝에 넣던 것과 같은 우선순위(인라인 style·immersive.css 뒤) — head 마지막, ?v= 는 내용 해시 -->
-<link rel="stylesheet" href="${TAILWIND_CSS_HREF}">
+  <!-- 등장 연출 게이트: 동작 줄이기가 아니고 IntersectionObserver 가 있을 때만 html.mx (CSS 가 숨김 시작) -->
+  <script>(function(){try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches&&'IntersectionObserver' in window)document.documentElement.classList.add('mx')}catch(e){}})();</script>
+  <!-- 디자인 시스템 CSS (Tailwind 빌드, ?v= 는 내용 해시) -->
+  <link rel="stylesheet" href="${TAILWIND_CSS_HREF}">
+${immersive ? `  <link rel="stylesheet" href="/static/immersive.css?v=${__IMMERSIVE_CSS_V__}">` : ''}
 </head>
-<body class="font-pretendard page-transition">
-  <!-- Scroll progress bar -->
-  <div class="scroll-progress" aria-hidden="true"></div>
-
-  <!-- Skip Navigation (접근성) -->
+<body class="font-pretendard">
+  <div id="scroll-progress" class="scroll-progress" aria-hidden="true"></div>
   <a href="#main-content" class="skip-nav">본문 바로가기</a>
 
-  <!-- Cursor glow (desktop only) -->
-  <div class="cursor-glow hidden md:block" id="cursorGlow" aria-hidden="true" style="opacity:0"></div>
-
-  <!-- ===== Top Bar ===== -->
-  <div class="hidden md:block fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-b border-black/[0.04] z-topbar" role="banner">
-    <div class="max-w-[1440px] mx-auto px-8 lg:px-12 h-10 flex items-center justify-between">
-      <div class="flex items-center gap-8 text-[11px] text-gray-400 tracking-wide">
-        <span class="flex items-center gap-2"><span class="relative flex h-1.5 w-1.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-400"></span></span><span class="text-emerald-500 font-medium">진료중</span> 평일 09:00-17:30 (접수마감 17:00)</span>
-        <span class="hidden lg:inline text-gray-400">경상북도 영주시 대학로 217, 2층 · 모모제인 건물</span>
-      </div>
-      <div class="flex items-center gap-6 text-[11px] text-gray-400">
-        <a href="tel:054-636-8222" class="hover:text-royal transition-colors flex items-center gap-1.5"><i class="fas fa-phone text-[9px]"></i>054-636-8222</a>
-        <a href="https://blog.naver.com/gndentalclinic" target="_blank" rel="noopener noreferrer" class="hover:text-royal transition-colors flex items-center gap-1.5"><i class="fas fa-blog text-[9px]"></i>Blog</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== Navigation ===== -->
-  <header class="fixed top-0 md:top-10 left-0 right-0 transition-all duration-700 z-navbar" id="navbar" role="banner">
-    <div class="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-12">
-      <nav class="h-16 md:h-[68px] flex items-center justify-between md:rounded-2xl md:px-8 px-4 transition-all duration-500 nav-glass z-navbar-inner" id="navInner" aria-label="메인 네비게이션">
-        <!-- Logo -->
-        <a href="/" class="flex items-center gap-3 group relative">
-          <img src="/static/logo.png" alt="강남치과의원 로고" class="h-10 w-auto" width="40" height="40">
-          <div>
-            <div class="text-[17px] font-extrabold text-charcoal tracking-tight leading-none">강남치과</div>
-            <div class="text-[9px] text-gray-300 tracking-[0.2em] font-semibold mt-0.5">GANGNAM DENTAL</div>
-          </div>
-        </a>
-
-        <!-- Desktop Menu -->
-        <div class="hidden xl:flex items-center gap-0">
-          <a href="/doctors" class="px-3 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative group font-medium whitespace-nowrap">
-            의료진
-            <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-royal rounded-full group-hover:w-6 transition-all duration-300"></span>
-          </a>
-          <a href="/treatments" class="px-3 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative group font-medium whitespace-nowrap">
-            진료안내
-            <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-royal rounded-full group-hover:w-6 transition-all duration-300"></span>
-          </a>
-          <a href="/treatments/implant" class="px-3 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative group font-medium whitespace-nowrap">
-            임플란트
-            <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-royal rounded-full group-hover:w-6 transition-all duration-300"></span>
-          </a>
-          <a href="/treatments/invisalign" class="px-3 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative group font-medium whitespace-nowrap">
-            인비절라인
-            <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-royal rounded-full group-hover:w-6 transition-all duration-300"></span>
-          </a>
-          <a href="/before-after" class="px-3 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative group font-medium whitespace-nowrap">
-            치료전후
-            <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-royal rounded-full group-hover:w-6 transition-all duration-300"></span>
-          </a>
-          <a href="/blog" class="px-3 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative group font-medium whitespace-nowrap">
-            블로그
-            <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-royal rounded-full group-hover:w-6 transition-all duration-300"></span>
-          </a>
-          <a href="/notices" class="px-3 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative group font-medium whitespace-nowrap">
-            공지사항
-            <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-royal rounded-full group-hover:w-6 transition-all duration-300"></span>
-          </a>
-          <div class="relative group/visit">
-            <button class="px-3 py-2.5 text-[13px] text-gray-500 hover:text-charcoal transition-all duration-300 rounded-lg relative font-medium flex items-center gap-1 whitespace-nowrap">
-              내원안내
-              <i class="fas fa-chevron-down text-[8px] ml-0.5 transition-transform group-hover/visit:rotate-180"></i>
-              <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-royal rounded-full group-hover/visit:w-6 transition-all duration-300"></span>
-            </button>
-            <div class="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 invisible group-hover/visit:opacity-100 group-hover/visit:visible transition-all duration-300">
-              <div class="bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden w-44 py-1">
-                <a href="/directions" class="flex items-center gap-3 px-5 py-3 text-sm text-gray-600 hover:bg-royal/5 hover:text-royal transition-all">
-                  <i class="fas fa-map-marker-alt text-xs text-gray-300"></i>오시는 길
-                </a>
-                <a href="/pricing" class="flex items-center gap-3 px-5 py-3 text-sm text-gray-600 hover:bg-royal/5 hover:text-royal transition-all">
-                  <i class="fas fa-won-sign text-xs text-gray-300"></i>수가 안내
-                </a>
-                <div class="border-t border-gray-100"></div>
-                <a href="/dictionary" class="flex items-center gap-3 px-5 py-3 text-sm text-gray-600 hover:bg-royal/5 hover:text-royal transition-all">
-                  <i class="fas fa-book-medical text-xs text-gray-300"></i>치과 용어 사전
-                </a>
-                <a href="/faq" class="flex items-center gap-3 px-5 py-3 text-sm text-gray-600 hover:bg-royal/5 hover:text-royal transition-all">
-                  <i class="fas fa-circle-question text-xs text-gray-300"></i>자주 묻는 질문
-                </a>
-              </div>
-            </div>
-          </div>
-          <div class="w-px h-5 bg-gray-200 mx-2"></div>
-          <a href="/reservation" class="btn-primary !py-2.5 !px-5 !text-[12px] !gap-2 !font-bold whitespace-nowrap">
-            <i class="fas fa-calendar-check text-[10px]"></i>상담예약
-          </a>
-          <!-- Auth Button (Desktop) -->
-          <div id="authBtnDesktop" class="ml-2">
-            <a href="/login" id="loginBtnDesktop" class="px-4 py-2.5 text-[12px] text-gray-500 hover:text-royal transition-all duration-300 rounded-lg font-bold border border-gray-200 hover:border-royal/30 flex items-center gap-1.5">
-              <i class="fas fa-sign-in-alt text-[10px]"></i>로그인
-            </a>
-            <div id="userBtnDesktop" class="hidden relative">
-              <button onclick="toggleUserMenu()" class="px-4 py-2.5 text-[12px] text-royal font-bold rounded-lg border border-royal/20 bg-royal/5 flex items-center gap-1.5 hover:bg-royal/10 transition-all">
-                <i class="fas fa-user text-[10px]"></i><span id="userNameDesktop">회원</span>
-              </button>
-              <div id="userDropdown" class="hidden absolute right-0 top-full mt-2 w-40 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-50">
-                <a href="/before-after" class="block px-4 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-royal transition-all"><i class="fas fa-images text-xs mr-2"></i>전후 사례</a>
-                <button onclick="doLogout()" class="w-full text-left px-4 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-red-500 transition-all border-t border-gray-50"><i class="fas fa-sign-out-alt text-xs mr-2"></i>로그아웃</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Mobile -->
-        <div class="flex items-center gap-2 xl:hidden">
-          <a href="tel:054-636-8222" class="w-10 h-10 rounded-xl bg-royal/5 border border-royal/10 flex items-center justify-center text-royal text-sm" aria-label="전화 상담 054-636-8222">
-            <i class="fas fa-phone" aria-hidden="true"></i>
-          </a>
-          <button onclick="toggleMenu()" class="w-10 h-10 rounded-xl border border-gray-200 bg-white flex items-center justify-center" id="menuBtn" aria-label="메뉴 열기" aria-expanded="false" aria-controls="mobileMenu">
-            <div class="flex flex-col gap-[5px] w-[18px]" id="hamburger">
-              <span class="block h-[1.5px] w-full bg-charcoal/70 rounded transition-all origin-center" id="bar1"></span>
-              <span class="block h-[1.5px] w-full bg-charcoal/70 rounded transition-all" id="bar2"></span>
-              <span class="block h-[1.5px] w-full bg-charcoal/70 rounded transition-all origin-center" id="bar3"></span>
-            </div>
-          </button>
-        </div>
+  <!-- ===== Header ===== -->
+  <header id="main-header" class="site-head" role="banner">
+    <div class="site-head-in">
+      <a href="/" class="brand" aria-label="강남치과의원 홈으로 이동">
+        <img src="/static/logo.png" alt="" width="262" height="223" decoding="async">
+        <span class="brand-text"><span class="brand-ko">강남치과의원</span><span class="brand-en">GANGNAM DENTAL CLINIC · YEONGJU</span></span>
+      </a>
+      <nav class="nav" aria-label="메인 네비게이션">
+        <ul>
+          ${NAV.map(n => `<li><a href="${n.href}"${isCurrent(n.href) ? ' aria-current="page"' : ''}>${n.label}</a></li>`).join('')}
+          <li>
+            <button type="button" aria-haspopup="true" aria-expanded="false"${isVisitCurrent ? ' aria-current="page"' : ''}>내원안내${icon('chevronDown')}</button>
+            <ul class="sub">
+              ${VISIT.map(v => `<li><a href="${v.href}">${icon(v.icon)}${v.label}</a></li>`).join('')}
+            </ul>
+          </li>
+        </ul>
       </nav>
+      <div class="head-actions">
+        <span class="status-chip head-only${chipCls}" id="clinic-status-badge" data-status><span class="dot" aria-hidden="true"></span><span class="txt">${st.text}</span></span>
+        <a href="tel:${PHONE_DISPLAY}" class="head-tel" aria-label="전화 상담 ${PHONE_DISPLAY}">${icon('phone')}${PHONE_DISPLAY}</a>
+        <div id="auth-nav" class="head-auth"><a href="/login" id="loginBtnDesktop">${icon('login')}로그인</a></div>
+        <div id="auth-user" class="head-auth hidden"><a href="/before-after">${icon('user')}<span id="auth-user-name">회원</span></a><button id="auth-logout-btn" type="button" aria-label="로그아웃">${icon('logout')}</button></div>
+        <a href="/reservation" class="btn btn-primary btn-sm head-cta">${icon('calendar')}상담예약</a>
+        <button id="mobile-menu-btn" class="burger" type="button" aria-label="메뉴 열기" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span><span></span></button>
+      </div>
     </div>
 
+    <!-- 모바일 드로어(종이 시트) -->
+    <div id="mobile-menu" class="drawer" hidden role="navigation" aria-label="모바일 네비게이션">
+      <div class="drawer-top">
+        <span class="status-chip${chipCls}" id="mobile-clinic-status" data-status><span class="dot" aria-hidden="true"></span><span class="txt">${st.text}</span></span>
+        <a href="tel:${PHONE_DISPLAY}">${PHONE_DISPLAY}</a>
+      </div>
+      <ul class="drawer-list">
+        <li><a href="/"><span>홈</span><span class="mono">HOME</span></a></li>
+        ${NAV.map(n => `<li><a href="${n.href}"><span>${n.label}</span><span class="mono">${n.en}</span></a></li>`).join('')}
+      </ul>
+      <div class="drawer-sub">
+        ${VISIT.map(v => `<a href="${v.href}">${icon(v.icon)}${v.label}</a>`).join('')}
+      </div>
+      <div class="drawer-hours">
+        ${HOURS_LINES.map(h => `<span>${h.day}</span><span class="mono">${h.time}</span>`).join('')}
+      </div>
+      <div class="drawer-cta">
+        <a href="/reservation" class="btn btn-primary">${icon('calendar')}상담 예약</a>
+        <a href="tel:${PHONE_DISPLAY}" class="btn btn-ghost">${icon('phone')}전화 상담</a>
+      </div>
+      <div id="mobile-auth-nav" class="drawer-auth"><a href="/login" id="loginBtnMobile">로그인 / 회원가입</a></div>
+      <div id="mobile-auth-user" class="drawer-auth hidden"><span><span id="mobile-user-name">회원</span>님</span><button id="mobile-logout-btn" type="button">로그아웃</button></div>
+    </div>
   </header>
 
-    <!-- Mobile Menu (OUTSIDE header to prevent stacking context issues) -->
-    <div id="mobileMenu" class="mobile-menu-overlay z-mobile-menu" role="dialog" aria-label="모바일 메뉴" aria-modal="true">
-      <div class="mobile-menu-bg"></div>
-      <div class="mobile-menu-content">
-        <nav class="mobile-menu-links" aria-label="모바일 네비게이션">
-          <a href="/" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">홈</a>
-          <a href="/doctors" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">의료진 소개</a>
-          <a href="/treatments" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">진료 안내</a>
-          <a href="/treatments/implant" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">임플란트</a>
-          <a href="/treatments/invisalign" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">인비절라인</a>
-          <a href="/before-after" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">치료 전후</a>
-          <a href="/blog" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">블로그</a>
-          <a href="/notices" class="block py-4 text-2xl font-bold text-charcoal hover:text-royal transition-colors border-b border-gray-100">공지사항</a>
-          <div class="border-b border-gray-100">
-            <div class="py-4 text-2xl font-bold text-gray-400">내원 안내</div>
-            <div class="pl-4 pb-3 space-y-1">
-              <a href="/directions" class="flex items-center gap-3 py-2.5 text-lg font-medium text-charcoal hover:text-royal transition-colors">
-                <i class="fas fa-map-marker-alt text-sm text-royal/50 w-5 text-center"></i>오시는 길
-              </a>
-              <a href="/pricing" class="flex items-center gap-3 py-2.5 text-lg font-medium text-charcoal hover:text-royal transition-colors">
-                <i class="fas fa-won-sign text-sm text-royal/50 w-5 text-center"></i>수가 안내
-              </a>
-              <a href="/dictionary" class="flex items-center gap-3 py-2.5 text-lg font-medium text-charcoal hover:text-royal transition-colors">
-                <i class="fas fa-book-medical text-sm text-royal/50 w-5 text-center"></i>치과 용어 사전
-              </a>
-              <a href="/faq" class="flex items-center gap-3 py-2.5 text-lg font-medium text-charcoal hover:text-royal transition-colors">
-                <i class="fas fa-circle-question text-sm text-royal/50 w-5 text-center"></i>자주 묻는 질문
-              </a>
-            </div>
-          </div>
-        </nav>
-        <a href="/reservation" class="btn-primary justify-center w-full !text-base !py-5 !mt-4">
-          <i class="fas fa-calendar-check" aria-hidden="true"></i>상담 예약하기
-        </a>
-        <!-- Auth (Mobile) -->
-        <div id="authBtnMobile" class="mt-3">
-          <a href="/login" id="loginBtnMobile" class="flex items-center justify-center gap-2 w-full py-4 rounded-xl border border-gray-200 text-gray-500 font-bold text-base hover:border-royal/30 hover:text-royal transition-all">
-            <i class="fas fa-sign-in-alt"></i>로그인 / 회원가입
-          </a>
-          <div id="userBtnMobile" class="hidden flex items-center justify-between gap-3">
-            <span class="flex-1 text-center py-4 rounded-xl bg-royal/5 border border-royal/10 text-royal font-bold text-base"><i class="fas fa-user mr-2 text-sm"></i><span id="userNameMobile">회원</span>님</span>
-            <button onclick="doLogout()" class="px-6 py-4 rounded-xl border border-gray-200 text-gray-500 font-bold text-sm hover:text-red-500 transition-all"><i class="fas fa-sign-out-alt mr-1"></i>로그아웃</button>
-          </div>
-        </div>
-        <div class="mt-4 flex items-center justify-center gap-6 text-sm text-gray-400">
-          <a href="tel:054-636-8222" class="hover:text-royal transition" aria-label="전화 상담"><i class="fas fa-phone mr-1.5" aria-hidden="true"></i>054-636-8222</a>
-          <span>평일 09:00-17:30 · 접수마감 17:00</span>
-        </div>
-      </div>
-    </div>
-
-  <!-- ===== Main Content ===== -->
+  <!-- ===== Main ===== -->
   <main id="main-content" role="main">
     ${content}
   </main>
 
-  <!-- ===== Footer ===== -->
-  <footer class="bg-lavender text-charcoal relative overflow-hidden border-t border-royal/[0.06]" role="contentinfo">
-    <!-- Marquee -->
-    <div class="border-b border-royal/[0.05] py-6 overflow-hidden">
-      <div class="flex whitespace-nowrap marquee-track">
-        ${Array(10).fill('<span class="mx-16 text-[11px] tracking-[0.3em] text-royal/15 font-bold uppercase">GANGNAM DENTAL CLINIC &middot; 강남치과의원</span>').join('')}
-      </div>
-    </div>
-
-    <div class="max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12 pt-14 md:pt-24 pb-10 md:pb-16 relative">
-      <div class="orb orb-royal w-[500px] h-[500px] -top-64 -right-64 opacity-10"></div>
-
-      <!-- Main footer grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-20">
-        <!-- Brand column -->
-        <div class="lg:col-span-5">
-          <div class="flex items-center gap-3 mb-8">
-            <img src="/static/logo.png" alt="강남치과의원 로고" class="h-12 w-auto" width="48" height="48">
-            <div>
-              <div class="text-xl font-extrabold text-charcoal">강남치과의원</div>
-              <div class="text-[9px] text-gray-300 tracking-[0.25em] font-semibold">GANGNAM DENTAL CLINIC</div>
-            </div>
-          </div>
-          <p class="text-gray-400 text-sm leading-relaxed mb-4 max-w-sm">
-            일상으로의 빠른 복귀, 강남치과의 기쁨입니다.
-          </p>
-          <p class="text-gray-400 text-sm leading-relaxed mb-8 max-w-sm">
-            구강악안면외과 전문의 2인이 직접 진료하는<br>경북 영주시 프리미엄 치과의원.
-          </p>
-          <div class="flex items-center gap-3">
-            <a href="https://blog.naver.com/gndentalclinic" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-xl border border-royal/10 flex items-center justify-center text-gray-400 hover:border-royal hover:text-royal transition-all bg-white">
-              <i class="fas fa-blog text-sm"></i>
-            </a>
+  <!-- ===== Footer (종이) ===== -->
+  <footer class="foot" role="contentinfo">
+    <div class="rule" aria-hidden="true"></div>
+    <div class="foot-in">
+      <div class="foot-top">
+        <div>
+          <a href="/" class="brand" aria-label="강남치과의원 홈">
+            <img src="/static/logo.png" alt="" width="262" height="223" loading="lazy" decoding="async">
+            <span class="brand-text"><span class="brand-ko">강남치과의원</span><span class="brand-en">GANGNAM DENTAL CLINIC</span></span>
+          </a>
+          <p class="foot-slogan">일상으로의 빠른 복귀, 강남치과의 기쁨입니다.</p>
+          <p>구강악안면외과 전문의 2인이 직접 진료하는 경북 영주시 프리미엄 치과의원.</p>
+          <p>경북 영주시 대학로 217, 2층 · 택지 사거리 모모제인 건물</p>
+          <div class="foot-social">
+            <a href="${BLOG_URL}" target="_blank" rel="noopener noreferrer" aria-label="네이버 블로그에서 강남치과의원 보기">${icon('blog')}</a>
+            <a href="${NAVER_MAP_URL}" target="_blank" rel="noopener noreferrer nofollow" aria-label="네이버 지도에서 강남치과의원 보기">${naverMark(15)}</a>
+            <a href="tel:${PHONE_DISPLAY}" aria-label="전화 상담 ${PHONE_DISPLAY}">${icon('phone')}</a>
           </div>
         </div>
-
-        <!-- Links (2-column on mobile) -->
-        <div class="lg:col-span-2">
-          <h4 class="text-royal text-[10px] tracking-[0.2em] font-bold mb-5 md:mb-8 uppercase">진료</h4>
-          <ul class="space-y-3.5 text-sm text-gray-400">
-            <li><a href="/treatments/implant" class="hover:text-royal transition-colors duration-300">임플란트</a></li>
-            <li><a href="/treatments/invisalign" class="hover:text-royal transition-colors duration-300">인비절라인</a></li>
-            <li><a href="/treatments/digital-prosthesis" class="hover:text-royal transition-colors duration-300">디지털 보철</a></li>
-            <li><a href="/treatments/cosmetic" class="hover:text-royal transition-colors duration-300">심미보철</a></li>
-            <li><a href="/treatments/wisdom-tooth" class="hover:text-royal transition-colors duration-300">사랑니발치</a></li>
-            <li><a href="/treatments" class="text-royal/60 hover:text-royal transition-colors duration-300 flex items-center gap-1">전체 보기<i class="fas fa-arrow-right text-[8px]"></i></a></li>
+        <nav aria-label="진료 메뉴">
+          <span class="foot-h" role="heading" aria-level="3">진료</span>
+          <ul>
+            <li><a href="/treatments/implant">임플란트</a></li>
+            <li><a href="/treatments/invisalign">인비절라인</a></li>
+            <li><a href="/treatments/digital-prosthesis">디지털 보철</a></li>
+            <li><a href="/treatments/cosmetic">심미보철</a></li>
+            <li><a href="/treatments/wisdom-tooth">사랑니발치</a></li>
+            <li><a href="/treatments/bone-graft">뼈이식</a></li>
+            <li><a href="/treatments">전체 진료 보기 →</a></li>
           </ul>
-        </div>
-
-        <div class="lg:col-span-2">
-          <h4 class="text-royal text-[10px] tracking-[0.2em] font-bold mb-8 uppercase">안내</h4>
-          <ul class="space-y-3.5 text-sm text-gray-400">
-            <li><a href="/doctors" class="hover:text-royal transition-colors duration-300">의료진</a></li>
-            <li><a href="/before-after" class="hover:text-royal transition-colors duration-300">치료전후</a></li>
-            <li><a href="/blog" class="hover:text-royal transition-colors duration-300">블로그</a></li>
-            <li><a href="/notices" class="hover:text-royal transition-colors duration-300">공지사항</a></li>
-            <li><a href="/dictionary" class="hover:text-royal transition-colors duration-300">용어사전</a></li>
-            <li><a href="/faq" class="hover:text-royal transition-colors duration-300">자주묻는질문</a></li>
-            <li><a href="/pricing" class="hover:text-royal transition-colors duration-300">비용안내</a></li>
-            <li><a href="/directions" class="hover:text-royal transition-colors duration-300">오시는길</a></li>
-            ${(canonical || url) === '/area/%EC%98%81%EC%A3%BC%EC%8B%9C' ? '' : '<li><a href="/area/%EC%98%81%EC%A3%BC%EC%8B%9C" class="hover:text-royal transition-colors duration-300">영주 치과</a></li>'}
-            <li><a href="/reservation" class="hover:text-royal transition-colors duration-300">상담예약</a></li>
+        </nav>
+        <nav aria-label="안내 메뉴">
+          <span class="foot-h" role="heading" aria-level="3">안내</span>
+          <ul>
+            <li><a href="/doctors">의료진</a></li>
+            <li><a href="/before-after">치료전후</a></li>
+            <li><a href="/blog">블로그</a></li>
+            <li><a href="/notices">공지사항</a></li>
+            <li><a href="/dictionary">용어사전</a></li>
+            <li><a href="/faq">자주묻는질문</a></li>
+            <li><a href="/pricing">비용안내</a></li>
+            <li><a href="/directions">오시는길</a></li>
+            ${pagePath === HUB_PATH ? '' : `<li><a href="${HUB_PATH}">영주 치과</a></li>`}
+            <li><a href="/reservation">상담예약</a></li>
           </ul>
-        </div>
-
-        <!-- Contact -->
-        <div class="lg:col-span-3">
-          <h4 class="text-royal text-[10px] tracking-[0.2em] font-bold mb-8 uppercase">Contact</h4>
-          <div class="space-y-5 text-sm text-gray-400">
-            <a href="tel:054-636-8222" class="flex items-center gap-4 group">
-              <div class="w-11 h-11 rounded-xl border border-royal/10 flex items-center justify-center group-hover:border-royal group-hover:bg-royal/5 transition-all duration-300 bg-white">
-                <i class="fas fa-phone text-xs text-gray-400 group-hover:text-royal transition-colors"></i>
-              </div>
-              <div>
-                <div class="text-gray-300 text-[10px] font-semibold tracking-wider uppercase mb-0.5">전화</div>
-                <div class="text-charcoal font-bold group-hover:text-royal transition-colors">054-636-8222</div>
-                <div class="text-gray-300 text-[11px] mt-0.5">온라인 문의는 진료시간 내 3시간 이내 회신</div>
-              </div>
-            </a>
-            <div class="flex items-start gap-4">
-              <div class="w-11 h-11 rounded-xl border border-royal/10 flex items-center justify-center flex-shrink-0 bg-white">
-                <i class="fas fa-map-marker-alt text-xs text-gray-400"></i>
-              </div>
-              <div>
-                <div class="text-gray-300 text-[10px] font-semibold tracking-wider uppercase mb-0.5">주소</div>
-                <div class="text-gray-500 leading-relaxed">경북 영주시 대학로 217, 2층</div>
-              </div>
-            </div>
-            <div class="flex items-start gap-4">
-              <div class="w-11 h-11 rounded-xl border border-royal/10 flex items-center justify-center flex-shrink-0 bg-white">
-                <i class="fas fa-clock text-xs text-gray-400"></i>
-              </div>
-              <div>
-                <div class="text-gray-300 text-[10px] font-semibold tracking-wider uppercase mb-0.5">진료시간</div>
-                <div class="text-gray-500 leading-relaxed">평일 09:00-17:30 (접수마감 17:00)<br><span class="text-gray-300">점심 13:00-14:00 · 토·일·공휴일 휴무</span></div>
-              </div>
-            </div>
+        </nav>
+        <div>
+          <span class="foot-h" role="heading" aria-level="3">진료시간</span>
+          <div class="foot-hours">
+            ${HOURS_LINES.map(h => `<div><span>${h.day}</span><span class="mono">${h.time}</span></div>`).join('')}
+            <span class="cont">${icon('clock')}온라인 문의는 진료시간 내 3시간 이내 회신</span>
           </div>
         </div>
       </div>
-
-      <!-- Bottom bar -->
-      <div class="border-t border-royal/[0.06] mt-20 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-[11px] text-gray-300">
-        <p>&copy; 2017-${new Date().getFullYear()} 강남치과의원. All rights reserved.</p>
-        <p>대표: 이태형 · 사업자등록번호: 문의</p>
+      <div class="foot-legal">
+        <p><span>강남치과의원</span><span>대표 이태형</span><span>사업자등록번호 문의</span><span>경북 영주시 대학로 217, 2층</span><span>전화 ${PHONE_DISPLAY}</span></p>
+      </div>
+      <div class="foot-bottom">
+        <span>&copy; 2017-${new Date().getFullYear()} 강남치과의원. All rights reserved.</span>
+        <span><a href="/all-pages">전체 페이지</a><a href="/sitemap.xml">사이트맵</a></span>
       </div>
     </div>
   </footer>
 
-  <!-- ===== Mobile Floating CTA ===== -->
-  <div class="floating-cta" role="navigation" aria-label="모바일 빠른 메뉴">
-    <a href="tel:054-636-8222" class="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl bg-gray-100 text-charcoal text-sm font-bold border border-gray-200" aria-label="전화 상담 054-636-8222">
-      <i class="fas fa-phone text-xs" aria-hidden="true"></i>전화상담
-    </a>
-    <a href="/reservation" class="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl royal-grad text-white text-sm font-bold shadow-lg shadow-royal/20" aria-label="온라인 상담 예약">
-      <i class="fas fa-calendar-check text-xs" aria-hidden="true"></i>상담예약
-    </a>
+  <!-- ===== Mobile bottom bar ===== -->
+  <nav class="mbar" aria-label="빠른 연락">
+    <a href="tel:${PHONE_DISPLAY}" aria-label="전화 상담 ${PHONE_DISPLAY}">${icon('phone')}<span>전화</span></a>
+    <a href="/reservation" class="mbar-primary" aria-label="상담 예약하기">${icon('calendar')}<span>예약</span></a>
+    <a href="/directions" aria-label="오시는 길">${icon('pin')}<span>길찾기</span></a>
+    <a href="${BLOG_URL}" target="_blank" rel="noopener noreferrer" aria-label="네이버 블로그">${icon('blog')}<span>블로그</span></a>
+  </nav>
+
+  <!-- ===== Desktop floating ===== -->
+  <div class="fab-col" aria-label="빠른 연락 버튼">
+    <a href="${BLOG_URL}" class="fab fab-naver" target="_blank" rel="noopener noreferrer" aria-label="네이버 블로그 바로가기">${naverMark(18)}</a>
+    <a href="tel:${PHONE_DISPLAY}" class="fab fab-phone" aria-label="전화 상담 ${PHONE_DISPLAY}">${icon('phone')}</a>
+    <button type="button" class="fab fab-top" id="fab-top" aria-label="페이지 맨 위로 이동">${icon('arrowUp')}</button>
   </div>
 
   <!-- ===== Scripts ===== -->
-  <script>
-    gsap.registerPlugin(ScrollTrigger);
-
-    // ===== Cursor glow =====
-    const cg = document.getElementById('cursorGlow');
-    if (cg && window.innerWidth > 768) {
-      let cgX = 0, cgY = 0, cgTargetX = 0, cgTargetY = 0;
-      document.addEventListener('mousemove', e => {
-        cgTargetX = e.clientX; cgTargetY = e.clientY;
-        cg.style.opacity = '1';
-      });
-      document.addEventListener('mouseleave', () => cg.style.opacity = '0');
-      (function cgLoop() {
-        cgX += (cgTargetX - cgX) * 0.08;
-        cgY += (cgTargetY - cgY) * 0.08;
-        cg.style.left = cgX + 'px';
-        cg.style.top = cgY + 'px';
-        requestAnimationFrame(cgLoop);
-      })();
-    }
-
-    // ===== Card mouse tracking + 3D Tilt =====
-    document.querySelectorAll('.card-white').forEach(card => {
-      card.addEventListener('mousemove', e => {
-        const rect = card.getBoundingClientRect();
-        const mx = (e.clientX - rect.left) / rect.width;
-        const my = (e.clientY - rect.top) / rect.height;
-        card.style.setProperty('--mx', (mx * 100) + '%');
-        card.style.setProperty('--my', (my * 100) + '%');
-      });
-    });
-
-    // ===== 3D Card Tilt (desktop only) =====
-    if (window.innerWidth > 768) {
-      document.querySelectorAll('.card-tilt, .card-premium').forEach(card => {
-        card.addEventListener('mousemove', e => {
-          const rect = card.getBoundingClientRect();
-          const cx = (e.clientX - rect.left) / rect.width - 0.5;
-          const cy = (e.clientY - rect.top) / rect.height - 0.5;
-          const rotY = cx * 8;
-          const rotX = -cy * 6;
-          card.style.transform = 'perspective(800px) rotateX(' + rotX + 'deg) rotateY(' + rotY + 'deg) translateY(-4px) scale(1.005)';
-          card.style.boxShadow = '0 ' + (20 + Math.abs(cy)*20) + 'px ' + (60 + Math.abs(cx)*30) + 'px rgba(0,0,0,0.06), 0 4px 16px rgba(16,175,178,' + (0.05 + Math.abs(cx)*0.08) + ')';
-        });
-        card.addEventListener('mouseleave', () => {
-          card.style.transform = '';
-          card.style.boxShadow = '';
-        });
-      });
-    }
-
-    // ===== Magnetic Buttons =====
-    if (window.innerWidth > 768) {
-      document.querySelectorAll('.btn-primary, .btn-outline, .magnetic').forEach(btn => {
-        btn.addEventListener('mousemove', e => {
-          const rect = btn.getBoundingClientRect();
-          const dx = e.clientX - (rect.left + rect.width/2);
-          const dy = e.clientY - (rect.top + rect.height/2);
-          btn.style.transform = 'translate(' + dx*0.15 + 'px,' + dy*0.15 + 'px) scale(1.02)';
-        });
-        btn.addEventListener('mouseleave', () => {
-          btn.style.transform = '';
-        });
-      });
-    }
-
-    // ===== Ripple on button click =====
-    document.querySelectorAll('.btn-primary, .btn-outline').forEach(btn => {
-      btn.addEventListener('click', function(e) {
-        const rect = this.getBoundingClientRect();
-        const rip = document.createElement('span');
-        const sz = Math.max(rect.width, rect.height) * 2;
-        rip.className = 'ripple-effect';
-        rip.style.width = rip.style.height = sz + 'px';
-        rip.style.left = (e.clientX - rect.left - sz/2) + 'px';
-        rip.style.top = (e.clientY - rect.top - sz/2) + 'px';
-        this.appendChild(rip);
-        setTimeout(() => rip.remove(), 700);
-      });
-    });
-
-    // ===== Scroll Progress Bar =====
-    const progressBar = document.querySelector('.scroll-progress');
-    if (progressBar) {
-      ScrollTrigger.create({
-        trigger: document.body,
-        start: 'top top',
-        end: 'bottom bottom',
-        onUpdate: self => {
-          progressBar.style.transform = 'scaleX(' + self.progress + ')';
-        }
-      });
-    }
-
-    // ===== Reveal animations (enhanced with directional stagger) =====
-    function initReveals() {
-      gsap.utils.toArray('.reveal').forEach(el => {
-        gsap.to(el, { opacity: 1, y: 0, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
-      });
-      gsap.utils.toArray('.reveal-left').forEach(el => {
-        gsap.to(el, { opacity: 1, x: 0, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
-      });
-      gsap.utils.toArray('.reveal-right').forEach(el => {
-        gsap.to(el, { opacity: 1, x: 0, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
-      });
-      gsap.utils.toArray('.reveal-scale').forEach(el => {
-        gsap.to(el, { opacity: 1, scale: 1, duration: 0.9, ease: 'back.out(1.4)', scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
-      });
-      gsap.utils.toArray('.reveal-blur').forEach(el => {
-        gsap.to(el, { opacity: 1, filter: 'blur(0px)', y: 0, duration: 1.2, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
-      });
-      gsap.utils.toArray('.reveal-rotate').forEach(el => {
-        gsap.to(el, { opacity: 1, y: 0, rotation: 0, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
-      });
-      gsap.utils.toArray('.stagger-children').forEach(parent => {
-        const children = parent.querySelectorAll('.stagger-item');
-        gsap.fromTo(children,
-          { opacity: 0, y: 50, scale: 0.97 },
-          { opacity: 1, y: 0, scale: 1, duration: 0.8, stagger: 0.1, ease: 'power3.out',
-            scrollTrigger: { trigger: parent, start: 'top 85%', once: true }
-          }
-        );
-      });
-    }
-
-    // ===== Counter animation (enhanced easing) =====
-    function animateCounters() {
-      gsap.utils.toArray('.counter').forEach(el => {
-        const target = parseInt(el.dataset.target);
-        const suffix = el.dataset.suffix || '';
-        const prefix = el.dataset.prefix || '';
-        const obj = { val: 0 };
-        gsap.to(obj, {
-          val: target, duration: 2.2, ease: 'power2.out',
-          scrollTrigger: { trigger: el, start: 'top 90%', once: true },
-          onUpdate: function() {
-            el.innerText = prefix + Math.round(obj.val) + suffix;
-            // Add a scale pulse on update
-            el.style.transform = 'scale(' + (1 + (1 - this.progress()) * 0.05) + ')';
-          },
-          onComplete: function() { el.style.transform = 'scale(1)'; }
-        });
-      });
-    }
-
-    // ===== Parallax layers =====
-    gsap.utils.toArray('.parallax-slow').forEach(el => {
-      gsap.to(el, {
-        yPercent: -15,
-        ease: 'none',
-        scrollTrigger: { trigger: el.parentElement || el, start: 'top bottom', end: 'bottom top', scrub: 1.5 }
-      });
-    });
-    gsap.utils.toArray('.parallax-fast').forEach(el => {
-      gsap.to(el, {
-        yPercent: -30,
-        ease: 'none',
-        scrollTrigger: { trigger: el.parentElement || el, start: 'top bottom', end: 'bottom top', scrub: 1 }
-      });
-    });
-
-    // ===== Glow border on scroll =====
-    gsap.utils.toArray('.glow-border').forEach(el => {
-      ScrollTrigger.create({
-        trigger: el,
-        start: 'top 80%',
-        onEnter: () => el.classList.add('is-visible'),
-        once: true
-      });
-    });
-
-    // ===== Section fade transitions =====
-    gsap.utils.toArray('section').forEach(sec => {
-      gsap.fromTo(sec, { '--section-opacity': 0 }, {
-        '--section-opacity': 1,
-        scrollTrigger: { trigger: sec, start: 'top 95%', end: 'top 60%', scrub: 1 }
-      });
-    });
-
-    // ===== Nav: hide on scroll down, show on scroll up + glass blur =====
-    const navbar = document.getElementById('navbar');
-    const navInner = document.getElementById('navInner');
-    let lastScrollY = 0;
-    let navHidden = false;
-    const topBar = navbar?.previousElementSibling; // topbar div
-
-    function updateNav() {
-      const y = window.scrollY;
-      const delta = y - lastScrollY;
-
-      // Hide/show on scroll direction (mobile + desktop)
-      if (!menuOpen) {
-        if (delta > 8 && y > 200 && !navHidden) {
-          navHidden = true;
-          gsap.to(navbar, { y: -120, duration: 0.4, ease: 'power2.inOut' });
-          if (topBar) gsap.to(topBar, { y: -40, duration: 0.3, ease: 'power2.inOut' });
-        } else if (delta < -5 && navHidden) {
-          navHidden = false;
-          gsap.to(navbar, { y: 0, duration: 0.5, ease: 'power3.out' });
-          if (topBar) gsap.to(topBar, { y: 0, duration: 0.4, ease: 'power3.out' });
-        }
-      }
-
-      // Glass morphism intensity based on scroll position
-      if (y > 100) {
-        navbar.classList.add('md:top-3');
-        navbar.classList.remove('md:top-10');
-        if(navInner) {
-          navInner.style.background = 'rgba(255,255,255,0.92)';
-          navInner.style.backdropFilter = 'blur(28px) saturate(200%)';
-          navInner.style.webkitBackdropFilter = 'blur(28px) saturate(200%)';
-          navInner.style.border = '1px solid rgba(16,175,178,0.08)';
-          navInner.style.boxShadow = '0 8px 40px rgba(0,0,0,0.06), 0 2px 8px rgba(16,175,178,0.04)';
-        }
-      } else {
-        navbar.classList.remove('md:top-3');
-        navbar.classList.add('md:top-10');
-        if(navInner) {
-          navInner.style.background = 'rgba(255,255,255,0.95)';
-          navInner.style.backdropFilter = 'blur(24px)';
-          navInner.style.webkitBackdropFilter = 'blur(24px)';
-          navInner.style.border = '1px solid rgba(0,0,0,0.04)';
-          navInner.style.boxShadow = '0 4px 16px rgba(0,0,0,0.03)';
-        }
-      }
-      lastScrollY = y;
-    }
-    window.addEventListener('scroll', updateNav, { passive: true });
-
-    // ===== Mobile menu =====
-    let menuOpen = false;
-    function toggleMenu() {
-      menuOpen = !menuOpen;
-      const menu = document.getElementById('mobileMenu');
-      const btn = document.getElementById('menuBtn');
-      const b1 = document.getElementById('bar1');
-      const b2 = document.getElementById('bar2');
-      const b3 = document.getElementById('bar3');
-      if (menuOpen) {
-        // Show nav if hidden
-        if (navHidden) { navHidden = false; gsap.to(navbar, { y: 0, duration: 0.3 }); }
-        menu.style.display = 'block';
-        requestAnimationFrame(() => { menu.style.opacity = '1'; });
-        b1.style.transform = 'rotate(45deg) translate(2px, 5px)';
-        b2.style.opacity = '0';
-        b3.style.transform = 'rotate(-45deg) translate(2px, -5px)';
-        document.body.style.overflow = 'hidden';
-        btn.setAttribute('aria-expanded', 'true');
-        btn.setAttribute('aria-label', '메뉴 닫기');
-        // Animate menu links
-        gsap.fromTo(menu.querySelectorAll('a, div > div'), { opacity: 0, x: -20 }, { opacity: 1, x: 0, stagger: 0.04, duration: 0.4, ease: 'power3.out', delay: 0.15 });
-      } else {
-        menu.style.opacity = '0';
-        setTimeout(() => { menu.style.display = 'none'; }, 400);
-        b1.style.transform = '';
-        b2.style.opacity = '1';
-        b3.style.transform = '';
-        document.body.style.overflow = '';
-        btn.setAttribute('aria-expanded', 'false');
-        btn.setAttribute('aria-label', '메뉴 열기');
-      }
-    }
-
-    // ===== Touch feedback (mobile) =====
-    if ('ontouchstart' in window) {
-      document.querySelectorAll('.card-premium, .card-white, .btn-primary, .btn-outline').forEach(el => {
-        el.addEventListener('touchstart', () => { el.style.transform = 'scale(0.97)'; el.style.transition = 'transform 0.15s'; }, { passive: true });
-        el.addEventListener('touchend', () => { el.style.transform = ''; }, { passive: true });
-      });
-    }
-
-    // ===== GA4 Custom Event Tracking =====
-    function trackEvent(eventName, params = {}) {
-      if (typeof gtag === 'function') {
-        gtag('event', eventName, params);
-      }
-    }
-
-    // 전화 클릭 추적
-    document.querySelectorAll('a[href^="tel:"]').forEach(el => {
-      el.addEventListener('click', () => {
-        trackEvent('phone_call_click', {
-          event_category: 'engagement',
-          event_label: el.getAttribute('href'),
-          page_location: window.location.pathname
-        });
-      });
-    });
-
-    // 예약 버튼 클릭 추적
-    document.querySelectorAll('a[href="/reservation"], a[href*="reservation"]').forEach(el => {
-      el.addEventListener('click', () => {
-        trackEvent('reservation_click', {
-          event_category: 'conversion',
-          event_label: el.textContent.trim(),
-          page_location: window.location.pathname
-        });
-      });
-    });
-
-    // 외부 링크 클릭 추적 (네이버블로그, 지도 등)
-    document.querySelectorAll('a[target="_blank"]').forEach(el => {
-      el.addEventListener('click', () => {
-        trackEvent('outbound_click', {
-          event_category: 'engagement',
-          event_label: el.getAttribute('href'),
-          page_location: window.location.pathname
-        });
-      });
-    });
-
-    // 스크롤 깊이 추적 (25%, 50%, 75%, 100%)
-    const scrollThresholds = [25, 50, 75, 100];
-    const scrollFired = new Set();
-    window.addEventListener('scroll', () => {
-      const scrollPct = Math.round((window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100);
-      scrollThresholds.forEach(t => {
-        if (scrollPct >= t && !scrollFired.has(t)) {
-          scrollFired.add(t);
-          trackEvent('scroll_depth', {
-            event_category: 'engagement',
-            event_label: t + '%',
-            value: t,
-            page_location: window.location.pathname
-          });
-        }
-      });
-    }, { passive: true });
-
-    // 문의 폼 제출 추적
-    document.addEventListener('submit', (e) => {
-      const form = e.target;
-      if (form && form.closest && form.closest('[data-form-type]')) {
-        trackEvent('form_submit', {
-          event_category: 'conversion',
-          event_label: form.closest('[data-form-type]').dataset.formType || 'inquiry',
-          page_location: window.location.pathname
-        });
-      }
-    });
-
-    // 페이지 로드 성능 추적 (Core Web Vitals → GA4)
-    if ('PerformanceObserver' in window) {
-      // LCP (Largest Contentful Paint)
-      try {
-        new PerformanceObserver((list) => {
-          const entries = list.getEntries();
-          const lastEntry = entries[entries.length - 1];
-          trackEvent('web_vitals', {
-            event_category: 'performance',
-            event_label: 'LCP',
-            value: Math.round(lastEntry.startTime)
-          });
-        }).observe({ type: 'largest-contentful-paint', buffered: true });
-      } catch(e) {}
-
-      // FID (First Input Delay)
-      try {
-        new PerformanceObserver((list) => {
-          list.getEntries().forEach(entry => {
-            trackEvent('web_vitals', {
-              event_category: 'performance',
-              event_label: 'FID',
-              value: Math.round(entry.processingStart - entry.startTime)
-            });
-          });
-        }).observe({ type: 'first-input', buffered: true });
-      } catch(e) {}
-
-      // CLS (Cumulative Layout Shift)
-      try {
-        let clsValue = 0;
-        new PerformanceObserver((list) => {
-          list.getEntries().forEach(entry => {
-            if (!entry.hadRecentInput) clsValue += entry.value;
-          });
-        }).observe({ type: 'layout-shift', buffered: true });
-        // Send CLS on page hide
-        document.addEventListener('visibilitychange', () => {
-          if (document.visibilityState === 'hidden') {
-            trackEvent('web_vitals', {
-              event_category: 'performance',
-              event_label: 'CLS',
-              value: Math.round(clsValue * 1000)
-            });
-          }
-        });
-      } catch(e) {}
-    }
-
-    // Init
-    window.addEventListener('DOMContentLoaded', () => {
-      initReveals();
-      animateCounters();
-      checkAuthStatus();
-
-      // GA4 page_view with custom dimensions
-      trackEvent('page_view_custom', {
-        page_category: document.querySelector('meta[name="classification"]')?.content || 'general',
-        treatment_type: window.location.pathname.includes('/treatments/') ? window.location.pathname.split('/treatments/')[1] : 'none',
-        page_location: window.location.pathname
-      });
-    });
-
-    // ===== Auth =====
-    async function checkAuthStatus() {
-      try {
-        const res = await fetch('/api/auth/me');
-        const data = await res.json();
-        if (data.loggedIn && data.user) {
-          // Desktop
-          const loginD = document.getElementById('loginBtnDesktop');
-          const userD = document.getElementById('userBtnDesktop');
-          const nameD = document.getElementById('userNameDesktop');
-          if (loginD) loginD.style.display = 'none';
-          if (userD) userD.classList.remove('hidden');
-          if (nameD) nameD.textContent = data.user.name;
-          // Mobile
-          const loginM = document.getElementById('loginBtnMobile');
-          const userM = document.getElementById('userBtnMobile');
-          const nameM = document.getElementById('userNameMobile');
-          if (loginM) loginM.style.display = 'none';
-          if (userM) userM.classList.remove('hidden');
-          if (nameM) nameM.textContent = data.user.name;
-        }
-      } catch {}
-    }
-
-    function toggleUserMenu() {
-      const dd = document.getElementById('userDropdown');
-      if (dd) dd.classList.toggle('hidden');
-    }
-
-    // Close user dropdown on outside click
-    document.addEventListener('click', function(e) {
-      const dd = document.getElementById('userDropdown');
-      const btn = document.getElementById('userBtnDesktop');
-      if (dd && btn && !btn.contains(e.target)) dd.classList.add('hidden');
-    });
-
-    async function doLogout() {
-      try { await fetch('/api/auth/logout', { method: 'POST' }); } catch {}
-      window.location.href = '/';
-    }
-  </script>
-${immersive ? `<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
-  <script src="/static/immersive.js?v=${__IMMERSIVE_JS_V__}" defer></script>` : ''}
+${immersive ? `  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>` : ''}
+  <script src="/static/app.js?v=${__APP_JS_V__}" defer></script>
+${immersive ? `  <script src="/static/immersive.js?v=${__IMMERSIVE_JS_V__}" defer></script>` : ''}
 </body>
 </html>`
 }

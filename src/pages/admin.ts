@@ -5,39 +5,39 @@ export function adminPage(): string {
   <style>
     .admin-sidebar { min-height: calc(100vh - 80px); }
     .admin-tab { cursor: pointer; padding: 12px 20px; border-radius: 12px; font-size: 14px; font-weight: 600; color: #6B7280; transition: all 0.3s; display: flex; align-items: center; gap: 10px; }
-    .admin-tab:hover { background: rgba(16,175,178,0.04); color: #10AFB2; }
-    .admin-tab.active { background: linear-gradient(135deg, #4BC3C5, #10AFB2); color: #fff; }
+    .admin-tab:hover { background: rgba(14,143,139,0.04); color: #0E8F8B; }
+    .admin-tab.active { background: linear-gradient(135deg, #10AFB2, #0E8F8B); color: #fff; }
     .admin-tab .badge { background: #EF4444; color: #fff; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 100px; }
     .admin-panel { display: none; }
     .admin-panel.active { display: block; }
     .admin-table { width: 100%; border-collapse: collapse; }
-    .admin-table th { background: #F3FBFB; color: #10AFB2; font-weight: 700; font-size: 11px; padding: 12px 16px; text-align: left; text-transform: uppercase; letter-spacing: 0.05em; }
+    .admin-table th { background: #ECE9E0; color: #0E8F8B; font-weight: 700; font-size: 11px; padding: 12px 16px; text-align: left; text-transform: uppercase; letter-spacing: 0.05em; }
     .admin-table td { padding: 12px 16px; border-bottom: 1px solid #F3F4F6; font-size: 13px; color: #374151; }
-    .admin-table tr:hover td { background: #FAFBFC; }
+    .admin-table tr:hover td { background: #F5F3EC; }
     .admin-card { background: #fff; border: 1px solid rgba(0,0,0,0.06); border-radius: 20px; }
     .admin-stat { text-align: center; }
-    .admin-stat .num { font-size: 2rem; font-weight: 800; background: linear-gradient(135deg, #10AFB2, #4BC3C5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .admin-stat .num { font-size: 2rem; font-weight: 800; background: linear-gradient(135deg, #0E8F8B, #10AFB2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .admin-stat .label { font-size: 12px; color: #9CA3AF; margin-top: 4px; }
     .status-badge { padding: 4px 12px; border-radius: 100px; font-size: 11px; font-weight: 700; }
     .status-new { background: #FEF3C7; color: #D97706; }
     .status-contacted { background: #DBEAFE; color: #2563EB; }
     .status-completed { background: #D1FAE5; color: #059669; }
     .admin-input { width: 100%; padding: 10px 16px; border: 1px solid #E5E7EB; border-radius: 12px; font-size: 14px; outline: none; transition: border-color 0.3s; }
-    .admin-input:focus { border-color: #10AFB2; box-shadow: 0 0 0 3px rgba(16,175,178,0.1); }
+    .admin-input:focus { border-color: #0E8F8B; box-shadow: 0 0 0 3px rgba(14,143,139,0.1); }
     .admin-textarea { width: 100%; padding: 12px 16px; border: 1px solid #E5E7EB; border-radius: 12px; font-size: 14px; outline: none; min-height: 200px; transition: border-color 0.3s; resize: vertical; }
-    .admin-textarea:focus { border-color: #10AFB2; box-shadow: 0 0 0 3px rgba(16,175,178,0.1); }
-    .blog-preview-content h2 { font-size: 1.4rem; font-weight: 800; color: #1C1C1E; margin: 1.5rem 0 0.8rem; }
-    .blog-preview-content h3 { font-size: 1.15rem; font-weight: 700; color: #1C1C1E; margin: 1.2rem 0 0.6rem; }
+    .admin-textarea:focus { border-color: #0E8F8B; box-shadow: 0 0 0 3px rgba(14,143,139,0.1); }
+    .blog-preview-content h2 { font-size: 1.4rem; font-weight: 800; color: #14202A; margin: 1.5rem 0 0.8rem; }
+    .blog-preview-content h3 { font-size: 1.15rem; font-weight: 700; color: #14202A; margin: 1.2rem 0 0.6rem; }
     .blog-preview-content p { color: #6B7280; font-size: 0.95rem; line-height: 1.8; margin-bottom: 1rem; }
-    .blog-preview-content strong { color: #1C1C1E; font-weight: 700; }
+    .blog-preview-content strong { color: #14202A; font-weight: 700; }
     .blog-preview-content ul, .blog-preview-content ol { color: #6B7280; padding-left: 1.5rem; margin-bottom: 1rem; }
     .blog-preview-content li { margin-bottom: 0.3rem; line-height: 1.7; }
     .blog-preview-content img { border-radius: 12px; margin: 1rem 0; max-width: 100%; }
-    .blog-preview-content blockquote { border-left: 3px solid #10AFB2; padding: 0.8rem 1rem; background: #F3FBFB; border-radius: 0 8px 8px 0; margin: 1rem 0; color: #10AFB2; font-style: italic; }
+    .blog-preview-content blockquote { border-left: 3px solid #0E8F8B; padding: 0.8rem 1rem; background: #ECE9E0; border-radius: 0 8px 8px 0; margin: 1rem 0; color: #0E8F8B; font-style: italic; }
     .admin-select { padding: 10px 16px; border: 1px solid #E5E7EB; border-radius: 12px; font-size: 14px; outline: none; background: #fff; }
     .admin-btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 24px; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.3s; border: none; }
-    .admin-btn-primary { background: linear-gradient(135deg, #4BC3C5, #10AFB2); color: #fff; }
-    .admin-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(16,175,178,0.3); }
+    .admin-btn-primary { background: linear-gradient(135deg, #10AFB2, #0E8F8B); color: #fff; }
+    .admin-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(14,143,139,0.3); }
     .admin-btn-danger { background: #FEE2E2; color: #DC2626; }
     .admin-btn-danger:hover { background: #FECACA; }
     .admin-btn-secondary { background: #F3F4F6; color: #374151; }
@@ -50,8 +50,8 @@ export function adminPage(): string {
     .admin-modal-overlay.show { display: flex; }
     .admin-modal { background: #fff; border-radius: 24px; max-width: 800px; width: 95%; max-height: 90vh; overflow-y: auto; padding: 32px; }
     .img-upload-zone { border: 2px dashed #E5E7EB; border-radius: 16px; padding: 24px; text-align: center; cursor: pointer; transition: all 0.3s; position: relative; overflow: hidden; min-height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-    .img-upload-zone:hover { border-color: #10AFB2; background: rgba(16,175,178,0.02); }
-    .img-upload-zone.has-image { border-style: solid; border-color: #10AFB2; }
+    .img-upload-zone:hover { border-color: #0E8F8B; background: rgba(14,143,139,0.02); }
+    .img-upload-zone.has-image { border-style: solid; border-color: #0E8F8B; }
     .img-upload-zone img { max-height: 150px; border-radius: 12px; object-fit: cover; }
     .img-upload-zone .uploading { position: absolute; inset: 0; background: rgba(255,255,255,0.9); display: flex; align-items: center; justify-content: center; }
     .field-label { display: block; font-size: 12px; font-weight: 700; color: #6B7280; margin-bottom: 6px; }

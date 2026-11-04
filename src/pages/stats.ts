@@ -155,24 +155,24 @@ export function statsPage(d: StatsData | null): string {
 
   const css = `<style>
 .stx-card{background:#fff;border:1px solid rgba(0,0,0,0.06);border-radius:20px;padding:24px 26px;margin-bottom:18px}
-.stx-card h2{font-size:1.05rem;font-weight:800;color:#1C1C1E;margin-bottom:14px}
+.stx-card h2{font-size:1.05rem;font-weight:800;color:#14202A;margin-bottom:14px}
 .stx-card h2 .cap{font-size:.72rem;color:#9CA3AF;font-weight:600;margin-left:8px}
-.stx-card h2 .stx-cl-link{float:right;font-size:.74rem;color:#10AFB2;text-decoration:none;font-weight:700}
+.stx-card h2 .stx-cl-link{float:right;font-size:.74rem;color:#0E8F8B;text-decoration:none;font-weight:700}
 .stx-card h2 .stx-cl-link:hover{text-decoration:underline}
-.stx-expect.big{border:1.5px solid #10AFB2;background:linear-gradient(180deg,#F3FBFB,#fff);padding:32px 30px}
-.stx-expect.big h2{font-size:1.35rem;background:linear-gradient(135deg,#10AFB2,#4BC3C5);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stx-expect.big{border:1.5px solid #0E8F8B;background:linear-gradient(180deg,#ECE9E0,#fff);padding:32px 30px}
+.stx-expect.big h2{font-size:1.35rem;background:linear-gradient(135deg,#0E8F8B,#10AFB2);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .stx-expect-msg{color:#6B7280;max-width:46rem;margin-bottom:18px;line-height:1.8}
 .stx-tl{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;list-style:none;padding:0;margin:0}
-.stx-tl li{background:#F3FBFB;border:1px solid rgba(16,175,178,0.15);border-radius:14px;padding:12px 14px}
-.stx-tl li b{display:block;font-size:.76rem;color:#10AFB2}
-.stx-tl li span{font-size:.86rem;font-weight:700;color:#1C1C1E}
+.stx-tl li{background:#ECE9E0;border:1px solid rgba(14,143,139,0.15);border-radius:14px;padding:12px 14px}
+.stx-tl li b{display:block;font-size:.76rem;color:#0E8F8B}
+.stx-tl li span{font-size:.86rem;font-weight:700;color:#14202A}
 .stx-wait{border-style:dashed;text-align:center;padding:38px}
-.stx-wait h2{color:#10AFB2}
+.stx-wait h2{color:#0E8F8B}
 .stx-wait p{color:#6B7280;max-width:32rem;margin:0 auto}
 .stx-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
-.stx-metric{background:#FAFBFC;border:1px solid #F3F4F6;border-radius:14px;padding:14px 16px}
+.stx-metric{background:#F5F3EC;border:1px solid #F3F4F6;border-radius:14px;padding:14px 16px}
 .stx-metric .l{font-size:.76rem;color:#9CA3AF;font-weight:600}
-.stx-metric .v{font-size:1.55rem;font-weight:800;color:#1C1C1E;letter-spacing:-.02em;margin:2px 0}
+.stx-metric .v{font-size:1.55rem;font-weight:800;color:#14202A;letter-spacing:-.02em;margin:2px 0}
 .stx-metric .sub{font-size:.74rem;color:#9CA3AF}
 .stx-metric.pending{border-style:dashed;color:#6B7280}
 .stx-d{font-size:.74rem;font-weight:700}.stx-d.good{color:#059669}.stx-d.bad{color:#DC2626}.stx-d.flat{color:#9CA3AF}
@@ -181,14 +181,14 @@ export function statsPage(d: StatsData | null): string {
 .stx-tables{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 .stx-tables .stx-card:last-child{grid-column:1/-1}
 .stx-table{width:100%;border-collapse:collapse}
-.stx-table th{background:#F3FBFB;color:#10AFB2;font-weight:700;font-size:11px;padding:10px 14px;text-align:left;text-transform:uppercase;letter-spacing:.05em}
+.stx-table th{background:#ECE9E0;color:#0E8F8B;font-weight:700;font-size:11px;padding:10px 14px;text-align:left;text-transform:uppercase;letter-spacing:.05em}
 .stx-table td{padding:10px 14px;border-bottom:1px solid #F3F4F6;font-size:13px;color:#374151}
 .stx-table tr:last-child td{border-bottom:0}
 .stx-table td.rk{color:#9CA3AF;width:30px}
 .stx-table td.n,.stx-table th.n{text-align:right;font-variant-numeric:tabular-nums}
 .stx-table td.pg{word-break:break-all}
 .stx-ins{list-style:none;display:flex;flex-direction:column;gap:8px;padding:0;margin:0}
-.stx-ins li{background:#F3FBFB;border-left:3px solid #10AFB2;border-radius:0 10px 10px 0;padding:10px 14px;font-size:.9rem;color:#374151}
+.stx-ins li{background:#ECE9E0;border-left:3px solid #0E8F8B;border-radius:0 10px 10px 0;padding:10px 14px;font-size:.9rem;color:#374151}
 .stx-empty{color:#9CA3AF;font-size:.85rem;padding:6px 0}
 .stx-foot{color:#9CA3AF;font-size:.78rem;text-align:center;margin-top:6px}
 @media(max-width:900px){.stx-tl{grid-template-columns:1fr 1fr}.stx-tables{grid-template-columns:1fr}}
@@ -241,13 +241,13 @@ export function statsPage(d: StatsData | null): string {
         <div class="stx-metric"><div class="l">CTR</div><div class="v">${g ? (g.ctr * 100).toFixed(2) + '%' : '-'}</div>${deltaBadge(g?.delta?.ctr)}</div>
         <div class="stx-metric"><div class="l">평균 게재순위</div><div class="v">${g?.position ?? '-'}</div>${deltaBadge(g?.delta?.position, true)}</div>
       </div>
-      <div class="stx-spark"><p class="t">일별 검색 클릭</p>${sparkline((g?.dailyClicks ?? []).map((x) => x.clicks), '#10AFB2')}</div>
+      <div class="stx-spark"><p class="t">일별 검색 클릭</p>${sparkline((g?.dailyClicks ?? []).map((x) => x.clicks), '#0E8F8B')}</div>
     </section>
 
     <section class="stx-card">
       <h2>방문·전환 <span class="cap">GA4 · 최근 28일</span></h2>
       <div class="stx-metrics">${gaCards}</div>
-      ${d!.hasGa && a ? `<div class="stx-spark"><p class="t">일별 방문 사용자</p>${sparkline((a.dailyUsers ?? []).map((x) => x.users), '#4BC3C5')}</div>` : ''}
+      ${d!.hasGa && a ? `<div class="stx-spark"><p class="t">일별 방문 사용자</p>${sparkline((a.dailyUsers ?? []).map((x) => x.users), '#10AFB2')}</div>` : ''}
     </section>
 
     ${claritySection(d?.clarity)}
@@ -274,7 +274,7 @@ export function statsPage(d: StatsData | null): string {
   return `${css}
   <div class="max-w-5xl mx-auto px-4 py-10" style="padding-top:120px">
     <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
-      <h1 class="text-2xl font-extrabold" style="color:#1C1C1E">검색·방문 통계</h1>
+      <h1 class="text-2xl font-extrabold" style="color:#14202A">검색·방문 통계</h1>
       <a href="/admin" class="admin-btn admin-btn-secondary" style="background:#F3F4F6;color:#374151;padding:10px 20px;border-radius:12px;font-size:13px;font-weight:700;text-decoration:none">관리자 대시보드</a>
     </div>
     ${expectCard}

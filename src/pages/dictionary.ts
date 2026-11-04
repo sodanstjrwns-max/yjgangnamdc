@@ -90,7 +90,7 @@ export function dictionaryListPage(terms: any[], categories: any[], query?: stri
 
   return `
   <!-- Hero -->
-  <section class="relative pt-16 pb-12 bg-gradient-to-b from-royal/[0.03] to-transparent overflow-hidden">
+  <section class="relative pt-28 md:pt-32 pb-12 bg-gradient-to-b from-royal/[0.03] to-transparent overflow-hidden">
     <div class="absolute top-20 right-10 w-64 h-64 bg-royal/5 rounded-full blur-3xl"></div>
     <div class="absolute bottom-0 left-10 w-48 h-48 bg-indigo-500/5 rounded-full blur-3xl"></div>
     <div class="max-w-6xl mx-auto px-5 relative">

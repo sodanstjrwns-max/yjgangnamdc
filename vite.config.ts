@@ -42,6 +42,8 @@ export default defineConfig({
   define: {
     __IMMERSIVE_CSS_V__: JSON.stringify(fileHash('public/static/immersive.css')),
     __IMMERSIVE_JS_V__: JSON.stringify(fileHash('public/static/immersive.js')),
+    // 공용 app.js(2026-11-05 리디자인: 헤더·드로어·등장·카운터·라이트박스·GA4) 내용 해시
+    __APP_JS_V__: JSON.stringify(fileHash('public/static/app.js')),
     // Tailwind 빌드 CSS(2026-11-01 CDN → 빌드): npm run build 가 css:build 를 먼저 실행하므로 항상 새 CSS 의 해시
     __TAILWIND_CSS_V__: JSON.stringify(fileHash('public/static/tailwind.css')),
     __SRC_DATES__: JSON.stringify(SRC_DATES)

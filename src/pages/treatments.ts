@@ -774,6 +774,8 @@ export async function treatmentDetailPage(slug: string): Promise<{ html: string;
     <!-- Treatment page: enhanced scroll animations -->
     <script>
     (function() {
+      // 2026-11-05: GSAP 은 홈에서만 로드 — 없으면 연출 생략(등장은 공용 app.js IntersectionObserver 가 맡는다)
+      if (!window.gsap || !window.ScrollTrigger) return;
       // Hero entrance animation
       const tl = gsap.timeline({ delay: 0.15 });
       const hero = document.querySelector('.subpage-hero');

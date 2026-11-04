@@ -72,23 +72,21 @@ export function doctorsPage(): string {
   <!-- ========== CINEMATIC HERO — "헉 뭐지?" ========== -->
   <section class="relative min-h-0 md:min-h-screen flex items-center justify-center overflow-hidden" id="doctorHero" aria-label="의료진 히어로">
     <!-- Dark base -->
-    <div class="absolute inset-0 bg-gradient-to-br from-[#0E0618] via-[#1A0D2E] to-[#0E0618]"></div>
+    <div class="absolute inset-0 bg-gradient-to-br from-[#0E2A32] via-[#0E2A32] to-[#0E2A32]"></div>
     
     <!-- Animated grid -->
-    <div class="absolute inset-0" style="background-image: linear-gradient(rgba(16,175,178,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(16,175,178,0.06) 1px, transparent 1px); background-size: 60px 60px;"></div>
+    <div class="absolute inset-0" style="background-image: linear-gradient(rgba(14,143,139,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(14,143,139,0.06) 1px, transparent 1px); background-size: 60px 60px;"></div>
 
     <!-- Giant glowing orbs -->
     <div class="absolute top-1/4 left-1/4 w-[700px] h-[700px] bg-royal/[0.08] rounded-full blur-[200px] animate-pulse" style="animation-duration:6s;"></div>
-    <div class="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-[#4BC3C5]/[0.06] rounded-full blur-[180px] animate-pulse" style="animation-duration:8s; animation-delay:2s;"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-[#10AFB2]/[0.06] rounded-full blur-[180px] animate-pulse" style="animation-duration:8s; animation-delay:2s;"></div>
     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-royal/[0.04] rounded-full blur-[120px]"></div>
 
-    <!-- Particle canvas -->
-    <canvas id="doctorParticles" class="absolute inset-0 w-full h-full" style="z-index:2;"></canvas>
 
     <!-- Giant "2" watermark -->
     <div class="absolute inset-0 flex items-center justify-center pointer-events-none select-none" style="z-index:3;">
       <span class="text-[30vw] md:text-[25vw] font-black text-transparent" style="
-        -webkit-text-stroke: 1px rgba(16,175,178,0.08);
+        -webkit-text-stroke: 1px rgba(14,143,139,0.08);
         line-height: 0.85;
         letter-spacing: -0.05em;
       " id="giantNumber">2</span>
@@ -126,7 +124,7 @@ export function doctorsPage(): string {
             <span class="block text-white font-black" style="font-size: clamp(3.5rem, 10vw, 8rem); line-height: 1.0; letter-spacing: -0.04em;" id="dLine1">수술 전문</span>
           </span>
           <span class="block overflow-hidden">
-            <span class="block font-black" style="font-size: clamp(3.5rem, 10vw, 8rem); line-height: 1.0; letter-spacing: -0.04em; background: linear-gradient(135deg, #93DBDC, #4BC3C5, #C9A96E); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;" id="dLine2">전문의 2인</span>
+            <span class="block font-black" style="font-size: clamp(3.5rem, 10vw, 8rem); line-height: 1.0; letter-spacing: -0.04em; color: #0E8F8B;" id="dLine2">전문의 2인</span>
           </span>
         </h1>
 
@@ -149,7 +147,7 @@ export function doctorsPage(): string {
                 </div>
                 ` : `
                 <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-royal/20 to-royal/5 border border-royal/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
-                  <span class="text-3xl font-black" style="background: linear-gradient(135deg, #93DBDC, #4BC3C5); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${doc.initial}</span>
+                  <span class="text-3xl font-black" style="color: #0E8F8B;">${doc.initial}</span>
                 </div>
                 `}
                 <div>
@@ -188,59 +186,6 @@ export function doctorsPage(): string {
     <!-- Hero Script -->
     <script>
     (function(){
-      // Particle system
-      const canvas = document.getElementById('doctorParticles');
-      if(!canvas) return;
-      const ctx = canvas.getContext('2d');
-      let w, h, particles = [];
-      function resize(){
-        w = canvas.width = canvas.clientWidth;
-        h = canvas.height = canvas.clientHeight;
-      }
-      resize();
-      window.addEventListener('resize', resize);
-      
-      for(let i = 0; i < 80; i++){
-        particles.push({
-          x: Math.random()*w, y: Math.random()*h,
-          vx: (Math.random()-0.5)*0.3, vy: (Math.random()-0.5)*0.3,
-          r: Math.random()*2+0.5,
-          a: Math.random()*0.3+0.05,
-          color: Math.random()>0.7 ? 'rgba(201,169,110,' : 'rgba(138,92,181,'
-        });
-      }
-      
-      function draw(){
-        ctx.clearRect(0,0,w,h);
-        particles.forEach(p=>{
-          p.x += p.vx; p.y += p.vy;
-          if(p.x<0) p.x=w; if(p.x>w) p.x=0;
-          if(p.y<0) p.y=h; if(p.y>h) p.y=0;
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
-          ctx.fillStyle = p.color + p.a + ')';
-          ctx.fill();
-        });
-        // Lines
-        for(let i=0;i<particles.length;i++){
-          for(let j=i+1;j<particles.length;j++){
-            const dx=particles[i].x-particles[j].x;
-            const dy=particles[i].y-particles[j].y;
-            const dist=Math.sqrt(dx*dx+dy*dy);
-            if(dist<120){
-              ctx.beginPath();
-              ctx.moveTo(particles[i].x,particles[i].y);
-              ctx.lineTo(particles[j].x,particles[j].y);
-              ctx.strokeStyle='rgba(16,175,178,'+(0.04*(1-dist/120))+')';
-              ctx.lineWidth=0.5;
-              ctx.stroke();
-            }
-          }
-        }
-        requestAnimationFrame(draw);
-      }
-      draw();
-
       // GSAP Hero animation
       if(window.gsap){
         const tl = gsap.timeline({delay:0.3});

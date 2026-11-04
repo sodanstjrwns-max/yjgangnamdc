@@ -48,23 +48,23 @@ export function yeongjuComboTitle(slug: string): string | null {
 
 const esc = (t: string) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 
-// 사이트 토큰(royal #10AFB2 · charcoal · card-premium 28px 라운드)에 맞춘 카드 전용 스타일 — 한 번만 출력
+// 사이트 토큰(2026-11-05 리디자인: 종이 #F5F3EC · 잉크 #14202A · 틸 #0E8F8B · 황동 라벨)에 맞춘 카드 전용 스타일 — 한 번만 출력(마크업·ItemList 는 불변)
 const CARD_CSS = `<style>
 .yj-cards{display:grid;grid-template-columns:repeat(1,minmax(0,1fr));gap:16px;list-style:none;margin:0;padding:0}
 @media(min-width:560px){.yj-cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(min-width:1024px){.yj-cards{grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}}
-.yj-card{display:flex;flex-direction:column;height:100%;background:#fff;border:1px solid rgba(16,175,178,.12);border-radius:24px;overflow:hidden;color:inherit;text-decoration:none;transition:transform .5s cubic-bezier(.16,1,.3,1),box-shadow .5s ease,border-color .5s ease}
-.yj-card:hover,.yj-card:focus-visible{transform:translateY(-4px);border-color:rgba(16,175,178,.35);box-shadow:0 24px 48px rgba(12,131,133,.12)}
-.yj-card-img{position:relative;display:block;aspect-ratio:1/1;overflow:hidden;background:#F3FBFB}
-.yj-card-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .8s cubic-bezier(.16,1,.3,1)}
+@media(min-width:1024px){.yj-cards{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}}
+.yj-card{display:flex;flex-direction:column;height:100%;background:#fff;border:1px solid #D9D5C9;border-radius:14px;overflow:hidden;color:inherit;text-decoration:none;box-shadow:0 1px 0 rgba(20,32,42,.04),0 14px 32px -24px rgba(20,32,42,.28);transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s ease,border-color .3s ease}
+.yj-card:hover,.yj-card:focus-visible{transform:translateY(-4px);border-color:rgba(14,143,139,.35);box-shadow:0 24px 56px -26px rgba(20,32,42,.42)}
+.yj-card-img{position:relative;display:block;aspect-ratio:1/1;overflow:hidden;background:#ECE9E0}
+.yj-card-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .8s cubic-bezier(.2,.8,.2,1)}
 .yj-card:hover .yj-card-img img{transform:scale(1.04)}
-.yj-card-no{position:absolute;left:14px;top:14px;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.88);backdrop-filter:blur(6px);font-size:10px;font-weight:800;letter-spacing:.12em;color:#0C8385}
-.yj-card-body{display:flex;flex-direction:column;gap:6px;padding:18px 20px 20px}
-.yj-card-title{font-size:1.06rem;font-weight:800;color:#1a1a2e;line-height:1.35}
-.yj-card:hover .yj-card-title{color:#0C8385}
-.yj-card-line{font-size:.86rem;line-height:1.65;color:#6b7280}
-.yj-card-more{margin-top:4px;font-size:.78rem;font-weight:700;color:#10AFB2}
-.yj-combo-figure{margin:0 0 2.25rem;border-radius:24px;overflow:hidden;border:1px solid rgba(16,175,178,.12);background:#F3FBFB;max-width:960px}
+.yj-card-no{position:absolute;left:12px;top:12px;padding:4px 8px;border-radius:4px;background:rgba(255,255,255,.9);font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace;font-size:10px;font-weight:500;letter-spacing:.12em;color:#B48C4E}
+.yj-card-body{display:flex;flex-direction:column;gap:6px;padding:16px 18px 18px}
+.yj-card-title{font-family:Freesentation,'Pretendard Variable',Pretendard,sans-serif;font-size:1.12rem;font-weight:700;color:#14202A;line-height:1.3;letter-spacing:-.02em}
+.yj-card:hover .yj-card-title{color:#0E8F8B}
+.yj-card-line{font-size:.86rem;line-height:1.65;color:#66737C}
+.yj-card-more{margin-top:4px;font-size:.78rem;font-weight:600;color:#0E8F8B}
+.yj-combo-figure{margin:0 0 2.25rem;border-radius:14px;overflow:hidden;border:1px solid #D9D5C9;background:#ECE9E0;max-width:960px}
 .yj-combo-figure img{display:block;width:100%;height:auto;aspect-ratio:1200/630;object-fit:cover}
 </style>`
 

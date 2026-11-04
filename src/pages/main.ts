@@ -1,4 +1,6 @@
 import { yeongjuCardGrid } from './yeongju-cards'
+import { icon } from '../lib/icons'
+import { todayStatus } from '../lib/hours'
 // 홈 FAQ — 화면 '자주 묻는 질문' 섹션과 FAQPage 스키마가 함께 쓰는 단일 배열
 export const HOME_FAQ_ITEMS: { q: string; a: string }[] = [
     { q: '임플란트 비용은 얼마인가요?', a: '강남치과의원 임플란트 비용은 Neo/Osstem 임플란트 기준 1개당 130만원입니다(맞춤 어버트먼트 + 지르코니아 크라운 포함). 뼈이식이 필요한 경우 단순 50만원, 복합 80만원이 추가됩니다. 상악동(위턱 공간) 거상술은 치조정 80만원, 측방 150만원입니다. 정확한 비용은 CT 촬영 후 상담 시 안내드립니다.' },
@@ -220,150 +222,64 @@ export function mainPageSchemas(): object[] {
   return [faqSchema, howToSchema, medicalServiceSchema];
 }
 
+// ============================================================
+// 메인 홈 — v2 "도면: 한 번에, 정확하게" (2026-11-05 전면 리디자인)
+//  - 글(히어로·차별점·공정·진료·페르소나·장비·시설·첫 방문·의료진·수치·지역·FAQ 문구)은 기존 승인 문구 그대로, 구조·비주얼·연출만 새로.
+//  - 모든 글자는 HTML 에 그대로. 스크롤 연출은 public/static/immersive.js(GSAP), 등장은 app.js(IO).
+//  - SEO 불변: h1(#heroTitle)·#heroSub speakable, 영주 진료 안내 카드 6장(yeongjuCardGrid, ItemList 1:1),
+//    "영주 진료 바로가기"·지역×진료 링크, FAQPage=본문 <details>(HOME_FAQ_ITEMS), mainPageSchemas(HowTo 4단계 본문과 동일).
+// ============================================================
+const SVG_FIG: Record<string, string> = {
+  scan: '<path d="M10 20v-6a4 4 0 0 1 4-4h6" pathLength="1"/><path d="M44 10h6a4 4 0 0 1 4 4v6" pathLength="1"/><path d="M54 44v6a4 4 0 0 1-4 4h-6" pathLength="1"/><path d="M20 54h-6a4 4 0 0 1-4-4v-6" pathLength="1"/><path d="M16 32c6-10 10-10 16 0s10 10 16 0" pathLength="1"/>',
+  design: '<rect x="8" y="12" width="48" height="32" rx="3" pathLength="1"/><path d="M24 52h16M32 44v8" pathLength="1"/><path d="M22 37l3-14 7 6 7-6 3 14z" pathLength="1"/>',
+  mill: '<rect x="14" y="32" width="36" height="20" rx="2" pathLength="1"/><path d="M32 8v8" pathLength="1"/><path d="M25 16h14l-7 14z" pathLength="1"/><path d="M14 42h36" pathLength="1"/>',
+  fire: '<path d="M32 10c8 10 12 16 12 24a12 12 0 0 1-24 0c0-5 2-8 5-11 1 5 3 7 7 7-2-6-2-13 0-20z" pathLength="1"/><path d="M18 56h28" pathLength="1"/>',
+}
+const figSvg = (k: string) => `<svg class="ld" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${SVG_FIG[k]}</svg>`
+const PHONE_DISPLAY = '054-636-8222'
+
 export function mainPage(): string {
-  // ===== Pre-build all dynamic HTML sections =====
+  const st = todayStatus()
+  const tcCls = st.state === 'open' ? ' is-open' : st.state === 'lunch' ? ' is-lunch' : ''
+  const tcClose = st.state === 'open' ? '접수 ~ 17:00' : st.state === 'lunch' ? '~ 14:00' : st.state === 'lastcall' ? '~ 17:30' : st.idx <= 4 ? '09:00 – 17:30' : '평일 09:00 – 17:30'
 
-  // Marquee items
-  const marqueeItems = ['임플란트', '인비절라인', '디지털 보철', '심미보철', '사랑니발치'];
-  const marqueeHtml = Array(10).fill(
-    marqueeItems.map(m => `<span class="mx-10 text-sm tracking-[0.05em] text-royal/15 font-bold">${m}</span><span class="mx-3 text-royal/10">&diamondsuit;</span>`).join('')
-  ).join('');
-
-  // Why Gangnam - equipment list
-  const equipList = [
-    { name: '3D CT', desc: '정밀 입체 진단' },
-    { name: 'CEREC', desc: '싱글 크라운 제작' },
-    { name: 'PrimeScan', desc: '디지털 구강 스캔' },
-    { name: 'iTero', desc: '교정 시뮬레이션' },
-    { name: 'SpeedFire', desc: '초고속 소성' }
-  ];
-  const equipListHtml = equipList.map(d => `
-    <div class="flex items-center gap-3 py-2.5 px-4 rounded-xl bg-lavender border border-royal/[0.06] group-hover:bg-royal/[0.04] group-hover:border-royal/10 transition-all duration-500">
-      <div class="w-2 h-2 rounded-full bg-royal flex-shrink-0"></div>
-      <span class="text-charcoal text-sm font-bold">${d.name}</span>
-      <span class="text-gray-400 text-xs ml-auto">${d.desc}</span>
-    </div>
-  `).join('');
-
-  // Why Gangnam - bone graft tags
-  const boneTags = ['뼈이식', '상악동 수술', '디지털 가이드', 'CT 정밀진단'];
-  const boneTagsHtml = boneTags.map(t => `<span class="px-3.5 py-2 rounded-full bg-lavender text-charcoal text-[11px] font-bold border border-royal/[0.06]">${t}</span>`).join('');
-
-  // Comparison - traditional crown process
+  // ===== 기존 승인 문구 (구조만 새로) =====
+  // 기존 보철 vs CEREC 공정
   const generalSteps = [
-    { step: '1회차', desc: '상담 + 치아 삭제', time: '30분', icon: 'fa-comment-dots' },
-    { step: '2회차', desc: '실리콘 인상재로 본뜨기', time: '30분', icon: 'fa-hand' },
-    { step: '대기', desc: '기공소 외주 제작 대기', time: '7~14일 소요', icon: 'fa-hourglass-half' },
-    { step: '3회차', desc: '임시치아 제거 + 보철 시적', time: '30분', icon: 'fa-teeth' },
-    { step: '4회차', desc: '미세 조정 후 최종 장착', time: '30분', icon: 'fa-crown' }
+    { step: '1회차', desc: '상담 + 치아 삭제', time: '30분' },
+    { step: '2회차', desc: '실리콘 인상재로 본뜨기', time: '30분' },
+    { step: '대기', desc: '기공소 외주 제작 대기', time: '7~14일 소요', wait: true },
+    { step: '3회차', desc: '임시치아 제거 + 보철 시적', time: '30분' },
+    { step: '4회차', desc: '미세 조정 후 최종 장착', time: '30분' }
   ];
-  const generalStepsHtml = generalSteps.map(s => `
-    <div class="flex items-center gap-4">
-      <div class="w-10 h-10 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center flex-shrink-0"><i class="fas ${s.icon} text-gray-400 text-xs"></i></div>
-      <div class="flex-1"><div class="text-charcoal font-bold text-sm">${s.step}: ${s.desc}</div></div>
-      <span class="text-gray-400 text-xs font-medium flex-shrink-0">${s.time}</span>
-    </div>
-  `).join('');
-
-  // Comparison - CEREC digital crown process
   const gangnamSteps = [
-    { step: '1단계', desc: '상담 + 치아 삭제', time: '30분', icon: 'fa-comment-dots', highlight: false },
-    { step: '2단계', desc: 'PrimeScan 디지털 스캔', time: '5분', icon: 'fa-laptop-medical', highlight: true },
-    { step: '3단계', desc: 'CEREC AI 보철 설계 + 밀링', time: '25분', icon: 'fa-cog', highlight: true },
-    { step: '4단계', desc: 'SpeedFire 소성 + 장착', time: '30분', icon: 'fa-bolt', highlight: true }
+    { step: '1단계', desc: '상담 + 치아 삭제', time: '30분', highlight: false },
+    { step: '2단계', desc: 'PrimeScan 디지털 스캔', time: '5분', highlight: true },
+    { step: '3단계', desc: 'CEREC AI 보철 설계 + 밀링', time: '25분', highlight: true },
+    { step: '4단계', desc: 'SpeedFire 소성 + 장착', time: '30분', highlight: true }
   ];
-  const gangnamStepsHtml = gangnamSteps.map(s => `
-    <div class="flex items-center gap-4 ${s.highlight ? 'p-3 -mx-3 rounded-2xl bg-royal/[0.03] border border-royal/[0.06]' : ''}">
-      <div class="w-10 h-10 rounded-xl ${s.highlight ? 'royal-grad' : 'bg-lavender border border-royal/10'} flex items-center justify-center flex-shrink-0"><i class="fas ${s.icon} ${s.highlight ? 'text-white' : 'text-royal'} text-xs"></i></div>
-      <div class="flex-1"><div class="text-charcoal font-bold text-sm">${s.step}: ${s.desc}</div></div>
-      <span class="${s.highlight ? 'text-royal font-bold' : 'text-gray-400'} text-xs flex-shrink-0">${s.time}</span>
-    </div>
-  `).join('');
-
-  // CEREC process steps
+  // CEREC 4단계 (mainPageSchemas 의 HowTo 와 같은 순서·이름)
   const cerecSteps = [
-    { step: '01', icon: 'fa-camera', title: '디지털 스캔', desc: '구강 스캐너로 치아를 3D 촬영합니다. 불편한 인상재(본뜨기)가 필요 없습니다.', time: '5분' },
-    { step: '02', icon: 'fa-drafting-compass', title: 'AI 보철 설계', desc: '컴퓨터가 환자의 치아에 딱 맞는 보철을 자동 설계합니다. 0.01mm 정밀도.', time: '10분' },
-    { step: '03', icon: 'fa-cog', title: '밀링 제작', desc: '세라믹 블록을 밀링 머신이 깎아 보철을 만듭니다. 기공소 외주 없이 원내 완성.', time: '15분' },
-    { step: '04', icon: 'fa-fire', title: '소성 & 장착', desc: 'SpeedFire로 초고속 소성 후 바로 장착. 자연치아와 구분 어려운 색감.', time: '30분' }
+    { step: '01', icon: 'scan', title: '디지털 스캔', desc: '구강 스캐너로 치아를 3D 촬영합니다. 불편한 인상재(본뜨기)가 필요 없습니다.', time: '5분' },
+    { step: '02', icon: 'design', title: 'AI 보철 설계', desc: '컴퓨터가 환자의 치아에 딱 맞는 보철을 자동 설계합니다. 0.01mm 정밀도.', time: '10분' },
+    { step: '03', icon: 'mill', title: '밀링 제작', desc: '세라믹 블록을 밀링 머신이 깎아 보철을 만듭니다. 기공소 외주 없이 원내 완성.', time: '15분' },
+    { step: '04', icon: 'fire', title: '소성 & 장착', desc: 'SpeedFire로 초고속 소성 후 바로 장착. 자연치아와 구분 어려운 색감.', time: '30분' }
   ];
-  const cerecStepsHtml = cerecSteps.map((s, i) => `
-    <div class="text-center stagger-item relative">
-      <div class="relative z-10 mx-auto w-20 h-20 rounded-3xl royal-grad flex items-center justify-center royal-glow mb-6">
-        <i class="fas ${s.icon} text-white text-2xl"></i>
-        <div class="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-white border-2 border-royal flex items-center justify-center text-royal text-xs font-black">${s.step}</div>
-      </div>
-      <h3 class="text-lg font-extrabold text-charcoal mb-2">${s.title}</h3>
-      <p class="text-gray-400 text-sm leading-relaxed mb-4">${s.desc}</p>
-      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-lavender border border-royal/[0.06]">
-        <i class="fas fa-clock text-royal text-[10px]"></i>
-        <span class="text-royal text-xs font-bold">약 ${s.time}</span>
-      </div>
-      ${i < 3 ? '<div class="hidden lg:block absolute top-24 -right-4 text-royal/20"><i class="fas fa-chevron-right text-sm"></i></div>' : ''}
-    </div>
-  `).join('');
-
-  // Treatments cards
+  // 주력 진료
   const treatments = [
-    { slug: 'implant', icon: 'fa-tooth', label: 'IMPLANT', title: '임플란트', sub: '수술이 전문인 전문의가 합니다', worry: '"임플란트 하려고 대구까지 가시려고요?"', answer: '영주에서 외과 전문의가 직접 수술합니다. 대학병원급 장비도 갖추고 있습니다.', tags: ['CT 정밀진단', '뼈이식 가능', '상악동 수술', '디지털 가이드'] },
-    { slug: 'digital-prosthesis', icon: 'fa-bolt', label: 'DIGITAL PROSTHESIS', title: '디지털 보철', sub: '디지털 스캔으로 싱글 크라운을 정밀 제작합니다', worry: '"자연스러운 크라운을 원해요"', answer: 'CEREC 시스템으로 싱글 지르코니아·세라믹 크라운을 정밀하게 제작합니다.', tags: ['싱글 크라운', '디지털 스캔', '세라믹 보철', 'SpeedFire'] },
-    { slug: 'invisalign', icon: 'fa-teeth', label: 'INVISALIGN', title: '인비절라인', sub: '눈에 띄지 않게 교정합니다', worry: '"교정 티 나면 직장에서 눈치 보일까봐 망설이셨죠?"', answer: '투명교정 인비절라인으로, 눈에 띄지 않게 교정합니다.', tags: ['iTero 스캐너', '3D 시뮬레이션', '탈착 가능', '심미적'] },
-    { slug: 'cosmetic', icon: 'fa-gem', label: 'COSMETIC', title: '심미보철', sub: '자연치아와 구분이 어렵습니다', worry: '"자연스러운 이를 갖고 싶어요…"', answer: '디지털 기술로 맞춤 제작, 자연치아와 구분이 어렵습니다.', tags: ['라미네이트', '올세라믹', '싱글 크라운', '맞춤 색상'] }
+    { slug: 'implant', label: 'IMPLANT', title: '임플란트', sub: '수술이 전문인 전문의가 합니다', worry: '"임플란트 하려고 대구까지 가시려고요?"', answer: '영주에서 외과 전문의가 직접 수술합니다. 대학병원급 장비도 갖추고 있습니다.', tags: ['CT 정밀진단', '뼈이식 가능', '상악동 수술', '디지털 가이드'] },
+    { slug: 'digital-prosthesis', label: 'DIGITAL PROSTHESIS', title: '디지털 보철', sub: '디지털 스캔으로 싱글 크라운을 정밀 제작합니다', worry: '"자연스러운 크라운을 원해요"', answer: 'CEREC 시스템으로 싱글 지르코니아·세라믹 크라운을 정밀하게 제작합니다.', tags: ['싱글 크라운', '디지털 스캔', '세라믹 보철', 'SpeedFire'] },
+    { slug: 'invisalign', label: 'INVISALIGN', title: '인비절라인', sub: '눈에 띄지 않게 교정합니다', worry: '"교정 티 나면 직장에서 눈치 보일까봐 망설이셨죠?"', answer: '투명교정 인비절라인으로, 눈에 띄지 않게 교정합니다.', tags: ['iTero 스캐너', '3D 시뮬레이션', '탈착 가능', '심미적'] },
+    { slug: 'cosmetic', label: 'COSMETIC', title: '심미보철', sub: '자연치아와 구분이 어렵습니다', worry: '"자연스러운 이를 갖고 싶어요…"', answer: '디지털 기술로 맞춤 제작, 자연치아와 구분이 어렵습니다.', tags: ['라미네이트', '올세라믹', '싱글 크라운', '맞춤 색상'] },
+    { slug: 'wisdom-tooth', label: 'WISDOM TOOTH', title: '사랑니 발치', sub: '구강외과 전문의가 직접 발치합니다', worry: '"매복 사랑니도 안전하게 뺄 수 있나요?"', answer: '매복 사랑니도 안전하게. CT 정밀 진단 · 최소 절개 · 빠른 회복', tags: ['CT 정밀 진단', '최소 절개', '빠른 회복', '전문의 직접 발치'] }
   ];
-  const treatmentsHtml = treatments.map(item => `
-    <a href="/treatments/${item.slug}" class="card-white p-6 md:p-8 lg:p-10 group block stagger-item">
-      <div class="relative z-10">
-        <div class="flex items-start justify-between mb-8">
-          <div class="w-16 h-16 rounded-2xl royal-grad flex items-center justify-center royal-glow group-hover:scale-110 transition-transform duration-500"><i class="fas ${item.icon} text-white text-2xl"></i></div>
-          <span class="text-[10px] tracking-[0.2em] text-gray-300 font-bold">${item.label}</span>
-        </div>
-        <h3 class="text-2xl md:text-3xl font-extrabold text-charcoal mb-2 group-hover:text-royal transition-colors duration-500">${item.title}</h3>
-        <p class="text-gray-400 text-sm mb-6 font-medium">${item.sub}</p>
-        <div class="p-5 rounded-2xl bg-lavender border border-royal/[0.06] mb-6 group-hover:border-royal/15 transition-colors duration-500">
-          <p class="text-royal text-sm italic mb-2 font-medium">${item.worry}</p>
-          <p class="text-gray-500 text-sm leading-relaxed">${item.answer}</p>
-        </div>
-        <div class="flex flex-wrap gap-2 mb-8">
-          ${item.tags.map(t => `<span class="px-3.5 py-1.5 rounded-full border border-royal/[0.06] text-gray-400 text-[11px] font-medium group-hover:border-royal/15 group-hover:text-royal transition-all duration-500">${t}</span>`).join('')}
-        </div>
-        <div class="flex items-center gap-2 text-royal text-sm font-bold group-hover:gap-4 transition-all duration-500">자세히 보기 <i class="fas fa-arrow-right text-xs transition-transform group-hover:translate-x-1"></i></div>
-      </div>
-    </a>
-  `).join('');
-
-  // Patient personas
+  // 환자 유형
   const personas = [
-    { emoji: '😰', persona: '임플란트가 필요하신 분', age: '50~70대', worry: '"뼈가 약하다고 다른 치과에서 거절당했어요…"<br>"대구까지 가야 하나 고민이에요."', solution: '구강외과 전문의 2인이 직접 수술합니다. 뼈이식·상악동(위턱 공간) 거상술 등 고난이도 수술도 일상적으로 시행합니다. 대학병원급 수술을 영주에서.', tags: ['전문의 직접 수술', '뼈이식 가능', 'CT 정밀진단'], link: '/treatments/implant' },
-    { emoji: '⏰', persona: '시간이 없으신 분', age: '30~50대 직장인', worry: '"치과 때문에 하루 더 쉬어야 하나…"<br>"치료 여러 번 오는 거 정말 싫어요."', solution: 'CEREC 디지털 시스템으로 싱글 지르코니아·세라믹 크라운을 정밀 제작합니다. 본뜨기 없이 디지털 스캔으로 편안하게 치료받으실 수 있습니다.', tags: ['싱글 크라운', '디지털 정밀 제작', 'CEREC'], link: '/treatments/digital-prosthesis' },
-    { emoji: '😬', persona: '교정이 고민이신 분', age: '20~40대', worry: '"교정 티 나면 직장에서 어색할까봐…"<br>"철사 교정은 부담스러운데…"', solution: '인비절라인 투명교정으로 눈에 띄지 않게 교정합니다. iTero 스캐너로 교정 전후를 3D 시뮬레이션으로 미리 보실 수 있습니다.', tags: ['투명 교정', '3D 시뮬레이션', '탈착 가능'], link: '/treatments/invisalign' }
+    { persona: '임플란트가 필요하신 분', age: '50~70대', worry: '"뼈가 약하다고 다른 치과에서 거절당했어요…" "대구까지 가야 하나 고민이에요."', solution: '구강외과 전문의 2인이 직접 수술합니다. 뼈이식·상악동(위턱 공간) 거상술 등 고난이도 수술도 일상적으로 시행합니다. 대학병원급 수술을 영주에서.', tags: ['전문의 직접 수술', '뼈이식 가능', 'CT 정밀진단'], link: '/treatments/implant' },
+    { persona: '시간이 없으신 분', age: '30~50대 직장인', worry: '"치과 때문에 하루 더 쉬어야 하나…" "치료 여러 번 오는 거 정말 싫어요."', solution: 'CEREC 디지털 시스템으로 싱글 지르코니아·세라믹 크라운을 정밀 제작합니다. 본뜨기 없이 디지털 스캔으로 편안하게 치료받으실 수 있습니다.', tags: ['싱글 크라운', '디지털 정밀 제작', 'CEREC'], link: '/treatments/digital-prosthesis' },
+    { persona: '교정이 고민이신 분', age: '20~40대', worry: '"교정 티 나면 직장에서 어색할까봐…" "철사 교정은 부담스러운데…"', solution: '인비절라인 투명교정으로 눈에 띄지 않게 교정합니다. iTero 스캐너로 교정 전후를 3D 시뮬레이션으로 미리 보실 수 있습니다.', tags: ['투명 교정', '3D 시뮬레이션', '탈착 가능'], link: '/treatments/invisalign' }
   ];
-  const personasHtml = personas.map(p => `
-    <div class="card-premium p-6 md:p-8 lg:p-10 stagger-item group hover:border-royal/20">
-      <div class="text-5xl mb-6">${p.emoji}</div>
-      <div class="flex items-center gap-3 mb-4">
-        <h3 class="text-xl font-extrabold text-charcoal">${p.persona}</h3>
-        <span class="px-3 py-1 rounded-full bg-lavender text-gray-400 text-[10px] font-bold border border-royal/[0.06]">${p.age}</span>
-      </div>
-      <div class="p-5 rounded-2xl bg-red-50/50 border border-red-100/50 mb-6">
-        <div class="flex items-start gap-3">
-          <i class="fas fa-quote-left text-red-300/50 text-sm mt-1 flex-shrink-0"></i>
-          <p class="text-gray-500 text-sm leading-relaxed italic">${p.worry}</p>
-        </div>
-      </div>
-      <div class="p-5 rounded-2xl bg-royal/[0.03] border border-royal/[0.06] mb-6">
-        <div class="flex items-start gap-3">
-          <i class="fas fa-check-circle text-royal text-sm mt-1 flex-shrink-0"></i>
-          <p class="text-gray-500 text-sm leading-relaxed">${p.solution}</p>
-        </div>
-      </div>
-      <div class="flex flex-wrap gap-1.5 mb-6">
-        ${p.tags.map(t => `<span class="px-3 py-1.5 rounded-full bg-royal/[0.04] text-royal text-[10px] font-bold border border-royal/[0.08]">${t}</span>`).join('')}
-      </div>
-      <a href="${p.link}" class="flex items-center gap-2 text-royal text-sm font-bold group-hover:gap-4 transition-all duration-500">자세히 알아보기 <i class="fas fa-arrow-right text-xs"></i></a>
-    </div>
-  `).join('');
-
-  // Clinic photos (실사 사진)
+  // 시설 (실사 사진)
   const clinicPhotos = [
     { url: '/static/photos/p9YyzTaw.webp', alt: '프리미엄 소파와 와이드 디스플레이가 있는 대기실 전경', label: '대기실', desc: '프리미엄 라운지형 대기 공간' },
     { url: '/static/photos/KLnijX5L.webp', alt: '유리 파티션으로 분리된 개별 진료 공간', label: '진료실', desc: '유리 파티션 개별 진료 공간' },
@@ -376,119 +292,37 @@ export function mainPage(): string {
     { url: '/static/photos/3gQUD6CP.webp', alt: '접수대와 복도, 로고 사이니지', label: '접수대', desc: '깔끔한 접수대 · 로고 사이니지' },
     { url: '/static/photos/qBEkv4ph.webp', alt: '밝고 청결하게 관리되는 수술실 복도', label: '수술실 복도', desc: '감염관리 · 청결한 동선' },
   ];
-  const clinicPhotosHtml = clinicPhotos.map(p => `
-    <div class="flex-shrink-0 w-[340px] md:w-[420px] snap-start group cursor-pointer" onclick="openPhotoModal('${p.url}','${p.alt}')">
-      <div class="relative rounded-3xl overflow-hidden aspect-[4/3] mb-4">
-        <img src="${p.url}" srcset="${p.url.replace('.webp', '-480.webp')} 480w, ${p.url} 1024w" sizes="(max-width: 768px) 85vw, 400px" alt="${p.alt}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy">
-        <div class="absolute inset-0 bg-gradient-to-t from-charcoal/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-        <div class="absolute bottom-4 left-4 right-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
-          <span class="px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-md text-charcoal text-xs font-bold">${p.label}</span>
-        </div>
-      </div>
-      <div class="px-1">
-        <h4 class="text-charcoal font-bold text-sm">${p.label}</h4>
-        <p class="text-gray-400 text-xs mt-0.5">${p.desc}</p>
-      </div>
-    </div>
-  `).join('');
-
-  // Equipment gallery
+  // 장비
   const equipGallery = [
-    { name: '3D CT (CBCT)', desc: '0.1mm 정밀도의 3D 입체 촬영. 뼈 두께, 신경 위치, 염증 범위를 정확하게 파악합니다.', icon: 'fa-x-ray', spec: 'Voxel 0.1mm · 3D 360° · 파노라마 겸용' },
-    { name: 'CEREC MC X', desc: '세라믹 블록을 정밀하게 깎아 보철을 만드는 밀링 머신. 기공소 없이 당일 완성.', icon: 'fa-cog', spec: 'Sirona CEREC · 당일 제작 · 세라믹 보철' },
-    { name: 'PrimeScan', desc: '초정밀 구강 스캐너. 광학 스캔으로 치아를 3D 촬영하여 본뜨기를 대체합니다.', icon: 'fa-wave-square', spec: 'Dentsply Sirona · 디지털 인상 · 실시간 3D' },
-    { name: 'iTero Element', desc: '인비절라인 전용 구강 스캐너. 교정 전후를 3D 시뮬레이션으로 미리 볼 수 있습니다.', icon: 'fa-teeth-open', spec: 'Align Technology · 교정 시뮬레이션 · 컬러 3D' },
-    { name: 'SpeedFire', desc: '초고속 소성로. CEREC으로 깎은 보철을 단 15분 만에 최종 강도로 소성합니다.', icon: 'fa-fire', spec: 'Dentsply Sirona · 15분 소성 · 1600℃' },
-    { name: '디지털 파노라마', desc: '전체 치아 배열과 턱뼈 상태를 한 장의 사진으로 확인하는 기본 진단 장비.', icon: 'fa-expand', spec: '전체 구강 촬영 · 턱관절 진단 · 저선량' }
+    { name: '3D CT (CBCT)', desc: '0.1mm 정밀도의 3D 입체 촬영. 뼈 두께, 신경 위치, 염증 범위를 정확하게 파악합니다.', spec: 'Voxel 0.1mm · 3D 360° · 파노라마 겸용' },
+    { name: 'CEREC MC X', desc: '세라믹 블록을 정밀하게 깎아 보철을 만드는 밀링 머신. 기공소 없이 당일 완성.', spec: 'Sirona CEREC · 당일 제작 · 세라믹 보철' },
+    { name: 'PrimeScan', desc: '초정밀 구강 스캐너. 광학 스캔으로 치아를 3D 촬영하여 본뜨기를 대체합니다.', spec: 'Dentsply Sirona · 디지털 인상 · 실시간 3D' },
+    { name: 'iTero Element', desc: '인비절라인 전용 구강 스캐너. 교정 전후를 3D 시뮬레이션으로 미리 볼 수 있습니다.', spec: 'Align Technology · 교정 시뮬레이션 · 컬러 3D' },
+    { name: 'SpeedFire', desc: '초고속 소성로. CEREC으로 깎은 보철을 단 15분 만에 최종 강도로 소성합니다.', spec: 'Dentsply Sirona · 15분 소성 · 1600℃' },
+    { name: '디지털 파노라마', desc: '전체 치아 배열과 턱뼈 상태를 한 장의 사진으로 확인하는 기본 진단 장비.', spec: '전체 구강 촬영 · 턱관절 진단 · 저선량' }
   ];
-  const equipGalleryHtml = equipGallery.map(e => `
-    <div class="flex-shrink-0 w-[320px] md:w-[360px] card-premium p-8 stagger-item group snap-start">
-      <div class="w-full h-44 rounded-2xl bg-gradient-to-br from-lavender via-white to-royal/[0.03] flex items-center justify-center mb-6 relative overflow-hidden">
-        <div class="absolute inset-0 bg-gradient-to-t from-white/60 to-transparent"></div>
-        <i class="fas ${e.icon} text-royal/15 text-6xl group-hover:text-royal/25 group-hover:scale-110 transition-all duration-500"></i>
-      </div>
-      <h3 class="text-lg font-extrabold text-charcoal mb-2">${e.name}</h3>
-      <p class="text-gray-400 text-sm leading-relaxed mb-4">${e.desc}</p>
-      <div class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-royal/[0.03] border border-royal/[0.06]">
-        <i class="fas fa-microchip text-royal text-[10px]"></i>
-        <span class="text-gray-500 text-xs">${e.spec}</span>
-      </div>
-    </div>
-  `).join('');
-
-  // First visit steps
+  // 첫 방문
   const visitSteps = [
-    { step: 'STEP 01', title: '접수 & 상담', desc: '간단한 접수 후, 증상과 고민을 편하게 말씀해 주세요. 필요한 검사를 안내드립니다.', time: '5분', icon: 'fa-clipboard-list' },
-    { step: 'STEP 02', title: '정밀 진단', desc: '3D CT 촬영과 디지털 구강 스캔으로 치아, 잇몸, 뼈 상태를 입체적으로 파악합니다.', time: '15분', icon: 'fa-x-ray' },
-    { step: 'STEP 03', title: '전문의 설명', desc: '구강외과 전문의가 CT 결과를 보며 현재 상태와 치료 방법을 상세히 설명드립니다.', time: '15분', icon: 'fa-user-doctor' },
-    { step: 'STEP 04', title: '치료 계획 수립', desc: '치료 방법, 기간, 비용을 투명하게 안내합니다. 환자분이 직접 선택하시면 됩니다.', time: '10분', icon: 'fa-file-medical' },
-    { step: 'STEP 05', title: '치료 시작', desc: '동의하시면 당일 치료를 시작할 수 있습니다. 간단한 치료는 첫 날 바로 완료합니다.', time: '상황에 따라', icon: 'fa-play-circle' },
-    { step: 'STEP 06', title: '경과 관리', desc: '치료 후 경과를 체크하고, 필요시 추가 관리를 안내드립니다. 마지막까지 책임집니다.', time: '정기 체크', icon: 'fa-heart-pulse' }
+    { step: 'STEP 01', title: '접수 & 상담', desc: '간단한 접수 후, 증상과 고민을 편하게 말씀해 주세요. 필요한 검사를 안내드립니다.', time: '5분' },
+    { step: 'STEP 02', title: '정밀 진단', desc: '3D CT 촬영과 디지털 구강 스캔으로 치아, 잇몸, 뼈 상태를 입체적으로 파악합니다.', time: '15분' },
+    { step: 'STEP 03', title: '전문의 설명', desc: '구강외과 전문의가 CT 결과를 보며 현재 상태와 치료 방법을 상세히 설명드립니다.', time: '15분' },
+    { step: 'STEP 04', title: '치료 계획 수립', desc: '치료 방법, 기간, 비용을 투명하게 안내합니다. 환자분이 직접 선택하시면 됩니다.', time: '10분' },
+    { step: 'STEP 05', title: '치료 시작', desc: '동의하시면 당일 치료를 시작할 수 있습니다. 간단한 치료는 첫 날 바로 완료합니다.', time: '상황에 따라' },
+    { step: 'STEP 06', title: '경과 관리', desc: '치료 후 경과를 체크하고, 필요시 추가 관리를 안내드립니다. 마지막까지 책임집니다.', time: '정기 체크' }
   ];
-  const visitStepsHtml = visitSteps.map((s, i) => `
-    <div class="flex gap-6 md:gap-8 pl-2 stagger-item">
-      <div class="relative z-10 flex-shrink-0">
-        <div class="w-14 md:w-16 h-14 md:h-16 rounded-2xl ${i === 0 ? 'royal-grad royal-glow' : 'bg-white border-2 border-royal/20'} flex items-center justify-center">
-          <i class="fas ${s.icon} ${i === 0 ? 'text-white' : 'text-royal'} text-lg"></i>
-        </div>
-      </div>
-      <div class="flex-1 pb-8">
-        <div class="flex items-center gap-3 mb-2">
-          <span class="text-royal text-[10px] font-bold tracking-widest">${s.step}</span>
-          <span class="px-3 py-1 rounded-full bg-lavender text-gray-400 text-[10px] font-bold border border-royal/[0.06]">${s.time}</span>
-        </div>
-        <h3 class="text-lg font-extrabold text-charcoal mb-2">${s.title}</h3>
-        <p class="text-gray-400 text-sm leading-relaxed">${s.desc}</p>
-      </div>
-    </div>
-  `).join('');
-
-  // Doctors section
+  // 의료진
   const doctors = [
-    { slug: 'lee-taehyung', name: '이태형', title: '대표원장', spec: '구강악안면외과 전문의', quote: '"한 번 오시면 됩니다. 여러 번 오실 필요 없습니다."', summary: '구강악안면외과 전문의 · 수술 전문<br>고려대 구로병원 레지던트 수료', fields: ['임플란트', '구강외과 수술', '뼈이식', '상악동 수술'], initial: '이', photo: '/static/doctors/lee-taehyung.jpg' },
-    { slug: 'choi-minhye', name: '최민혜', title: '원장', spec: '구강악안면외과 전문의', quote: '"외과 전문의의 손은 다릅니다."', summary: '구강악안면외과 전문의 · 인제대 백병원 수료<br>임플란트, 틀니, 레이저 치료 전문', fields: ['임플란트', '틀니', '레이저 치료', '심미보철'], initial: '최', photo: null as string | null }
+    { slug: 'lee-taehyung', name: '이태형', title: '대표원장', spec: '구강악안면외과 전문의', quote: '"한 번 오시면 됩니다. 여러 번 오실 필요 없습니다."', summary: '구강악안면외과 전문의 · 수술 전문 · 고려대 구로병원 레지던트 수료', fields: ['임플란트', '구강외과 수술', '뼈이식', '상악동 수술'], initial: '이', photo: '/static/doctors/lee-taehyung.jpg' },
+    { slug: 'choi-minhye', name: '최민혜', title: '원장', spec: '구강악안면외과 전문의', quote: '"외과 전문의의 손은 다릅니다."', summary: '구강악안면외과 전문의 · 인제대 백병원 수료 · 임플란트, 틀니, 레이저 치료 전문', fields: ['임플란트', '틀니', '레이저 치료', '심미보철'], initial: '최', photo: null as string | null }
   ];
-  const doctorsHtml = doctors.map(doc => `
-    <a href="/doctors/${doc.slug}" class="group stagger-item block">
-      <div class="card-premium overflow-hidden">
-        <div class="relative h-80 md:h-[400px] overflow-hidden bg-gradient-to-br from-lavender via-white to-royal/[0.03]">
-          <div class="absolute inset-0 bg-gradient-to-t from-white via-white/30 to-transparent z-10"></div>
-          <div class="absolute top-6 right-6 w-20 h-20 border border-royal/10 rounded-full z-20 group-hover:scale-150 group-hover:opacity-0 transition-all duration-700"></div>
-          ${doc.photo ? `
-          <img src="${doc.photo}" alt="${doc.name} ${doc.title}" class="absolute inset-0 w-full h-full object-cover z-[5] obj-top-20" loading="lazy">
-          ` : `
-          <div class="absolute inset-0 flex items-center justify-center z-[5]"><div class="w-32 h-32 rounded-3xl bg-white shadow-xl border border-royal/[0.08] flex items-center justify-center group-hover:scale-110 transition-transform duration-700"><span class="royal-grad-text text-5xl font-black">${doc.initial}</span></div></div>
-          `}
-          <div class="absolute bottom-0 left-0 right-0 p-8 z-20"><div class="flex items-center gap-2 mb-3"><span class="px-4 py-1.5 rounded-full royal-grad text-white text-[11px] font-bold tracking-wide">${doc.title}</span><span class="px-4 py-1.5 rounded-full bg-white/80 text-gray-600 text-[11px] font-medium backdrop-blur-lg border border-royal/10">${doc.spec}</span></div></div>
-        </div>
-        <div class="p-8 md:p-10">
-          <h3 class="text-2xl md:text-3xl font-extrabold text-charcoal group-hover:text-royal transition-colors duration-500 mb-2">${doc.name} <span class="text-gray-400 font-medium text-lg">${doc.title}</span></h3>
-          <p class="text-gray-400 text-sm mb-4">${doc.summary}</p>
-          <p class="text-royal text-sm italic mb-5 font-medium">${doc.quote}</p>
-          <div class="flex flex-wrap gap-2 mb-6">${doc.fields.map(f => `<span class="px-3.5 py-2 rounded-xl bg-royal/[0.04] text-royal/80 text-[11px] font-bold border border-royal/[0.08]">${f}</span>`).join('')}</div>
-          <div class="flex items-center gap-2 text-royal text-sm font-bold group-hover:gap-4 transition-all duration-500">프로필 보기 <i class="fas fa-arrow-right text-xs"></i></div>
-        </div>
-      </div>
-    </a>
-  `).join('');
-
-  // Numbers section
+  // 핵심 수치
   const numbers = [
-    { num: '2', suffix: '인', label: '구강외과 전문의', icon: 'fa-user-doctor', desc: '대학병원 수련 전문의' },
-    { num: '2017', suffix: '년~', label: '영주 개원', icon: 'fa-calendar', desc: '8년 이상 지역진료' },
-    { num: '1', suffix: 'DAY', label: '디지털 보철', icon: 'fa-bolt', desc: 'CEREC 시스템' },
-    { num: '5', suffix: '+', label: '디지털 장비', icon: 'fa-microchip', desc: '최첨단 진료 환경' }
+    { num: '2', suffix: '인', label: '구강외과 전문의', desc: '대학병원 수련 전문의' },
+    { num: '2017', suffix: '년~', label: '영주 개원', desc: '8년 이상 지역진료' },
+    { num: '1', suffix: 'DAY', label: '디지털 보철', desc: 'CEREC 시스템' },
+    { num: '5', suffix: '+', label: '디지털 장비', desc: '최첨단 진료 환경' }
   ];
-  const numbersHtml = numbers.map(item => `
-    <div class="text-center p-8 md:p-10 rounded-3xl border border-royal/[0.06] bg-lavender stagger-item hover:border-royal/20 hover:shadow-lg hover:shadow-royal/[0.03] transition-all duration-500 group">
-      <div class="w-14 h-14 mx-auto rounded-2xl royal-grad flex items-center justify-center mb-6 royal-glow group-hover:scale-110 transition-transform duration-500"><i class="fas ${item.icon} text-white text-lg"></i></div>
-      <div class="text-5xl md:text-6xl font-black text-charcoal mb-2 counter" data-target="${item.num}" data-suffix="${item.suffix}">0</div>
-      <div class="text-gray-500 font-bold text-sm mb-1">${item.label}</div>
-      <div class="text-gray-300 text-xs">${item.desc}</div>
-    </div>
-  `).join('');
-
-  // Area access
+  // 주변 지역
   const areas = [
     { area: '영주시', time: '10분', km: '5km 이내' },
     { area: '풍기', time: '15분', km: '12km' },
@@ -497,806 +331,384 @@ export function mainPage(): string {
     { area: '안동', time: '40분', km: '38km' },
     { area: '단양', time: '45분', km: '40km' }
   ];
-  const areasHtml = areas.map(a => `
-    <a href="${a.area === '영주시' ? '/directions' : `/area/${encodeURIComponent(a.area)}`}" class="card-premium p-6 text-center stagger-item group hover:border-royal/20">
-      <div class="w-12 h-12 mx-auto rounded-xl bg-royal/[0.06] border border-royal/10 flex items-center justify-center mb-4 group-hover:bg-royal/10 transition-colors">
-        <i class="fas fa-car text-royal text-sm"></i>
-      </div>
-      <div class="text-charcoal font-extrabold mb-1">${a.area}</div>
-      <div class="text-royal font-bold text-lg mb-0.5">~${a.time}</div>
-      <div class="text-gray-400 text-[11px]">${a.km}</div>
-    </a>
-  `).join('');
-
-  // Stars for reviews
-  const starsHtml = Array(5).fill('<i class="fas fa-star text-royal text-2xl"></i>').join('');
-
-  // FAQ items
+  const regions = [
+    { name: '영주', slug: 'yeongju' }, { name: '풍기', slug: 'punggi' }, { name: '봉화', slug: 'bonghwa' }, { name: '예천', slug: 'yecheon' }, { name: '안동', slug: 'andong' },
+    { name: '단양', slug: 'danyang' }, { name: '영주혁신도시', slug: 'yeongju-innovation' }, { name: '상주', slug: 'sangju' }, { name: '문경', slug: 'mungyeong' },
+  ];
+  const clusterTreatments = [
+    { name: '임플란트', slug: 'implant' }, { name: '사랑니', slug: 'wisdom-tooth' }, { name: '인비절라인', slug: 'invisalign' }, { name: '디지털보철', slug: 'digital-prosthesis' },
+    { name: '심미보철', slug: 'cosmetic' }, { name: '뼈이식', slug: 'bone-graft' }, { name: '충치치료', slug: 'cavity' }, { name: '치아미백', slug: 'whitening' },
+  ];
+  const quickLinks: [string, string][] = [
+    ['/treatments/implant', '영주 임플란트'], ['/treatments/invisalign', '영주 인비절라인 교정'], ['/treatments/wisdom-tooth', '영주 사랑니 발치'],
+    ['/treatments/digital-prosthesis', '영주 디지털 보철'], ['/treatments/cosmetic', '영주 심미보철'], ['/treatments/bone-graft', '영주 뼈이식 임플란트'],
+    ['/treatments/cavity', '영주 충치치료'], ['/treatments/root-canal', '영주 신경치료'], ['/treatments/gum', '영주 잇몸치료'], ['/treatments/denture', '영주 틀니'],
+    [`/area/${encodeURIComponent('영주시')}`, '영주 치과 이용 안내'], ['/pricing', '진료비용 안내'], ['/directions', '오시는 길']
+  ];
   // 화면 FAQ = 스키마 FAQ (HOME_FAQ_ITEMS 하나를 공유)
   const faqItems = HOME_FAQ_ITEMS;
-  const faqHtml = faqItems.map(item => `
-    <details class="group card-premium stagger-item">
-      <summary class="flex items-center justify-between p-7 md:p-8 cursor-pointer select-none">
-        <div class="flex items-center gap-4">
-          <div class="w-11 h-11 rounded-xl bg-royal/[0.06] flex items-center justify-center flex-shrink-0 border border-royal/[0.08] group-hover:bg-royal/10 transition-colors"><span class="text-royal font-extrabold text-sm">Q</span></div>
-          <h3 class="font-bold text-charcoal text-left text-[15px]">${item.q}</h3>
-        </div>
-        <div class="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center flex-shrink-0 ml-4 faq-icon transition-all duration-300 group-hover:border-royal/30 group-hover:bg-royal/5"><i class="fas fa-plus text-gray-400 text-xs group-hover:text-royal transition-colors"></i></div>
-      </summary>
-      <div class="px-7 md:px-8 pb-7 md:pb-8"><div class="pl-[60px] text-gray-500 text-sm leading-relaxed border-t border-gray-50 pt-6">${item.a}</div></div>
-    </details>
-  `).join('');
+  const pad2 = (n: number) => String(n).padStart(2, '0')
 
-
-  // ===== MAIN TEMPLATE =====
   return `
-
-  <!-- ========== HERO — WHITE + ROYAL PURPLE ========== -->
-  <section class="relative min-h-0 lg:min-h-[100svh] flex items-center overflow-hidden hero-white" id="hero" aria-label="강남치과의원 메인 히어로" itemscope itemtype="https://schema.org/WPHeader">
-    <!-- CSS Particle Background (lightweight replacement for Three.js) -->
-    <div class="absolute inset-0 z-[1]">
-      <div class="css-particles">
-        ${Array.from({length: 30}, (_, i) => {
-          const x = Math.random() * 100;
-          const y = Math.random() * 100;
-          const size = 2 + Math.random() * 4;
-          const dur = 15 + Math.random() * 25;
-          const delay = Math.random() * -30;
-          const opacity = 0.08 + Math.random() * 0.15;
-          return `<div class="css-particle" style="left:${x}%;top:${y}%;width:${size}px;height:${size}px;animation-duration:${dur}s;animation-delay:${delay}s;opacity:${opacity};"></div>`;
-        }).join('')}
+  <!-- ========== SHEET 01 · HERO — 도면 시트 ========== -->
+  <section class="hero" id="hero" aria-label="강남치과의원 메인 히어로" itemscope itemtype="https://schema.org/WPHeader">
+    <div class="hero-sheet" aria-hidden="true"><i class="mark tl"></i><i class="mark tr"></i><i class="mark bl"></i><i class="mark br"></i></div>
+    <div class="rule hero-rule" aria-hidden="true"></div>
+    <div class="wrap hero-in">
+      <div class="hero-copy">
+        <p class="hero-eyebrow" data-hero>
+          <span class="fig"><b>SHEET 01</b>Yeongju</span><i class="sep" aria-hidden="true"></i>
+          <span>경북 영주시 대학로 217 · 택지 사거리</span><i class="sep" aria-hidden="true"></i>
+          <span>구강악안면외과 전문의 2인 직접 진료</span>
+        </p>
+        <h1 class="hero-h1" id="heroTitle" data-speakable="true">
+          <span class="hl l0"><span class="hl-in">영주 치과 강남치과의원</span></span>
+          <span class="hl l1"><span class="hl-in">일상으로의 빠른 복귀,</span></span>
+          <span class="hl l2"><span class="hl-in">강남치과의 기쁨입니다.</span></span>
+        </h1>
+        <p class="hero-sub" id="heroSub" data-speakable="true" data-hero>
+          <span>구강악안면외과 전문의 2인이 직접 수술합니다.</span>
+          <span>영주 강남치과의원 — 임플란트, 디지털 보철, 인비절라인.</span>
+          <strong>정확하게 진단하고, 빠르게 치료하고, 오래가는 결과를 만듭니다.</strong>
+        </p>
+        <div class="hero-cta" data-hero>
+          <a href="/reservation" class="btn btn-primary btn-lg">${icon('calendar')}편하게 상담하세요</a>
+          <a href="/pricing" class="btn btn-ghost btn-lg">${icon('won')}비용 안내</a>
+          <a href="tel:${PHONE_DISPLAY}" class="btn btn-ghost btn-lg mono">${icon('phone')}${PHONE_DISPLAY}</a>
+        </div>
+        <dl class="hero-facts" data-hero>
+          <div><dt class="k">Surgeons</dt><dd class="v">2<small>구강악안면외과 전문의</small></dd></div>
+          <div><dt class="k">Since</dt><dd class="v">2017<small>영주 개원</small></dd></div>
+          <div><dt class="k">Crown</dt><dd class="v">1 DAY<small>CEREC 당일 완성</small></dd></div>
+          <div><dt class="k">Digital</dt><dd class="v">5+<small>CT · CEREC · 구강스캐너</small></dd></div>
+        </dl>
+      </div>
+      <div class="hero-media" data-hero="media">
+        <figure class="hero-frame">
+          <img src="/static/doctors/lee-taehyung.jpg" alt="이태형 대표원장 - 구강악안면외과 전문의" title="강남치과의원 이태형 대표원장" width="575" height="1024" loading="eager" fetchpriority="high" decoding="async">
+          <figcaption class="hero-cap"><b>이태형 대표원장</b><span>구강악안면외과 전문의 · 고려대 구로병원 수료</span></figcaption>
+        </figure>
+        <span class="dim hero-dim-x" aria-hidden="true"><i></i><span>Oral &amp; Maxillofacial Surgeon</span><i></i></span>
+        <span class="dim dim-v hero-dim-y" aria-hidden="true"><i></i><span>Yeongju · Since 2017</span><i></i></span>
+        <div class="hero-status${tcCls}" data-timecard>
+          <span class="st-label"><span class="dot" aria-hidden="true"></span><span data-tc-text>${st.short}</span></span>
+          <span class="st-time"><span data-clock>${st.clock}</span><small data-tc-close>${tcClose}</small></span>
+          <span class="st-sub">${st.sub}</span>
+        </div>
+        <div class="hero-quote">“한 번 오시면 됩니다.”<small>— 이태형 대표원장</small></div>
       </div>
     </div>
-
-    <!-- Subtle patterns -->
-    <div class="absolute inset-0 grid-pattern opacity-60 z-[2]"></div>
-    
-    <!-- Decorative orbs -->
-    <div class="absolute -top-32 -right-32 w-[600px] h-[600px] bg-royal/[0.04] rounded-full blur-[150px] z-[2]"></div>
-    <div class="absolute -bottom-32 -left-32 w-[500px] h-[500px] bg-royal-100/[0.15] rounded-full blur-[150px] z-[2]"></div>
-
-    <!-- Content -->
-    <div class="relative max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12 w-full pt-24 pb-12 md:pt-28 md:pb-8 lg:py-0 z-overlay-10">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-center lg:min-h-screen">
-
-        <!-- Left: Copy (7 cols) -->
-        <div class="lg:col-span-7 pt-4 md:pt-0">
-          <div class="inline-flex items-center gap-3 px-5 py-2.5 rounded-full border border-royal/10 bg-white/80 backdrop-blur-xl mb-10 shadow-sm" id="heroTag">
-            <span class="relative flex h-2 w-2">
-              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-royal-400 opacity-75"></span>
-              <span class="relative inline-flex rounded-full h-2 w-2 bg-royal"></span>
-            </span>
-            <span class="text-royal text-[13px] font-bold">구강악안면외과 전문의 2인 직접 진료</span>
-          </div>
-
-          <h1 class="display-hero text-charcoal mb-8" id="heroTitle" data-speakable="true">
-            <span class="block text-lg md:text-2xl font-extrabold text-royal tracking-tight mb-3 md:mb-4">영주 치과 강남치과의원</span>
-            <span class="block overflow-hidden">
-              <span class="block" id="heroLine1">일상으로의 빠른 복귀,</span>
-            </span>
-            <span class="block overflow-hidden">
-              <span class="block royal-grad-text" id="heroLine2">강남치과의 기쁨입니다.</span>
-            </span>
-          </h1>
-
-          <p class="text-base md:text-xl text-gray-400 leading-relaxed mb-8 md:mb-12 max-w-xl" id="heroSub" data-speakable="true">
-            <span>구강악안면외과 전문의 2인이 직접 수술합니다.</span><br>
-            <span>영주 강남치과의원 — 임플란트, 디지털 보철, 인비절라인.</span>
-            <span class="hidden md:inline"><strong class="text-royal font-semibold">정확하게 진단하고, 빠르게 치료하고, 오래가는 결과를 만듭니다.</strong></span>
-          </p>
-
-          <div class="flex flex-wrap gap-3 md:gap-4 mb-8 md:mb-16" id="heroCTA">
-            <a href="/reservation" class="btn-primary !py-5 !px-12 !text-[15px] !font-extrabold group">
-              <i class="fas fa-calendar-check"></i>
-              편하게 상담하세요
-              <i class="fas fa-arrow-right text-xs opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"></i>
-            </a>
-            <a href="/pricing" class="btn-subtle !py-5 !px-10">
-              <i class="fas fa-won-sign text-sm text-royal"></i>비용 안내
-            </a>
-          </div>
-
-          <div class="flex flex-wrap gap-2 md:gap-3" id="heroStats">
-            <div class="flex items-center gap-2 md:gap-3 px-3 md:px-5 py-2 md:py-3 rounded-2xl border border-royal/10 bg-white/80 shadow-sm">
-              <div class="w-8 md:w-10 h-8 md:h-10 rounded-lg md:rounded-xl royal-grad flex items-center justify-center pulse-royal-anim">
-                <i class="fas fa-user-doctor text-white text-xs md:text-sm" aria-hidden="true"></i>
-              </div>
-              <div>
-                <div class="text-charcoal font-extrabold text-sm md:text-base leading-none">전문의 <span class="counter royal-grad-text text-base md:text-lg" data-target="2">0</span>인</div>
-                <div class="text-gray-400 text-[9px] md:text-[10px] mt-0.5 tracking-wide">구강악안면외과</div>
-              </div>
-            </div>
-            <div class="flex items-center gap-2 md:gap-3 px-3 md:px-5 py-2 md:py-3 rounded-2xl border border-royal/10 bg-white/80 shadow-sm">
-              <div class="w-8 md:w-10 h-8 md:h-10 rounded-lg md:rounded-xl royal-grad flex items-center justify-center pulse-royal-d1">
-                <i class="fas fa-bolt text-white text-xs md:text-sm" aria-hidden="true"></i>
-              </div>
-              <div>
-                <div class="text-charcoal font-extrabold text-sm md:text-base leading-none">당일 완성</div>
-                <div class="text-gray-400 text-[9px] md:text-[10px] mt-0.5 tracking-wide">CEREC SYSTEM</div>
-              </div>
-            </div>
-            <div class="hidden md:flex items-center gap-3 px-5 py-3 rounded-2xl border border-royal/10 bg-white/80 shadow-sm">
-              <div class="w-10 h-10 rounded-xl royal-grad flex items-center justify-center pulse-royal-d2">
-                <i class="fas fa-microchip text-white text-sm" aria-hidden="true"></i>
-              </div>
-              <div>
-                <div class="text-charcoal font-extrabold text-base leading-none">디지털 <span class="counter royal-grad-text text-lg" data-target="5" data-suffix="+">0</span></div>
-                <div class="text-gray-400 text-[10px] mt-0.5 tracking-wide">CT · CEREC · 구강스캐너</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Right: 3D Implant Model (Desktop) / Mobile Visual -->
-        <!-- Mobile: 3D 임플란트 모델 (Sketchfab) -->
-        <div class="lg:hidden mt-6 mb-4" id="heroVisualMobile">
-          <div class="relative rounded-3xl overflow-hidden bg-gradient-to-br from-lavender via-white to-royal/[0.04] border border-royal/10">
-            <div class="absolute -top-10 -right-10 w-40 h-40 bg-royal/[0.06] rounded-full blur-[60px]"></div>
-            <!-- 3D Implant Viewer -->
-            <div class="relative w-full" style="aspect-ratio: 4/3.5;">
-              <iframe 
-                title="3D Dental Implant Mobile" 
-                frameborder="0" 
-                allowfullscreen 
-                mozallowfullscreen="true" 
-                webkitallowfullscreen="true" 
-                allow="autoplay; fullscreen; xr-spatial-tracking" 
-                src="https://sketchfab.com/models/dcfc91171cd34b6780a23a42effd29fc/embed?autospin=0.3&autostart=1&transparent=1&ui_animations=0&ui_infos=0&ui_stop=0&ui_inspector=0&ui_watermark_link=0&ui_watermark=0&ui_ar=0&ui_help=0&ui_settings=0&ui_vr=0&ui_fullscreen=0&ui_annotations=0&camera=0&preload=1&ui_hint=0&ui_controls=0"
-                style="width:100%; height:100%; border:none;"
-                loading="lazy"
-              ></iframe>
-              <!-- Overlay to hide Sketchfab branding -->
-              <div class="absolute top-0 left-0 right-0 h-14 pointer-events-none z-[5] sf-overlay-top" aria-hidden="true"></div>
-              <div class="absolute top-0 left-0 w-32 h-14 pointer-events-none z-[6] sf-overlay-corner" aria-hidden="true"></div>
-              <div class="absolute bottom-0 left-0 right-0 h-10 pointer-events-none z-[5] sf-overlay-bottom" aria-hidden="true"></div>
-            </div>
-            <!-- Info bar below 3D model -->
-            <div class="relative z-10 p-4 bg-white/80 backdrop-blur-md border-t border-royal/[0.06]">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 rounded-xl royal-grad flex items-center justify-center royal-glow">
-                    <i class="fas fa-tooth text-white text-lg"></i>
-                  </div>
-                  <div>
-                    <div class="text-charcoal font-extrabold text-sm leading-tight">3D 정밀 임플란트</div>
-                    <div class="text-gray-400 text-[11px]">360° 회전하여 구조를 살펴보세요</div>
-                  </div>
-                </div>
-                <div class="flex gap-1.5">
-                  <span class="px-2.5 py-1 rounded-full bg-royal/[0.06] border border-royal/10 text-royal text-[9px] font-bold">티타늄</span>
-                  <span class="px-2.5 py-1 rounded-full bg-royal/[0.06] border border-royal/10 text-royal text-[9px] font-bold">세라믹</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Desktop: 3D Implant Model (Sketchfab) + 실사 사진 배경 -->
-        <div class="lg:col-span-5 hidden lg:flex items-center justify-center" id="heroVisual">
-          <div class="relative">
-            <!-- 실사 사진 배경 (진료실) -->
-            <div class="absolute -inset-8 rounded-[40px] overflow-hidden opacity-15 blur-[2px]">
-              <img src="/static/photos/Wpp3wlfj.webp" srcset="/static/photos/Wpp3wlfj-480.webp 480w, /static/photos/Wpp3wlfj.webp 1024w" sizes="(max-width: 768px) 100vw, 600px" alt="자연광이 드는 진료실 내부" class="w-full h-full object-cover">
-            </div>
-            <!-- Sketchfab 3D Implant Viewer (bigger size) -->
-            <div class="relative w-[540px] h-[640px]">
-              <iframe 
-                id="iframeImplant"
-                title="3D Dental Implant" 
-                frameborder="0" 
-                allowfullscreen 
-                mozallowfullscreen="true" 
-                webkitallowfullscreen="true" 
-                allow="autoplay; fullscreen; xr-spatial-tracking" 
-                src="https://sketchfab.com/models/dcfc91171cd34b6780a23a42effd29fc/embed?autospin=0.3&autostart=1&transparent=1&ui_animations=0&ui_infos=0&ui_stop=0&ui_inspector=0&ui_watermark_link=0&ui_watermark=0&ui_ar=0&ui_help=0&ui_settings=0&ui_vr=0&ui_fullscreen=0&ui_annotations=0&camera=0&preload=1&ui_hint=0&ui_controls=0"
-                style="width:100%; height:100%; border:none; border-radius:24px;"
-                loading="lazy"
-              ></iframe>
-              <!-- Overlay to hide Sketchfab branding — top/bottom/corners -->
-              <div class="absolute top-0 left-0 right-0 h-24 rounded-t-3xl pointer-events-none z-overlay-5 sf-overlay-top" aria-hidden="true"></div>
-              <div class="absolute top-0 left-0 w-48 h-20 rounded-tl-3xl pointer-events-none z-overlay-6 sf-overlay-corner" aria-hidden="true"></div>
-              <div class="absolute bottom-0 left-0 right-0 h-16 rounded-b-3xl pointer-events-none z-overlay-5 sf-overlay-bottom" aria-hidden="true"></div>
-            </div>
-            
-            <!-- Glow behind -->
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[440px] h-[440px] rounded-full pointer-events-none implant-glow z-behind" aria-hidden="true"></div>
-
-            <!-- Floating labels - Implant -->
-            <div class="float-label top-[5%] -left-8">
-              <div class="flex items-center gap-2.5">
-                <div class="w-9 h-9 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center"><i class="fas fa-shield-halved text-blue-500 text-xs"></i></div>
-                <div><div class="text-charcoal text-[12px] font-bold">티타늄 픽스쳐</div><div class="text-gray-400 text-[10px]">생체적합성 99.9%</div></div>
-              </div>
-            </div>
-
-            <div class="float-label float-label-d1 top-[38%] -right-12">
-              <div class="flex items-center gap-2.5">
-                <div class="w-9 h-9 rounded-xl royal-grad flex items-center justify-center"><i class="fas fa-user-doctor text-white text-xs"></i></div>
-                <div><div class="text-charcoal text-[12px] font-bold">전문의 직접 수술</div><div class="text-gray-400 text-[10px]">구강악안면외과 전문의</div></div>
-              </div>
-            </div>
-
-            <div class="float-label float-label-d2 bottom-[12%] -left-6">
-              <div class="flex items-center gap-2.5">
-                <div class="w-9 h-9 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center"><i class="fas fa-bolt text-amber-500 text-xs"></i></div>
-                <div><div class="text-charcoal text-[12px] font-bold">3D 정밀식립</div><div class="text-gray-400 text-[10px]">디지털 가이드 수술</div></div>
-              </div>
-            </div>
-
-            <!-- Drag hint -->
-            <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-2 text-gray-300 text-[10px] tracking-wider font-medium pointer-events-none z-overlay-20" style="animation: fadeInOut 3s ease-in-out infinite;" aria-hidden="true">
-              <i class="fas fa-hand-pointer text-royal/40"></i>
-              <span>드래그하여 360° 회전</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 md:gap-3 z-overlay-10" aria-hidden="true">
-      <span class="text-[9px] tracking-[0.3em] text-gray-300 uppercase font-semibold hidden md:block">Scroll Down</span>
-      <div class="w-[22px] h-[36px] rounded-full border border-gray-300 flex items-start justify-center p-1.5">
-        <div class="w-[3px] h-[8px] rounded-full bg-royal animate-bounce"></div>
-      </div>
-    </div>
-
-    <style>
-      /* === HERO entrance — CSS 기반 (no-js 폴백: 클래스 미부여 시 기본 opacity:1로 항상 보임) === */
-      #hero.hero-anim #heroTag { opacity: 0; transform: translateY(24px) scale(0.95); }
-      #hero.hero-anim #heroLine1, #hero.hero-anim #heroLine2 { transform: translateY(110%); }
-      #hero.hero-anim #heroSub { opacity: 0; transform: translateY(20px); }
-      #hero.hero-anim #heroCTA { opacity: 0; transform: translateY(16px); }
-      #hero.hero-anim #heroStats > * { opacity: 0; transform: translateY(14px) scale(0.97); }
-      #hero.hero-anim #heroVisualMobile { opacity: 0; transform: translateY(24px); }
-      #hero.hero-anim #heroVisual { opacity: 0; transform: translateX(40px) scale(0.96); }
-      #hero.hero-anim.hero-in #heroTag,
-      #hero.hero-anim.hero-in #heroLine1, #hero.hero-anim.hero-in #heroLine2,
-      #hero.hero-anim.hero-in #heroSub, #hero.hero-anim.hero-in #heroCTA,
-      #hero.hero-anim.hero-in #heroStats > *,
-      #hero.hero-anim.hero-in #heroVisualMobile, #hero.hero-anim.hero-in #heroVisual {
-        opacity: 1; transform: none;
-        transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1);
-      }
-      #hero.hero-anim.hero-in #heroLine1 { transition-delay: 0.05s; }
-      #hero.hero-anim.hero-in #heroLine2 { transition-delay: 0.15s; }
-      #hero.hero-anim.hero-in #heroSub { transition-delay: 0.25s; }
-      #hero.hero-anim.hero-in #heroCTA { transition-delay: 0.35s; }
-      #hero.hero-anim.hero-in #heroStats > *:nth-child(1) { transition-delay: 0.45s; }
-      #hero.hero-anim.hero-in #heroStats > *:nth-child(2) { transition-delay: 0.53s; }
-      #hero.hero-anim.hero-in #heroStats > *:nth-child(3) { transition-delay: 0.61s; }
-      #hero.hero-anim.hero-in #heroVisualMobile { transition-delay: 0.3s; }
-      #hero.hero-anim.hero-in #heroVisual { transition-delay: 0.2s; }
-      @media (prefers-reduced-motion: reduce) {
-        #hero.hero-anim #heroTag, #hero.hero-anim #heroLine1, #hero.hero-anim #heroLine2,
-        #hero.hero-anim #heroSub, #hero.hero-anim #heroCTA, #hero.hero-anim #heroStats > *,
-        #hero.hero-anim #heroVisualMobile, #hero.hero-anim #heroVisual {
-          opacity: 1 !important; transform: none !important; transition: none !important;
-        }
-      }
-    </style>
-    <script>
-      // === HERO: 즉시 페이드인 엔트런스 (CSS 기반, GSAP 비의존) ===
-      // JS 실패/미실행 시 기본 상태가 opacity:1이므로 항상 보임.
-      // CSS transition은 메인 스레드가 막혀도 컴포지터에서 진행되어 초기 빈 화면이 없음.
-      (function(){
-        var hero = document.getElementById('hero');
-        if (!hero) return;
-        hero.classList.add('hero-anim');
-        var go = function(){ hero.classList.add('hero-in'); };
-        if (window.requestAnimationFrame) {
-          requestAnimationFrame(function(){ requestAnimationFrame(go); });
-        }
-        setTimeout(go, 300); // 어떤 경우에도 0.3초 내 페이드인 시작 보장
-        // 엔트런스 종료 후 transition 제거 (스크롤 패럴랙스와의 간섭 방지)
-        setTimeout(function(){ hero.classList.remove('hero-anim', 'hero-in'); }, 1800);
-      })();
-
-      // === HERO: Parallax on scroll ===
-      if (window.gsap && window.ScrollTrigger && window.innerWidth > 768) {
-        gsap.to('#heroTitle', { yPercent: -20, ease: 'none', scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1.5 } });
-        gsap.to('#heroVisual', { yPercent: 15, ease: 'none', scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1 } });
-        gsap.to('#heroTag', { yPercent: -40, opacity: 0, ease: 'none', scrollTrigger: { trigger: '#hero', start: '20% top', end: '60% top', scrub: 1 } });
-      }
-
-      // === WHY section: Large text split reveal ===
-      if (window.gsap && window.ScrollTrigger) {
-      gsap.utils.toArray('[data-speakable="true"]').forEach(el => {
-        if (el.closest('#hero')) return; // skip hero (already animated)
-        gsap.from(el, {
-          opacity: 0, y: 40, duration: 1, ease: 'power3.out',
-          scrollTrigger: { trigger: el, start: 'top 85%', once: true }
-        });
-      });
-
-      // === Floating labels: enhanced parallax ===
-      gsap.utils.toArray('.float-label').forEach((el, i) => {
-        gsap.to(el, {
-          y: -30 - i*10, x: i%2 === 0 ? 10 : -10,
-          ease: 'none',
-          scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 2 }
-        });
-      });
-
-      // === Section backgrounds: subtle depth ===
-      document.querySelectorAll('.section-lavender, .section-snow').forEach(sec => {
-        const orb = sec.querySelector('.orb');
-        if (orb) {
-          gsap.to(orb, { xPercent: 15, yPercent: -10, ease: 'none', scrollTrigger: { trigger: sec, start: 'top bottom', end: 'bottom top', scrub: 2 } });
-        }
-      });
-      } // end gsap guard
-    </script>
+    <div class="hero-scroll" aria-hidden="true"><i></i>SCROLL</div>
   </section>
 
-  <!-- ========== TRANSITION MARQUEE ========== -->
-  <div class="relative bg-lavender py-6 overflow-hidden border-y border-royal/[0.06]">
-    <div class="flex whitespace-nowrap marquee-track">
-      ${marqueeHtml}
-    </div>
-  </div>
-
-  <!-- ========== WHY GANGNAM — 환자 관점 차별점 ========== -->
-  <section class="py-32 md:py-48 bg-white relative overflow-hidden" aria-label="강남치과 차별점">
-    <div class="absolute top-0 left-0 w-[600px] h-[600px] bg-royal/[0.02] rounded-full blur-[200px] -translate-x-1/2 -translate-y-1/2"></div>
-    <div class="max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12 relative">
-      <div class="text-center mb-24 reveal">
-        <div class="section-label section-label-royal mx-auto mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>WHY GANGNAM DENTAL</div>
-        <h2 class="display-xl text-charcoal mb-6" data-speakable="true">왜 <span class="royal-grad-text">강남치과</span>일까요?</h2>
-        <p class="text-gray-400 text-lg max-w-2xl mx-auto leading-relaxed" data-speakable="true">일상으로의 빠른 복귀, 강남치과의 기쁨입니다.<br class="hidden md:block">정확한 진단, 빠른 치료, 오래가는 결과.</p>
+  <!-- ========== SHEET 02 · 외과 전문의 2인 ========== -->
+  <section class="sec" aria-labelledby="surg-h">
+    <div class="wrap">
+      <div class="sheet-row">
+        <div class="sheet-head" data-rv>
+          <p class="sheet"><b>SHEET 02</b>Surgeons</p>
+          <h2 id="surg-h" class="display" data-speakable="true">임플란트는 뼈에 심는 수술입니다. 수술 전문 외과 전문의가 직접 합니다.</h2>
+          <p class="lead">구강악안면외과 전문의는 대학병원에서 4년간 수술 수련을 마친 전문의입니다. 전문의 2인이 상주하며, 뼈이식, 상악동 수술 등 고난이도 수술을 일상적으로 시행합니다.</p>
+        </div>
+        <a href="/doctors" class="arrow-link" data-rv>내 수술, 누가 집도하나요?${icon('arrow')}</a>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-5 stagger-children">
-        <div class="lg:col-span-7 card-premium p-10 md:p-14 flex flex-col justify-between min-h-[480px] stagger-item relative group">
-          <div class="absolute top-0 right-0 w-64 h-64 bg-royal/[0.03] rounded-full blur-[100px] group-hover:bg-royal/[0.06] transition-all duration-1000"></div>
-          <div class="relative z-10">
-            <div class="flex items-center gap-4 mb-8">
-              <div class="w-16 h-16 rounded-2xl royal-grad flex items-center justify-center royal-glow"><i class="fas fa-user-doctor text-white text-2xl"></i></div>
-              <div><div class="text-[11px] tracking-[0.15em] text-gray-300 font-bold uppercase">Specialist Surgeons</div><div class="mt-1 px-3 py-1 rounded-full royal-accent-bg text-royal text-[10px] font-bold inline-block">전문의 인증</div></div>
-            </div>
-            <p class="text-royal text-lg italic font-medium mb-4">"임플란트 수술 안전하게 해주는 거지?"</p>
-            <h3 class="text-3xl md:text-4xl font-extrabold text-charcoal mb-4 leading-tight">임플란트는 뼈에 심는 수술입니다.<br><span class="royal-grad-text">수술 전문 외과 전문의가 직접 합니다.</span></h3>
-            <p class="text-gray-400 text-base leading-relaxed max-w-lg">구강악안면외과 전문의는 대학병원에서 4년간 수술 수련을 마친 전문의입니다.<br>전문의 2인이 상주하며,<br>뼈이식, 상악동 수술 등 <strong class="text-charcoal">고난이도 수술</strong>을 일상적으로 시행합니다.</p>
+      <div class="surg-grid" data-rv-group>
+        ${doctors.map((doc, i) => `
+        <a href="/doctors/${doc.slug}" class="surg-card">
+          ${doc.photo
+            ? `<div class="surg-photo"><span class="fig"><b>FIG. 0${i + 1}</b>${doc.title}</span><img src="${doc.photo}" alt="${doc.name} ${doc.title} - ${doc.spec}" width="575" height="1024" loading="lazy" decoding="async"></div>`
+            : `<div class="surg-photo surg-mono"><span class="fig"><b>FIG. 0${i + 1}</b>${doc.title}</span><span class="glyph" aria-hidden="true">${doc.initial}</span></div>`}
+          <div class="surg-body">
+            <h3>${doc.name}<small>${doc.title}</small></h3>
+            <span class="sp">${doc.spec}</span>
+            <p class="q">${doc.quote}</p>
+            <p class="sum">${doc.summary}</p>
+            <div class="fields">${doc.fields.map(f => `<span class="chip chip-line">${f}</span>`).join('')}</div>
+            <span class="more arrow-link">프로필 보기${icon('arrow')}</span>
           </div>
-          <div class="relative z-10 mt-10 flex items-center gap-6 pt-8 border-t border-gray-100">
-            <div class="flex -space-x-3">
-              <div class="w-14 h-14 rounded-2xl overflow-hidden border-2 border-white shadow-lg">
-                <img src="/static/doctors/lee-taehyung.jpg" alt="이태형 대표원장 - 구강악안면외과 전문의" class="w-full h-full object-cover obj-top-20">
-              </div>
-              <div class="w-14 h-14 rounded-2xl bg-royal-100 flex items-center justify-center text-royal text-lg font-bold border-2 border-white shadow-lg">최</div>
-            </div>
-            <div><div class="text-charcoal font-bold">이태형 · 최민혜 원장</div><div class="text-gray-400 text-sm">구강악안면외과 전문의</div></div>
-            <a href="/doctors" class="ml-auto hidden md:inline-flex items-center gap-2 text-royal text-sm font-bold hover:gap-3 transition-all">의료진 보기 <i class="fas fa-arrow-right text-xs"></i></a>
-          </div>
-        </div>
-        <div class="lg:col-span-5 card-premium p-10 md:p-12 flex flex-col justify-between min-h-[480px] stagger-item group relative overflow-hidden">
-          <div class="absolute inset-0 opacity-[0.06]">
-            <img src="/static/photos/xfkmnFB6.webp" srcset="/static/photos/xfkmnFB6-480.webp 480w, /static/photos/xfkmnFB6.webp 1024w" sizes="(max-width: 768px) 100vw, 600px" alt="치과 유닛 체어와 진료 장비" class="w-full h-full object-cover">
-          </div>
-          <div class="relative z-10">
-            <div class="flex items-center justify-between mb-8">
-              <div class="w-16 h-16 rounded-2xl royal-grad flex items-center justify-center royal-glow"><i class="fas fa-bolt text-white text-2xl"></i></div>
-              <div class="px-4 py-2 rounded-full bg-emerald-50 text-emerald-600 text-[11px] font-bold tracking-wider uppercase border border-emerald-100">1 DAY</div>
-            </div>
-            <p class="text-royal text-base italic font-medium mb-4">"여러 번 안 가도 되는 거야?"</p>
-            <h3 class="text-2xl md:text-3xl font-extrabold text-charcoal mb-3 leading-tight">오늘 깎고, 오늘 씌우고,<br><span class="royal-grad-text">오늘 끝납니다.</span></h3>
-            <p class="text-gray-400 leading-relaxed">치과 안에서 보철을 직접 만들기 때문에,<br>기공소에 보내고 기다리는 시간이 없습니다.<br><strong class="text-charcoal">한 번 방문으로 끝.</strong></p>
-          </div>
-          <div class="mt-8">
-            <div class="flex items-center gap-6 py-5 border-t border-gray-100">
-              <div class="text-center"><div class="text-3xl font-black text-charcoal">1<span class="text-royal text-lg">회</span></div><div class="text-gray-400 text-xs mt-0.5">내원 횟수</div></div>
-              <div class="w-px h-10 bg-gray-100"></div>
-              <div class="text-center"><div class="text-3xl font-black text-charcoal">2<span class="text-royal text-lg">시간</span></div><div class="text-gray-400 text-xs mt-0.5">평균 치료</div></div>
-              <div class="w-px h-10 bg-gray-100"></div>
-              <div class="text-center"><div class="text-3xl font-black text-charcoal">10<span class="text-royal text-lg">년+</span></div><div class="text-gray-400 text-xs mt-0.5">보철 수명</div></div>
-            </div>
-          </div>
-        </div>
-        <div class="lg:col-span-4 card-premium p-8 md:p-10 stagger-item bg-gradient-to-br from-white to-royal/[0.02]">
-          <div class="w-14 h-14 rounded-2xl royal-grad flex items-center justify-center mb-6 royal-glow"><i class="fas fa-clock text-white text-xl"></i></div>
-          <p class="text-royal text-sm italic font-medium mb-3">"시간 없는데, 빨리 끝나나?"</p>
-          <h3 class="text-xl font-extrabold text-charcoal mb-3">크라운 치료,<br>보통 2번 오실 걸 1번으로 끝냅니다</h3>
-          <p class="text-gray-400 text-sm leading-relaxed mb-6">본뜨기 없이 구강스캐너로 촬영하고,<br>CEREC이 원내에서 바로 깎아냅니다.</p>
-          <div class="relative py-6">
-            <div class="absolute left-5 top-0 bottom-0 w-[2px] bg-gradient-to-b from-royal via-royal/50 to-royal/10"></div>
-            <div class="space-y-6 pl-12 relative">
-              <div><div class="absolute left-3.5 w-3 h-3 rounded-full bg-royal shadow-lg shadow-royal/30"></div><div class="text-charcoal font-bold text-sm">정밀 진단</div><div class="text-gray-400 text-xs">CT + 디지털 스캔</div></div>
-              <div><div class="absolute left-3.5 w-3 h-3 rounded-full bg-royal/60"></div><div class="text-charcoal font-bold text-sm">맞춤 치료 계획</div><div class="text-gray-400 text-xs">전문의 상담</div></div>
-              <div><div class="absolute left-3.5 w-3 h-3 rounded-full bg-royal/30"></div><div class="text-charcoal font-bold text-sm">당일 완성</div><div class="text-gray-400 text-xs">최소 내원 · 하루 완료</div></div>
-            </div>
-          </div>
-        </div>
-        <div class="lg:col-span-4 card-premium p-8 md:p-10 stagger-item group">
-          <div class="w-14 h-14 rounded-2xl royal-grad flex items-center justify-center mb-6 royal-glow"><i class="fas fa-microchip text-white text-xl"></i></div>
-          <p class="text-royal text-sm italic font-medium mb-3">"최신 장비가 뭐가 좋은 건데?"</p>
-          <h3 class="text-xl font-extrabold text-charcoal mb-3">디지털 스캔으로<br>본을 뜨지 않습니다</h3>
-          <p class="text-gray-400 text-sm leading-relaxed mb-6">불편한 인상재 대신 구강스캐너로 정밀하게.<br>CT로 수술 전 시뮬레이션까지.</p>
-          <div class="space-y-2.5">
-            ${equipListHtml}
-          </div>
-        </div>
-        <div class="lg:col-span-4 card-premium p-8 md:p-10 stagger-item relative overflow-hidden">
-          <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-royal/[0.03] rounded-full blur-[60px]"></div>
-          <div class="relative z-10">
-            <div class="w-14 h-14 rounded-2xl royal-grad flex items-center justify-center mb-6 royal-glow"><i class="fas fa-bone text-white text-xl"></i></div>
-            <p class="text-royal text-sm italic font-medium mb-3">"뼈가 부족해도 할 수 있어?"</p>
-            <h3 class="text-xl font-extrabold text-charcoal mb-3">뼈가 부족하다고<br>포기하지 마세요</h3>
-            <p class="text-gray-400 text-sm leading-relaxed mb-6">뼈이식, 상악동(위턱 공간) 거상술은<br>구강외과 전문의의 전문 영역입니다.</p>
-            <div class="flex flex-wrap gap-2">
-              ${boneTagsHtml}
-            </div>
-          </div>
+        </a>`).join('')}
+        <div class="surg-side">
+          <span class="fig"><b>NOTE</b>Why surgeons</span>
+          <h3>전문의 2인이 상주합니다</h3>
+          <div class="check"><i>${icon('check')}</i><span><b>전문의 직접 수술</b>모든 임플란트 수술을 구강외과 전문의가 직접 집도합니다.</span></div>
+          <div class="check"><i>${icon('check')}</i><span><b>뼈가 부족하다고 포기하지 마세요</b>뼈이식, 상악동(위턱 공간) 거상술은 구강외과 전문의의 전문 영역입니다.</span></div>
+          <div class="check"><i>${icon('check')}</i><span><b>3D CT 정밀진단</b>0.1mm 정밀도로 뼈 두께, 신경 위치, 염증 범위를 확인한 뒤 수술 계획을 세웁니다.</span></div>
+          <a href="/treatments/implant" class="btn btn-ghost btn-sm more">임플란트 안내${icon('arrow')}</a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ========== 기존 보철 vs 디지털(CEREC) 보철 과정 비교 ========== -->
-  <section class="py-32 md:py-48 section-lavender relative overflow-hidden" aria-label="기존 아날로그 보철 과정과 디지털 CEREC 보철 과정 비교">
-    <div class="orb orb-royal w-[600px] h-[600px] -top-48 -left-48 opacity-15"></div>
-    <div class="absolute inset-0 grid-pattern opacity-30"></div>
-    <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
-      <div class="text-center mb-20 reveal">
-        <div class="section-label section-label-royal mx-auto mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>PROCESS COMPARISON</div>
-        <h2 class="display-xl text-charcoal mb-6" data-speakable="true">보철 제작 방식이<br><span class="royal-grad-text">이렇게 달라집니다</span></h2>
-        <p class="text-gray-400 text-lg" data-speakable="true">같은 보철이라도 제작 방식에 따라 내원 횟수와 기간이 달라집니다.<br>CEREC 디지털 시스템은 기공소 외주 없이 원내에서 크라운을 제작합니다.</p>
-      </div>
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-5xl mx-auto stagger-children">
-        <!-- 기존 아날로그 보철 과정 -->
-        <div class="card-premium p-8 md:p-10 stagger-item border-gray-200 relative">
-          <div class="absolute top-6 right-6 px-4 py-1.5 rounded-full bg-gray-100 text-gray-400 text-[10px] font-bold">기존 아날로그 방식</div>
-          <div class="w-14 h-14 rounded-2xl bg-gray-100 flex items-center justify-center mb-6"><i class="fas fa-hand text-gray-400 text-xl"></i></div>
-          <h3 class="text-xl font-extrabold text-charcoal mb-6">기존 아날로그 보철 과정</h3>
-          <div class="space-y-5">
-            ${generalStepsHtml}
-          </div>
-          <div class="mt-8 p-5 rounded-2xl bg-gray-50 border border-gray-200">
-            <div class="flex items-center gap-3"><i class="fas fa-calendar text-gray-400"></i><div><div class="text-charcoal font-bold">총 6회 내원</div><div class="text-gray-400 text-xs">약 2~3개월 소요</div></div></div>
-          </div>
+  <!-- ========== SHEET 03 · 하루의 공정 (CEREC) ========== -->
+  <section class="sec day" aria-labelledby="day-h">
+    <div class="wrap">
+      <div class="sheet-row">
+        <div class="sheet-head" data-rv>
+          <p class="sheet"><b>SHEET 03</b>One day</p>
+          <h2 id="day-h" class="display" data-speakable="true">오늘 깎고, 오늘 씌우고, 오늘 끝납니다.</h2>
+          <p class="lead">치과 안에서 보철을 직접 만들기 때문에, 기공소에 보내고 기다리는 시간이 없습니다. 본 뜨지 않습니다. 디지털 크라운 제작 과정, CEREC 시스템은 이렇게 작동합니다.</p>
         </div>
-        <!-- 디지털 CEREC 보철 과정 -->
-        <div class="card-premium p-8 md:p-10 stagger-item relative overflow-hidden">
-          <div class="absolute top-0 left-0 right-0 h-1 royal-grad"></div>
-          <div class="absolute top-6 right-6 px-4 py-1.5 rounded-full royal-grad text-white text-[10px] font-bold">디지털 CEREC 방식</div>
-          <div class="w-14 h-14 rounded-2xl royal-grad flex items-center justify-center mb-6 royal-glow"><i class="fas fa-microchip text-white text-xl"></i></div>
-          <h3 class="text-xl font-extrabold text-charcoal mb-6">CEREC <span class="royal-grad-text">디지털</span> 보철 과정</h3>
-          <div class="space-y-5">
-            ${gangnamStepsHtml}
-          </div>
-          <div class="mt-8 p-5 rounded-2xl bg-royal/[0.04] border border-royal/[0.1]">
-            <div class="flex items-center gap-3"><i class="fas fa-check-circle text-royal text-lg"></i><div><div class="text-charcoal font-bold">총 3~4회 내원 <span class="royal-grad-text">(내원 횟수 최대 50% 단축)</span></div><div class="text-gray-400 text-xs">CEREC 디지털 보철로 기공소 대기 시간 제로</div></div></div>
-          </div>
+        <a href="/treatments/digital-prosthesis" class="arrow-link" data-rv>디지털 보철 자세히${icon('arrow')}</a>
+      </div>
+
+      <div class="board" data-board data-rv="fade">
+        <div class="board-top">
+          <div class="board-clock"><span class="digits" data-board-digits aria-hidden="true">00:00</span><span class="unit">Elapsed · hh:mm</span></div>
+          <div class="board-sum"><b>총 소요시간: 약 1~2시간</b><span>하루 만에 보철 완성. 추가 내원 불필요.</span></div>
+        </div>
+        <div class="board-bar" aria-hidden="true"><i></i></div>
+        <ol class="figs" aria-label="CEREC 디지털 크라운 제작 4단계">
+          ${cerecSteps.map(s => `
+          <li class="figp">
+            <span class="fig"><b>FIG. ${s.step}</b>Step ${s.step}</span>
+            ${figSvg(s.icon)}
+            <h3>${s.title}</h3>
+            <p>${s.desc}</p>
+            <span class="time">${icon('clock')}약 ${s.time}</span>
+          </li>`).join('')}
+        </ol>
+        <div class="board-foot"><span class="ok">${icon('check')}</span><span><b>한 번 방문으로 끝.</b> 본뜨기 없이 구강스캐너로 촬영하고, CEREC이 원내에서 바로 깎아냅니다.</span></div>
+      </div>
+
+      <div class="sheet-head" style="margin:clamp(3rem,6vw,5rem) 0 1.4rem" data-rv>
+        <h3 class="display-2">보철 제작 방식이 이렇게 달라집니다</h3>
+        <p class="lead">같은 보철이라도 제작 방식에 따라 내원 횟수와 기간이 달라집니다. CEREC 디지털 시스템은 기공소 외주 없이 원내에서 크라운을 제작합니다.</p>
+      </div>
+      <div class="cmp" data-rv-group>
+        <div class="cmp-sheet">
+          <span class="fig"><b>A</b>기존 아날로그 방식</span>
+          <h3>기존 아날로그 보철 과정</h3>
+          <ol class="cmp-steps">
+            ${generalSteps.map((s, i) => `<li${s.wait ? ' class="wait"' : ''}><span class="n">${pad2(i + 1)}</span><span>${s.step}: ${s.desc}</span><span class="t">${s.time}</span></li>`).join('')}
+          </ol>
+          <div class="cmp-total">${icon('calendar')}<span><b>총 6회 내원</b><span>약 2~3개월 소요</span></span></div>
+        </div>
+        <div class="cmp-sheet is-on">
+          <span class="fig"><b>B</b>디지털 CEREC 방식</span>
+          <h3>CEREC 디지털 보철 과정</h3>
+          <ol class="cmp-steps">
+            ${gangnamSteps.map((s, i) => `<li${s.highlight ? ' class="hi"' : ''}><span class="n">${pad2(i + 1)}</span><span>${s.step}: ${s.desc}</span><span class="t">${s.time}</span></li>`).join('')}
+          </ol>
+          <div class="cmp-total">${icon('check')}<span><b>총 3~4회 내원 <em>(내원 횟수 최대 50% 단축)</em></b><span>CEREC 디지털 보철로 기공소 대기 시간 제로</span></span></div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ========== CEREC 프로세스 인포그래픽 ========== -->
-  <section class="py-32 md:py-48 bg-white relative overflow-hidden" aria-label="디지털 보철 프로세스">
-    <div class="absolute bottom-0 right-0 w-[500px] h-[500px] bg-royal/[0.02] rounded-full blur-[200px]"></div>
-    <div class="max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
-      <div class="text-center mb-20 reveal">
-        <div class="section-label section-label-royal mx-auto mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>CEREC PROCESS</div>
-        <h2 class="display-xl text-charcoal mb-6">본 뜨지 않습니다.<br><span class="royal-grad-text">디지털 크라운 제작 과정</span></h2>
-        <p class="text-gray-400 text-lg">CEREC 시스템은 이렇게 작동합니다</p>
-      </div>
-      <div class="relative max-w-5xl mx-auto">
-        <!-- Connection line (desktop) -->
-        <div class="hidden lg:block absolute top-24 left-[12.5%] right-[12.5%] h-[2px] bg-gradient-to-r from-royal/10 via-royal/30 to-royal/10"></div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 stagger-children">
-          ${cerecStepsHtml}
+  <!-- ========== SHEET 04 · 진료 스펙 시트 + 영주 진료 안내 카드 ========== -->
+  <section class="sec" id="treatments" aria-labelledby="tx-h">
+    <div class="wrap">
+      <div class="sheet-row">
+        <div class="sheet-head" data-rv>
+          <p class="sheet"><b>SHEET 04</b>Treatments</p>
+          <h2 id="tx-h" class="display">어떤 치료가 필요하신가요?</h2>
+          <p class="lead">각 분야 전문의가 직접 진료합니다</p>
         </div>
-        <div class="text-center mt-14 reveal">
-          <div class="inline-flex items-center gap-4 px-8 py-5 rounded-2xl bg-royal/[0.04] border border-royal/[0.08]">
-            <div class="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center"><i class="fas fa-check text-emerald-500 text-lg"></i></div>
-            <div class="text-left"><div class="text-charcoal font-extrabold">총 소요시간: 약 1~2시간</div><div class="text-gray-400 text-sm">하루 만에 보철 완성. 추가 내원 불필요.</div></div>
-          </div>
-        </div>
+        <a href="/treatments" class="arrow-link" data-rv>전체 진료 보기${icon('arrow')}</a>
       </div>
-    </div>
-  </section>
+      <ol class="tx-list" data-rv-group>
+        ${treatments.map((t, i) => `
+        <li><a href="/treatments/${t.slug}" class="tx-row">
+          <span class="n"><b>${pad2(i + 1)}</b><span class="lab">${t.label}</span></span>
+          <div><h3>${t.title}</h3><p class="sub">${t.sub}</p></div>
+          <div class="qa"><p class="q">${t.worry}</p><p class="a">${t.answer}</p><div class="tags">${t.tags.map(x => `<span>${x}</span>`).join('')}</div></div>
+          <span class="go">${icon('arrow')}</span>
+        </a></li>`).join('')}
+      </ol>
 
-  <!-- ========== TREATMENTS — 환자 공감 카피 ========== -->
-  <section class="py-32 md:py-48 section-lavender relative overflow-hidden" id="treatments" aria-label="주력 진료 안내">
-    <div class="orb orb-royal w-[700px] h-[700px] -top-96 right-0 opacity-20"></div>
-    <div class="absolute inset-0 grid-pattern opacity-40"></div>
-    <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
-      <div class="text-center mb-24 reveal">
-        <div class="section-label section-label-royal mx-auto mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>TREATMENTS</div>
-        <h2 class="display-xl text-charcoal mb-6">어떤 치료가<br><span class="royal-grad-text">필요하신가요?</span></h2>
-        <p class="text-gray-400 text-lg max-w-xl mx-auto">각 분야 전문의가 직접 진료합니다</p>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 stagger-children">
-        ${treatmentsHtml}
-      </div>
-      <div class="mt-6 reveal">
-        <a href="/treatments/wisdom-tooth" class="card-white p-8 md:p-10 group block">
-          <div class="flex flex-col md:flex-row md:items-center gap-6">
-            <div class="w-16 h-16 rounded-2xl royal-grad flex items-center justify-center flex-shrink-0 royal-glow group-hover:scale-110 transition-transform duration-500"><i class="fas fa-hand-holding-medical text-white text-2xl"></i></div>
-            <div class="flex-1"><h3 class="text-xl md:text-2xl font-extrabold text-charcoal group-hover:text-royal transition-colors duration-500">사랑니 발치 — 구강외과 전문의가 직접 발치합니다</h3><p class="text-gray-400 text-sm mt-2">매복 사랑니도 안전하게. CT 정밀 진단 · 최소 절개 · 빠른 회복</p></div>
-            <div class="flex items-center gap-2 text-royal text-sm font-bold group-hover:gap-4 transition-all duration-500 flex-shrink-0">자세히 <i class="fas fa-arrow-right text-xs"></i></div>
-          </div>
-        </a>
-      </div>
-      <div class="text-center mt-16 reveal"><a href="/treatments" class="btn-outline !py-5 !px-12 !text-[14px]">전체 진료 보기 <i class="fas fa-arrow-right text-xs ml-1"></i></a></div>
-      <!-- 영주 진료 안내 사진 카드 6장 (/area/yeongju/* 핵심 6, ItemList 와 1:1 — 2026-10-14) -->
-      <section class="mt-20 md:mt-28" aria-labelledby="yj-cards-home-h">
-        <div class="text-center mb-10">
-          <h3 id="yj-cards-home-h" class="text-charcoal font-extrabold text-2xl md:text-3xl mb-3">영주 진료 안내</h3>
-          <p class="text-gray-400 text-sm md:text-base">영주에서 많이 찾으시는 진료 6가지를 사진과 함께 정리했습니다</p>
+      <!-- 영주 진료 안내 사진 카드 6장 (/area/yeongju/* 핵심 6, ItemList 와 1:1 — 2026-10-14, 마크업 불변) -->
+      <section class="tx-yj" aria-labelledby="yj-cards-home-h">
+        <div class="sheet-head center" data-rv style="margin-bottom:1.6rem">
+          <p class="sheet"><b>SHEET 04-A</b>Yeongju guide</p>
+          <h3 id="yj-cards-home-h" class="display-2">영주 진료 안내</h3>
+          <p class="lead">영주에서 많이 찾으시는 진료 6가지를 사진과 함께 정리했습니다</p>
         </div>
         ${yeongjuCardGrid('yj-home')}
       </section>
       <!-- SEO: 영주 핵심 진료 바로가기 (지역+진료 앵커 → 주 진료 페이지, 2026-09-29) -->
-      <nav class="mt-14 reveal" aria-label="영주 진료 바로가기">
-        <h3 class="text-center text-charcoal font-extrabold text-lg md:text-xl mb-5">영주에서 찾는 진료 바로가기</h3>
-        <ul class="flex flex-wrap justify-center gap-2 max-w-4xl mx-auto">
-          ${[
-            ['/treatments/implant', '영주 임플란트'],
-            ['/treatments/invisalign', '영주 인비절라인 교정'],
-            ['/treatments/wisdom-tooth', '영주 사랑니 발치'],
-            ['/treatments/digital-prosthesis', '영주 디지털 보철'],
-            ['/treatments/cosmetic', '영주 심미보철'],
-            ['/treatments/bone-graft', '영주 뼈이식 임플란트'],
-            ['/treatments/cavity', '영주 충치치료'],
-            ['/treatments/root-canal', '영주 신경치료'],
-            ['/treatments/gum', '영주 잇몸치료'],
-            ['/treatments/denture', '영주 틀니'],
-            [`/area/${encodeURIComponent('영주시')}`, '영주 치과 이용 안내'],
-            ['/pricing', '진료비용 안내'],
-            ['/directions', '오시는 길']
-          ].map(([href, label]) => `<li><a href="${href}" class="inline-block px-4 py-2 rounded-full bg-white border border-royal/[0.12] text-sm text-royal font-semibold hover:bg-royal/[0.08] hover:border-royal/[0.25] transition-all duration-300">${label}</a></li>`).join('')}
+      <nav class="tx-quick" aria-label="영주 진료 바로가기" data-rv>
+        <h3>영주에서 찾는 진료 바로가기</h3>
+        <ul>
+          ${quickLinks.map(([href, label]) => `<li><a href="${href}">${label}</a></li>`).join('')}
         </ul>
       </nav>
     </div>
   </section>
 
-  <!-- ========== 환자 페르소나 공감 섹션 ========== -->
-  <section class="py-32 md:py-48 bg-white relative overflow-hidden" aria-label="환자 유형별 솔루션">
-    <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-royal/[0.02] rounded-full blur-[200px]"></div>
-    <div class="max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
-      <div class="text-center mb-20 reveal">
-        <div class="section-label section-label-royal mx-auto mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>FOR YOU</div>
-        <h2 class="display-xl text-charcoal mb-6">이런 고민이시라면,<br><span class="royal-grad-text">딱 맞는 치과입니다</span></h2>
-        <p class="text-gray-400 text-lg">각 상황에 맞는 최적의 솔루션을 제안드립니다</p>
+  <!-- ========== SHEET 05 · 이런 고민이시라면 ========== -->
+  <section class="sec" style="background:var(--card)" aria-labelledby="fit-h">
+    <div class="wrap">
+      <div class="sheet-head center" data-rv>
+        <p class="sheet"><b>SHEET 05</b>For you</p>
+        <h2 id="fit-h" class="display">이런 고민이시라면, 딱 맞는 치과입니다</h2>
+        <p class="lead">각 상황에 맞는 최적의 솔루션을 제안드립니다</p>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 stagger-children">
-        ${personasHtml}
-      </div>
-    </div>
-  </section>
-
-  <!-- ========== 장비 갤러리 (가로 스크롤) ========== -->
-  <section class="py-32 md:py-48 section-lavender relative overflow-hidden" aria-label="대학병원급 디지털 장비">
-    <div class="absolute inset-0 grid-pattern opacity-20"></div>
-    <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
-      <div class="text-center mb-16 reveal">
-        <div class="section-label section-label-royal mx-auto mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>EQUIPMENT</div>
-        <h2 class="display-xl text-charcoal mb-6">내 진단, 어떤 장비로<br><span class="royal-grad-text">확인하나요?</span></h2>
-        <p class="text-gray-400 text-lg">3D CT로 신경 위치를 확인하고, CEREC 밀링머신으로 보철을 당일 제작합니다</p>
-      </div>
-      <div class="flex gap-5 overflow-x-auto snap-x pb-6 -mx-6 px-6 scrollbar-none stagger-children">
-        ${equipGalleryHtml}
-      </div>
-      <div class="text-center mt-4"><span class="text-gray-300 text-xs"><i class="fas fa-arrows-left-right mr-1"></i>좌우로 스크롤하세요</span></div>
-    </div>
-  </section>
-
-  <!-- ========== 시설 갤러리 (실사 사진) ========== -->
-  <section class="py-32 md:py-48 bg-white relative overflow-hidden" aria-label="강남치과의원 시설 안내">
-    <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-royal/[0.02] rounded-full blur-[200px]"></div>
-    <div class="max-w-[1440px] mx-auto px-6 md:px-8 lg:px-12">
-      <div class="text-center mb-16 reveal">
-        <div class="section-label section-label-royal mx-auto mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>FACILITIES</div>
-        <h2 class="display-xl text-charcoal mb-6">직접 보세요,<br><span class="royal-grad-text">이런 치과입니다</span></h2>
-        <p class="text-gray-400 text-lg">대학병원급 시설 · 호텔 라운지급 대기실 · 피아노가 있는 휴게실</p>
-      </div>
-      <div class="flex gap-5 overflow-x-auto snap-x pb-6 -mx-6 px-6 scrollbar-none" id="facilityGallery">
-        ${clinicPhotosHtml}
-      </div>
-      <div class="text-center mt-4"><span class="text-gray-300 text-xs"><i class="fas fa-arrows-left-right mr-1"></i>좌우로 스크롤하여 시설을 둘러보세요</span></div>
-    </div>
-
-    <!-- Photo Modal -->
-    <div id="photoModal" class="fixed inset-0 z-[9999] bg-charcoal/90 backdrop-blur-xl items-center justify-center" style="display:none;" onclick="closePhotoModal()">
-      <button class="absolute top-6 right-6 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-xl transition-colors" onclick="closePhotoModal()"><i class="fas fa-times"></i></button>
-      <img id="photoModalImg" src="" alt="" class="max-w-[90vw] max-h-[85vh] rounded-2xl object-contain shadow-2xl" onclick="event.stopPropagation()">
-    </div>
-    <script>
-      function openPhotoModal(url, alt) {
-        const m = document.getElementById('photoModal');
-        const img = document.getElementById('photoModalImg');
-        img.src = url; img.alt = alt;
-        m.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-      }
-      function closePhotoModal() {
-        document.getElementById('photoModal').style.display = 'none';
-        document.body.style.overflow = '';
-      }
-      document.addEventListener('keydown', e => { if (e.key === 'Escape') closePhotoModal(); });
-    </script>
-  </section>
-
-  <!-- ========== 첫 방문 가이드 (진료 흐름도) ========== -->
-  <section class="py-20 md:py-32 lg:py-48 bg-white relative overflow-hidden" aria-label="첫 방문 가이드">
-    <div class="absolute top-0 left-0 w-[600px] h-[600px] bg-royal/[0.02] rounded-full blur-[200px] -translate-x-1/2"></div>
-    <div class="max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
-        <div class="lg:col-span-4 lg:sticky lg:top-32 reveal">
-          <div class="section-label section-label-royal mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>FIRST VISIT</div>
-          <h2 class="display-lg text-charcoal mb-6">처음 오시나요?<br><span class="royal-grad-text">이렇게 진행됩니다</span></h2>
-          <p class="text-gray-400 leading-relaxed mb-8">첫 방문부터 치료 완료까지,<br>모든 과정을 미리 알려드립니다.<br>불안함 없이 편하게 오세요.</p>
-          <a href="/reservation" class="btn-primary !text-sm !py-4 !px-8"><i class="fas fa-calendar-check text-xs"></i>첫 방문 예약하기</a>
-          <div class="mt-8 rounded-2xl overflow-hidden hidden lg:block shadow-lg shadow-royal/5">
-            <img src="/static/photos/yzSmZXZD.webp" srcset="/static/photos/yzSmZXZD-480.webp 480w, /static/photos/yzSmZXZD.webp 1024w" sizes="(max-width: 1024px) 0px, 350px" alt="전문의와 1:1로 진행하는 상담 공간" class="w-full h-48 object-cover" loading="lazy">
+      <div class="fit-grid" data-rv-group>
+        ${personas.map((p, i) => `
+        <div class="fit-card">
+          <span class="fig"><b>CASE 0${i + 1}</b>${p.age}</span>
+          <h3>${p.persona}</h3>
+          <div class="ledger">
+            <div class="worry"><span class="k">고민</span><span>${p.worry}</span></div>
+            <div class="sol"><span class="k">해법</span><span>${p.solution}</span></div>
           </div>
-        </div>
-        <div class="lg:col-span-8">
-          <div class="relative">
-            <!-- Vertical line -->
-            <div class="absolute left-8 md:left-10 top-0 bottom-0 w-[2px] bg-gradient-to-b from-royal via-royal/40 to-royal/10"></div>
-            <div class="space-y-8 stagger-children">
-              ${visitStepsHtml}
-            </div>
-          </div>
-        </div>
+          <div class="tags">${p.tags.map(t => `<span class="chip chip-teal">${t}</span>`).join('')}</div>
+          <a href="${p.link}" class="arrow-link more">자세히 알아보기${icon('arrow')}</a>
+        </div>`).join('')}
       </div>
     </div>
   </section>
 
-  <!-- ========== DOCTORS — 스토리형 소개 요약 ========== -->
-  <section class="py-20 md:py-32 lg:py-48 section-lavender relative overflow-hidden" aria-label="의료진 소개">
-    <div class="absolute bottom-0 right-0 w-[600px] h-[600px] bg-royal/[0.02] rounded-full blur-[200px]"></div>
-    <div class="absolute inset-0 grid-pattern opacity-20"></div>
-    <div class="max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12 relative z-10">
-      <div class="text-center mb-14 md:mb-24 reveal">
-        <div class="section-label section-label-royal mx-auto mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>DOCTORS</div>
-        <h2 class="display-xl text-charcoal mb-6">내 수술,<br><span class="royal-grad-text">누가 집도하나요?</span></h2>
-        <p class="text-gray-400 text-lg">구강악안면외과 전문의가 직접 임플란트를 식립합니다</p>
+  <!-- ========== SHEET 06 · 장비 스펙 ========== -->
+  <section class="sec" aria-labelledby="eq-h">
+    <div class="wrap">
+      <div class="sheet-row">
+        <div class="sheet-head" data-rv>
+          <p class="sheet"><b>SHEET 06</b>Equipment</p>
+          <h2 id="eq-h" class="display">내 진단, 어떤 장비로 확인하나요?</h2>
+          <p class="lead">3D CT로 신경 위치를 확인하고, CEREC 밀링머신으로 보철을 당일 제작합니다</p>
+        </div>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto stagger-children">
-        ${doctorsHtml}
+      <div data-rv="fade">
+        <table class="eq-table">
+          <thead><tr><th scope="col">No.</th><th scope="col">장비</th><th scope="col">역할</th><th scope="col">사양</th></tr></thead>
+          <tbody>
+            ${equipGallery.map((e, i) => `<tr><td class="n">${pad2(i + 1)}</td><td class="name">${e.name}</td><td class="desc">${e.desc}</td><td class="spec">${e.spec}</td></tr>`).join('')}
+          </tbody>
+        </table>
       </div>
     </div>
   </section>
 
-  <!-- ========== NUMBERS ========== -->
-  <section class="py-16 md:py-28 lg:py-36 bg-white relative overflow-hidden" aria-label="강남치과 핵심 수치">
-    <div class="orb orb-royal w-[500px] h-[500px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-15"></div>
-    <div class="absolute inset-0 grid-pattern opacity-30"></div>
-    <div class="royal-line-h absolute top-0 left-0 right-0"></div>
-    <div class="relative z-10 max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12">
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 stagger-children">
-        ${numbersHtml}
+  <!-- ========== 시설 컨택트 시트 (깊은 바탕) ========== -->
+  <section class="fac is-deep" aria-labelledby="fac-h" data-fac>
+    <div class="rule deep" aria-hidden="true"></div>
+    <div class="wrap sheet-row" style="margin-top:clamp(2.4rem,5vw,4rem)">
+      <div class="sheet-head" data-rv>
+        <p class="sheet"><b>SHEET 06-A</b>Facility</p>
+        <h2 id="fac-h" class="display">직접 보세요, 이런 치과입니다</h2>
+        <p class="lead">대학병원급 시설 · 호텔 라운지급 대기실 · 피아노가 있는 휴게실</p>
+      </div>
+      <a href="/directions" class="arrow-link" data-rv>오시는 길·병원 둘러보기${icon('arrow')}</a>
+    </div>
+    <div class="fac-track" data-fac-track>
+      ${clinicPhotos.map((p, i) => `
+      <button type="button" class="fac-frame" data-photo="${p.url}" data-alt="${p.alt}" data-cap="${pad2(i + 1)} / ${pad2(clinicPhotos.length)} · ${p.label}" aria-label="${p.label} 사진 크게 보기">
+        <span class="fac-ph"><img src="${p.url}" srcset="${p.url.replace('.webp', '-480.webp')} 480w, ${p.url} 1024w" sizes="(max-width: 768px) 74vw, 360px" width="1024" height="683" alt="${p.alt}" loading="lazy" decoding="async"><span class="no">${pad2(i + 1)} / ${pad2(clinicPhotos.length)}</span></span>
+        <span class="fac-meta"><b>${p.label}</b><span>${p.desc}</span></span>
+      </button>`).join('')}
+    </div>
+    <p class="fac-hint">Drag · Scroll — 사진을 누르면 크게 볼 수 있습니다</p>
+  </section>
+  <div id="photoModal" class="lightbox" role="dialog" aria-modal="true" aria-label="시설 사진 크게 보기">
+    <button type="button" aria-label="닫기">${icon('close')}</button>
+    <img src="" alt="">
+    <figcaption></figcaption>
+  </div>
+
+  <!-- ========== SHEET 07 · 첫 방문 ========== -->
+  <section class="sec" aria-labelledby="visit-h">
+    <div class="wrap visit-grid">
+      <div class="visit-sticky">
+        <div class="sheet-head" data-rv>
+          <p class="sheet"><b>SHEET 07</b>First visit</p>
+          <h2 id="visit-h" class="display">처음 오시나요? 이렇게 진행됩니다</h2>
+          <p class="lead">첫 방문부터 치료 완료까지, 모든 과정을 미리 알려드립니다. 불안함 없이 편하게 오세요.</p>
+        </div>
+        <a href="/reservation" class="btn btn-primary" data-rv>${icon('calendar')}첫 방문 예약하기</a>
+        <div class="visit-photo" data-rv="fade"><img src="/static/photos/yzSmZXZD.webp" srcset="/static/photos/yzSmZXZD-480.webp 480w, /static/photos/yzSmZXZD.webp 1024w" sizes="(max-width: 1024px) 0px, 480px" width="1024" height="683" alt="전문의와 1:1로 진행하는 상담 공간" loading="lazy" decoding="async"></div>
+      </div>
+      <ol class="steps" data-rv-group>
+        ${visitSteps.map((s, i) => `
+        <li class="step">
+          <span class="no">${pad2(i + 1)}</span>
+          <div><h3>${s.title}<small>${s.step} · ${s.time}</small></h3><p>${s.desc}</p></div>
+        </li>`).join('')}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ========== 핵심 수치 ========== -->
+  <section class="sec-tight" aria-label="강남치과 핵심 수치">
+    <div class="wrap">
+      <div class="rule" aria-hidden="true" data-rv="rule"></div>
+      <div class="num-grid" data-rv-group>
+        ${numbers.map(n => `
+        <div class="num-cell">
+          <div class="num-val"><span data-count="${n.num}">${n.num}</span><small>${n.suffix}</small></div>
+          <p class="num-k">${n.label}</p>
+          <p class="num-d">${n.desc}</p>
+        </div>`).join('')}
       </div>
     </div>
   </section>
 
-  <!-- ========== 주변 지역 접근성 ========== -->
-  <section class="py-16 md:py-28 lg:py-36 section-lavender relative overflow-hidden" aria-label="주변 지역 접근성">
-    <div class="absolute inset-0 grid-pattern opacity-20"></div>
-    <div class="relative z-10 max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12">
-      <div class="text-center mb-10 md:mb-16 reveal">
-        <div class="section-label section-label-royal mx-auto mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>ACCESS</div>
-        <h2 class="display-lg text-charcoal mb-6">영주 근처라면<br><span class="royal-grad-text">가까운 전문의 치과입니다</span></h2>
-        <p class="text-gray-400 text-lg">주변 지역에서 편하게 방문하실 수 있습니다</p>
+  <!-- ========== SHEET 08 · 지역 ========== -->
+  <section class="sec" style="background:var(--paper-2)" aria-labelledby="area-h">
+    <div class="wrap">
+      <div class="sheet-head center" data-rv>
+        <p class="sheet"><b>SHEET 08</b>Access</p>
+        <h2 id="area-h" class="display">영주 근처라면 가까운 전문의 치과입니다</h2>
+        <p class="lead">주변 지역에서 편하게 방문하실 수 있습니다</p>
       </div>
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 stagger-children">
-        ${areasHtml}
+      <div class="area-grid" data-rv-group>
+        ${areas.map(a => `
+        <a href="${a.area === '영주시' ? '/directions' : `/area/${encodeURIComponent(a.area)}`}" class="area-card">
+          <b>${a.area}</b><span class="t">~${a.time}</span><span class="k">${a.km}</span>
+        </a>`).join('')}
       </div>
+      <!-- SEO: 지역×진료 조합 키워드 클러스터 (롱테일 검색어 1페이지 노출 목표) -->
+      <div class="area-cluster" data-rv>
+        <h3>지역별 진료 안내</h3>
+        <p>지역과 진료를 함께 검색하시는 분을 위한 맞춤 안내 페이지</p>
+        <div class="area-rows">
+          ${regions.map(r => `
+          <div class="area-row">
+            <h4>${icon('pin')}${r.name}에서 받는 진료</h4>
+            <div>${clusterTreatments.map(t => `<a href="/area/${r.slug}/${t.slug}">${r.name} ${t.name}</a>`).join('')}</div>
+          </div>`).join('')}
+        </div>
+      </div>
+      <p style="text-align:center;margin-top:2rem" data-rv><a href="/directions" class="btn btn-ghost">${icon('map')}오시는 길 자세히 보기</a></p>
+    </div>
+  </section>
 
-      <!-- 🔥 SEO: 지역×진료 조합 키워드 클러스터 (롱테일 검색어 1페이지 노출 목표) -->
-      <div class="mt-16 pt-12 border-t border-royal/[0.06] reveal">
-        <h3 class="text-center text-charcoal font-extrabold text-lg md:text-xl mb-2">지역별 진료 안내</h3>
-        <p class="text-center text-gray-400 text-sm mb-8">지역과 진료를 함께 검색하시는 분을 위한 맞춤 안내 페이지</p>
-        ${(() => {
-          const regions = [
-            { name: '영주', slug: 'yeongju' },
-            { name: '풍기', slug: 'punggi' },
-            { name: '봉화', slug: 'bonghwa' },
-            { name: '예천', slug: 'yecheon' },
-            { name: '안동', slug: 'andong' },
-            { name: '단양', slug: 'danyang' },
-            { name: '영주혁신도시', slug: 'yeongju-innovation' },
-            { name: '상주', slug: 'sangju' },
-            { name: '문경', slug: 'mungyeong' },
-          ];
-          const treatments = [
-            { name: '임플란트', slug: 'implant' },
-            { name: '사랑니', slug: 'wisdom-tooth' },
-            { name: '인비절라인', slug: 'invisalign' },
-            { name: '디지털보철', slug: 'digital-prosthesis' },
-            { name: '심미보철', slug: 'cosmetic' },
-            { name: '뼈이식', slug: 'bone-graft' },
-            { name: '충치치료', slug: 'cavity' },
-            { name: '치아미백', slug: 'whitening' },
-          ];
-          return `<div class="space-y-3">
-            ${regions.map(r => `
-              <div class="card-premium p-4 md:p-5">
-                <div class="flex items-center gap-3 mb-3">
-                  <div class="w-8 h-8 rounded-lg royal-grad flex items-center justify-center flex-shrink-0">
-                    <i class="fas fa-map-marker-alt text-white text-xs"></i>
-                  </div>
-                  <h4 class="font-extrabold text-charcoal text-sm md:text-base">${r.name}에서 받는 진료</h4>
-                </div>
-                <div class="flex flex-wrap gap-2 pl-11">
-                  ${treatments.map(t => `<a href="/area/${r.slug}/${t.slug}" class="px-3 py-1.5 rounded-full bg-royal/[0.05] border border-royal/[0.1] text-xs text-royal font-medium hover:bg-royal/[0.12] hover:border-royal/[0.2] transition-all duration-300">${r.name} ${t.name}</a>`).join('')}
-                </div>
-              </div>
-            `).join('')}
-          </div>`;
-        })()}
+  <!-- ========== FAQ — details(크롤러에 열림) ========== -->
+  <section class="sec" id="faq" aria-labelledby="faq-h">
+    <div class="wrap faq-grid">
+      <div class="faq-sticky">
+        <div class="sheet-head" data-rv>
+          <p class="sheet"><b>FAQ</b>Questions</p>
+          <h2 id="faq-h" class="display">자주 묻는 질문</h2>
+          <p class="lead">궁금한 점이 더 있으시면 편하게 문의해 주세요.</p>
+        </div>
+        <div class="actions" data-rv>
+          <a href="/reservation" class="btn btn-primary">${icon('calendar')}상담 예약</a>
+          <a href="tel:${PHONE_DISPLAY}" class="btn btn-ghost">${icon('phone')}전화 문의</a>
+        </div>
       </div>
-
-      <div class="text-center mt-10 reveal">
-        <a href="/directions" class="btn-subtle !py-4 !px-10 !text-sm"><i class="fas fa-map-marker-alt text-royal text-xs mr-1"></i>오시는 길 자세히 보기</a>
+      <div data-rv-group>
+        ${faqItems.map((item, i) => `
+        <details class="fq"${i === 0 ? ' open' : ''}>
+          <summary><span class="qn">Q${pad2(i + 1)}</span><h3>${item.q}</h3><span class="pm" aria-hidden="true">${icon('plus')}</span></summary>
+          <div class="fq-a"><p>${item.a}</p></div>
+        </details>`).join('')}
+        <p style="margin-top:1.2rem" data-rv><a href="/faq" class="arrow-link">FAQ 전체 보기${icon('arrow')}</a></p>
       </div>
     </div>
   </section>
 
-  <!-- ========== REVIEWS (Placeholder) ========== -->
-  <section class="py-20 md:py-32 lg:py-48 bg-white relative overflow-hidden" aria-label="환자 리뷰">
-    <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-royal/10 to-transparent"></div>
-    <div class="max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12">
-      <div class="text-center mb-12 md:mb-20 reveal">
-        <div class="section-label section-label-royal mx-auto mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>REVIEWS</div>
-        <h2 class="display-lg text-charcoal mb-4">환자 리뷰</h2>
-        <p class="text-gray-400 text-lg">곧 환자분들의 소중한 후기를 만나보실 수 있습니다</p>
+  <!-- ========== 상담 밴드 ========== -->
+  <section class="band" aria-label="상담 예약">
+    <div class="wrap-n">
+      <p class="sheet sheet-light no-mark" style="justify-content:center" data-rv>Consultation</p>
+      <h2 class="display-xl" data-rv>일상으로의 빠른 복귀, <em>강남치과의 기쁨입니다.</em></h2>
+      <p class="lead" data-rv>구강외과 전문의가 직접 상담드립니다. 상담은 언제든 열려있습니다. 편하게 문의해 주세요.</p>
+      <div class="band-actions" data-rv-group>
+        <a href="/reservation" class="btn btn-white btn-lg">${icon('calendar')}온라인 상담 예약</a>
+        <a href="tel:${PHONE_DISPLAY}" class="btn btn-light btn-lg mono">${icon('phone')}${PHONE_DISPLAY}</a>
       </div>
-      <div class="max-w-2xl mx-auto reveal">
-        <div class="card-premium p-14 text-center">
-          <div class="flex justify-center gap-1.5 mb-8">${starsHtml}</div>
-          <p class="text-2xl md:text-3xl font-extrabold text-charcoal mb-4">환자분들의 소중한 후기</p>
-          <p class="text-gray-400 mb-10 leading-relaxed">네이버 · 구글 리뷰 수집 후 업데이트 예정입니다.</p>
-          <a href="https://blog.naver.com/gndentalclinic" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2.5 px-8 py-4 rounded-full bg-[#03C75A] text-white font-bold text-sm hover:bg-[#02b351] transition-colors shadow-lg shadow-[#03C75A]/20"><i class="fas fa-blog"></i>네이버 블로그 방문</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========== FAQ ========== -->
-  <section class="py-20 md:py-32 lg:py-48 section-lavender relative overflow-hidden" id="faq" aria-label="자주 묻는 질문">
-    <div class="absolute top-0 left-0 w-[500px] h-[500px] bg-royal/[0.02] rounded-full blur-[200px] -translate-x-1/2 -translate-y-1/3"></div>
-    <div class="max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-24">
-        <div class="lg:col-span-4 lg:sticky lg:top-32 lg:self-start reveal">
-          <div class="section-label section-label-royal mb-8"><span class="w-1.5 h-1.5 rounded-full bg-royal"></span>FAQ</div>
-          <h2 class="display-lg text-charcoal mb-6">자주 묻는<br><span class="royal-grad-text">질문</span></h2>
-          <p class="text-gray-400 leading-relaxed mb-10">궁금한 점이 더 있으시면<br>편하게 문의해 주세요.</p>
-          <div class="flex flex-col sm:flex-row gap-3">
-            <a href="/reservation" class="btn-primary !text-sm !py-4 !px-8"><i class="fas fa-calendar-check text-xs"></i>상담 예약</a>
-            <a href="tel:054-636-8222" class="btn-subtle !text-sm !py-4 !px-8"><i class="fas fa-phone text-xs text-royal"></i>전화 문의</a>
-          </div>
-        </div>
-        <div class="lg:col-span-8 space-y-4 stagger-children">
-          ${faqHtml}
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========== FINAL CTA ========== -->
-  <section class="py-20 md:py-36 lg:py-48 bg-white relative overflow-hidden" aria-label="상담 예약">
-    <div class="orb orb-royal w-[800px] h-[800px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-10"></div>
-    <div class="absolute inset-0 grid-pattern opacity-20"></div>
-    <div class="royal-line-h absolute top-0 left-0 right-0"></div>
-    <div class="relative z-10 max-w-3xl mx-auto px-5 text-center reveal">
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] border border-royal/[0.06] rounded-full"></div>
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] border border-royal/[0.03] rounded-full"></div>
-      <div class="relative z-10">
-        <div class="w-24 h-24 mx-auto rounded-3xl royal-grad flex items-center justify-center mb-10 royal-glow"><i class="fas fa-tooth text-white text-4xl"></i></div>
-        <h2 class="display-xl text-charcoal mb-8">일상으로의 빠른 복귀,<br><span class="royal-grad-text">강남치과의 기쁨입니다.</span></h2>
-        <p class="text-gray-400 text-lg mb-12 leading-relaxed">구강외과 전문의가 직접 상담드립니다.<br>상담은 언제든 열려있습니다. 편하게 문의해 주세요.</p>
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-          <a href="/reservation" class="w-full sm:w-auto btn-primary !py-5 !px-14 !text-base !font-extrabold"><i class="fas fa-calendar-check"></i>온라인 상담 예약</a>
-          <a href="tel:054-636-8222" class="w-full sm:w-auto btn-subtle justify-center"><i class="fas fa-phone text-sm text-royal"></i>054-636-8222</a>
-        </div>
-        <div class="flex items-center justify-center gap-4 md:gap-8 text-xs md:text-sm text-gray-400 flex-wrap">
-          <span><i class="fas fa-clock text-royal/50 mr-1 md:mr-2"></i>평일 09:00-17:30</span>
-          <span class="w-1 h-1 rounded-full bg-gray-300 hidden sm:block"></span>
-          <span><i class="fas fa-map-marker-alt text-royal/50 mr-1 md:mr-2"></i>영주시 대학로 217</span>
-        </div>
-      </div>
+      <p class="band-meta" data-rv><span>평일 09:00 – 17:30</span><span>접수 마감 17:00</span><span>영주시 대학로 217</span></p>
     </div>
   </section>
   `;

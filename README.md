@@ -1,5 +1,16 @@
 # 강남치과의원 웹사이트
 
+## 디자인 시스템 v2 "도면: 한 번에, 정확하게" (2026-11-05 전면 리디자인)
+
+- 토큰·공용 셸·홈·하위페이지 재정의가 전부 `src/styles/tailwind.css` 한 파일(→ `public/static/tailwind.css`, `?v=` 내용 해시). 색은 `tailwind.config.cjs` 와 같다: 종이 `#F5F3EC`, 잉크 `#14202A`, 틸 `#0E8F8B`(로고 `#10AFB2`), 황동 `#B48C4E`(도면 라벨), 깊은 면 `#0E2A32`.
+- 폰트: 제목 Freesentation(눈누 CDN) · 본문 Pretendard · 숫자/치수 IBM Plex Mono. 그라데이션 글씨·네온·파티클·커서 연출은 쓰지 않는다.
+- 모티프: 눈금자 `.rule`, 치수선 `.dim`, 십자 표식 `.mark`, 시트 머리 `.sheet`(SHEET 0N)·`.fig`(FIG. 0N).
+- 공용 셸(헤더·종이 드로어·푸터·모바일 하단바·FAB)은 `src/layout.ts`, 동작은 `public/static/app.js`(헤더·드로어·KST 진료 상태·IO 등장·카운터·라이트박스·로그인·GA4). 홈 스크롤 연출은 `public/static/immersive.js`(GSAP, 홈에서만 로드, pin·Lenis 없음).
+- 진료 시간 규칙은 `src/lib/hours.ts`(서버)와 app.js(클라이언트)에 같은 값으로 둔다. 바뀌면 두 곳을 같이 고친다.
+- 제목 줄바꿈은 `src/lib/phrase.ts` 응답 미들웨어가 h1~h3 를 문장·절 단위로 묶는다. 수동 `<br>` 금지.
+- 하위페이지 원고는 손대지 않고, 옛 클래스(.card-premium .btn-primary .section-label .royal-grad-text .display-* .subpage-hero …)를 `@layer components` 에서 새 톤으로 재정의했다. 새 하위페이지도 이 클래스를 그대로 써도 된다.
+- 미리보기: `.claude/launch.json` `yjgangnamdc-preview`(wrangler pages dev dist, 8816). 검증 캡처는 `tools/immersive/yjgangnamdc/redesign-20261105/`.
+
 ## Tailwind 빌드 CSS (2026-11-01 CDN → 빌드 전환)
 
 공용 화면의 Tailwind를 CDN 실행(`cdn.tailwindcss.com` + 인라인 `tailwind.config`)에서 빌드 CSS로 바꿨다. 사이트 색·폰트 설정은 `tailwind.config.cjs`, 입력은 `src/styles/tailwind.css`, 출력은 `public/static/tailwind.css`다(Tailwind 3.4.17 = CDN과 같은 버전).
@@ -13,7 +24,7 @@
 - **병원명**: 강남치과의원 (경북 영주시)
 - **대표원장**: 이태형 (구강악안면외과 전문의)
 - **기술 스택**: Hono + TypeScript + Tailwind CSS (빌드 CSS, 3.4.17) + Cloudflare Pages
-- **디자인**: 화이트 베이스 + 골드(#C9A962) 액센트, Pretendard 폰트
+- **디자인**: v2 도면 시스템(종이·잉크·틸, Freesentation/Pretendard/IBM Plex Mono) — 위 '디자인 시스템 v2' 참고
 
 ## 현재 완성된 기능
 
