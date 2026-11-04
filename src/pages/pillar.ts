@@ -521,7 +521,7 @@ export function pillarIndexPage(): { html: string; title: string; description: s
     return `
       <a href="/guide/${slug}" class="bg-white rounded-xl p-6 shadow-lg border-2 border-emerald-200 hover:border-emerald-500 hover:shadow-xl transition group">
         <div class="text-2xl mb-3">📚</div>
-        <h3 class="text-xl font-bold text-emerald-800 mb-2 group-hover:text-emerald-600">${t.ko} 종합 가이드</h3>
+        <h3 class="text-xl font-bold text-emerald-800 mb-2 group-hover:text-emerald-600">${t.koSlug} 종합 가이드</h3>
         <p class="text-sm text-gray-600 leading-relaxed">${config.metaDescription.substring(0, 80)}...</p>
         <div class="mt-4 text-emerald-600 font-semibold text-sm group-hover:translate-x-1 transition">자세히 보기 →</div>
       </a>

@@ -1,15 +1,15 @@
 # 강남치과의원 웹사이트
 
-## 디자인 시스템 v2 "도면: 한 번에, 정확하게" (2026-11-05 전면 리디자인)
+## 디자인 시스템 v3 "필름: 일상으로의 복귀" (2026-11-05 전면 리디자인, 다크 + 세리프)
 
-- 토큰·공용 셸·홈·하위페이지 재정의가 전부 `src/styles/tailwind.css` 한 파일(→ `public/static/tailwind.css`, `?v=` 내용 해시). 색은 `tailwind.config.cjs` 와 같다: 종이 `#F5F3EC`, 잉크 `#14202A`, 틸 `#0E8F8B`(로고 `#10AFB2`), 황동 `#B48C4E`(도면 라벨), 깊은 면 `#0E2A32`.
-- 폰트: 제목 Freesentation(눈누 CDN) · 본문 Pretendard · 숫자/치수 IBM Plex Mono. 그라데이션 글씨·네온·파티클·커서 연출은 쓰지 않는다.
-- 모티프: 눈금자 `.rule`, 치수선 `.dim`, 십자 표식 `.mark`, 시트 머리 `.sheet`(SHEET 0N)·`.fig`(FIG. 0N).
-- 공용 셸(헤더·종이 드로어·푸터·모바일 하단바·FAB)은 `src/layout.ts`, 동작은 `public/static/app.js`(헤더·드로어·KST 진료 상태·IO 등장·카운터·라이트박스·로그인·GA4). 홈 스크롤 연출은 `public/static/immersive.js`(GSAP, 홈에서만 로드, pin·Lenis 없음).
+- 토큰·공용 셸·홈·하위페이지 재정의가 전부 `src/styles/tailwind.css` 한 파일(→ `public/static/tailwind.css`, `?v=` 내용 해시). 색은 `tailwind.config.cjs` 와 같다: 먹색 `#0A0C0D`(면 `#111415`/`#181C1E`), 상아 글자 `#F3F0E9`, 틸 `#10AFB2`(글자용 밝은 틸 `#5BD6D8`).
+- 폰트: 제목 Hahmlet(Google Fonts 세리프, h1·h2 전역) · 본문 Pretendard. 그라데이션 글씨·네온·파티클·커서 연출은 쓰지 않는다. 종이/베이지 톤으로 되돌리지 않는다(2026-11-05 사용자 결정).
+- 홈은 풀스크린 사진 장면(SCENE 01~, `.sc-bg`+`.sc-shade`+`.sc-grain`)이 이어지는 필름. 고정 장면(하루의 공정 `.film`, 시설 `.grow`)은 GSAP pin 이 아니라 CSS `position: sticky` + `html.mx:not(.nogs)` 에서만 높이를 늘리는 방식(CLS 0, JS 없으면 정적 레이아웃).
+- 공용 셸(헤더·전면 드로어·푸터·모바일 하단바·FAB)은 `src/layout.ts`, 동작은 `public/static/app.js`(헤더·드로어·KST 진료 상태·IO 등장·카운터·라이트박스·로그인·GA4). 홈 연출은 `public/static/immersive.js`(GSAP ScrollTrigger + Lenis 1.1.13 관성 스크롤 — pointer:fine 만, 홈에서만 로드). `data-rv="mask"` 제목은 clip-path 라 IO 가 부모를 관찰한다.
 - 진료 시간 규칙은 `src/lib/hours.ts`(서버)와 app.js(클라이언트)에 같은 값으로 둔다. 바뀌면 두 곳을 같이 고친다.
-- 제목 줄바꿈은 `src/lib/phrase.ts` 응답 미들웨어가 h1~h3 를 문장·절 단위로 묶는다. 수동 `<br>` 금지.
-- 하위페이지 원고는 손대지 않고, 옛 클래스(.card-premium .btn-primary .section-label .royal-grad-text .display-* .subpage-hero …)를 `@layer components` 에서 새 톤으로 재정의했다. 새 하위페이지도 이 클래스를 그대로 써도 된다.
-- 미리보기: `.claude/launch.json` `yjgangnamdc-preview`(wrangler pages dev dist, 8816). 검증 캡처는 `tools/immersive/yjgangnamdc/redesign-20261105/`.
+- 제목 줄바꿈은 `src/lib/phrase.ts` 응답 미들웨어가 h1~h3 를 문장·절 단위로 묶는다. 수동 `<br>` 금지. 히어로 제목은 `--fs-hero`(최대 5.6rem)+`text-wrap: balance` 로 폰트 교체 전후 줄 수가 같게 유지한다.
+- 하위페이지 원고는 손대지 않고, (1) `tailwind.config.cjs` 에서 gray 스케일 반전·charcoal/ink→상아·snow/lavender/paper→어두운 면·emerald/blue/purple→틸·green/amber/red/orange→어두운 틴트, (2) 옛 클래스(.card-premium .btn-primary .section-label .royal-grad-text .display-* .subpage-hero …)를 `@layer components` 에서 다크 톤으로 재정의, (3) `tailwind.css` 끝에서 `.bg-white`·`from/via/to-white`·`text-gray-200/300` 등을 "면은 어둡게, 글자는 밝게" 뒤집는다. 새 하위페이지도 이 클래스를 그대로 써도 된다.
+- 미리보기: `.claude/launch.json` `yjgangnamdc-preview`(wrangler pages dev dist, 8816). 검증 캡처·스크립트는 `tools/immersive/yjgangnamdc/film-20261105/`.
 
 ## Tailwind 빌드 CSS (2026-11-01 CDN → 빌드 전환)
 
@@ -24,7 +24,7 @@
 - **병원명**: 강남치과의원 (경북 영주시)
 - **대표원장**: 이태형 (구강악안면외과 전문의)
 - **기술 스택**: Hono + TypeScript + Tailwind CSS (빌드 CSS, 3.4.17) + Cloudflare Pages
-- **디자인**: v2 도면 시스템(종이·잉크·틸, Freesentation/Pretendard/IBM Plex Mono) — 위 '디자인 시스템 v2' 참고
+- **디자인**: v3 필름 시스템(먹색·상아·틸, Hahmlet/Pretendard, 풀스크린 사진 장면) — 위 '디자인 시스템 v3' 참고
 
 ## 현재 완성된 기능
 

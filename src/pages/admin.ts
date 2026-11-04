@@ -4,44 +4,44 @@ export function adminPage(): string {
   return `
   <style>
     .admin-sidebar { min-height: calc(100vh - 80px); }
-    .admin-tab { cursor: pointer; padding: 12px 20px; border-radius: 12px; font-size: 14px; font-weight: 600; color: #6B7280; transition: all 0.3s; display: flex; align-items: center; gap: 10px; }
-    .admin-tab:hover { background: rgba(14,143,139,0.04); color: #0E8F8B; }
-    .admin-tab.active { background: linear-gradient(135deg, #10AFB2, #0E8F8B); color: #fff; }
+    .admin-tab { cursor: pointer; padding: 12px 20px; border-radius: 12px; font-size: 14px; font-weight: 600; color: #9A978F; transition: all 0.3s; display: flex; align-items: center; gap: 10px; }
+    .admin-tab:hover { background: rgba(16,175,178,0.04); color: #10AFB2; }
+    .admin-tab.active { background: linear-gradient(135deg, #10AFB2, #10AFB2); color: #fff; }
     .admin-tab .badge { background: #EF4444; color: #fff; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 100px; }
     .admin-panel { display: none; }
     .admin-panel.active { display: block; }
     .admin-table { width: 100%; border-collapse: collapse; }
-    .admin-table th { background: #ECE9E0; color: #0E8F8B; font-weight: 700; font-size: 11px; padding: 12px 16px; text-align: left; text-transform: uppercase; letter-spacing: 0.05em; }
-    .admin-table td { padding: 12px 16px; border-bottom: 1px solid #F3F4F6; font-size: 13px; color: #374151; }
-    .admin-table tr:hover td { background: #F5F3EC; }
+    .admin-table th { background: #111415; color: #10AFB2; font-weight: 700; font-size: 11px; padding: 12px 16px; text-align: left; text-transform: uppercase; letter-spacing: 0.05em; }
+    .admin-table td { padding: 12px 16px; border-bottom: 1px solid #181C1E; font-size: 13px; color: #CFCBC2; }
+    .admin-table tr:hover td { background: #0A0C0D; }
     .admin-card { background: #fff; border: 1px solid rgba(0,0,0,0.06); border-radius: 20px; }
     .admin-stat { text-align: center; }
-    .admin-stat .num { font-size: 2rem; font-weight: 800; background: linear-gradient(135deg, #0E8F8B, #10AFB2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .admin-stat .label { font-size: 12px; color: #9CA3AF; margin-top: 4px; }
+    .admin-stat .num { font-size: 2rem; font-weight: 800; background: linear-gradient(135deg, #10AFB2, #10AFB2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .admin-stat .label { font-size: 12px; color: #8A8780; margin-top: 4px; }
     .status-badge { padding: 4px 12px; border-radius: 100px; font-size: 11px; font-weight: 700; }
     .status-new { background: #FEF3C7; color: #D97706; }
     .status-contacted { background: #DBEAFE; color: #2563EB; }
     .status-completed { background: #D1FAE5; color: #059669; }
-    .admin-input { width: 100%; padding: 10px 16px; border: 1px solid #E5E7EB; border-radius: 12px; font-size: 14px; outline: none; transition: border-color 0.3s; }
-    .admin-input:focus { border-color: #0E8F8B; box-shadow: 0 0 0 3px rgba(14,143,139,0.1); }
-    .admin-textarea { width: 100%; padding: 12px 16px; border: 1px solid #E5E7EB; border-radius: 12px; font-size: 14px; outline: none; min-height: 200px; transition: border-color 0.3s; resize: vertical; }
-    .admin-textarea:focus { border-color: #0E8F8B; box-shadow: 0 0 0 3px rgba(14,143,139,0.1); }
-    .blog-preview-content h2 { font-size: 1.4rem; font-weight: 800; color: #14202A; margin: 1.5rem 0 0.8rem; }
-    .blog-preview-content h3 { font-size: 1.15rem; font-weight: 700; color: #14202A; margin: 1.2rem 0 0.6rem; }
-    .blog-preview-content p { color: #6B7280; font-size: 0.95rem; line-height: 1.8; margin-bottom: 1rem; }
-    .blog-preview-content strong { color: #14202A; font-weight: 700; }
-    .blog-preview-content ul, .blog-preview-content ol { color: #6B7280; padding-left: 1.5rem; margin-bottom: 1rem; }
+    .admin-input { width: 100%; padding: 10px 16px; border: 1px solid #2A3033; border-radius: 12px; font-size: 14px; outline: none; transition: border-color 0.3s; }
+    .admin-input:focus { border-color: #10AFB2; box-shadow: 0 0 0 3px rgba(16,175,178,0.1); }
+    .admin-textarea { width: 100%; padding: 12px 16px; border: 1px solid #2A3033; border-radius: 12px; font-size: 14px; outline: none; min-height: 200px; transition: border-color 0.3s; resize: vertical; }
+    .admin-textarea:focus { border-color: #10AFB2; box-shadow: 0 0 0 3px rgba(16,175,178,0.1); }
+    .blog-preview-content h2 { font-size: 1.4rem; font-weight: 800; color: #F3F0E9; margin: 1.5rem 0 0.8rem; }
+    .blog-preview-content h3 { font-size: 1.15rem; font-weight: 700; color: #F3F0E9; margin: 1.2rem 0 0.6rem; }
+    .blog-preview-content p { color: #9A978F; font-size: 0.95rem; line-height: 1.8; margin-bottom: 1rem; }
+    .blog-preview-content strong { color: #F3F0E9; font-weight: 700; }
+    .blog-preview-content ul, .blog-preview-content ol { color: #9A978F; padding-left: 1.5rem; margin-bottom: 1rem; }
     .blog-preview-content li { margin-bottom: 0.3rem; line-height: 1.7; }
     .blog-preview-content img { border-radius: 12px; margin: 1rem 0; max-width: 100%; }
-    .blog-preview-content blockquote { border-left: 3px solid #0E8F8B; padding: 0.8rem 1rem; background: #ECE9E0; border-radius: 0 8px 8px 0; margin: 1rem 0; color: #0E8F8B; font-style: italic; }
-    .admin-select { padding: 10px 16px; border: 1px solid #E5E7EB; border-radius: 12px; font-size: 14px; outline: none; background: #fff; }
+    .blog-preview-content blockquote { border-left: 3px solid #10AFB2; padding: 0.8rem 1rem; background: #111415; border-radius: 0 8px 8px 0; margin: 1rem 0; color: #10AFB2; font-style: italic; }
+    .admin-select { padding: 10px 16px; border: 1px solid #2A3033; border-radius: 12px; font-size: 14px; outline: none; background: #fff; }
     .admin-btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 24px; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.3s; border: none; }
-    .admin-btn-primary { background: linear-gradient(135deg, #10AFB2, #0E8F8B); color: #fff; }
-    .admin-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(14,143,139,0.3); }
+    .admin-btn-primary { background: linear-gradient(135deg, #10AFB2, #10AFB2); color: #fff; }
+    .admin-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(16,175,178,0.3); }
     .admin-btn-danger { background: #FEE2E2; color: #DC2626; }
     .admin-btn-danger:hover { background: #FECACA; }
-    .admin-btn-secondary { background: #F3F4F6; color: #374151; }
-    .admin-btn-secondary:hover { background: #E5E7EB; }
+    .admin-btn-secondary { background: #181C1E; color: #CFCBC2; }
+    .admin-btn-secondary:hover { background: #2A3033; }
     .toast { position: fixed; top: 20px; right: 20px; z-index: 9999; padding: 16px 24px; border-radius: 16px; font-size: 14px; font-weight: 600; transform: translateX(120%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
     .toast.show { transform: translateX(0); }
     .toast-success { background: #D1FAE5; color: #059669; border: 1px solid #A7F3D0; }
@@ -49,12 +49,12 @@ export function adminPage(): string {
     .admin-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 100; display: none; align-items: center; justify-content: center; }
     .admin-modal-overlay.show { display: flex; }
     .admin-modal { background: #fff; border-radius: 24px; max-width: 800px; width: 95%; max-height: 90vh; overflow-y: auto; padding: 32px; }
-    .img-upload-zone { border: 2px dashed #E5E7EB; border-radius: 16px; padding: 24px; text-align: center; cursor: pointer; transition: all 0.3s; position: relative; overflow: hidden; min-height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-    .img-upload-zone:hover { border-color: #0E8F8B; background: rgba(14,143,139,0.02); }
-    .img-upload-zone.has-image { border-style: solid; border-color: #0E8F8B; }
+    .img-upload-zone { border: 2px dashed #2A3033; border-radius: 16px; padding: 24px; text-align: center; cursor: pointer; transition: all 0.3s; position: relative; overflow: hidden; min-height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .img-upload-zone:hover { border-color: #10AFB2; background: rgba(16,175,178,0.02); }
+    .img-upload-zone.has-image { border-style: solid; border-color: #10AFB2; }
     .img-upload-zone img { max-height: 150px; border-radius: 12px; object-fit: cover; }
     .img-upload-zone .uploading { position: absolute; inset: 0; background: rgba(255,255,255,0.9); display: flex; align-items: center; justify-content: center; }
-    .field-label { display: block; font-size: 12px; font-weight: 700; color: #6B7280; margin-bottom: 6px; }
+    .field-label { display: block; font-size: 12px; font-weight: 700; color: #9A978F; margin-bottom: 6px; }
     .field-label .req { color: #EF4444; }
   </style>
 
@@ -801,7 +801,7 @@ export function adminPage(): string {
         ? '<tr><td colspan="7" class="text-center text-gray-400 py-8">게시글이 없습니다</td></tr>'
         : data.posts.map(p => \`<tr>
           <td><span class="status-badge \${p.is_published ? 'status-completed' : 'status-new'}">\${p.is_published ? '공개' : '비공개'}</span></td>
-          <td>\${p.thumbnail ? '<img src="'+p.thumbnail+'" style="width:48px;height:36px;object-fit:cover;border-radius:8px;">' : '<div style="width:48px;height:36px;background:#f3f4f6;border-radius:8px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-image text-gray-300 text-xs"></i></div>'}</td>
+          <td>\${p.thumbnail ? '<img src="'+p.thumbnail+'" style="width:48px;height:36px;object-fit:cover;border-radius:8px;">' : '<div style="width:48px;height:36px;background:#181C1E;border-radius:8px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-image text-gray-300 text-xs"></i></div>'}</td>
           <td class="font-bold max-w-[200px] truncate"><a href="/blog/\${p.slug}" target="_blank" class="hover:text-teal-600">\${p.title}</a></td>
           <td>\${p.category}</td><td>\${p.views}</td>
           <td class="text-gray-400 text-xs">\${toKST(p.published_at)}</td>

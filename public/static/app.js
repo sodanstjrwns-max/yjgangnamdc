@@ -1,4 +1,4 @@
-/* 영주 강남치과의원 — app.js v2 (2026-11-05 전면 리디자인 "도면: 한 번에, 정확하게")
+/* 영주 강남치과의원 — app.js v3 (2026-11-05 전면 리디자인 "필름: 일상으로의 복귀")
    헤더·드로어·진료 상태(KST)·등장 연출(IntersectionObserver)·카운터·사진 라이트박스·로그인 상태·GA4 이벤트.
    메인 스크롤 연출은 immersive.js(GSAP, 홈에서만). 옛 전역 함수(toggleMenu/doLogout/openPhotoModal …)는 호환용으로 남긴다.
    원칙: 글자는 전부 HTML 그대로. html.mx(동작 줄이기 아님 + IO 지원)일 때만 CSS 가 숨김 시작하고 여기서 노출한다. */
@@ -33,7 +33,7 @@
   }
   w.addEventListener('scroll', function () { if (!ticking) { requestAnimationFrame(onScroll); ticking = true; } }, { passive: true });
   onScroll();
-  if (fabTop) fabTop.addEventListener('click', function () { w.scrollTo({ top: 0, behavior: 'smooth' }); });
+  if (fabTop) fabTop.addEventListener('click', function () { if (w.__lenis) w.__lenis.scrollTo(0); else w.scrollTo({ top: 0, behavior: 'smooth' }); });
 
   // ── 모바일 드로어
   var mmBtn = $('#mobile-menu-btn'), menu = $('#mobile-menu');
@@ -43,6 +43,7 @@
     mmBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
     mmBtn.setAttribute('aria-label', open ? '메뉴 닫기' : '메뉴 열기');
     d.body.classList.toggle('menu-open', open);
+    if (w.__lenis) { if (open) w.__lenis.stop(); else w.__lenis.start(); }
     if (header) { header.classList.toggle('menu-open', open); if (open) header.classList.remove('hide'); }
   }
   if (mmBtn && menu) {
@@ -91,10 +92,17 @@
   if (mx) {
     var targets = $$(NEW + ', ' + LEGACY).filter(function (el) { return !el.closest('.hero'); }); // 홈 히어로는 immersive.js 타임라인이 맡는다
     if ('IntersectionObserver' in w) {
+      // 클립 마스크(data-rv="mask")는 clip-path 로 보이는 면적이 0 이라 IO 교차가 안 잡힌다 → 부모 요소를 대신 관찰한다
+      var obsMap = new Map();
+      targets.forEach(function (el) {
+        var key = el.getAttribute('data-rv') === 'mask' && el.parentElement ? el.parentElement : el;
+        if (!obsMap.has(key)) obsMap.set(key, []);
+        obsMap.get(key).push(el);
+      });
       var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (en) { if (en.isIntersecting) { show(en.target); io.unobserve(en.target); } });
+        entries.forEach(function (en) { if (en.isIntersecting) { (obsMap.get(en.target) || [en.target]).forEach(show); io.unobserve(en.target); } });
       }, { threshold: 0.06, rootMargin: '0px 0px -6% 0px' });
-      targets.forEach(function (el) { io.observe(el); });
+      obsMap.forEach(function (_, key) { io.observe(key); });
     } else targets.forEach(show);
     // 안전망: 2.5초 뒤에도 화면 안에 있는데 숨어 있으면 노출(IO 누락·인앱 브라우저 대비). 홈 히어로는 GSAP 이 안 왔으면 CSS 로 전부 노출(html.nogs)
     setTimeout(function () {
@@ -138,10 +146,10 @@
     var img = box.querySelector('img'), fc = box.querySelector('figcaption');
     img.src = url; img.alt = alt || '';
     if (fc) fc.textContent = cap || alt || '';
-    box.classList.add('show'); d.body.style.overflow = 'hidden';
+    box.classList.add('show'); d.body.style.overflow = 'hidden'; if (w.__lenis) w.__lenis.stop();
     var x = box.querySelector('button'); if (x) x.focus();
   }
-  function closePhoto() { if (!box) return; box.classList.remove('show'); d.body.style.overflow = ''; }
+  function closePhoto() { if (!box) return; box.classList.remove('show'); d.body.style.overflow = ''; if (w.__lenis) w.__lenis.start(); }
   w.openPhotoModal = openPhoto; w.closePhotoModal = closePhoto;
   if (box) {
     box.addEventListener('click', function (e) { if (e.target === box || e.target.closest('button')) closePhoto(); });

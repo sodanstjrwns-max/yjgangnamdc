@@ -1,10 +1,11 @@
-/* 영주 강남치과의원 홈 스크롤 연출 v2 (2026-11-05) — html.mx(JS 가 켬)일 때만 숨김 시작, GSAP 이 안 오면(html.nogs) 전부 노출 */
+/* 영주 강남치과의원 홈 필름 연출 v3 (2026-11-05) — html.mx(JS 가 켬)일 때만 숨김 시작, GSAP 이 안 오면(html.nogs) 전부 노출 */
+html.mx:not(.nogs) .hero .bar { transform: scaleY(1); }
 html.mx:not(.nogs) .hero .hl-in { transform: translate3d(0, 112%, 0); }
-html.mx:not(.nogs) .hero [data-hero]:not([data-hero="media"]) { opacity: 0; }
-html.mx:not(.nogs) .hero-rule { transform: scaleY(-1) scaleX(0); transform-origin: left; }
-html.mx:not(.nogs) .hero-dim-x i, html.mx:not(.nogs) .hero-dim-y i { transform: scale(0); }
-.hero-dim-x i { transform-origin: left; } .hero-dim-y i { transform-origin: top; }
-html.mx:not(.nogs) .hero-media .hero-frame { clip-path: inset(0 0 100% 0); }
-html.mx:not(.nogs) .hero-status, html.mx:not(.nogs) .hero-quote { opacity: 0; }
-html.mx .fac-track { will-change: transform; }
+html.mx:not(.nogs) .hero [data-hero] { opacity: 0; }
+html.mx:not(.nogs) .hero-status { opacity: 0; }
+html.mx .rail-track { will-change: transform; }
 html.mx main { overflow-x: clip; }
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }

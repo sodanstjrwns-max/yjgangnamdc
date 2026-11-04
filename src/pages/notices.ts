@@ -230,18 +230,18 @@ export function noticeDetailPage(notice: any): { html: string; title: string; de
   </section>
 
   <style>
-    .notice-content h2 { font-size: 1.5rem; font-weight: 800; color: #14202A; margin: 2.5rem 0 1rem; line-height: 1.3; }
-    .notice-content h3 { font-size: 1.25rem; font-weight: 700; color: #14202A; margin: 2rem 0 0.8rem; }
-    .notice-content p { color: #6B7280; font-size: 1rem; line-height: 1.9; margin-bottom: 1.5rem; }
-    .notice-content strong { color: #14202A; font-weight: 700; }
-    .notice-content ul, .notice-content ol { color: #6B7280; padding-left: 1.5rem; margin-bottom: 1.5rem; }
+    .notice-content h2 { font-size: 1.5rem; font-weight: 800; color: #F3F0E9; margin: 2.5rem 0 1rem; line-height: 1.3; }
+    .notice-content h3 { font-size: 1.25rem; font-weight: 700; color: #F3F0E9; margin: 2rem 0 0.8rem; }
+    .notice-content p { color: #9A978F; font-size: 1rem; line-height: 1.9; margin-bottom: 1.5rem; }
+    .notice-content strong { color: #F3F0E9; font-weight: 700; }
+    .notice-content ul, .notice-content ol { color: #9A978F; padding-left: 1.5rem; margin-bottom: 1.5rem; }
     .notice-content li { margin-bottom: 0.5rem; line-height: 1.8; }
     .notice-content img { border-radius: 16px; margin: 2rem 0; width: 100%; }
-    .notice-content blockquote { border-left: 4px solid #0E8F8B; padding: 1rem 1.5rem; background: #ECE9E0; border-radius: 0 12px 12px 0; margin: 2rem 0; color: #0E8F8B; font-style: italic; }
+    .notice-content blockquote { border-left: 4px solid #10AFB2; padding: 1rem 1.5rem; background: #111415; border-radius: 0 12px 12px 0; margin: 2rem 0; color: #10AFB2; font-style: italic; }
     .notice-content table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.9rem; }
-    .notice-content th { background: #ECE9E0; color: #0E8F8B; font-weight: 700; padding: 12px 16px; text-align: left; border-bottom: 2px solid #E2DED3; }
-    .notice-content td { padding: 10px 16px; border-bottom: 1px solid #F3F4F6; color: #6B7280; }
-    .notice-content tr:hover td { background: #F5F3EC; }
+    .notice-content th { background: #111415; color: #10AFB2; font-weight: 700; padding: 12px 16px; text-align: left; border-bottom: 2px solid #181C1E; }
+    .notice-content td { padding: 10px 16px; border-bottom: 1px solid #181C1E; color: #9A978F; }
+    .notice-content tr:hover td { background: #0A0C0D; }
   </style>
   `;
 

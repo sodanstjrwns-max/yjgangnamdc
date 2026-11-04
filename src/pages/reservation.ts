@@ -116,7 +116,7 @@ export function reservationPage(): string {
                   <textarea rows="5" placeholder="궁금하신 점을 자유롭게 적어주세요." class="w-full px-5 py-4 bg-snow-50 border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-royal/20 focus:border-royal/30 transition-all resize-none"></textarea>
                 </div>
                 <div class="flex items-start gap-3">
-                  <input type="checkbox" required id="privacy" class="mt-1 accent-[#B48C4E] w-4 h-4">
+                  <input type="checkbox" required id="privacy" class="mt-1 accent-[#C9A86A] w-4 h-4">
                   <label for="privacy" class="text-xs text-gray-400 leading-relaxed">개인정보 수집 및 이용에 동의합니다. (상담 목적으로만 사용되며, 상담 완료 후 파기됩니다.)</label>
                 </div>
                 <div class="flex items-center gap-3 px-5 py-3.5 rounded-2xl bg-royal/[0.04] border border-royal/10" id="response-promise">
