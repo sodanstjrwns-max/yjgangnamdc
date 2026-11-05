@@ -756,12 +756,14 @@ export function layout(content: string, opts: LayoutOptions): string {
   <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" rel="stylesheet" media="print" onload="this.media='all'">
   <noscript><link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" rel="stylesheet"></noscript>
 
-  <!-- Microsoft Clarity (행동 분석) -->
+  <!-- Microsoft Clarity (행동 분석) — 태그 주입은 window load 뒤로 미룬다.
+       Clarity 가 스타일시트 적용 전에 실행되면 스타일 없는 문서의 레이아웃을 계산하게 만들어,
+       그려지지도 않은 화면과의 차이가 CLS 1.0 으로 기록된다(2026-11-05 라이브 측정, Clarity 만 차단하면 0). 큐 함수는 즉시 만든다. -->
   <script type="text/javascript">
-    (function(c,l,a,r,i,t,y){
+    (function(c,l,a,r,i){
       c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-      t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-      y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+      function go(){var t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;var y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);}
+      if(l.readyState==='complete')go();else c.addEventListener('load',go);
     })(window, document, "clarity", "script", "yc82mxyj7e");
   </script>
 
