@@ -72,10 +72,10 @@ export function doctorsPage(): string {
   <!-- ========== CINEMATIC HERO — "헉 뭐지?" ========== -->
   <section class="relative min-h-0 md:min-h-screen flex items-center justify-center overflow-hidden" id="doctorHero" aria-label="의료진 히어로">
     <!-- Dark base -->
-    <div class="absolute inset-0 bg-gradient-to-br from-[#060708] via-[#060708] to-[#060708]"></div>
+    <div class="absolute inset-0 bg-gradient-to-br from-[#0E2A32] via-[#0E2A32] to-[#0E2A32]"></div>
     
     <!-- Animated grid -->
-    <div class="absolute inset-0" style="background-image: linear-gradient(rgba(16,175,178,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(16,175,178,0.06) 1px, transparent 1px); background-size: 60px 60px;"></div>
+    <div class="absolute inset-0" style="background-image: linear-gradient(rgba(14,143,139,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(14,143,139,0.06) 1px, transparent 1px); background-size: 60px 60px;"></div>
 
     <!-- Giant glowing orbs -->
     <div class="absolute top-1/4 left-1/4 w-[700px] h-[700px] bg-royal/[0.08] rounded-full blur-[200px] animate-pulse" style="animation-duration:6s;"></div>
@@ -86,7 +86,7 @@ export function doctorsPage(): string {
     <!-- Giant "2" watermark -->
     <div class="absolute inset-0 flex items-center justify-center pointer-events-none select-none" style="z-index:3;">
       <span class="text-[30vw] md:text-[25vw] font-black text-transparent" style="
-        -webkit-text-stroke: 1px rgba(16,175,178,0.08);
+        -webkit-text-stroke: 1px rgba(14,143,139,0.08);
         line-height: 0.85;
         letter-spacing: -0.05em;
       " id="giantNumber">2</span>
@@ -124,7 +124,7 @@ export function doctorsPage(): string {
             <span class="block text-white font-black" style="font-size: clamp(3.5rem, 10vw, 8rem); line-height: 1.0; letter-spacing: -0.04em;" id="dLine1">수술 전문</span>
           </span>
           <span class="block overflow-hidden">
-            <span class="block font-black" style="font-size: clamp(3.5rem, 10vw, 8rem); line-height: 1.0; letter-spacing: -0.04em; color: #10AFB2;" id="dLine2">전문의 2인</span>
+            <span class="block font-black" style="font-size: clamp(3.5rem, 10vw, 8rem); line-height: 1.0; letter-spacing: -0.04em; color: #0E8F8B;" id="dLine2">전문의 2인</span>
           </span>
         </h1>
 
@@ -147,7 +147,7 @@ export function doctorsPage(): string {
                 </div>
                 ` : `
                 <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-royal/20 to-royal/5 border border-royal/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
-                  <span class="text-3xl font-black" style="color: #10AFB2;">${doc.initial}</span>
+                  <span class="text-3xl font-black" style="color: #0E8F8B;">${doc.initial}</span>
                 </div>
                 `}
                 <div>

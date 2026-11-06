@@ -583,7 +583,7 @@ function buildWebSiteSchema() {
 // 속성값 안의 큰따옴표가 content="..." 를 끊어 설명이 통째로 사라지던 문제 방지 (예: 요약이 "인용문"으로 시작하는 칼럼)
 const attr = (v: unknown): string => String(v ?? '').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
-// ===== 공용 셸 (2026-11-05 리디자인 v3 "필름: 일상으로의 복귀" — 먹색 바탕 + 상아 글자 + 틸, Hahmlet 세리프) =====
+// ===== 공용 셸 (2026-11-05 리디자인 v3 "필름: 일상으로의 복귀", 2026-11-06 v3.1 하얀 바탕 — 흰 바탕 + 먹 글자 + 틸, Hahmlet 세리프) =====
 // 헤더(브랜드·메뉴·내원안내 드롭다운·진료 상태 칩·전화·로그인·예약)·전면 드로어·푸터·모바일 하단바·FAB.
 // 인라인 <style>·<script> 는 전부 public/static/tailwind.css(빌드)·app.js 로 옮겼다. GSAP·Lenis 는 홈에서만 defer 로드.
 const NAV: { label: string; href: string; en: string }[] = [
@@ -686,7 +686,7 @@ export function layout(content: string, opts: LayoutOptions): string {
   <meta name="bingbot" content="${robotsContent}">
   <meta name="yeti" content="${robotsContent}">
   <meta name="format-detection" content="telephone=yes">
-  <meta name="theme-color" content="#0A0C0D">
+  <meta name="theme-color" content="#FFFFFF">
   <link rel="canonical" href="${fullUrl}">
 
   <!-- Geo/Regional SEO -->
@@ -808,7 +808,7 @@ ${immersive ? `  <link rel="stylesheet" href="/static/immersive.css?v=${__IMMERS
       </div>
     </div>
 
-    <!-- 모바일 드로어(전면 먹색 시트) -->
+    <!-- 모바일 드로어(전면 시트) -->
     <div id="mobile-menu" class="drawer" hidden role="navigation" aria-label="모바일 네비게이션">
       <div class="drawer-top">
         <span class="status-chip${chipCls}" id="mobile-clinic-status" data-status><span class="dot" aria-hidden="true"></span><span class="txt">${st.text}</span></span>
