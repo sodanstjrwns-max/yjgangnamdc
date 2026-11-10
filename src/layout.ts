@@ -115,8 +115,8 @@ function buildBaseSchema() {
     },
     "geo": {
       "@type": "GeoCoordinates",
-      "latitude": 36.8057,
-      "longitude": 128.7410
+      "latitude": 36.8146783,
+      "longitude": 128.6051639
     },
     "hasMap": "https://map.naver.com/p/entry/place/1099573867",
     "openingHoursSpecification": [
@@ -212,7 +212,7 @@ function buildBaseSchema() {
       { "@type": "Place", "name": "영주혁신도시" },
       {
         "@type": "GeoCircle",
-        "geoMidpoint": { "@type": "GeoCoordinates", "latitude": 36.8057, "longitude": 128.7410 },
+        "geoMidpoint": { "@type": "GeoCoordinates", "latitude": 36.8146783, "longitude": 128.6051639 },
         "geoRadius": "100000",
         "description": "영주시 중심 반경 100km — 봉화, 예천, 안동, 단양, 영덕, 울진 포함"
       }
@@ -695,8 +695,8 @@ export function layout(content: string, opts: LayoutOptions): string {
   <!-- Geo/Regional SEO -->
   <meta name="geo.region" content="KR-47">
   <meta name="geo.placename" content="영주시, 경상북도">
-  <meta name="geo.position" content="36.8057;128.7410">
-  <meta name="ICBM" content="36.8057, 128.7410">
+  <meta name="geo.position" content="36.8146783;128.6051639">
+  <meta name="ICBM" content="36.8146783, 128.6051639">
   <meta name="language" content="ko">
 
   <!-- Open Graph -->

@@ -2205,8 +2205,8 @@ app.get('/directions', (c) => c.html(layout(directionsPage(), {
       },
       "geo": {
         "@type": "GeoCoordinates",
-        "latitude": 36.8057,
-        "longitude": 128.7410
+        "latitude": 36.8146783,
+        "longitude": 128.6051639
       },
       "url": "https://kndent.kr/directions",
       "telephone": "+82-54-636-8222",
@@ -2283,7 +2283,7 @@ app.get('/pricing', async (c) => c.html(layout(pricingPage(await loadPublishedPr
       "numberOfItems": 8,
       "itemListElement": [
         { "@type": "OfferCatalog", "name": "임플란트", "description": "구강외과 전문의 직접 수술. 맞춤 어버트먼트 + 지르코니아 포함 가격.", "numberOfItems": 7, "itemListElement": [
-          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "Neo 임플란트 (맞춤 어버트먼트+지르코니아)", "procedureType": "Surgical", "url": "https://kndent.kr/treatments/implant" }, "priceCurrency": "KRW", "price": 1300000, "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "price": 1300000, "description": "1,300,000원 (맞춤 어버트먼트 + 지르코니아 포함)", "valueAddedTaxIncluded": true }, "eligibleRegion": { "@type": "GeoCircle", "geoMidpoint": { "@type": "GeoCoordinates", "latitude": 36.8057, "longitude": 128.7410 }, "geoRadius": "100000" }, "warranty": { "@type": "WarrantyPromise", "warrantyScope": "임플란트 픽스쳐 보증", "description": "정기 검진 유지 시 장기 보증" }, "seller": { "@id": "https://kndent.kr/#organization" } },
+          { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "Neo 임플란트 (맞춤 어버트먼트+지르코니아)", "procedureType": "Surgical", "url": "https://kndent.kr/treatments/implant" }, "priceCurrency": "KRW", "price": 1300000, "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "price": 1300000, "description": "1,300,000원 (맞춤 어버트먼트 + 지르코니아 포함)", "valueAddedTaxIncluded": true }, "eligibleRegion": { "@type": "GeoCircle", "geoMidpoint": { "@type": "GeoCoordinates", "latitude": 36.8146783, "longitude": 128.6051639 }, "geoRadius": "100000" }, "warranty": { "@type": "WarrantyPromise", "warrantyScope": "임플란트 픽스쳐 보증", "description": "정기 검진 유지 시 장기 보증" }, "seller": { "@id": "https://kndent.kr/#organization" } },
           { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "Osstem 임플란트 (맞춤 어버트먼트+지르코니아)", "procedureType": "Surgical", "url": "https://kndent.kr/treatments/implant" }, "priceCurrency": "KRW", "price": 1300000, "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "price": 1300000, "description": "1,300,000원 (맞춤 어버트먼트 + 지르코니아 포함)" } },
           { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "뼈이식 (단순)", "procedureType": "Surgical", "url": "https://kndent.kr/treatments/bone-graft" }, "priceCurrency": "KRW", "price": 500000, "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "price": 500000, "description": "500,000원" } },
           { "@type": "Offer", "itemOffered": { "@type": "MedicalProcedure", "name": "뼈이식 (복합)", "procedureType": "Surgical", "url": "https://kndent.kr/treatments/bone-graft" }, "priceCurrency": "KRW", "price": 800000, "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "KRW", "price": 800000, "description": "800,000원" } },

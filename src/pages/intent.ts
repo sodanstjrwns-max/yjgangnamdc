@@ -356,12 +356,12 @@ export function intentPage(regionParam: string, treatmentParam: string, intentPa
         "postalCode": "36099",
         "addressCountry": "KR"
       },
-      "geo": { "@type": "GeoCoordinates", "latitude": 36.8057, "longitude": 128.7410 },
+      "geo": { "@type": "GeoCoordinates", "latitude": 36.8146783, "longitude": 128.6051639 },
       "openingHoursSpecification": [{ "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"], "opens": "09:00", "closes": "17:30" }],
       "priceRange": "₩₩",
       "areaServed": [
         { "@type": "City", "name": area.name },
-        { "@type": "GeoCircle", "geoMidpoint": { "@type": "GeoCoordinates", "latitude": 36.8057, "longitude": 128.7410 }, "geoRadius": "60000" }
+        { "@type": "GeoCircle", "geoMidpoint": { "@type": "GeoCoordinates", "latitude": 36.8146783, "longitude": 128.6051639 }, "geoRadius": "60000" }
       ]
     }
   ]

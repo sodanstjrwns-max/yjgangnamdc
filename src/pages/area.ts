@@ -392,7 +392,7 @@ export function areaPage(region: string): { html: string; title: string; descrip
         "postalCode": "36099",
         "addressCountry": "KR"
       },
-      "geo": { "@type": "GeoCoordinates", "latitude": 36.8057, "longitude": 128.7410 },
+      "geo": { "@type": "GeoCoordinates", "latitude": 36.8146783, "longitude": 128.6051639 },
       "hasMap": "https://map.naver.com/p/entry/place/1099573867",
       "openingHoursSpecification": [
         { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"], "opens": "09:00", "closes": "17:30" }
@@ -409,7 +409,7 @@ export function areaPage(region: string): { html: string; title: string; descrip
         { "@type": "City", "name": "울진군" },
         {
           "@type": "GeoCircle",
-          "geoMidpoint": { "@type": "GeoCoordinates", "latitude": 36.8057, "longitude": 128.7410 },
+          "geoMidpoint": { "@type": "GeoCoordinates", "latitude": 36.8146783, "longitude": 128.6051639 },
           "geoRadius": "100000",
           "description": "영주시 중심 반경 100km 지역"
         }

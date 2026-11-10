@@ -152,8 +152,8 @@ export function emergencyPage(regionSlug?: string): { html: string; title: strin
       },
       "geo": {
         "@type": "GeoCoordinates",
-        "latitude": 36.8057,
-        "longitude": 128.7410
+        "latitude": 36.8146783,
+        "longitude": 128.6051639
       },
       "openingHoursSpecification": [
         {
