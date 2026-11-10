@@ -27,9 +27,13 @@ const SRC_FILES: Record<string, string> = {
   emergency: 'src/pages/emergency.ts',
   locality: 'src/pages/locality.ts',
 }
+// 화면 내용과 무관한 수정(llms.txt·구조화 데이터 같은 SEO 정비)으로 lastmod 가 한꺼번에 바뀌지 않게,
+// 커밋 메시지에 [lastmod-skip] 이 들어간 커밋은 날짜 계산에서 건너뛴다 (2026-11-10, .git-blame-ignore-revs 와 같은 취지).
+// 화면 원고를 실제로 고친 커밋에는 이 표시를 쓰지 않는다.
+const LASTMOD_SKIP = '[lastmod-skip]'
 function gitDate(path: string): string {
   try {
-    const d = execSync(`git log -1 --format=%cs -- "${path}"`, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim()
+    const d = execSync(`git log -1 --format=%cs --fixed-strings --invert-grep --grep="${LASTMOD_SKIP}" -- "${path}"`, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim()
     return /^\d{4}-\d{2}-\d{2}$/.test(d) ? d : ''
   } catch { return '' }
 }

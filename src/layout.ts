@@ -71,8 +71,9 @@ function buildBaseSchema() {
     "image": [
       `${SITE_URL}/static/og-image.png`,
       `${SITE_URL}/static/logo.png`,
-      `${SITE_URL}/static/clinic-exterior.jpg`,
-      `${SITE_URL}/static/clinic-interior.jpg`
+      // 2026-11-10: 없는 파일(clinic-exterior.jpg·clinic-interior.jpg, 404) → 홈 구조화 데이터와 같은 실제 원내 사진
+      `${SITE_URL}/static/photos/3gQUD6CP.jpg`,
+      `${SITE_URL}/static/photos/KLnijX5L.jpg`
     ],
     "photo": `${SITE_URL}/static/og-image.png`,
     "description": "경북 영주시 강남치과의원. 구강악안면외과 전문의 2인이 직접 진료하는 프리미엄 치과. 임플란트, 디지털 보철(싱글 크라운), 인비절라인, 심미보철 전문.",
@@ -137,7 +138,8 @@ function buildBaseSchema() {
       "url": `${SITE_URL}/doctors/lee-taehyung`,
       "description": "구강악안면외과 전문의. 임플란트, 사랑니 발치, 뼈이식, 상악동(위턱 공간) 거상술 전문.",
       "medicalSpecialty": "Oral and Maxillofacial Surgery",
-      "image": `${SITE_URL}/static/doctor-lee.jpg`,
+      // 2026-11-10: 없는 파일(doctor-lee.jpg, 404) → 의료진 화면·상세 스키마와 같은 실제 사진
+      "image": `${SITE_URL}/static/doctors/lee-taehyung.jpg`,
       "worksFor": { "@id": `${SITE_URL}/#organization` },
       "hasCredential": [
         {
@@ -154,9 +156,9 @@ function buildBaseSchema() {
       ],
       "knowsAbout": ["임플란트", "사랑니 발치", "뼈이식", "상악동(위턱 공간) 거상술", "구강악안면외과", "디지털 보철"],
       "memberOf": [
-        { "@type": "MedicalOrganization", "name": "대한치과의사협회" },
-        { "@type": "MedicalOrganization", "name": "대한구강악안면외과학회" },
-        { "@type": "MedicalOrganization", "name": "대한구강악안면임플란트학회" }
+        // 2026-11-10: 의료진 화면 약력·상세 페이지 스키마(같은 @id)와 같은 학회만
+        { "@type": "MedicalOrganization", "name": "대한구강악안면성형재건외과학회" },
+        { "@type": "MedicalOrganization", "name": "대한구강악안면외과학회" }
       ],
       "availableService": [
         { "@type": "MedicalProcedure", "name": "임플란트" },

@@ -31,6 +31,7 @@ import { DICT_ENRICHED } from './data/dictionary'
 import { searchPage, searchStatic } from './pages/search'
 import { layout, OG_IMAGE_PNG, TAILWIND_CSS_HREF } from './layout'
 import { phraseBreaks } from './lib/phrase'
+import { llmsFactBlock, withFactBlock } from './lib/llms-facts'
 import { CONTENT_LASTMOD, DICT_ENRICHED_DATE, MEDICAL_LAST_REVIEWED, INDEXNOW_KEY, INDEXNOW_ENDPOINTS, INDEXNOW_DEFAULT_URLS, metaDescFrom, fitMetaDesc } from './seo'
 
 // 서버 측 content 자동 변환: plain text → HTML (저장 전 적용)
@@ -709,7 +710,9 @@ app.get('/llms.txt', async (c) => {
   c.header('Content-Type', 'text/plain; charset=utf-8')
   c.header('Cache-Control', 'public, max-age=86400, s-maxage=86400')
   const blogs = await llmsBlogLines(c)
-  return c.body(`${LLMS_TXT}${blogs ? `\n${blogs}` : ''}\n## 상세판\n- 진료별 요약·FAQ·진료비 전문: https://kndent.kr/llms-full.txt\n`)
+  // 맨 위 '병원 정보' 표준 블록 (2026-11-10) — 진료비는 /pricing 화면과 같은 공개 항목
+  const facts = llmsFactBlock({ treatments: getTreatmentSummaries().map(t => t.title), cats: (await loadPublishedPriceCats(c)) || DEFAULT_PRICE_CATS })
+  return c.body(`${withFactBlock(LLMS_TXT, facts)}${blogs ? `\n${blogs}` : ''}\n## 상세판\n- 진료별 요약·FAQ·진료비 전문: https://kndent.kr/llms-full.txt\n`)
 })
 
 // ===== AEO: llms-full.txt (상세 버전) =====
@@ -739,7 +742,9 @@ A: 현재 평일(월~금) 09:00~17:30만 진료합니다. 점심시간 13:00~14:
 `
 app.get('/llms-full.txt', async (c) => {
   const flat = (t: string) => String(t || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
-  const out: string[] = [LLMS_TXT.trimEnd(), '', '---', '', '## 진료별 요약', `각 진료 페이지 상단 '핵심 요약'과 같은 내용입니다. 감수: 이태형 대표원장(구강악안면외과 전문의) · 최종 검토 ${MEDICAL_LAST_REVIEWED}. 비용·기간은 개인 상태에 따라 달라지며 진단 후 안내합니다.`, '']
+  const cats = (await loadPublishedPriceCats(c)) || DEFAULT_PRICE_CATS
+  const facts = llmsFactBlock({ treatments: getTreatmentSummaries().map(t => t.title), cats })
+  const out: string[] = [withFactBlock(LLMS_TXT, facts).trimEnd(), '', '---', '', '## 진료별 요약', `각 진료 페이지 상단 '핵심 요약'과 같은 내용입니다. 감수: 이태형 대표원장(구강악안면외과 전문의) · 최종 검토 ${MEDICAL_LAST_REVIEWED}. 비용·기간은 개인 상태에 따라 달라지며 진단 후 안내합니다.`, '']
   for (const t of getTreatmentSummaries()) {
     out.push(`### ${t.title}`)
     out.push(`URL: https://kndent.kr/treatments/${t.slug}`)
@@ -752,7 +757,6 @@ app.get('/llms-full.txt', async (c) => {
     }
     out.push('')
   }
-  const cats = (await loadPublishedPriceCats(c)) || DEFAULT_PRICE_CATS
   out.push('## 진료비용 (https://kndent.kr/pricing 과 동일, 공개 항목만)')
   for (const cat of cats) {
     out.push(`### ${cat.title}${cat.ins ? ' (건강보험 적용)' : ''}`)
@@ -1516,7 +1520,14 @@ app.get('/doctors', (c) => c.html(layout(doctorsPage(), {
       "jobTitle": "대표원장",
       "medicalSpecialty": "Oral and Maxillofacial Surgery",
       "description": "구강악안면외과 전문의. 고려대학교 구강악안면외과 석사, 고려대학교 구로병원 레지던트 수료.",
+      // 2026-11-10: url·image·memberOf 보강 — 화면 약력과 의료진 상세 페이지 스키마에 이미 있는 값만
+      "url": "https://kndent.kr/doctors/lee-taehyung",
+      "image": "https://kndent.kr/static/doctors/lee-taehyung.jpg",
       "worksFor": { "@id": "https://kndent.kr/#organization" },
+      "memberOf": [
+        { "@type": "MedicalOrganization", "name": "대한구강악안면성형재건외과학회" },
+        { "@type": "MedicalOrganization", "name": "대한구강악안면외과학회" }
+      ],
       "alumniOf": [
         { "@type": "EducationalOrganization", "name": "고려대학교 구강악안면외과" },
         { "@type": "Hospital", "name": "고려대학교 구로병원" }
@@ -1529,7 +1540,14 @@ app.get('/doctors', (c) => c.html(layout(doctorsPage(), {
       "jobTitle": "원장",
       "medicalSpecialty": "Oral and Maxillofacial Surgery",
       "description": "구강악안면외과 전문의. 인제대학교 백병원 구강악안면외과 레지던트 수료.",
+      // 사진은 화면에 없어(이니셜 카드) image 를 넣지 않는다
+      "url": "https://kndent.kr/doctors/choi-minhye",
       "worksFor": { "@id": "https://kndent.kr/#organization" },
+      "memberOf": [
+        { "@type": "MedicalOrganization", "name": "대한레이저치학회" },
+        { "@type": "MedicalOrganization", "name": "대한임플란트학회" },
+        { "@type": "MedicalOrganization", "name": "대한구강악안면성형재건외과학회" }
+      ],
       "alumniOf": [
         { "@type": "EducationalOrganization", "name": "고려대학교 구강악안면외과" },
         { "@type": "Hospital", "name": "인제대학교 백병원" }
