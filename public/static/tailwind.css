@@ -602,6 +602,11 @@ video {
   background: var(--line-2);
 }
 
+.royal-accent-bg {
+  background: var(--teal-tint);
+  border: 1px solid var(--teal-tint-2);
+}
+
 .glass-royal {
   background: rgb(255 255 255 / .8);
   border: 1px solid var(--line);
@@ -1798,6 +1803,15 @@ details summary::-webkit-details-marker {
 
 .gap-8 {
   gap: 2rem;
+}
+
+.gap-x-3 {
+  -moz-column-gap: 0.75rem;
+       column-gap: 0.75rem;
+}
+
+.gap-y-0\.5 {
+  row-gap: 0.125rem;
 }
 
 .gap-y-2 {
@@ -3078,6 +3092,11 @@ details summary::-webkit-details-marker {
   padding-bottom: 1.5rem;
 }
 
+.py-7 {
+  padding-top: 1.75rem;
+  padding-bottom: 1.75rem;
+}
+
 .py-8 {
   padding-top: 2rem;
   padding-bottom: 2rem;
@@ -3221,6 +3240,10 @@ details summary::-webkit-details-marker {
 
 .font-pretendard {
   font-family: "Pretendard Variable", Pretendard, -apple-system, system-ui, sans-serif;
+}
+
+.font-serif {
+  font-family: Hahmlet, "Noto Serif KR", "Apple SD Gothic Neo", serif;
 }
 
 .\!text-\[10px\] {
@@ -7884,6 +7907,10 @@ main > article:first-child {
   .sm\:flex-row {
     flex-direction: row;
   }
+
+  .sm\:flex-wrap {
+    flex-wrap: wrap;
+  }
 }
 
 @media (min-width: 768px) {
@@ -8008,6 +8035,11 @@ main > article:first-child {
     padding: 2rem;
   }
 
+  .md\:px-10 {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
+
   .md\:px-7 {
     padding-left: 1.75rem;
     padding-right: 1.75rem;
@@ -8051,6 +8083,11 @@ main > article:first-child {
   .md\:py-5 {
     padding-top: 1.25rem;
     padding-bottom: 1.25rem;
+  }
+
+  .md\:py-9 {
+    padding-top: 2.25rem;
+    padding-bottom: 2.25rem;
   }
 
   .md\:pb-16 {

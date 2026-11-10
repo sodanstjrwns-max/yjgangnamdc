@@ -4,6 +4,7 @@ import { SITE_URL, SITE_NAME } from '../layout'
 import type { DictEnriched } from '../data/dictionary'
 import { DICT_ENRICHED_DATE } from '../seo'
 import { hubAnchor } from './hub-link'
+import { articleEndCta } from './article-cta'
 
 const TREATMENT_NAMES: Record<string, string> = {
   'implant': '임플란트', 'digital-prosthesis': '디지털 보철', 'invisalign': '인비절라인', 'cosmetic': '심미보철',
@@ -350,6 +351,7 @@ export function dictionaryDetailPage(term: any, relatedTerms: any[], enriched?: 
         </div>
       </div>
       ` : ''}
+      ${articleEndCta()}
 
       ${relatedTerms.length > 0 ? `
       <!-- 관련 용어 -->
@@ -376,7 +378,7 @@ export function dictionaryDetailPage(term: any, relatedTerms: any[], enriched?: 
         <a href="/dictionary" class="btn-outline px-6 py-3.5 rounded-2xl text-sm font-bold">
           <i class="fas fa-book-medical mr-2"></i>용어 사전 홈
         </a>
-        <a href="/reservation" class="btn-primary px-6 py-3.5 rounded-2xl text-sm font-bold">
+        <a href="/reservation" data-cta="article-end" class="btn-primary px-6 py-3.5 rounded-2xl text-sm font-bold">
           <i class="fas fa-calendar-check mr-2"></i>상담 예약
         </a>
       </div>
@@ -525,6 +527,7 @@ function dictionaryEnrichedPage(term: any, e: DictEnriched, relatedTerms: any[])
           <span><span class="block text-xs text-gray-400">관련 진료</span><span class="text-sm font-bold text-royal group-hover:underline">${TREATMENT_NAMES[t]} 안내</span></span>
         </a>`).join('')}
       </div>` : ''}
+      ${articleEndCta()}
 
       ${relatedTerms.length ? `
       <div class="mt-10">
@@ -543,7 +546,7 @@ function dictionaryEnrichedPage(term: any, e: DictEnriched, relatedTerms: any[])
       <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
         <a href="/dictionary?category=${encodeURIComponent(term.category)}" class="btn-outline px-6 py-3.5 rounded-2xl text-sm font-bold"><i class="${meta.icon} mr-2"></i>${meta.label} 용어 더 보기</a>
         <a href="/dictionary" class="btn-outline px-6 py-3.5 rounded-2xl text-sm font-bold"><i class="fas fa-book-medical mr-2"></i>용어 사전 홈</a>
-        <a href="/reservation" class="btn-primary px-6 py-3.5 rounded-2xl text-sm font-bold"><i class="fas fa-calendar-check mr-2"></i>상담 예약</a>
+        <a href="/reservation" data-cta="article-end" class="btn-primary px-6 py-3.5 rounded-2xl text-sm font-bold"><i class="fas fa-calendar-check mr-2"></i>상담 예약</a>
       </div>
     </div>
   </section>

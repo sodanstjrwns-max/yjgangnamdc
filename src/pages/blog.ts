@@ -458,7 +458,7 @@ export function blogDetailPage(post: any, relatedPosts: any[] = []): { html: str
       <div class="mt-12 pt-8 border-t border-gray-100">
         <div class="flex items-center justify-between">
           <a href="/blog" class="flex items-center gap-2 text-gray-400 hover:text-royal transition-colors text-sm font-bold"><i class="fas fa-arrow-left text-xs"></i>목록으로</a>
-          <a href="/reservation" class="btn-primary !py-3 !px-8 !text-sm"><i class="fas fa-calendar-check text-xs"></i>상담 예약</a>
+          <a href="/reservation" data-cta="article-end" class="btn-primary !py-3 !px-8 !text-sm"><i class="fas fa-calendar-check text-xs"></i>상담 예약</a>
         </div>
       </div>
 
@@ -485,8 +485,8 @@ export function blogDetailPage(post: any, relatedPosts: any[] = []): { html: str
       <h2 class="display-md text-charcoal mb-4">이 글이 도움이 되셨나요?</h2>
       <p class="text-gray-400 mb-8">구강외과 전문의가 직접 상담드립니다. 부담 없이 문의해 주세요.</p>
       <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-        <a href="/reservation" class="btn-primary !py-5 !px-12"><i class="fas fa-calendar-check"></i>상담 예약하기</a>
-        <a href="tel:054-636-8222" class="btn-subtle"><i class="fas fa-phone text-sm text-royal"></i>054-636-8222</a>
+        <a href="/reservation" data-cta="article-end" class="btn-primary !py-5 !px-12"><i class="fas fa-calendar-check"></i>상담 예약하기</a>
+        <a href="tel:054-636-8222" data-cta="article-end" class="btn-subtle"><i class="fas fa-phone text-sm text-royal"></i>054-636-8222</a>
       </div>
     </div>
   </section>

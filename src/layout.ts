@@ -7,6 +7,7 @@ declare const __TAILWIND_CSS_V__: string
 export const TAILWIND_CSS_HREF = `/static/tailwind.css?v=${__TAILWIND_CSS_V__}`
 import { todayStatus, HOURS_LINES } from './lib/hours'
 import { icon, naverMark } from './lib/icons'
+import { markArticleEndCta } from './pages/article-cta'
 
 interface LayoutOptions {
   title: string
@@ -835,7 +836,7 @@ ${immersive ? `  <link rel="stylesheet" href="/static/immersive.css?v=${__IMMERS
 
   <!-- ===== Main ===== -->
   <main id="main-content" role="main">
-    ${content}
+    ${markArticleEndCta(content, pagePath)}
   </main>
 
   <!-- ===== Footer ===== -->
