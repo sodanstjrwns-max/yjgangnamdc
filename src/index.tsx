@@ -32,6 +32,7 @@ import { searchPage, searchStatic } from './pages/search'
 import { layout, OG_IMAGE_PNG, TAILWIND_CSS_HREF } from './layout'
 import { phraseBreaks } from './lib/phrase'
 import { llmsFactBlock, withFactBlock } from './lib/llms-facts'
+import { isGoogleCrawler, isGoogleHiddenPath, GOOGLE_HIDE_HEADER, GOOGLE_HIDE_VALUE } from './lib/google-hide'
 import { CONTENT_LASTMOD, DICT_ENRICHED_DATE, MEDICAL_LAST_REVIEWED, INDEXNOW_KEY, INDEXNOW_ENDPOINTS, INDEXNOW_DEFAULT_URLS, metaDescFrom, fitMetaDesc } from './seo'
 
 // 서버 측 content 자동 변환: plain text → HTML (저장 전 적용)
@@ -92,6 +93,15 @@ type Bindings = {
 }
 
 const app = new Hono<{ Bindings: Bindings }>()
+
+// ===== 구글 전용 검색 제외 (2026-11-10, 맨 바깥 미들웨어 — 설명·되돌리는 방법은 src/lib/google-hide.ts) =====
+// 구글 크롤러 + 용어 사전 경로 + 200 HTML 응답일 때만 X-Robots-Tag: googlebot: noindex. 그 밖의 요청은 그대로 통과.
+app.use('*', createMiddleware(async (c, next) => {
+  await next()
+  if (!isGoogleHiddenPath(c.req.path) || !isGoogleCrawler(c.req.header('User-Agent'))) return
+  if (c.res.status !== 200 || !(c.res.headers.get('Content-Type') || '').includes('text/html')) return
+  c.res.headers.set(GOOGLE_HIDE_HEADER, GOOGLE_HIDE_VALUE)
+}))
 
 // ===== 보안 헤더 (전역) =====
 app.use('*', secureHeaders({
