@@ -488,7 +488,7 @@ export function comparePage(pairSlug: string, treatmentSlug: string): { html: st
           <p class="text-emerald-100 mb-6 text-lg">${pair.rivalName}까지 안 가도 됩니다. 같은 출신·같은 장비·더 가까운 거리.</p>
           <div class="flex flex-wrap justify-center gap-4">
             <a href="/reservation" class="bg-white text-emerald-700 font-bold px-8 py-3 rounded-full hover:bg-emerald-50 transition">📅 진료 예약하기</a>
-            <a href="tel:054-633-2828" class="bg-emerald-800 text-white font-bold px-8 py-3 rounded-full hover:bg-emerald-900 transition border-2 border-white">📞 054-633-2828</a>
+            <a href="tel:054-636-8222" class="bg-emerald-800 text-white font-bold px-8 py-3 rounded-full hover:bg-emerald-900 transition border-2 border-white">📞 054-636-8222</a>
           </div>
         </div>
       </section>

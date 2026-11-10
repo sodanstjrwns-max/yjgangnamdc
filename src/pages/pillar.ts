@@ -500,7 +500,7 @@ export function pillarPage(treatmentSlug: string): { html: string; title: string
           <p class="text-emerald-100 mb-6 text-lg">구강악안면외과 전문의 + 디지털 시스템 + 평생관리</p>
           <div class="flex flex-wrap justify-center gap-4">
             <a href="/reservation" class="bg-white text-emerald-700 font-bold px-8 py-3 rounded-full hover:bg-emerald-50 transition">📅 진료 예약하기</a>
-            <a href="tel:054-633-2828" class="bg-emerald-800 text-white font-bold px-8 py-3 rounded-full hover:bg-emerald-900 transition border-2 border-white">📞 054-633-2828</a>
+            <a href="tel:054-636-8222" class="bg-emerald-800 text-white font-bold px-8 py-3 rounded-full hover:bg-emerald-900 transition border-2 border-white">📞 054-636-8222</a>
           </div>
         </div>
       </section>

@@ -39,9 +39,7 @@ const MARK_PATHS = /^\/(guide|symptom|compare|audience)\/[^/]+/
 /** 이미 있는 글 끝 블록의 예약·전화 버튼(본문에서 마지막 /reservation 링크와 마지막 tel: 링크)에 data-cta 를 단다 */
 export function markArticleEndCta(content: string, pagePath: string): string {
   if (!MARK_PATHS.test(pagePath || '')) return content
-  // 가이드·비교 템플릿(pillar.ts·compare.ts)의 글 끝 전화 버튼에 병원 번호가 아닌 054-633-2828 이 적혀 있다(다른 곳은 전부 대표번호).
-  // 위 lastmod 사정으로 템플릿 파일 대신 여기서 대표번호로 바로잡는다. 템플릿을 실제로 고치는 날 이 줄은 지운다.
-  let out = content.split('054-633-2828').join(CLINIC_TEL)
+  let out = content
   for (const needle of ['<a href="/reservation"', '<a href="tel:']) {
     const i = out.lastIndexOf(needle)
     if (i < 0) continue
